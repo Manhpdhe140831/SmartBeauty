@@ -14,11 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping("/user/list")
     public ResponseEntity<List<UserDto>> getUsers(){
         return ResponseEntity.ok().body(userService.getUsers());
     }
