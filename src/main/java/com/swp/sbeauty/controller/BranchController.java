@@ -28,7 +28,7 @@ public class BranchController {
         BranchDto result = branchService.saveBranch(branchDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/branch/update")
+    @PutMapping ("/branch/update/{id}")
     public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @PathVariable Long id){
         BranchDto result = branchService.updateBranch(branchDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);

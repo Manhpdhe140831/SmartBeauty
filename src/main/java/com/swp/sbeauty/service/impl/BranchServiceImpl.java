@@ -49,6 +49,24 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchDto updateBranch(BranchDto branchDto, Long id) {
+        if(branchDto !=null){
+            Branch branch = null;
+            if(id !=null){
+                Optional<Branch> optional =branchRepository.findById(id);
+                if(optional.isPresent()){
+                    branch = optional.get();
+                }
+            }
+            if(branch != null){
+                branch.setName(branchDto.getName());
+                branch.setPhone(branchDto.getPhone());
+                branch.setEmail(branchDto.getEmail());
+                branch = branchRepository.save(branch);
+                return new BranchDto(branch);
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 }
