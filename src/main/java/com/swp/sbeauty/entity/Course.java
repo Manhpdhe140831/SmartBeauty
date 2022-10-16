@@ -18,14 +18,11 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(columnDefinition = "nvarchar")
     private String name;
-
     private double price;
-    @Column(columnDefinition = "nvarchar")
     private String imageURL;
-    @Column(columnDefinition = "nvarchar")
+    @Column(name = "image", columnDefinition = "BLOB")
+    private byte[] imageFile;
     private short description;
-
     private int MinSession;
 }
