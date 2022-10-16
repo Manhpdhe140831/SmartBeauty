@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cutomer {
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -24,7 +24,8 @@ public class Cutomer {
     private String City;
     private String District;
     private String street;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "saleStaff_id")
-    private User user;
+    private Staff staff;
+
 }
