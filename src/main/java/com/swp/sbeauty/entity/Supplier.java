@@ -17,14 +17,15 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String name;
     private String phone;
     private String email;
     private String certificateImageURL;
     @Column(name = "certificateImage", columnDefinition = "BLOB")
     private byte[] certificateImageFile;
     private String country;
-    private String City;
-    private String District;
+    private String city;
+    private String district;
     private String street;
 
 }
