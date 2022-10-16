@@ -12,12 +12,14 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Test {
+public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(columnDefinition = "nvarchar")
-    private String testName;
-    @Column(columnDefinition = "nvarchar")
-    private String testLocation;
+    private double price;
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "serviceGroup_id")
+    private ServiceGroup serviceGroup;
 }

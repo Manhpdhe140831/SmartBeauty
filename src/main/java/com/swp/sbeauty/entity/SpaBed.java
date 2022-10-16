@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -13,19 +12,13 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class Course {
+public class SpaBed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(columnDefinition = "nvarchar")
-    private String name;
-
-    private double price;
-    @Column(columnDefinition = "nvarchar")
-    private String imageURL;
-    @Column(columnDefinition = "nvarchar")
-    private short description;
-
-    private int MinSession;
+    private String status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }
