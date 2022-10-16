@@ -18,7 +18,6 @@ public class Service {
     private long id;
     private double price;
     private String description;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "serviceGroup_id")
     private ServiceGroup serviceGroup;

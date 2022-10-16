@@ -19,8 +19,9 @@ public class Branch {
     private String name;
     private String phone;
     private String email;
+    private String country;
+    private String City;
+    private String District;
+    private String street;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
 }

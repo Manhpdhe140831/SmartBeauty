@@ -20,7 +20,6 @@ public class User {
     private String username;
     @Column(name="password")
     private String password;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id")
     private Role role;
