@@ -20,8 +20,8 @@ public class Branch {
     private String phone;
     private String email;
     private String country;
-    private String City;
-    private String District;
+    private String city;
+    private String district;
     private String street;
 
 }
