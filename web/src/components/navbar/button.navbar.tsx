@@ -9,7 +9,7 @@ interface MainLinkProps {
 const ButtonNavbar: FC<MainLinkProps> = ({ icon, label }) => {
   return (
     <UnstyledButton
-      className="text-white hover:bg-base-100"
+      className="!text-white hover:!bg-gray-700"
       sx={(theme) => ({
         display: "block",
         width: "100%",

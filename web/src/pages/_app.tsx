@@ -5,7 +5,7 @@ import SidebarLayout from "../components/layout/sidebar.layout";
 import { UserRole } from "../const/user-role.const";
 import { AppPageInterface } from "../interfaces/app-page.interface";
 import { Provider } from "jotai";
-import { MantineProvider } from "@mantine/core";
+import { createEmotionCache, MantineProvider } from "@mantine/core";
 
 // Create a react-query client
 const queryClient = new QueryClient();
@@ -22,11 +22,20 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <SidebarLayout role={UserRole.anonymous}>{p}</SidebarLayout>
     ));
 
+  /**
+   * Allow Mantine to run after TailwindCSS load (prevent override the component CSS)
+   */
+  const appendCache = createEmotionCache({ key: "mantine", prepend: false });
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
         <Provider>
-          <MantineProvider withGlobalStyles withNormalizeCSS>
+          <MantineProvider
+            emotionCache={appendCache}
+            withGlobalStyles
+            withNormalizeCSS
+          >
             {useLayout(<Component {...pageProps} />)}
           </MantineProvider>
         </Provider>

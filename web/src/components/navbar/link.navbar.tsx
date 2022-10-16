@@ -33,7 +33,7 @@ const LinkNavbar: FC<LinkNavbarProps> = ({
         label={label}
         description={description}
         rightSection={rightSection}
-        className="hover:bg-base-100"
+        className="hover:!bg-gray-700"
         sx={{
           fontWeight: 600,
           padding: theme.spacing.md,
