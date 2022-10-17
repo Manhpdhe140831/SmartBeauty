@@ -25,6 +25,7 @@ public class SupplierDto {
             this.setName(supplier.getName());
             this.setPhone(supplier.getPhone());
             this.setEmail(supplier.getEmail());
+            this.setCertificateImageURL(supplier.getCertificateImageURL());
             this.setCountry(supplier.getCountry());
             this.setCity(supplier.getCity());
             this.setDistrict(supplier.getDistrict());

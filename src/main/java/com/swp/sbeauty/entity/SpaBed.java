@@ -16,7 +16,6 @@ public class SpaBed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(columnDefinition = "nvarchar")
     private String status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")

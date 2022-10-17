@@ -21,8 +21,6 @@ public class Supplier {
     private String phone;
     private String email;
     private String certificateImageURL;
-    @Column(name = "certificateImage", columnDefinition = "BLOB")
-    private byte[] certificateImageFile;
     private String country;
     private String city;
     private String district;
