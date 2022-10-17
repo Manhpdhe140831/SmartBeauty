@@ -29,6 +29,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto saveCategory(CategoryDto categoryDto) {
+        if(categoryDto != null){
+            Category category = new Category();
+            category.setName(categoryDto.getName());
+            category = categoryRepository.save(category);
+            if (category != null){
+                return new CategoryDto(category);
+            }
+        }
         return null;
     }
 
