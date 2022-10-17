@@ -18,7 +18,7 @@ public class SupplierDto {
         private String district;
         private String street;
 
-
+        public SupplierDto(){}
     public SupplierDto(Supplier supplier){
         if(supplier != null){
             this.setId(supplier.getId());

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service @Transactional @Slf4j
 public class CategoryServiceImpl implements CategoryService {
@@ -42,6 +43,22 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, Long id) {
+        if(categoryDto != null){
+            Category category = null;
+            if(id != null){
+                Optional<Category> optional = categoryRepository.findById(id);
+                if(optional.isPresent()){
+                    category = optional.get();
+                }
+            }
+            if(category != null){
+                category.setName(categoryDto.getName());
+                category = categoryRepository.save(category);
+                return new CategoryDto(category);
+            }else {
+                return null;
+            }
+        }
         return null;
     }
 }
