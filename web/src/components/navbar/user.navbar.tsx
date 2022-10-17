@@ -29,7 +29,7 @@ const UserNavbar = () => {
           </Text>
         }
         rightSection={<IconChevronRight size={18} />}
-        className="hover:bg-base-100"
+        className="hover:!bg-gray-700"
         sx={{
           padding: theme.spacing.xs,
           borderRadius: theme.radius.sm,

@@ -18,6 +18,7 @@
 
 # production
 /build
+/client-static
 
 # misc
 .DS_Store

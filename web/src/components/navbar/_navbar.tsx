@@ -26,7 +26,7 @@ const CoreNavbar: FC<{
   ];
 
   return (
-    <Navbar className="bg-base-200 text-white" p="xs" width={props.width}>
+    <Navbar className="!bg-gray-800 !text-white" p="xs" width={props.width}>
       <Navbar.Section mt="xs">
         {/* TODO: User*/}
         <UserNavbar />
