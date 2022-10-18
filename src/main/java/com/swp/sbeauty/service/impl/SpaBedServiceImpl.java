@@ -58,6 +58,30 @@ public class SpaBedServiceImpl implements SpaBedService {
 
     @Override
     public SpaBedDto updateBed(SpaBedDto spaBedDto, Long id) {
+        if(spaBedDto !=null){
+            SpaBed spaBed = null;
+            if(id !=null){
+                Optional<SpaBed> optional =spaBedRepository.findById(id);
+                if(optional.isPresent()){
+                    spaBed = optional.get();
+                }
+            }
+            if(spaBed != null){
+                spaBed.setStatus(spaBedDto.getStatus());
+                if(spaBedDto.getBranch()!=null){
+                    Branch branch = null;
+                    Optional<Branch> optional = branchRepository.findById(spaBedDto.getBranch().getId());
+                    if (optional.isPresent()) {
+                        branch = optional.get();
+                    }
+                    spaBed.setBranch(branch);
+                }
+                spaBed = spaBedRepository.save(spaBed);
+                return new SpaBedDto(spaBed);
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 }
