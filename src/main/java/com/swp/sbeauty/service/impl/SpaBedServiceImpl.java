@@ -1,7 +1,11 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.SpaBedDto;
+import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.SpaBed;
+import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.SpaBedRepository;
 import com.swp.sbeauty.service.SpaBedService;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service @Transactional @Slf4j
 public class SpaBedServiceImpl implements SpaBedService {
@@ -32,6 +37,22 @@ public class SpaBedServiceImpl implements SpaBedService {
 
     @Override
     public SpaBedDto saveBed(SpaBedDto spaBedDto) {
+        if(spaBedDto != null){
+            SpaBed spaBed = new SpaBed();
+            spaBed.setStatus(spaBedDto.getStatus());
+            if(spaBedDto.getBranch()!=null){
+                Branch branch = null;
+                Optional<Branch> optional = branchRepository.findById(spaBedDto.getBranch().getId());
+                if (optional.isPresent()) {
+                    branch = optional.get();
+                }
+                spaBed.setBranch(branch);
+            }
+            spaBed = spaBedRepository.save(spaBed);
+            if(spaBed != null){
+                return new SpaBedDto(spaBed);
+            }
+        }
         return null;
     }
 
