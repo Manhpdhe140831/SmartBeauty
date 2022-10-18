@@ -1,6 +1,7 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.ProductDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.CategoryRepository;
 import com.swp.sbeauty.repository.ProductRepository;
@@ -71,6 +72,43 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProduct(ProductDto productDto, Long id) {
+        if(productDto !=null){
+            Product product = null;
+            if(id !=null){
+                Optional<Product> optional =productRepository.findById(id);
+                if(optional.isPresent()){
+                    product = optional.get();
+                }
+            }
+            if(product != null){
+                product.setName(productDto.getName());
+                product.setImportPrice(productDto.getImportPrice());
+                product.setSalePrice(productDto.getSalePrice());
+                product.setEXP(productDto.getEXP());
+                product.setMFG(productDto.getMFG());
+                product.setDescription(productDto.getDescription());
+                if(productDto.getSupplier()!=null){
+                    Supplier supplier = null;
+                    Optional<Supplier> optional = supplierRepository.findById(productDto.getSupplier().getId());
+                    if (optional.isPresent()) {
+                        supplier = optional.get();
+                    }
+                    product.setSupplier(supplier);
+                }
+                if(productDto.getCategory()!=null){
+                    Category category = null;
+                    Optional<Category> optional = categoryRepository.findById(productDto.getCategory().getId());
+                    if (optional.isPresent()) {
+                        category = optional.get();
+                    }
+                    product.setCategory(category);
+                }
+                product = productRepository.save(product);
+                return new ProductDto(product);
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 }
