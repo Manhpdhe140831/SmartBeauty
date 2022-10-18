@@ -27,7 +27,7 @@ public class Product {
     private Date MFG;
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplerID")
+    @JoinColumn(name = "suppler_id")
     private Supplier supplier;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
