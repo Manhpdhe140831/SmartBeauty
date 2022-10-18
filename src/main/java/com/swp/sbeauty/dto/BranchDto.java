@@ -22,7 +22,7 @@ public class BranchDto {
         if(branch != null){
             this.setId(branch.getId());
             this.setName(branch.getName());
-            this.setPhone(branch.getPhone());
+            this.setPhone(                                             branch.getPhone());
             this.setEmail(branch.getEmail());
             this.setCountry(branch.getCountry());
             this.setCity(branch.getCity());
