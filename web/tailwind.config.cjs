@@ -3,7 +3,24 @@ module.exports = {
   mode: "jit",
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        inherit: "inherit",
+        none: "none"
+      },
+      minHeight: (theme) => ({
+        ...theme("spacing")
+      }),
+      maxHeight: (theme) => ({
+        ...theme("spacing")
+      }),
+      minWidth: (theme) => ({
+        ...theme("spacing")
+      }),
+      maxWidth: (theme) => ({
+        ...theme("spacing")
+      })
+    }
   },
-  plugins: [],
+  plugins: []
 };

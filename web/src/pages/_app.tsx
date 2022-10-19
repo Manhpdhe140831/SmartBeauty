@@ -6,6 +6,7 @@ import { UserRole } from "../const/user-role.const";
 import { AppPageInterface } from "../interfaces/app-page.interface";
 import { Provider } from "jotai";
 import { createEmotionCache, MantineProvider } from "@mantine/core";
+import BreadcrumbsLayout from "../components/layout/breadcrumbs.layout";
 
 // Create a react-query client
 const queryClient = new QueryClient();
@@ -15,11 +16,13 @@ const queryClient = new QueryClient();
  */
 const MyApp: AppType = ({ Component, pageProps }) => {
   // safe parse the Component to correct type
-  const renderPage = Component as AppPageInterface;
+  const RenderPage = Component as AppPageInterface;
   const useLayout =
-    renderPage.useLayout ??
+    RenderPage.useLayout ??
     ((p: JSX.Element) => (
-      <SidebarLayout role={UserRole.anonymous}>{p}</SidebarLayout>
+      <SidebarLayout role={UserRole.anonymous}>
+        <BreadcrumbsLayout>{p}</BreadcrumbsLayout>
+      </SidebarLayout>
     ));
 
   /**
