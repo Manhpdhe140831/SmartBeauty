@@ -24,4 +24,6 @@ public class Branch {
     private String district;
     private String street;
 
+
+
 }
