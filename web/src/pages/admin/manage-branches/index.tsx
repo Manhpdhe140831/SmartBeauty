@@ -6,6 +6,7 @@ import TableRecord, { RecordData } from "./_table-record";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import TableRecordHolder from "../../../components/table-record-holder";
+import BranchModalBtn from "./_branch-modal";
 
 const Index: AppPageInterface = () => {
   const example: Array<RecordData> = [
@@ -75,18 +76,23 @@ const Index: AppPageInterface = () => {
   ];
   const [page, setPage] = useState(1);
 
-  const { data: branches, isLoading } = useQuery<RecordData[]>(
-    ["list-branch", page],
-    () => {
-      return new Promise<RecordData[]>((resolve) =>
-        setTimeout(() => resolve(example), 1000)
-      );
-    }
-  );
+  const {
+    data: branches,
+    isLoading,
+    refetch,
+  } = useQuery<RecordData[]>(["list-branch", page], () => {
+    console.log("query ran");
+    return new Promise<RecordData[]>((resolve) =>
+      setTimeout(() => resolve(example), 1000)
+    );
+  });
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
-      <div className="flex justify-end">
+      <div className="flex justify-end space-x-2">
+        <BranchModalBtn onChanged={refetch} />
+
+        {/*Search by name*/}
         <Input
           icon={<IconSearch />}
           placeholder={"tên chi nhánh..."}

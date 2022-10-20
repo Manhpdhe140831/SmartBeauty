@@ -13,6 +13,7 @@ specifiers:
   '@types/node': 18.0.0
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/react-input-mask': ^3.0.1
   '@typescript-eslint/eslint-plugin': ^5.33.0
   '@typescript-eslint/parser': ^5.33.0
   autoprefixer: ^10.4.7
@@ -27,6 +28,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-hook-form: ^7.37.0
+  react-input-mask: ^2.0.4
   tailwindcss: ^3.1.6
   typescript: ^4.8.4
   zod: ^3.19.1
@@ -48,6 +50,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.37.0_react@18.2.0
+  react-input-mask: 2.0.4_biqbaboplfbrettd7655fr4n2y
   zod: 3.19.1
   zustand: 4.1.2_react@18.2.0
 
@@ -55,6 +58,7 @@ devDependencies:
   '@types/node': 18.0.0
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/react-input-mask': 3.0.1
   '@typescript-eslint/eslint-plugin': 5.40.0_6vbvae4yykgzhztlnnn3nn5eva
   '@typescript-eslint/parser': 5.40.0_yv3nvntfnealqm77uomj2fi4ki
   autoprefixer: 10.4.12_postcss@8.4.18
@@ -63,7 +67,7 @@ devDependencies:
   postcss: 8.4.18
   prettier: 2.7.1
   prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
-  tailwindcss: 3.1.8_postcss@8.4.18
+  tailwindcss: 3.1.8
   typescript: 4.8.4
 
 packages:
@@ -933,6 +937,12 @@ packages:
 
   /@types/react-dom/18.0.5:
     resolution: {integrity: sha512-OWPWTUrY/NIrjsAPkAk1wW9LZeIjSvkXRhclsFO8CZcZGCOg2G0YZy4ft+rOyYxy8B7ui5iZzi9OkDebZ7/QSA==}
+    dependencies:
+      '@types/react': 18.0.14
+    dev: true
+
+  /@types/react-input-mask/3.0.1:
+    resolution: {integrity: sha512-rGOW8t2Ac558TAAnaq5ZZDGHu1siTblBeY30ggAQ9sX89y2MX0/FFVDLd2DT85QRpYIQOrb7QzkF9RCoV2+nZg==}
     dependencies:
       '@types/react': 18.0.14
     dev: true
@@ -2178,6 +2188,12 @@ packages:
       side-channel: 1.0.4
     dev: true
 
+  /invariant/2.2.4:
+    resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
+
   /is-arrayish/0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
     dev: false
@@ -2826,6 +2842,18 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-input-mask/2.0.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-1hwzMr/aO9tXfiroiVCx5EtKohKwLk/NT8QlJXHQ4N+yJJFyUuMT+zfTpLBwX/lK3PkuMlievIffncpMZ3HGRQ==}
+    peerDependencies:
+      react: '>=0.14.0'
+      react-dom: '>=0.14.0'
+    dependencies:
+      invariant: 2.2.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      warning: 4.0.3
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -3078,12 +3106,10 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  /tailwindcss/3.1.8_postcss@8.4.18:
+  /tailwindcss/3.1.8:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -3247,6 +3273,12 @@ packages:
   /v8-compile-cache/2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
     dev: true
+
+  /warning/4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /which-boxed-primitive/1.0.2:
     resolution: {integrity: sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg==}
