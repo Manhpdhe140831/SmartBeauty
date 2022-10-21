@@ -1,8 +1,9 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.RoleDto;
 import com.swp.sbeauty.dto.UserDto;
 
-import java.util.List;
+import java.util.*;
 
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service @Transactional @Slf4j
 public class UserServiceImpl implements UserService {
@@ -33,13 +32,23 @@ public class UserServiceImpl implements UserService {
             user.setName(userDto.getName());
             user.setUsername(userDto.getUsername());
             user.setPassword(userDto.getPassword());
-            if(userDto.getRole()!=null){
-                Role role = null;
-                Optional<Role> optional = roleRepository.findById(userDto.getRole().getId());
-                if (optional.isPresent()) {
-                    role = optional.get();
+            Set<Role> roles = new HashSet<>();
+            if(userDto.getRoles()!=null && userDto.getRoles().size()>0){
+                for (RoleDto roleDto : userDto.getRoles()){
+                    if(roleDto!=null){
+                        Role role = null;
+                        if(roleDto.getId()!=null){
+                            Optional<Role> optional =roleRepository.findById(roleDto.getId());
+                            if(optional.isPresent()){
+                                role = optional.get();
+                            }
+                            if(role!=null){
+                                roles.add(role);
+                            }
+                        }
+                    }
                 }
-                user.setRole(role);
+                user.setRoles(roles);
             }
             user = userRepository.save(user);
             if(user != null){
@@ -63,13 +72,23 @@ public class UserServiceImpl implements UserService {
                 user.setName(userDto.getName());
                 user.setUsername(userDto.getUsername());
                 user.setPassword(userDto.getPassword());
-                if(userDto.getRole()!=null){
-                    Role role = null;
-                    Optional<Role> optional = roleRepository.findById(userDto.getRole().getId());
-                    if (optional.isPresent()) {
-                        role = optional.get();
+                Set<Role> roles = new HashSet<>();
+                if(user.getRoles()!=null && user.getRoles().size()>0){
+                    for (RoleDto roleDto : userDto.getRoles()){
+                        if(roleDto!=null){
+                            Role role = null;
+                            if(roleDto.getId()!=null){
+                                Optional<Role> optional =roleRepository.findById(roleDto.getId());
+                                if(optional.isPresent()){
+                                    role = optional.get();
+                                }
+                                if(role!=null){
+                                    roles.add(role);
+                                }
+                            }
+                        }
                     }
-                    user.setRole(role);
+                    user.setRoles(roles);
                 }
                 user = userRepository.save(user);
                 return new UserDto(user);

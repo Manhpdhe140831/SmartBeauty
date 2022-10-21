@@ -1,9 +1,13 @@
 package com.swp.sbeauty.dto;
 
 
+import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -12,7 +16,7 @@ public class UserDto {
     private String name;
     private String username;
     private String password;
-    private RoleDto role;
+    private Set<RoleDto> roles;
 
     public UserDto(){}
 
@@ -22,9 +26,18 @@ public class UserDto {
             this.setName(user.getName());
             this.setUsername(user.getUsername());
             this.setPassword(user.getPassword());
-            if(user.getRole()!=null){
-                role =new RoleDto(user.getRole());
+            if(user.getRoles()!=null){
+                this.roles = new HashSet<>();
+                for(Role role : user.getRoles()){
+                    this.roles.add(new RoleDto(role));
+                }
             }
+//            if (entity.getPersonCertificate() != null) {
+//                this.personCertificate = new HashSet<PersonCertificateDto>();
+//                for (PersonCertificate history : entity.getPersonCertificate()) {
+//                    this.personCertificate.add(new PersonCertificateDto(history));
+//                }
+//            }
         }
     }
 }
