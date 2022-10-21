@@ -12,6 +12,7 @@ import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    PasswordEncoder encoder;
 
     @Override
     public UserDto saveUser(UserDto userDto) {
@@ -31,7 +34,7 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             user.setName(userDto.getName());
             user.setUsername(userDto.getUsername());
-            user.setPassword(userDto.getPassword());
+            user.setPassword(encoder.encode(userDto.getPassword()));
             Set<Role> roles = new HashSet<>();
             if(userDto.getRoles()!=null && userDto.getRoles().size()>0){
                 for (RoleDto roleDto : userDto.getRoles()){
