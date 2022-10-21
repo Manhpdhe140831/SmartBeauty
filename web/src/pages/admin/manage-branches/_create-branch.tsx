@@ -1,9 +1,6 @@
 import {
   Button,
   Divider,
-  FileButton,
-  FileInput,
-  Group,
   Image,
   Input,
   Text,
@@ -11,52 +8,60 @@ import {
   TextInput,
 } from "@mantine/core";
 import Link from "next/link";
-import InputMask from "react-input-mask";
-import { useForm } from "react-hook-form";
+import MaskedInput from "react-text-mask";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconPlus } from "@tabler/icons";
 import FormErrorMessage from "../../../components/form-error-message";
-import { useState } from "react";
-import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "../../../const/file.const";
+import { PhoneNumberMask } from "../../../const/input-masking.const";
+import BtnSingleUploader from "../../../components/btn-single-uploader";
+
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+type CreateBranchPropsType = {
+  onSave?: <T>(branchData: T) => void;
+};
 
 const createSchema = z.object({
   name: z.string().min(3).max(120),
   email: z.string().email().max(120),
-  phone: z.string(),
+  phone: z
+    .string()
+    .refine((p) => !!p && p.replace(/\s/g, "").match(/^0\d{9}$/), {
+      message: "Số điện thoại không đúng định dạng.",
+    }),
   manager: z.string(),
   address: z.string(),
   logo: z
-    .instanceof(File)
-    .refine((f) => !!f, "Image is required.")
-    .refine((f) => f.size <= MAX_FILE_SIZE, "Max file size is 5MB")
-    .refine(
-      (f) => ACCEPTED_IMAGE_TYPES.includes(f.type),
-      ".jpg, .jpeg, .png and .webp files are accepted."
-    ),
+    .any()
+    .refine((f) => !!f, { message: "Yêu cầu có file upload" })
+    .refine((f) => !!f && f.size <= 5000000, {
+      message: "Chỉ upload file tối đa 5MB",
+    })
+    .refine((f) => !!f && ACCEPTED_IMAGE_TYPES.includes(f.type), {
+      message: "Chỉ chấp nhận các file có đuôi .jpg, .jpeg, .png and .webp",
+    }),
 });
 
-type CreateBranchPropsType = {
-  onSave(branchData: z.infer<typeof createSchema>): void;
-};
-
 const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
-  const [file, setFile] = useState<File | null>(null);
-
   const {
+    control,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
+    mode: "onBlur",
   });
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className={"flex flex-col"}>
-      <h1 className="text-center font-thin capitalize">Mở chi nhánh mới</h1>
-
-      <Divider my={16} />
-
+    <form onSubmit={onSave && handleSubmit(onSave)} className={"flex flex-col"}>
       <TextInput
         label={"Tên chi nhánh"}
         description={
@@ -67,7 +72,6 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
             </Link>
           </small>
         }
-        id={"name"}
         placeholder={"nhập tên của hàng của bạn..."}
         required
         {...register("name")}
@@ -94,49 +98,79 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
       ></Textarea>
       <FormErrorMessage errors={errors} name={"address"} />
 
-      <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
-        <Input
-          component={InputMask}
-          mask={"999-999-9999"}
-          {...register("phone")}
-        />
-      </Input.Wrapper>
+      {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
+      <Controller
+        name={"phone"}
+        control={control}
+        render={({ field }) => (
+          <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
+            <Input
+              component={MaskedInput}
+              mask={PhoneNumberMask}
+              placeholder={"012 774 9999"}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          </Input.Wrapper>
+        )}
+      />
       <FormErrorMessage errors={errors} name={"phone"} />
 
-      <TextInput required label={"Email"} id={"email"} {...register("email")} />
+      <TextInput
+        required
+        type="email"
+        label={"Email"}
+        id={"email"}
+        {...register("email")}
+      />
       <FormErrorMessage errors={errors} name={"email"} />
 
-      <FileInput
-        placeholder="chấp nhận các ảnh PNG, JPEG dưới 5mb"
-        label="Logo chi nhánh"
-        description={"Chi nhánh phải có ảnh đại diện"}
-        withAsterisk
-        accept={ACCEPTED_IMAGE_TYPES.join(",")}
-      />
-      <Group position="left">
-        <FileButton onChange={setFile} accept="image/png,image/jpeg">
-          {(props) => <Button {...props}>Upload image</Button>}
-        </FileButton>
-      </Group>
-      {file && (
-        <>
-          <Text size="sm" align="left" mt="sm">
-            Picked file: {file.name}
-          </Text>
-          <Image
-            width={160}
-            height={160}
-            radius="md"
-            src={URL.createObjectURL(file)}
-            alt="Random unsplash image"
-            className="mt-2 select-none rounded-lg border object-cover shadow-xl"
+      <label htmlFor="file" className="text-[14px] text-gray-900">
+        Logo chi nhánh <span className="text-red-500">*</span>
+      </label>
+      <small className="mb-1 text-[12px] leading-tight text-gray-400">
+        Chi nhánh phải có ảnh đại diện
+      </small>
+      {/* Manual handle Form binding because btn does not expose `ref` for hook*/}
+      <Controller
+        name={"logo"}
+        control={control}
+        render={({ field }) => (
+          <BtnSingleUploader
+            accept={ACCEPTED_IMAGE_TYPES.join(",")}
+            onChange={(f) => {
+              field.onChange(f);
+              field.onBlur();
+            }}
+            btnTitle={"Tải ảnh..."}
+            render={(f) => (
+              <>
+                <Text size="xs" align="left">
+                  Picked file: {f.name}
+                </Text>
+                <Image
+                  width={160}
+                  height={160}
+                  radius="md"
+                  src={URL.createObjectURL(f)}
+                  alt="Random unsplash image"
+                  className="mt-2 select-none rounded-lg border object-cover shadow-xl"
+                />
+              </>
+            )}
           />
-        </>
-      )}
+        )}
+      />
+      <FormErrorMessage errors={errors} name={"logo"} />
 
       <Divider my={16} />
 
-      <Button variant={"filled"} leftIcon={<IconPlus />}>
+      <Button
+        disabled={!isValid}
+        type={"submit"}
+        variant={"filled"}
+        leftIcon={<IconPlus />}
+      >
         Tạo mới
       </Button>
     </form>

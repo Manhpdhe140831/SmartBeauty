@@ -1,12 +1,13 @@
 import { Divider, Input, Pagination, Table } from "@mantine/core";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { IconSearch } from "@tabler/icons";
-import TableHeader from "./_table-header";
-import TableRecord, { RecordData } from "./_table-record";
+import TableHeader from "./_partial/_table-header";
+import TableRecord, { RecordData } from "./_partial/_table-record";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import TableRecordHolder from "../../../components/table-record-holder";
-import BranchModalBtn from "./_branch-modal";
+import BranchViewModalBtn from "./_partial/_branch-create-modal-btn";
+import BranchViewModal from "./_partial/_branch-view-modal-btn";
 
 const Index: AppPageInterface = () => {
   const example: Array<RecordData> = [
@@ -90,7 +91,7 @@ const Index: AppPageInterface = () => {
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
       <div className="flex justify-end space-x-2">
-        <BranchModalBtn onChanged={refetch} />
+        <BranchViewModalBtn onChanged={(u) => u && refetch()} />
 
         {/*Search by name*/}
         <Input
@@ -135,11 +136,8 @@ const Index: AppPageInterface = () => {
                 <TableRecord
                   key={d.id}
                   no={i + 1}
-                  id={d.id}
-                  branchName={d.branchName}
-                  branchManager={d.branchManager}
-                  mobile={d.mobile}
-                  address={d.address}
+                  data={d}
+                  action={<BranchViewModal branchData={d} />}
                 />
               ))
             )}

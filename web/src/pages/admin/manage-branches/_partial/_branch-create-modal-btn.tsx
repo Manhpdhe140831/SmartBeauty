@@ -1,13 +1,13 @@
 import { Button, Modal } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
-import CreateBranch from "./_create-branch";
 import { useState } from "react";
+import CreateBranch from "../_create-branch";
 
 type BranchModalProps = {
-  onChanged?: () => void;
+  onChanged?: (updated?: boolean) => void;
 };
 
-const BranchModalBtn = ({ onChanged }: BranchModalProps) => {
+const BranchViewModalBtn = ({ onChanged }: BranchModalProps) => {
   const [newBranchModal, setNewBranchModal] = useState<boolean>(false);
 
   return (
@@ -20,16 +20,24 @@ const BranchModalBtn = ({ onChanged }: BranchModalProps) => {
         Tạo Chi Nhánh Mới
       </Button>
       <Modal
+        title={
+          <h1 className="text-center font-thin capitalize">Mở chi nhánh mới</h1>
+        }
         opened={newBranchModal}
         onClose={() => {
           console.log("closed");
+          // close dialog without update to the list screen
           setNewBranchModal(false);
           onChanged && onChanged();
         }}
       >
         <CreateBranch
-          onSave={(branchData) => {
-            console.log(branchData);
+          onSave={async (e) => {
+            //  TODO: handle API call
+            console.log(e);
+            // close dialog and update to the list screen
+            onChanged && onChanged(true);
+            setNewBranchModal(false);
           }}
         />
       </Modal>
@@ -37,4 +45,4 @@ const BranchModalBtn = ({ onChanged }: BranchModalProps) => {
   );
 };
 
-export default BranchModalBtn;
+export default BranchViewModalBtn;
