@@ -3,6 +3,7 @@ import {
   Divider,
   Image,
   Input,
+  Select,
   Text,
   Textarea,
   TextInput,
@@ -16,48 +17,60 @@ import { IconPlus } from "@tabler/icons";
 import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
-
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+import { useQuery } from "@tanstack/react-query";
+import { SelectItemGeneric } from "../../../interfaces/select-item-generic.interface";
+import { ManagerModel } from "../../../model/manager.model";
+import mockManager from "../../../mock/manager";
+import AutoCompleteItem from "../../../components/auto-complete-item";
+import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
+import {
+  addressSchema,
+  emailSchema,
+  fileUploadSchema,
+  imageTypeSchema,
+  nameSchema,
+  phoneSchema,
+} from "../../../validation/field.schema";
 
 type CreateBranchPropsType = {
   onSave?: <T>(branchData: T) => void;
 };
 
-const createSchema = z.object({
-  name: z.string().min(3).max(120),
-  email: z.string().email().max(120),
-  phone: z
-    .string()
-    .refine((p) => !!p && p.replace(/\s/g, "").match(/^0\d{9}$/), {
-      message: "Số điện thoại không đúng định dạng.",
-    }),
-  manager: z.string(),
-  address: z.string(),
-  logo: z
-    .any()
-    .refine((f) => !!f, { message: "Yêu cầu có file upload" })
-    .refine((f) => !!f && f.size <= 5000000, {
-      message: "Chỉ upload file tối đa 5MB",
-    })
-    .refine((f) => !!f && ACCEPTED_IMAGE_TYPES.includes(f.type), {
-      message: "Chỉ chấp nhận các file có đuôi .jpg, .jpeg, .png and .webp",
-    }),
-});
-
 const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
+  // schema validation
+  const createSchema = z.object({
+    name: nameSchema,
+    email: emailSchema,
+    phone: phoneSchema,
+    manager: z.number().min(1),
+    address: addressSchema,
+    logo: fileUploadSchema.and(imageTypeSchema),
+  });
+
   const {
     control,
     register,
+    watch,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
     mode: "onBlur",
+  });
+
+  console.log(watch("manager"));
+
+  const { data: availableManager, isLoading: managerLoading } = useQuery<
+    SelectItemGeneric<ManagerModel>[]
+  >(["available-manager"], async () => {
+    const manager = await mockManager();
+    return manager.map((m) => ({
+      ...m,
+      // add fields of SelectItemGeneric
+      value: String(m.id),
+      label: m.name,
+      description: m.mobile,
+    }));
   });
 
   return (
@@ -78,13 +91,24 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
       ></TextInput>
       <FormErrorMessage errors={errors} name={"name"} />
 
-      <TextInput
-        label={"Tên quản lý"}
-        placeholder={"tên người quản lý chi nhánh..."}
-        id={"manager"}
-        required
-        {...register("manager")}
-      ></TextInput>
+      <Controller
+        render={({ field }) => (
+          <Select
+            data={!availableManager || managerLoading ? [] : availableManager}
+            placeholder={"tên người quản lý chi nhánh..."}
+            label={"Tên quản lý"}
+            searchable
+            itemComponent={AutoCompleteItem}
+            nothingFound="No options"
+            maxDropdownHeight={200}
+            onChange={(v) => field.onChange(Number(v))}
+            onBlur={field.onBlur}
+            required
+          />
+        )}
+        name={"manager"}
+        control={control}
+      />
       <FormErrorMessage errors={errors} name={"manager"} />
 
       <Textarea
@@ -143,21 +167,23 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
               field.onBlur();
             }}
             btnTitle={"Tải ảnh..."}
-            render={(f) => (
-              <>
-                <Text size="xs" align="left">
-                  Picked file: {f.name}
-                </Text>
-                <Image
-                  width={160}
-                  height={160}
-                  radius="md"
-                  src={URL.createObjectURL(f)}
-                  alt="Random unsplash image"
-                  className="mt-2 select-none rounded-lg border object-cover shadow-xl"
-                />
-              </>
-            )}
+            render={(f) =>
+              (f && (
+                <>
+                  <Text size="xs" align="left">
+                    Picked file: {f.name}
+                  </Text>
+                  <Image
+                    width={160}
+                    height={160}
+                    radius="md"
+                    src={URL.createObjectURL(f)}
+                    alt="Random unsplash image"
+                    className="mt-2 select-none rounded-lg border object-cover shadow-xl"
+                  />
+                </>
+              )) ?? <></>
+            }
           />
         )}
       />

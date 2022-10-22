@@ -1,18 +1,11 @@
 import { Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-
-export type RecordData = {
-  id: string;
-  branchName: string;
-  branchManager: string;
-  mobile: string;
-  email?: string;
-  address: string;
-};
+import { BranchModel } from "../../../../model/branch.model";
+import { ManagerModel } from "../../../../model/manager.model";
 
 type RecordProps = {
   no?: number;
-  data: RecordData;
+  data: BranchModel<ManagerModel>;
   action: JSX.Element;
 };
 
@@ -22,17 +15,32 @@ export default function TableRecord(props: RecordProps) {
   return (
     <tr>
       <td className="text-center">{props.no}</td>
-      <td onClick={() => clipboard.copy(props.data.branchName)}>
-        {props.data.branchName}
+      <td
+        className="overflow-hidden text-ellipsis"
+        onClick={() => clipboard.copy(props.data.name)}
+      >
+        <Tooltip label={props.data.name}>
+          <span>{props.data.name}</span>
+        </Tooltip>
       </td>
-      <td onClick={() => clipboard.copy(props.data.branchManager)}>
-        {props.data.branchManager}
+      <td
+        className="overflow-hidden text-ellipsis"
+        onClick={() => clipboard.copy(props.data.manager)}
+      >
+        <Tooltip label={props.data.manager.name}>
+          <span>{props.data.manager.name}</span>
+        </Tooltip>
       </td>
       <td onClick={() => clipboard.copy(props.data.mobile)}>
         {props.data.mobile}
       </td>
-      <td onClick={() => clipboard.copy(props.data.email)}>
-        {props.data.email}
+      <td
+        className="overflow-hidden text-ellipsis"
+        onClick={() => clipboard.copy(props.data.email)}
+      >
+        <Tooltip label={props.data.email}>
+          <span>{props.data.email}</span>
+        </Tooltip>
       </td>
       <td onClick={() => clipboard.copy(props.data.address)}>
         <Tooltip

@@ -2,13 +2,15 @@ import { useState } from "react";
 import { IconSettings } from "@tabler/icons";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
 import BranchInfo from "../_view-branch";
+import { BranchModel } from "../../../../model/branch.model";
+import { ManagerModel } from "../../../../model/manager.model";
 
-type ModalProps<T> = {
+type ModalProps = {
   onChanged?: (updated?: boolean) => void;
-  branchData?: T;
+  branchData: BranchModel<ManagerModel>;
 };
 
-const BranchViewModal = <T,>({ onChanged, branchData }: ModalProps<T>) => {
+const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
   const [viewBranch, setViewBranch] = useState<boolean>(false);
 
   return (
@@ -25,6 +27,7 @@ const BranchViewModal = <T,>({ onChanged, branchData }: ModalProps<T>) => {
       <Modal
         title={<h1 className="text-center font-thin capitalize">Chi tiết</h1>}
         opened={viewBranch}
+        size={"auto"}
         onClose={() => {
           console.log("closed");
           // close dialog without update to the list screen
@@ -33,7 +36,7 @@ const BranchViewModal = <T,>({ onChanged, branchData }: ModalProps<T>) => {
         }}
       >
         <BranchInfo
-          onSave={(e) => {
+          onClose={(e) => {
             //  TODO: handle API call
             console.log(e);
             // close dialog and update to the list screen
@@ -47,4 +50,4 @@ const BranchViewModal = <T,>({ onChanged, branchData }: ModalProps<T>) => {
   );
 };
 
-export default BranchViewModal;
+export default BranchViewModalBtn;

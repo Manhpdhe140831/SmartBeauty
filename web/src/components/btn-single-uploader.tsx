@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 
 type BtnUploaderProps = {
   btnTitle: string;
-  render?: (file: File) => JSX.Element;
+  render?: (file: File | null) => JSX.Element;
   onChange?: (file: File) => void;
   accept?: string;
+  btnPosition?: "after" | "before";
 };
 
 const BtnSingleUploader = ({
@@ -13,8 +14,9 @@ const BtnSingleUploader = ({
   render,
   onChange,
   accept,
+  btnPosition,
 }: BtnUploaderProps) => {
-  const [file, setFile] = useState<File | null>();
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     onChange && file && onChange(file);
@@ -22,17 +24,21 @@ const BtnSingleUploader = ({
 
   return (
     <>
-      <Group position="left">
-        <FileButton onChange={setFile} accept={accept}>
-          {(props) => (
-            <Button id={"file"} {...props}>
-              {btnTitle}
-            </Button>
-          )}
-        </FileButton>
-      </Group>
-      {file &&
-        ((render && render(file)) ?? (
+      {btnPosition !== "after" ? (
+        <Group position="left">
+          <FileButton onChange={setFile} accept={accept}>
+            {(props) => (
+              <Button id={"file"} {...props}>
+                {btnTitle}
+              </Button>
+            )}
+          </FileButton>
+        </Group>
+      ) : (
+        <></>
+      )}
+      {(render && render(file)) ??
+        (file && (
           <>
             <Text size="xs" align="left">
               Picked file: {file.name}
@@ -47,6 +53,20 @@ const BtnSingleUploader = ({
             />
           </>
         ))}
+
+      {btnPosition === "after" ? (
+        <Group position="left">
+          <FileButton onChange={setFile} accept={accept}>
+            {(props) => (
+              <Button id={"file"} {...props}>
+                {btnTitle}
+              </Button>
+            )}
+          </FileButton>
+        </Group>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

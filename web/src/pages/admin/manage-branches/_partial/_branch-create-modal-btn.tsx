@@ -7,7 +7,7 @@ type BranchModalProps = {
   onChanged?: (updated?: boolean) => void;
 };
 
-const BranchViewModalBtn = ({ onChanged }: BranchModalProps) => {
+const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
   const [newBranchModal, setNewBranchModal] = useState<boolean>(false);
 
   return (
@@ -45,4 +45,4 @@ const BranchViewModalBtn = ({ onChanged }: BranchModalProps) => {
   );
 };
 
-export default BranchViewModalBtn;
+export default BranchCreateModalBtn;
