@@ -29,7 +29,7 @@ import {
   fileUploadSchema,
   imageTypeSchema,
   nameSchema,
-  phoneSchema,
+  mobileSchema,
 } from "../../../validation/field.schema";
 
 type CreateBranchPropsType = {
@@ -41,7 +41,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
   const createSchema = z.object({
     name: nameSchema,
     email: emailSchema,
-    phone: phoneSchema,
+    mobile: mobileSchema,
     manager: z.number().min(1),
     address: addressSchema,
     logo: fileUploadSchema.and(imageTypeSchema),
@@ -124,7 +124,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
 
       {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
       <Controller
-        name={"phone"}
+        name={"mobile"}
         control={control}
         render={({ field }) => (
           <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
@@ -138,7 +138,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
           </Input.Wrapper>
         )}
       />
-      <FormErrorMessage errors={errors} name={"phone"} />
+      <FormErrorMessage errors={errors} name={"mobile"} />
 
       <TextInput
         required

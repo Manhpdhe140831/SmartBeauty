@@ -3,7 +3,7 @@ import { ACCEPTED_IMAGE_TYPES } from "../const/file.const";
 
 export const nameSchema = z.string().min(3).max(120);
 export const emailSchema = z.string().email().max(120);
-export const phoneSchema = z
+export const mobileSchema = z
   .string()
   .refine((p) => !!p && p.replace(/\s/g, "").match(/^0\d{9}$/), {
     message: "Số điện thoại không đúng định dạng.",

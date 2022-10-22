@@ -8,7 +8,7 @@ import { useState } from "react";
 import TableRecordHolder from "../../../components/table-record-holder";
 import BranchCreateModalBtn from "./_partial/_branch-create-modal-btn";
 import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
-import mockBranch, { mockBranchWithManager } from "../../../mock/branch";
+import { mockBranchWithManager } from "../../../mock/branch";
 import { BranchModel } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
 

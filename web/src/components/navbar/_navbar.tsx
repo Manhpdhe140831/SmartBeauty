@@ -5,7 +5,7 @@ import { UserRole } from "../../const/user-role.const";
 import ButtonNavbar from "./button.navbar";
 import UserNavbar from "./user.navbar";
 import MainLinksNavbar from "./main-links.navbar";
-import { LinkNavbarProps } from "./link.navbar";
+import useSidebarNav from "../../store/sidebar-nav.state";
 
 /**
  * TODO: get user from Zustand store.
@@ -16,23 +16,24 @@ const CoreNavbar: FC<{
   userRole: UserRole;
   width?: Partial<Record<string, string | number>> | undefined;
 }> = (props) => {
-  const linksOfAdmin: LinkNavbarProps[] = [
-    { href: "/admin/manage-branches", label: "Quản Lý Chi Nhánh" },
-    { href: "/admin/manage-treatment-courses", label: "Quản Lý Liệu Trình" },
-    { href: "/admin/manage-services", label: "Quản Lý Dịch Vụ" },
-    { href: "/admin/manage-products", label: "Quản Lý Sản Phẩm" },
-    { href: "/admin/manage-providers", label: "Quản Lý Nhà Cung Cấp" },
-    { href: "/admin/reports", label: "Báo Cáo" },
-  ];
+  // depends on the user role, the state here will be updated.
+  const links = useSidebarNav((s) => s.config);
 
   return (
-    <Navbar className="!bg-gray-800 !text-white" p="xs" width={props.width}>
+    <Navbar
+      sx={(t) => ({
+        backgroundColor: t.colors.gray[9],
+        color: t.white,
+      })}
+      p="xs"
+      width={props.width}
+    >
       <Navbar.Section mt="xs">
         {/* TODO: User*/}
         <UserNavbar />
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mt="md">
-        <MainLinksNavbar links={linksOfAdmin}></MainLinksNavbar>
+        <MainLinksNavbar links={links}></MainLinksNavbar>
       </Navbar.Section>
       <Navbar.Section>
         {/*TODO: logout section*/}

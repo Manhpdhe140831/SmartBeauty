@@ -1,15 +1,16 @@
 import { FC } from "react";
-import LinkNavbar, { LinkNavbarProps } from "./link.navbar";
+import LinkNavbar from "./link.navbar";
+import { NavLinkItemProp } from "../../interfaces/nav-item.interface";
 
 type MainLinksNavbarProps = {
-  links: LinkNavbarProps[];
+  links: NavLinkItemProp[];
 };
 
 const MainLinksNavbar: FC<MainLinksNavbarProps> = ({ links }) => {
   return (
     <>
-      {links.map((link) => (
-        <LinkNavbar key={link.href} {...link}></LinkNavbar>
+      {links.map((link, i) => (
+        <LinkNavbar key={i} {...link}></LinkNavbar>
       ))}
     </>
   );

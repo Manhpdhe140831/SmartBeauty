@@ -2,9 +2,11 @@ import {
   Button,
   Divider,
   Image as MantineImage,
+  Input,
   Select,
   Text,
   Textarea,
+  TextInput,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import mockManager from "../../../mock/manager";
@@ -21,12 +23,14 @@ import {
   fileUploadSchema,
   imageTypeSchema,
   nameSchema,
-  phoneSchema,
+  mobileSchema,
 } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
+import MaskedInput from "react-text-mask";
+import { PhoneNumberMask } from "../../../const/input-masking.const";
 
 type ViewBranchPropsType = {
   branchData: BranchModel<ManagerModel>;
@@ -40,7 +44,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
   const updateSchema = z.object({
     name: nameSchema,
     email: emailSchema,
-    mobile: phoneSchema,
+    mobile: mobileSchema,
     manager: z.number().min(1),
     address: addressSchema,
     logo: fileUploadSchema.and(imageTypeSchema).or(z.string().url()),
@@ -91,7 +95,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
                 field.onBlur();
               }}
               btnPosition={"after"}
-              btnTitle={"Tải ảnh..."}
+              btnTitle={"Thay ảnh..."}
               render={(f) => (
                 <>
                   {f && (
@@ -151,6 +155,34 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           className={"!text-black"}
         ></Textarea>
         <FormErrorMessage errors={errors} name={"address"} />
+
+        {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
+        <Controller
+          name={"mobile"}
+          control={control}
+          render={({ field }) => (
+            <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
+              <Input
+                component={MaskedInput}
+                mask={PhoneNumberMask}
+                placeholder={"012 774 9999"}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                defaultValue={field.value}
+              />
+            </Input.Wrapper>
+          )}
+        />
+        <FormErrorMessage errors={errors} name={"phone"} />
+
+        <TextInput
+          required
+          type="email"
+          label={"Email"}
+          id={"email"}
+          {...register("email")}
+        />
+        <FormErrorMessage errors={errors} name={"email"} />
 
         <Button onClick={() => console.log(isValid, errors, getValues())}>
           Check error
