@@ -25,6 +25,6 @@ const ManageManager: AppPageInterface = () => {
   );
 };
 
-ManageManager.routerName = "Tài khoản chi nhánh";
+ManageManager.routerName = "Account Manager";
 
 export default ManageManager;

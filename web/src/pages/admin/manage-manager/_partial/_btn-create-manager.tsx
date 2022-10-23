@@ -13,7 +13,7 @@ const BtnCreateManager: FC<BtnCreateManagerProps> = ({ onChanged }) => {
   return (
     <>
       <Button leftIcon={<IconPlus />} onClick={() => setDialogOpen(true)}>
-        Tạo Tài Khoản
+        New Account
       </Button>
 
       <Modal
@@ -23,7 +23,7 @@ const BtnCreateManager: FC<BtnCreateManagerProps> = ({ onChanged }) => {
           setDialogOpen(false);
         }}
         title={
-          <h1 className="text-center font-thin capitalize">Tạo tài khoản</h1>
+          <h1 className="text-center font-thin capitalize">New Account</h1>
         }
       >
         <CreateManager

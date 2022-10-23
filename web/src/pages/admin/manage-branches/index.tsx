@@ -31,7 +31,7 @@ const Index: AppPageInterface = () => {
         {/*Search by name*/}
         <Input
           icon={<IconSearch />}
-          placeholder={"tên chi nhánh..."}
+          placeholder={"branch name..."}
           type={"text"}
           className="w-56"
         />
@@ -85,6 +85,6 @@ const Index: AppPageInterface = () => {
   );
 };
 
-Index.routerName = "Quản lý Chi nhánh";
+Index.routerName = "List of Branches";
 
 export default Index;

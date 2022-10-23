@@ -13,16 +13,11 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
   return (
     <>
       {/* Button add new branch -> trigger modal*/}
-      <Button
-        onClick={() => setNewBranchModal(true)}
-        leftIcon={<IconPlus />}
-      >
-        Tạo Chi Nhánh Mới
+      <Button onClick={() => setNewBranchModal(true)} leftIcon={<IconPlus />}>
+        New Branch
       </Button>
       <Modal
-        title={
-          <h1 className="text-center font-thin capitalize">Mở chi nhánh mới</h1>
-        }
+        title={<h1 className="text-center font-thin capitalize">New Branch</h1>}
         opened={newBranchModal}
         onClose={() => {
           console.log("closed");

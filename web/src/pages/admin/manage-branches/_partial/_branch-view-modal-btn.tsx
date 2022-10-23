@@ -16,16 +16,15 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
   return (
     <>
       {/* Button view branch -> trigger modal*/}
-      <Tooltip
-        onClick={() => setViewBranch((s) => !s)}
-        label={"Chỉnh sửa / Xem chi tiết"}
-      >
+      <Tooltip onClick={() => setViewBranch((s) => !s)} label={"View / Edit"}>
         <ActionIcon className="!inline-flex" color="orange" variant="filled">
           <IconSettings size={12} />
         </ActionIcon>
       </Tooltip>
       <Modal
-        title={<h1 className="text-center font-thin capitalize">Chi tiết</h1>}
+        title={
+          <h1 className="text-center font-thin capitalize">Branch Detail</h1>
+        }
         opened={viewBranch}
         size={"auto"}
         onClose={() => {

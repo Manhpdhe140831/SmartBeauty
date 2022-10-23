@@ -41,7 +41,7 @@ const BtnSingleUploader = ({
             accept={accept}
           >
             {(props) => (
-              <Button id={"file"} {...props}>
+              <Button fullWidth id={"file"} {...props}>
                 {btnTitle}
               </Button>
             )}

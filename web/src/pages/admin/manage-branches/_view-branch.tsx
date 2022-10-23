@@ -95,7 +95,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
                 field.onBlur();
               }}
               btnPosition={"after"}
-              btnTitle={"Thay ảnh..."}
+              btnTitle={"Update Logo"}
               render={(f) => (
                 <>
                   {f && (
@@ -108,7 +108,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
                     height={128}
                     radius="md"
                     src={f ? URL.createObjectURL(f) : (field.value as string)}
-                    alt="Random unsplash image"
+                    alt="Logo image"
                     className="mb-2 select-none rounded-lg border object-cover shadow-xl"
                   />
                 </>
@@ -120,15 +120,15 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
       </div>
 
       <div className={"flex flex-1 flex-col"}>
-        <small className={"leading-none text-gray-500"}>Chi nhánh</small>
+        <small className={"leading-none text-gray-500"}>Branch</small>
         <h1 className={"mb-2 text-2xl font-semibold"}>{branchData.name}</h1>
 
         <Controller
           render={({ field }) => (
             <Select
               data={!availableManager || managerLoading ? [] : availableManager}
-              placeholder={"tên người quản lý chi nhánh..."}
-              label={"Tên quản lý"}
+              placeholder={"branch manager..."}
+              label={"Branch Manager Name"}
               searchable
               itemComponent={AutoCompleteItem}
               nothingFound="No options"
@@ -145,10 +145,10 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
         <FormErrorMessage errors={errors} name={"address"} />
 
         <Textarea
-          label={"Địa chỉ"}
+          label={"Address"}
           autosize={false}
           rows={4}
-          placeholder={"địa chỉ của chi nhánh..."}
+          placeholder={"branch's address..."}
           id={"branchAddress"}
           required
           {...register("address")}
@@ -161,7 +161,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           name={"mobile"}
           control={control}
           render={({ field }) => (
-            <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
+            <Input.Wrapper required id={"phone"} label={"Mobile"}>
               <Input
                 component={MaskedInput}
                 mask={PhoneNumberMask}
@@ -184,16 +184,12 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
         />
         <FormErrorMessage errors={errors} name={"email"} />
 
-        <Button onClick={() => console.log(isValid, errors, getValues())}>
-          Check error
-        </Button>
-
         <Divider my={8} />
         <div className="flex justify-end space-x-2">
           {isDirty ? (
             <>
               <Button onClick={() => reset()} color={"red"} variant={"subtle"}>
-                Hủy thay đổi
+                Cancel
               </Button>
               <Button
                 disabled={!isValid}
@@ -201,7 +197,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
                 color={"green"}
                 variant={"filled"}
               >
-                Lưu
+                Save
               </Button>
             </>
           ) : (

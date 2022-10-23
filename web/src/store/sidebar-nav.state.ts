@@ -10,19 +10,22 @@ const useSidebarNav = create<SidebarNavState>((set) => ({
   // TODO: mock
   config: [
     {
-      label: "Quản lý Chi nhánh",
+      label: "Branch",
       nested: [
         {
           href: "/admin/manage-branches",
-          label: "Chi Nhánh",
+          label: "Manage Branch",
         },
         {
           href: "/admin/manage-manager",
-          label: "Tài khoản",
+          label: "Account Manager",
         },
       ],
     },
-    { href: "/admin/manage-treatment-courses", label: "Quản Lý Liệu Trình" },
+    {
+      href: "/admin/manage-treatment-courses",
+      label: "Treatment Courses",
+    },
     { href: "/admin/manage-services", label: "Quản Lý Dịch Vụ" },
     { href: "/admin/manage-products", label: "Quản Lý Sản Phẩm" },
     { href: "/admin/manage-providers", label: "Quản Lý Nhà Cung Cấp" },

@@ -1,4 +1,13 @@
-import { Button, Divider, Image, Input, Select, Text, Textarea, TextInput, } from "@mantine/core";
+import {
+  Button,
+  Divider,
+  Image,
+  Input,
+  Select,
+  Text,
+  Textarea,
+  TextInput,
+} from "@mantine/core";
 import Link from "next/link";
 import MaskedInput from "react-text-mask";
 import { Controller, useForm } from "react-hook-form";
@@ -40,7 +49,7 @@ type CreateBranchPropsType = {
   onSave?: (branchData: branchEntity) => void;
 };
 
-const CreateBranch = ({onSave}: CreateBranchPropsType) => {
+const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
   // schema validation
   const createSchema = z.object({
     name: nameSchema,
@@ -54,20 +63,16 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
   const {
     control,
     register,
-    watch,
     handleSubmit,
-    formState: {errors, isValid},
+    formState: { errors, isValid },
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
     mode: "onBlur",
   });
 
-  console.log(watch("manager"));
-
-  const {
-    data: availableManager,
-    isLoading: managerLoading
-  } = useQuery<SelectItemGeneric<ManagerModel>[]>(["available-manager"], async () => {
+  const { data: availableManager, isLoading: managerLoading } = useQuery<
+    SelectItemGeneric<ManagerModel>[]
+  >(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
       ...m,
@@ -81,27 +86,27 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
   return (
     <form onSubmit={onSave && handleSubmit(onSave)} className={"flex flex-col"}>
       <TextInput
-        label={"Tên chi nhánh"}
+        label={"Branch Name"}
         description={
           <small className="mb-2 leading-tight text-gray-500">
-            Vui lòng đặt tên theo đúng{" "}
+            Please naming the branch according to{" "}
             <Link href={"/404"}>
-              <a className="inline text-blue-600 underline">quy định</a>
+              <a className="inline text-blue-600 underline">the rules</a>
             </Link>
           </small>
         }
-        placeholder={"nhập tên của hàng của bạn..."}
+        placeholder={"enter the branch name..."}
         required
         {...register("name")}
       ></TextInput>
-      <FormErrorMessage errors={errors} name={"name"}/>
+      <FormErrorMessage errors={errors} name={"name"} />
 
       <Controller
-        render={({field}) => (
+        render={({ field }) => (
           <Select
             data={!availableManager || managerLoading ? [] : availableManager}
-            placeholder={"tên người quản lý chi nhánh..."}
-            label={"Tên quản lý"}
+            placeholder={"branch's manager name..."}
+            label={"Manager Name"}
             searchable
             itemComponent={AutoCompleteItem}
             nothingFound="No options"
@@ -114,25 +119,25 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
         name={"manager"}
         control={control}
       />
-      <FormErrorMessage errors={errors} name={"manager"}/>
+      <FormErrorMessage errors={errors} name={"manager"} />
 
       <Textarea
-        label={"Địa chỉ"}
+        label={"Branch's Address"}
         autosize={false}
         rows={4}
-        placeholder={"địa chỉ của chi nhánh..."}
+        placeholder={"the address of the branch..."}
         id={"branchAddress"}
         required
         {...register("address")}
       ></Textarea>
-      <FormErrorMessage errors={errors} name={"address"}/>
+      <FormErrorMessage errors={errors} name={"address"} />
 
       {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
       <Controller
         name={"mobile"}
         control={control}
-        render={({field}) => (
-          <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
+        render={({ field }) => (
+          <Input.Wrapper required id={"phone"} label={"Mobile"}>
             <Input
               component={MaskedInput}
               mask={PhoneNumberMask}
@@ -143,7 +148,7 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
           </Input.Wrapper>
         )}
       />
-      <FormErrorMessage errors={errors} name={"mobile"}/>
+      <FormErrorMessage errors={errors} name={"mobile"} />
 
       <TextInput
         required
@@ -152,26 +157,26 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
         id={"email"}
         {...register("email")}
       />
-      <FormErrorMessage errors={errors} name={"email"}/>
+      <FormErrorMessage errors={errors} name={"email"} />
 
       <label htmlFor="file" className="text-[14px] text-gray-900">
-        Logo chi nhánh <span className="text-red-500">*</span>
+        Branch Logo <span className="text-red-500">*</span>
       </label>
       <small className="mb-1 text-[12px] leading-tight text-gray-400">
-        Chi nhánh phải có ảnh đại diện
+        The logo must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP format.
       </small>
       {/* Manual handle Form binding because btn does not expose `ref` for hook*/}
       <Controller
         name={"logo"}
         control={control}
-        render={({field}) => (
+        render={({ field }) => (
           <BtnSingleUploader
             accept={ACCEPTED_IMAGE_TYPES.join(",")}
             onChange={(f) => {
               field.onChange(f);
               field.onBlur();
             }}
-            btnTitle={"Tải ảnh..."}
+            btnTitle={"Upload..."}
             render={(f) =>
               (f && (
                 <>
@@ -183,7 +188,7 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
                     height={160}
                     radius="md"
                     src={URL.createObjectURL(f)}
-                    alt="Random unsplash image"
+                    alt="Logo image"
                     className="mt-2 select-none rounded-lg border object-cover shadow-xl"
                   />
                 </>
@@ -192,17 +197,18 @@ const CreateBranch = ({onSave}: CreateBranchPropsType) => {
           />
         )}
       />
-      <FormErrorMessage errors={errors} name={"logo"}/>
+      <FormErrorMessage errors={errors} name={"logo"} />
 
-      <Divider my={16}/>
+      <Divider my={16} />
 
       <Button
         disabled={!isValid}
         type={"submit"}
         variant={"filled"}
-        leftIcon={<IconPlus/>}
+        color={"green"}
+        leftIcon={<IconPlus />}
       >
-        Tạo mới
+        Create
       </Button>
     </form>
   );

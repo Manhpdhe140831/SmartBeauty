@@ -28,11 +28,11 @@ import FormErrorMessage from "../../../components/form-error-message";
 import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { DatePicker } from "@mantine/dates";
-import subYears from "date-fns/subYears";
 import { GENDER } from "../../../const/gender.const";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { IconPlus } from "@tabler/icons";
+import dayjs from "dayjs";
 
 /**
  * Entity model to be sent to server.
@@ -69,40 +69,39 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
     // refine to check confirmPassword and password match.
     .refine((data) => data.password === data.confirmPassword, {
       message: "Passwords don't match",
-      path: ["confirmPassword"], // path of error
+      path: ["confirmPassword"], // path of error,
     });
 
   const {
     control,
     register,
     handleSubmit,
-    getValues, trigger,
     formState: { errors, isValid },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
-    mode: "onChange",
+    mode: "onBlur",
     criteriaMode: "all",
-    // defaultValues: {
-    // gender: GENDER.other,
-    // },
+    defaultValues: {
+      gender: GENDER.other,
+    },
   });
 
   return (
     <form onSubmit={onSave && handleSubmit(onSave)} className={"flex flex-col"}>
       <h3 className="my-2 mt-4 select-none border-l-2 pl-4 text-lg uppercase text-gray-500">
-        Thông tin cá nhân
+        Personal Information
       </h3>
       <TextInput
-        label={"Tên quản lý"}
+        label={"Manager Full Name"}
         description={
           <small className="mb-2 leading-tight text-gray-500">
-            Vui lòng đặt tên theo đúng{" "}
+            Please naming according to{" "}
             <Link href={"/404"}>
-              <a className="inline text-blue-600 underline">quy định</a>
+              <a className="inline text-blue-600 underline">the rule</a>
             </Link>
           </small>
         }
-        placeholder={"họ và tên của quản lý"}
+        placeholder={"full name of the manager"}
         required
         {...register("name")}
       />
@@ -112,7 +111,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
         name={"mobile"}
         control={control}
         render={({ field }) => (
-          <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
+          <Input.Wrapper required id={"phone"} label={"Mobile"}>
             <Input
               component={MaskedInput}
               mask={PhoneNumberMask}
@@ -129,16 +128,17 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
         type="email"
         label={"Email"}
         id={"email"}
+        placeholder={"john_smith@domain.com"}
         {...register("email")}
       />
       <FormErrorMessage errors={errors} name={"email"} />
       <Controller
         render={({ field }) => (
           <DatePicker
-            minDate={subYears(new Date(), 64)}
-            maxDate={subYears(new Date(), 18)}
-            placeholder="trong khoảng 18-64 tuổi"
-            label="Ngày sinh"
+            minDate={dayjs(new Date()).subtract(64, "years").toDate()}
+            maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
+            placeholder="In range of 18-64 years old"
+            label="Date of Birth"
             withAsterisk
             onChange={(e) => {
               field.onChange(e);
@@ -157,7 +157,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
         render={({ field }) => (
           <Radio.Group
             name={"gender"}
-            label="Giới Tính"
+            label="Gender"
             onChange={(e) => {
               field.onChange(e);
               field.onBlur();
@@ -166,9 +166,9 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
             defaultValue={field.value}
             withAsterisk
           >
-            <Radio value={GENDER.male} label="Nam" />
-            <Radio value={GENDER.female} label="Nữ" />
-            <Radio value={GENDER.other} label="Khác" />
+            <Radio value={GENDER.male} label="Male" />
+            <Radio value={GENDER.female} label="Female" />
+            <Radio value={GENDER.other} label="Other" />
           </Radio.Group>
         )}
         name={"gender"}
@@ -177,10 +177,10 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
       <FormErrorMessage errors={errors} name={"gender"} />
 
       <Textarea
-        label={"Địa chỉ"}
+        label={"Address"}
         autosize={false}
         rows={4}
-        placeholder={"địa chỉ thường trú..."}
+        placeholder={"permanent address..."}
         id={"branchAddress"}
         required
         {...register("address")}
@@ -189,35 +189,38 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
 
       <Divider my={8} />
       <h3 className="my-2 mt-4 select-none border-l-2 pl-4 text-lg uppercase text-gray-500">
-        Thông tin đăng nhập
+        Account Information
         <small className="block text-xs normal-case text-gray-500">
-          Sử dụng email bên trên và mật khẩu dưới đây để đăng nhập
+          Use the email above and the password below to login
         </small>
       </h3>
 
       <TextInput
-        label={"Mật khẩu"}
+        label={"Password"}
         id={"password"}
         type="password"
-        placeholder={"từ 3-30 kí tự"}
+        placeholder={"3-30 characters"}
         required
         {...register("password")}
       />
       <FormErrorMessage errors={errors} name={"password"} />
 
       <TextInput
-        label={"Xác nhận Mật khẩu"}
+        label={"Confirm Password"}
         id={"confirmPassword"}
         type="password"
-        placeholder={"từ 3-30 kí tự, giống mật khẩu"}
+        placeholder={"similar to password"}
         required
         {...register("confirmPassword")}
       />
       <FormErrorMessage errors={errors} name={"confirmPassword"} />
 
       <label htmlFor="file" className="text-[14px] font-[500] text-gray-900">
-        Ảnh đại diện<span className="text-red-500">*</span>
+        Avatar<span className="text-red-500">*</span>
       </label>
+      <small className="mb-1 text-[12px] leading-tight text-gray-400">
+        The avatar must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP format.
+      </small>
       {/* Manual handle Form binding because btn does not expose `ref` for hook*/}
       <Controller
         name={"avatar"}
@@ -229,7 +232,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
               field.onChange(f);
               field.onBlur();
             }}
-            btnTitle={"Tải ảnh..."}
+            btnTitle={"Upload"}
             btnPosition={"after"}
             render={(f) =>
               (f && (
@@ -239,7 +242,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
                       radius={60}
                       size={120}
                       src={URL.createObjectURL(f)}
-                      alt="Ảnh người dùng"
+                      alt="User Avatar"
                     />
                   </div>
                 </div>
@@ -251,18 +254,6 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
       <FormErrorMessage errors={errors} name={"avatar"} />
 
       <Divider my={8} />
-
-      <Button
-        onClick={() =>
-          console.log(
-            getValues(),
-            isValid,
-            validateSchema.safeParse(getValues())
-          )
-        }
-      >
-        check
-      </Button>
 
       <Button
         disabled={!isValid}
