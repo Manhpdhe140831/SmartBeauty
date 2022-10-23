@@ -1,13 +1,4 @@
-import {
-  Button,
-  Divider,
-  Image,
-  Input,
-  Select,
-  Text,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { Button, Divider, Image, Input, Select, Text, Textarea, TextInput, } from "@mantine/core";
 import Link from "next/link";
 import MaskedInput from "react-text-mask";
 import { Controller, useForm } from "react-hook-form";
@@ -28,15 +19,28 @@ import {
   emailSchema,
   fileUploadSchema,
   imageTypeSchema,
-  nameSchema,
   mobileSchema,
+  nameSchema,
 } from "../../../validation/field.schema";
+import { BranchModel } from "../../../model/branch.model";
 
-type CreateBranchPropsType = {
-  onSave?: <T>(branchData: T) => void;
+/**
+ * Entity model to be sent to server.
+ * This type omits the generated fields of the server (id, logo).
+ */
+type branchEntity = Omit<BranchModel, "id" | "logo"> & {
+  logo?: File;
 };
 
-const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
+/**
+ * Component props
+ * `onSave()` will trigger with the data from the form.
+ */
+type CreateBranchPropsType = {
+  onSave?: (branchData: branchEntity) => void;
+};
+
+const CreateBranch = ({onSave}: CreateBranchPropsType) => {
   // schema validation
   const createSchema = z.object({
     name: nameSchema,
@@ -52,7 +56,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     register,
     watch,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: {errors, isValid},
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
     mode: "onBlur",
@@ -60,9 +64,10 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
 
   console.log(watch("manager"));
 
-  const { data: availableManager, isLoading: managerLoading } = useQuery<
-    SelectItemGeneric<ManagerModel>[]
-  >(["available-manager"], async () => {
+  const {
+    data: availableManager,
+    isLoading: managerLoading
+  } = useQuery<SelectItemGeneric<ManagerModel>[]>(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
       ...m,
@@ -89,10 +94,10 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
         required
         {...register("name")}
       ></TextInput>
-      <FormErrorMessage errors={errors} name={"name"} />
+      <FormErrorMessage errors={errors} name={"name"}/>
 
       <Controller
-        render={({ field }) => (
+        render={({field}) => (
           <Select
             data={!availableManager || managerLoading ? [] : availableManager}
             placeholder={"tên người quản lý chi nhánh..."}
@@ -109,7 +114,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
         name={"manager"}
         control={control}
       />
-      <FormErrorMessage errors={errors} name={"manager"} />
+      <FormErrorMessage errors={errors} name={"manager"}/>
 
       <Textarea
         label={"Địa chỉ"}
@@ -120,13 +125,13 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
         required
         {...register("address")}
       ></Textarea>
-      <FormErrorMessage errors={errors} name={"address"} />
+      <FormErrorMessage errors={errors} name={"address"}/>
 
       {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
       <Controller
         name={"mobile"}
         control={control}
-        render={({ field }) => (
+        render={({field}) => (
           <Input.Wrapper required id={"phone"} label={"Số điện thoại"}>
             <Input
               component={MaskedInput}
@@ -138,7 +143,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
           </Input.Wrapper>
         )}
       />
-      <FormErrorMessage errors={errors} name={"mobile"} />
+      <FormErrorMessage errors={errors} name={"mobile"}/>
 
       <TextInput
         required
@@ -147,7 +152,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
         id={"email"}
         {...register("email")}
       />
-      <FormErrorMessage errors={errors} name={"email"} />
+      <FormErrorMessage errors={errors} name={"email"}/>
 
       <label htmlFor="file" className="text-[14px] text-gray-900">
         Logo chi nhánh <span className="text-red-500">*</span>
@@ -159,7 +164,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
       <Controller
         name={"logo"}
         control={control}
-        render={({ field }) => (
+        render={({field}) => (
           <BtnSingleUploader
             accept={ACCEPTED_IMAGE_TYPES.join(",")}
             onChange={(f) => {
@@ -187,15 +192,15 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
           />
         )}
       />
-      <FormErrorMessage errors={errors} name={"logo"} />
+      <FormErrorMessage errors={errors} name={"logo"}/>
 
-      <Divider my={16} />
+      <Divider my={16}/>
 
       <Button
         disabled={!isValid}
         type={"submit"}
         variant={"filled"}
-        leftIcon={<IconPlus />}
+        leftIcon={<IconPlus/>}
       >
         Tạo mới
       </Button>

@@ -1,5 +1,7 @@
+import subYears from "date-fns/subYears";
 import { z } from "zod";
 import { ACCEPTED_IMAGE_TYPES } from "../const/file.const";
+import { GENDER } from "../const/gender.const";
 
 export const nameSchema = z.string().min(3).max(120);
 export const emailSchema = z.string().email().max(120);
@@ -22,3 +24,20 @@ export const imageTypeSchema = z
   .refine((f) => !!f && ACCEPTED_IMAGE_TYPES.includes(f.type), {
     message: "Chỉ chấp nhận các file có đuôi .jpg, .jpeg, .png and .webp",
   });
+
+export const ageSchemaFn = (config?: { minAge?: number; maxAge?: number }) => {
+  // the default limit the age to be manager is 18 years old.
+  const dateOfAgeMin = subYears(new Date(), config?.minAge ?? 18);
+  // the default max the age to be manager is 64 years old.
+  const dateOfAgeMax = subYears(new Date(), config?.maxAge ?? 64);
+  return z.date().min(dateOfAgeMax).max(dateOfAgeMin);
+};
+
+export const genderSchema = z.nativeEnum(GENDER);
+
+export const passwordSchema = z.string().min(3).max(32);
+
+export const createPasswordSchema = z.object({
+  password: passwordSchema,
+  confirmPassword: passwordSchema,
+});

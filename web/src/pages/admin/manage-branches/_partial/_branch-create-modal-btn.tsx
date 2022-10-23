@@ -4,7 +4,7 @@ import { useState } from "react";
 import CreateBranch from "../_create-branch";
 
 type BranchModalProps = {
-  onChanged?: (updated?: boolean) => void;
+  onChanged: (updated?: boolean) => void;
 };
 
 const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
@@ -14,7 +14,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
     <>
       {/* Button add new branch -> trigger modal*/}
       <Button
-        onClick={() => setNewBranchModal((s) => !s)}
+        onClick={() => setNewBranchModal(true)}
         leftIcon={<IconPlus />}
       >
         Tạo Chi Nhánh Mới
@@ -28,7 +28,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
           console.log("closed");
           // close dialog without update to the list screen
           setNewBranchModal(false);
-          onChanged && onChanged();
+          onChanged();
         }}
       >
         <CreateBranch
@@ -36,7 +36,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
             //  TODO: handle API call
             console.log(e);
             // close dialog and update to the list screen
-            onChanged && onChanged(true);
+            onChanged(true);
             setNewBranchModal(false);
           }}
         />

@@ -7,6 +7,7 @@ type BtnUploaderProps = {
   onChange?: (file: File) => void;
   accept?: string;
   btnPosition?: "after" | "before";
+  resetOnCancel?: boolean;
 };
 
 const BtnSingleUploader = ({
@@ -15,6 +16,7 @@ const BtnSingleUploader = ({
   onChange,
   accept,
   btnPosition,
+  resetOnCancel,
 }: BtnUploaderProps) => {
   const [file, setFile] = useState<File | null>(null);
 
@@ -26,7 +28,18 @@ const BtnSingleUploader = ({
     <>
       {btnPosition !== "after" ? (
         <Group position="left">
-          <FileButton onChange={setFile} accept={accept}>
+          <FileButton
+            onChange={(e) => {
+              if (resetOnCancel === true) {
+                setFile(e);
+              } else {
+                if (e) {
+                  setFile(e);
+                }
+              }
+            }}
+            accept={accept}
+          >
             {(props) => (
               <Button id={"file"} {...props}>
                 {btnTitle}
