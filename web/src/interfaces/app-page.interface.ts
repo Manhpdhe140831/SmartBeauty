@@ -1,4 +1,5 @@
 import { NextComponentType, NextPageContext } from "next";
+import { USER_ROLE } from "../const/user-role.const";
 
 export type BreadCrumbsInfo = {
   title: string;
@@ -11,6 +12,6 @@ export type AppPageInterface<Props = unknown> = NextComponentType<
   Props
 > & {
   useLayout?: (renderPage: JSX.Element) => JSX.Element;
-  guarded?: boolean;
+  guarded?: USER_ROLE;
   routerName?: string;
 };

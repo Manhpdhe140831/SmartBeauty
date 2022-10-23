@@ -1,13 +1,12 @@
 import { AppShell } from "@mantine/core";
 import { PropsWithChildren } from "react";
-import { UserRole } from "../../const/user-role.const";
+import { USER_ROLE } from "../../const/user-role.const";
 import CoreNavbar from "../navbar/_navbar";
-
 
 const SidebarLayout = ({
   children,
   role,
-}: PropsWithChildren<{ role: UserRole }>) => {
+}: PropsWithChildren<{ role: USER_ROLE }>) => {
   return (
     <AppShell
       padding={0}

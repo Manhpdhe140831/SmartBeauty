@@ -1,7 +1,7 @@
 import { Divider, Navbar, ScrollArea } from "@mantine/core";
 import { IconLogout } from "@tabler/icons";
 import { FC } from "react";
-import { UserRole } from "../../const/user-role.const";
+import { USER_ROLE } from "../../const/user-role.const";
 import ButtonNavbar from "./button.navbar";
 import UserNavbar from "./user.navbar";
 import MainLinksNavbar from "./main-links.navbar";
@@ -13,7 +13,7 @@ import useSidebarNav from "../../store/sidebar-nav.state";
  * @constructor
  */
 const CoreNavbar: FC<{
-  userRole: UserRole;
+  userRole: USER_ROLE;
   width?: Partial<Record<string, string | number>> | undefined;
 }> = (props) => {
   // depends on the user role, the state here will be updated.

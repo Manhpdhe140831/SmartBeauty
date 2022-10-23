@@ -6,6 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage } from "@hookform/error-message";
 import Link from "next/link";
+import { USER_ROLE } from "../../const/user-role.const";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -95,5 +96,6 @@ const Login: AppPageInterface = () => {
 };
 
 Login.useLayout = (p) => p;
+Login.guarded = USER_ROLE.anonymous;
 
 export default Login;

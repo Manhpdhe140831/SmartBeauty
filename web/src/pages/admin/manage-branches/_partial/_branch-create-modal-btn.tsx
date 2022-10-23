@@ -13,7 +13,11 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
   return (
     <>
       {/* Button add new branch -> trigger modal*/}
-      <Button onClick={() => setNewBranchModal(true)} leftIcon={<IconPlus />}>
+      <Button
+        onClick={() => setNewBranchModal(true)}
+        color={"green"}
+        leftIcon={<IconPlus />}
+      >
         New Branch
       </Button>
       <Modal

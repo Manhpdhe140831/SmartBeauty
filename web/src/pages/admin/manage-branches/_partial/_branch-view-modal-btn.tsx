@@ -16,7 +16,7 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
   return (
     <>
       {/* Button view branch -> trigger modal*/}
-      <Tooltip onClick={() => setViewBranch((s) => !s)} label={"View / Edit"}>
+      <Tooltip onClick={() => setViewBranch(true)} label={"View / Edit"}>
         <ActionIcon className="!inline-flex" color="orange" variant="filled">
           <IconSettings size={12} />
         </ActionIcon>

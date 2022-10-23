@@ -14,14 +14,18 @@ import { ManagerModel } from "../../../model/manager.model";
 
 const Index: AppPageInterface = () => {
   const [page, setPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const {
     data: branches,
     isLoading,
     refetch,
-  } = useQuery<BranchModel<ManagerModel>[]>(["list-branch", page], () =>
-    mockBranchWithManager()
-  );
+  } = useQuery<BranchModel<ManagerModel>[]>(["list-branch", page], async () => {
+    const branches = await mockBranchWithManager();
+    setTotalRecords(branches.length);
+    setPage(1);
+    return branches;
+  });
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
@@ -80,7 +84,13 @@ const Index: AppPageInterface = () => {
         </Table>
       </div>
       <Divider my={8} />
-      <Pagination position="center" page={page} onChange={setPage} total={10} />
+      {/*Total record / 10 (per-page)*/}
+      <Pagination
+        position={"center"}
+        page={page}
+        onChange={setPage}
+        total={totalRecords / 10}
+      ></Pagination>
     </div>
   );
 };

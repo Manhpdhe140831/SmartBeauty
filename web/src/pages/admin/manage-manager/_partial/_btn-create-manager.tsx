@@ -12,7 +12,11 @@ const BtnCreateManager: FC<BtnCreateManagerProps> = ({ onChanged }) => {
 
   return (
     <>
-      <Button leftIcon={<IconPlus />} onClick={() => setDialogOpen(true)}>
+      <Button
+        leftIcon={<IconPlus />}
+        color={"green"}
+        onClick={() => setDialogOpen(true)}
+      >
         New Account
       </Button>
 
