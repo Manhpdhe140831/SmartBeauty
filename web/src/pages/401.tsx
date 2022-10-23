@@ -5,6 +5,11 @@ import { Button } from "@mantine/core";
 import { useAuthUser } from "../store/auth-user.state";
 import Link from "next/link";
 
+/**
+ * cool template from:
+ * https://codepen.io/akashrajendra/pen/JKKRvQ
+ * @constructor
+ */
 const PageUnauthenticated: AppPageInterface = () => {
   const authState = useAuthUser();
 
