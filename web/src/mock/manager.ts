@@ -1,5 +1,6 @@
 import { ManagerModel } from "../model/manager.model";
 import { GENDER } from "../const/gender.const";
+import { USER_ROLE } from "../const/user-role.const";
 
 export const Manager: ManagerModel[] = [
   {
@@ -10,6 +11,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -20,6 +22,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -30,6 +33,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -40,6 +44,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -50,6 +55,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -60,6 +66,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -70,6 +77,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -80,6 +88,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -90,6 +99,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
@@ -100,6 +110,7 @@ export const Manager: ManagerModel[] = [
     dateOfBirth: new Date().toISOString(),
     gender: GENDER.male,
     address: "sample",
+    role: USER_ROLE.manager,
     avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
 ];

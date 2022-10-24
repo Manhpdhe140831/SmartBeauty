@@ -5,8 +5,15 @@ type BtnUploaderProps = {
   btnTitle: string;
   render?: (file: File | null) => JSX.Element;
   onChange?: (file: File) => void;
+  // allowed MIME type(s).
   accept?: string;
+  /**
+   * Render the button before or after the preview section.
+   * By default, it is Before.
+   */
   btnPosition?: "after" | "before";
+  // if true, when the user cancels the file browser,
+  // it will set the state to null and notify to `onChange`.
   resetOnCancel?: boolean;
 };
 
@@ -32,10 +39,11 @@ const BtnSingleUploader = ({
             onChange={(e) => {
               if (resetOnCancel === true) {
                 setFile(e);
-              } else {
-                if (e) {
-                  setFile(e);
-                }
+                return;
+              }
+              // only set when file is not null.
+              if (e) {
+                setFile(e);
               }
             }}
             accept={accept}

@@ -29,8 +29,9 @@ const useAccessToken = () => {
       _setToken(t);
       return decoded;
     } catch (e) {
-      return null;
+      console.error(e);
     }
+    return null;
   }
 
   function resetToken() {
@@ -44,7 +45,9 @@ const useAccessToken = () => {
 
   return {
     accessToken: token,
+    // save the token to memory and localStorage. Returns the decoded context.
     setToken,
+    // remove the token from memory and localStorage.
     resetToken,
   };
 };

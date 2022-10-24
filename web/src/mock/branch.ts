@@ -1,6 +1,7 @@
 import { BranchModel } from "../model/branch.model";
 import { ManagerModel } from "../model/manager.model";
 import { GENDER } from "../const/gender.const";
+import { USER_ROLE } from "../const/user-role.const";
 
 const Branch: BranchModel[] = [
   {
@@ -108,6 +109,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "019 337 2721",
     address: "0520 Boyd Trail",
@@ -126,6 +128,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "063 436 2320",
     address: "6360 Susan Lane",
@@ -144,6 +147,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "059 314 8193",
     address: "9 Park Meadow Lane",
@@ -162,6 +166,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "053 753 9417",
     address: "5965 Spaight Alley",
@@ -180,6 +185,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "079 280 4255",
     address: "3158 Kenwood Place",
@@ -198,6 +204,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "862 554 8131",
     address: "0 Johnson Lane",
@@ -216,6 +223,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "535 364 4715",
     address: "3332 Chinook Junction",
@@ -234,6 +242,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "053 810 7298",
     address: "66 Wayridge Plaza",
@@ -252,6 +261,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "019 949 1674",
     address: "44732 Fairfield Alley",
@@ -270,6 +280,7 @@ const BranchWithManager: BranchModel<ManagerModel>[] = [
       gender: GENDER.male,
       address: "sample",
       avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+      role: USER_ROLE.manager,
     },
     mobile: "078 190 4882",
     address: "25 Grim Way",

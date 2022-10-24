@@ -9,6 +9,7 @@ import {
 
 type SidebarNavState = {
   config: NavLinkItemProp[];
+  // update the state with the sidebar config for the corresponding role.
   updateByRole: (userRole?: USER_ROLE) => void;
 };
 

@@ -8,6 +8,16 @@ type RecordSpanType = {
   className?: string;
 };
 
+/**
+ * Dummy table row. Useful when you want to have a placeholder
+ * in a table while API is pending.
+ * @param className
+ * @param tdClassName
+ * @param colSpan
+ * @param rowSpan
+ * @param message
+ * @constructor
+ */
 const TableRecordHolder: FC<RecordSpanType> = ({
   className,
   tdClassName,

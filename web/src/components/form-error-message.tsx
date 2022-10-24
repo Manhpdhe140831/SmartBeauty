@@ -12,6 +12,14 @@ type ErrorProps<T> = {
   className?: string;
 };
 
+/**
+ * Custom error field. By default, it takes 1.5rem height as its container.
+ * @param errors
+ * @param name
+ * @param render
+ * @param className
+ * @constructor
+ */
 const FormErrorMessage = <T,>({
   errors,
   name,

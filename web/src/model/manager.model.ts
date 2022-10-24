@@ -1,17 +1,17 @@
 import { GENDER } from "../const/gender.const";
+import { USER_ROLE } from "../const/user-role.const";
+import { UserModel } from "./user.model";
 
 /**
  * Raw representation data from the server response.
  */
-export interface ManagerModel {
-  id: number;
-  name: string;
-  email: string;
+export interface ManagerModel extends UserModel {
   mobile: string;
   dateOfBirth: string;
   gender: GENDER;
   address: string;
-  avatar: string;
+  // this field is fixed to be manager role.
+  role: USER_ROLE.manager;
 }
 
 /**

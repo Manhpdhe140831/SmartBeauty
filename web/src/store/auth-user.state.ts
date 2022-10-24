@@ -18,7 +18,7 @@ function initUser() {
     const decoded = jwt_decode(storageData);
     return decoded as UserModel;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   return null;

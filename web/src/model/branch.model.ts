@@ -1,7 +1,15 @@
+import { ManagerModel } from "./manager.model";
+
 /**
  * Raw representation data from the server response.
+ *
+ * `manager` field is generic for populating data purposes.
+ * - By default, it's the id of the associated manager.
+ * -
  */
-export interface BranchModel<managerType = number> {
+export interface BranchModel<
+  managerType extends number | ManagerModel = number
+> {
   id: number;
   name: string;
   manager: managerType;
@@ -16,8 +24,9 @@ export interface BranchModel<managerType = number> {
  * This payload interface will not have id field,
  * and dataType of the logo will be different.
  */
-export interface BranchPayload<managerType = number>
-  extends Omit<BranchModel<managerType>, "id" | "logo"> {
+export interface BranchPayload<
+  managerType extends number | ManagerModel = number
+> extends Omit<BranchModel<managerType>, "id" | "logo"> {
   // if the user does not update the logo,
   // the datatype will remain the same (as string)
   // otherwise the logo will be a File.

@@ -1,5 +1,6 @@
 import { NavLinkItemProp } from "../interfaces/nav-item.interface";
 
+// sidebar link config for admin.
 export const branchAdminConfig: NavLinkItemProp[] = [
   {
     label: "Branch",

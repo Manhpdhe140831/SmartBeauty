@@ -1,5 +1,11 @@
 import { AppPageInterface } from "../interfaces/app-page.interface";
 
+/**
+ * HTML logo version.
+ * @param h
+ * @param fontSize
+ * @constructor
+ */
 const Logo: AppPageInterface<{
   h?: string | number;
   fontSize?: string;

@@ -1,5 +1,8 @@
 import React from "react";
 
+/**
+ * NavLink for non-nested route.
+ */
 export type NavLinkItemBaseProp = {
   href: string;
   label: string | React.ReactNode;
@@ -8,6 +11,9 @@ export type NavLinkItemBaseProp = {
   rightIcon?: React.ReactNode;
 };
 
+/**
+ * NavLink, which contains nested routes.
+ */
 export type NavLinkItemNestedProp = Omit<NavLinkItemBaseProp, "href"> & {
   nested: NavLinkItemBaseProp[];
 };

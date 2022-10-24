@@ -1,3 +1,7 @@
+/**
+ * TODO: verify with team backend.
+ * Standard error response.
+ */
 export interface IErrorResponse {
   path: string;
   error: string;
