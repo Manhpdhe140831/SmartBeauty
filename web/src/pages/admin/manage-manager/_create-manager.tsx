@@ -1,17 +1,6 @@
 import { ManagerModel } from "../../../model/manager.model";
 import { FC } from "react";
 import { z } from "zod";
-import {
-  addressSchema,
-  ageSchemaFn,
-  createPasswordSchema,
-  emailSchema,
-  fileUploadSchema,
-  genderSchema,
-  imageTypeSchema,
-  mobileSchema,
-  nameSchema,
-} from "../../../validation/field.schema";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -33,6 +22,7 @@ import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { IconPlus } from "@tabler/icons";
 import dayjs from "dayjs";
+import { validateSchema } from "../../../validation/account-model.schema";
 
 /**
  * Entity model to be sent to server.
@@ -53,25 +43,6 @@ type CreateManagerProp = {
 };
 
 const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
-  // validation schema.
-  const accountInfo = z.object({
-    name: nameSchema,
-    mobile: mobileSchema,
-    email: emailSchema,
-    dateOfBirth: ageSchemaFn(),
-    gender: genderSchema,
-    address: addressSchema,
-    avatar: fileUploadSchema.and(imageTypeSchema),
-  });
-
-  const validateSchema = accountInfo
-    .merge(createPasswordSchema)
-    // refine to check confirmPassword and password match.
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords don't match",
-      path: ["confirmPassword"], // path of error,
-    });
-
   const {
     control,
     register,

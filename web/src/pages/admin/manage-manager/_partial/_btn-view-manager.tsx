@@ -2,7 +2,7 @@ import { ManagerModel } from "../../../../model/manager.model";
 import { FC, useState } from "react";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
 import { IconSettings } from "@tabler/icons";
-import BranchInfo from "../../manage-branches/_view-branch";
+import ViewManagerDialog from "../_view-manager";
 
 type ModalProps = {
   onChanged?: (updated?: boolean) => void;
@@ -33,7 +33,14 @@ const ManagerViewModal: FC<ModalProps> = ({ onChanged, managerData }) => {
           setViewManager(false);
         }}
       >
-        local
+        <ViewManagerDialog
+          manager={managerData}
+          onClosed={(newData) => {
+            // TODO: handle new data if having any
+            onChanged && onChanged(!!newData);
+            setViewManager(false);
+          }}
+        />
       </Modal>
     </>
   );

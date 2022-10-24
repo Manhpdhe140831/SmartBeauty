@@ -4,11 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { ManagerModel } from "../../../model/manager.model";
 import mockManager from "../../../mock/manager";
 import BtnCreateManager from "./_partial/_btn-create-manager";
-import { Divider, Pagination, Table } from "@mantine/core";
+import { Divider, Group, Pagination, Table } from "@mantine/core";
 import TableHeader from "./_partial/_table-header";
 import TableRecordHolder from "../../../components/table-record-holder";
 import TableRecord from "./_partial/_table-record";
 import ManagerViewModal from "./_partial/_btn-view-manager";
+import BtnPasswordManager from "./_partial/_btn-password-manager";
 
 const ManageManager: AppPageInterface = () => {
   const [page, setPage] = useState(1);
@@ -46,17 +47,17 @@ const ManageManager: AppPageInterface = () => {
           <colgroup>
             <col className="w-14" />
             <col className="w-44" />
-            <col className="w-28" />
+            <col className="w-32" />
             <col className="w-44" />
             <col />
-            <col className="w-14" />
+            <col className="w-[104px]" />
           </colgroup>
           <TableHeader />
 
           <tbody>
             {isLoading ? (
               <TableRecordHolder
-                colSpan={7}
+                colSpan={6}
                 className={"min-h-12"}
                 message={
                   <div className="text-center font-semibold text-gray-500">
@@ -71,7 +72,13 @@ const ManageManager: AppPageInterface = () => {
                   key={d.id}
                   no={i + 1}
                   data={d}
-                  action={<ManagerViewModal managerData={d} />}
+                  action={
+                    <Group position={"center"} spacing={"xs"}>
+                      <ManagerViewModal managerData={d} />
+                      <Divider orientation={"vertical"} />
+                      <BtnPasswordManager manager={d} />
+                    </Group>
+                  }
                 />
               ))
             )}

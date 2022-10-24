@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import mockManager from "../../../mock/manager";
-import { BranchModel } from "../../../model/branch.model";
+import { BranchModel, BranchPayload } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
 import AutoCompleteItem from "../../../components/auto-complete-item";
 import FormErrorMessage from "../../../components/form-error-message";
@@ -22,8 +22,8 @@ import {
   emailSchema,
   fileUploadSchema,
   imageTypeSchema,
-  nameSchema,
   mobileSchema,
+  nameSchema,
 } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -34,12 +34,10 @@ import { PhoneNumberMask } from "../../../const/input-masking.const";
 
 type ViewBranchPropsType = {
   branchData: BranchModel<ManagerModel>;
-  onClose: <T>(branchData?: T) => void;
+  onClose: (branchData?: BranchPayload) => void;
 };
 
 const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
-  const [isViewing, setIsViewing] = useState(true);
-
   // schema validation
   const updateSchema = z.object({
     name: nameSchema,
@@ -55,9 +53,8 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     register,
     handleSubmit,
     reset,
-    getValues,
     formState: { errors, isValid, isDirty },
-  } = useForm<z.infer<typeof updateSchema>>({
+  } = useForm<BranchPayload>({
     resolver: zodResolver(updateSchema),
     mode: "onChange",
     defaultValues: { ...branchData, manager: branchData.manager.id },
@@ -76,7 +73,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     }));
   });
 
-  const onSubmit = (data: z.infer<typeof updateSchema>) => onClose(data);
+  const onSubmit = (data: BranchPayload) => onClose(data);
 
   return (
     <form
@@ -142,7 +139,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           name={"manager"}
           control={control}
         />
-        <FormErrorMessage errors={errors} name={"address"} />
+        <FormErrorMessage errors={errors} name={"manager"} />
 
         <Textarea
           label={"Address"}
