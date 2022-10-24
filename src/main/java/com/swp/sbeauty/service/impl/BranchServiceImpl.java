@@ -9,6 +9,9 @@ import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.service.BranchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,6 +32,25 @@ public class BranchServiceImpl implements BranchService {
             result.add(new BranchDto(branch));
         }
         return result;
+        /*Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Recruiter> page = recruiterRepository.getRecruiterByName(name,pageable);
+        List<Recruiter> freelancers=page.getContent();
+        List<RecruiterAdminDto> ras=new ArrayList<>();
+        for (Recruiter f: freelancers){
+            RecruiterAdminDto ra=new RecruiterAdminDto();
+            ra=mapToFreeDTO(f);
+            ra.setFullName(f.getUser().getFullname());
+            ra.setEmail(f.getUser().getAccount().getEmail*/
+    }
+
+    @Override
+    public List<Branch> findAllBranchs() {
+        return branchRepository.findAll();
+    }
+
+    @Override
+    public List<Branch> findBranchsWithSorting(String field) {
+        return branchRepository.findAll(Sort.by(Sort.Direction.ASC,field));
     }
 
     @Override
@@ -75,5 +97,17 @@ public class BranchServiceImpl implements BranchService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Page<Branch> findBranchsWithPaginnation(int offset, int pageSize) {
+        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize));
+        return branches;
+    }
+
+    @Override
+    public Page<Branch> findBranchsWithPaginnationAnSort(int offset, int pageSize, String field) {
+        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(field)));
+        return branches;
     }
 }

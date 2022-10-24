@@ -1,14 +1,23 @@
 package com.swp.sbeauty.service;
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.entity.Branch;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface BranchService {
     List<BranchDto> getBranch();
+    List<Branch> findAllBranchs();
 
+    List<Branch> findBranchsWithSorting(String field);
 
+    /*List<RecruiterAdminDto> getRecruiterByName(String name, int pageNo, int pageSize);*/
     BranchDto saveBranch(BranchDto branchDto);
 
     BranchDto updateBranch(BranchDto branchDto, Long id);
+
+    Page<Branch> findBranchsWithPaginnation(int offset,int pageSize);
+
+    Page<Branch> findBranchsWithPaginnationAnSort(int offset,int pageSize, String field);
 }
