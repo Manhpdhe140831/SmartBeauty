@@ -7,27 +7,36 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private Long id;
-
-    private String username;
-
     private String name;
+    private String email;
+    private String mobile;
+    private Date dateOfBirth;
+    private String gender;
+    private String address;
+    private String username;
 
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String name, String password,
+    public UserDetailsImpl(Long id, String username, String name, String email, String mobile, Date dateOfBirth, String gender, String address, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.name = name;
+        this.email = email;
+        this.mobile = mobile;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.address = address;
         this.password = password;
         this.authorities = authorities;
     }
@@ -41,6 +50,11 @@ public class UserDetailsImpl implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getName(),
+                user.getEmail(),
+                user.getMobile(),
+                user.getDateOfBirth(),
+                user.getGender(),
+                user.getAddress(),
                 user.getPassword(),
                 authorities);
     }
@@ -66,6 +80,26 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override

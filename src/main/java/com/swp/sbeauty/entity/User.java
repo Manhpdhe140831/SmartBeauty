@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -18,6 +15,16 @@ public class User {
     private Long id;
     @Column(name="name")
     private String name;
+    @Column(name="email")
+    private String email;
+    @Column(name="mobile")
+    private String mobile;
+    @Column(name="dateOfBirth")
+    private Date dateOfBirth;
+    @Column(name="gender")
+    private String gender;
+    @Column(name="address")
+    private String address;
     @Column(name="username")
     private String username;
     @Column(name="password")

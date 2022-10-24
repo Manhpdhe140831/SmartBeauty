@@ -6,6 +6,8 @@ import com.swp.sbeauty.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +16,11 @@ import java.util.Set;
 public class UserDto {
     private Long id;
     private String name;
+    private String email;
+    private String mobile;
+    private Date dateOfBirth;
+    private String gender;
+    private String address;
     private String username;
     private String password;
     private Set<RoleDto> roles;
@@ -24,6 +31,11 @@ public class UserDto {
         if(user != null){
             this.setId(user.getId());
             this.setName(user.getName());
+            this.setEmail(user.getEmail());
+            this.setMobile(user.getMobile());
+            this.setDateOfBirth(user.getDateOfBirth());
+            this.setGender(user.getGender());
+            this.setAddress(user.getAddress());
             this.setUsername(user.getUsername());
             this.setPassword(user.getPassword());
             if(user.getRoles()!=null){

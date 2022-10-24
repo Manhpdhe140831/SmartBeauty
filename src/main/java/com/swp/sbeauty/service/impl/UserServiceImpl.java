@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
         if(userDto != null){
             User user = new User();
             user.setName(userDto.getName());
+            user.setEmail(userDto.getEmail());
+            user.setMobile(userDto.getMobile());
+            user.setDateOfBirth(userDto.getDateOfBirth());
+            user.setGender(userDto.getGender());
+            user.setAddress(userDto.getAddress());
             user.setUsername(userDto.getUsername());
             user.setPassword(encoder.encode(userDto.getPassword()));
             Set<Role> roles = new HashSet<>();
@@ -73,8 +78,13 @@ public class UserServiceImpl implements UserService {
             }
             if(user != null){
                 user.setName(userDto.getName());
-                user.setUsername(userDto.getUsername());
-                user.setPassword(userDto.getPassword());
+                user.setEmail(userDto.getEmail());
+                user.setMobile(userDto.getMobile());
+                user.setDateOfBirth(userDto.getDateOfBirth());
+                user.setGender(userDto.getGender());
+                user.setAddress(userDto.getAddress());
+                user.setUsername(user.getUsername());
+                user.setPassword(encoder.encode(userDto.getPassword()));
                 Set<Role> roles = new HashSet<>();
                 if(user.getRoles()!=null && user.getRoles().size()>0){
                     for (RoleDto roleDto : userDto.getRoles()){
