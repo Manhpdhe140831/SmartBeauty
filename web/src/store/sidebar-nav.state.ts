@@ -1,37 +1,37 @@
 import create from "zustand";
 import { NavLinkItemProp } from "../interfaces/nav-item.interface";
+import { USER_ROLE } from "../const/user-role.const";
+import {
+  branchAdminConfig,
+  branchEmployeeConfig,
+  branchManagerConfig,
+} from "../const/sidebar-nav.const";
 
 type SidebarNavState = {
   config: NavLinkItemProp[];
-  updateConfig: (config: NavLinkItemProp[]) => void;
+  updateByRole: (userRole?: USER_ROLE) => void;
 };
 
+function decidingConfigByRole(userRole: USER_ROLE) {
+  switch (userRole) {
+    case USER_ROLE.admin:
+      return branchAdminConfig;
+    case USER_ROLE.manager:
+      return branchManagerConfig;
+    case USER_ROLE.employee:
+      return branchEmployeeConfig;
+  }
+  console.warn(
+    "Navigation config for this role cannot be found. Role:",
+    userRole
+  );
+  return [];
+}
+
 const useSidebarNav = create<SidebarNavState>((set) => ({
-  // TODO: mock
-  config: [
-    {
-      label: "Branch",
-      nested: [
-        {
-          href: "/admin/manage-branches",
-          label: "Manage Branch",
-        },
-        {
-          href: "/admin/manage-manager",
-          label: "Account Manager",
-        },
-      ],
-    },
-    {
-      href: "/admin/manage-treatment-courses",
-      label: "Treatment Courses",
-    },
-    { href: "/admin/manage-services", label: "Quản Lý Dịch Vụ" },
-    { href: "/admin/manage-products", label: "Quản Lý Sản Phẩm" },
-    { href: "/admin/manage-providers", label: "Quản Lý Nhà Cung Cấp" },
-    { href: "/admin/reports", label: "Báo Cáo" },
-  ],
-  updateConfig: (config) => set(() => ({ config: config })),
+  config: [],
+  updateByRole: (role) =>
+    set(() => ({ config: role ? decidingConfigByRole(role) : [] })),
 }));
 
 export default useSidebarNav;

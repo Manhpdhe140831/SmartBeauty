@@ -1,7 +1,17 @@
 import { atom, useAtom } from "jotai";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
+import { waitForWindow } from "../utilities/ssr.helper";
 
-const accessTokenAtom = atom<string | null>(null);
+function initToken() {
+  const token = waitForWindow(() => localStorage.getItem("accessToken"));
+  if (axios && token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+  return token;
+}
+
+const accessTokenAtom = atom<string | null>(initToken());
 
 /**
  * Custom Hook managing Token
@@ -9,11 +19,18 @@ const accessTokenAtom = atom<string | null>(null);
 const useAccessToken = () => {
   const [token, _setToken] = useAtom(accessTokenAtom);
 
-  function setToken(t: string) {
-    if (axios) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${t}`;
+  function setToken<T>(t: string): T | null {
+    try {
+      const decoded = jwt_decode<T>(t);
+      if (axios) {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${t}`;
+      }
+      waitForWindow(() => localStorage.setItem("accessToken", t));
+      _setToken(t);
+      return decoded;
+    } catch (e) {
+      return null;
     }
-    _setToken(t);
   }
 
   function resetToken() {
@@ -21,6 +38,8 @@ const useAccessToken = () => {
     if (axios) {
       delete axios.defaults.headers.common["Authorization"];
     }
+
+    waitForWindow(() => localStorage.removeItem("accessToken"));
   }
 
   return {

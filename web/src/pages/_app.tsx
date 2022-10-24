@@ -9,6 +9,8 @@ import { createEmotionCache, MantineProvider } from "@mantine/core";
 import BreadcrumbsLayout from "../components/layout/breadcrumbs.layout";
 import { useAuthUser } from "../store/auth-user.state";
 import { useRouter } from "next/router";
+import { needRedirectedOnRole } from "../utilities/guard.helper";
+import { useEffect, useState } from "react";
 
 // Create a react-query client
 const queryClient = new QueryClient();
@@ -17,7 +19,8 @@ const queryClient = new QueryClient();
  * TODO: managing state
  */
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const authState = useAuthUser();
+  const [clientPassedGuard, setClientPassedGuard] = useState(false);
+  const authState = useAuthUser((s) => s.user);
   const router = useRouter();
   // safe parse the Component to correct type
   const RenderPage = Component as AppPageInterface;
@@ -32,9 +35,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   // Default all routes are guarded.
   const isGuarded: USER_ROLE = RenderPage.guarded ?? USER_ROLE.authenticated;
   // TODO: uncomment this when integrate with authentication API.
-  // if (needRedirectedOnRole(router, isGuarded, authState)) {
-  // return <>redirect...</>;
-  // }
+
+  useEffect(() => {
+    setClientPassedGuard(!needRedirectedOnRole(router, isGuarded, authState));
+  }, [isGuarded, authState]);
 
   /**
    * Allow Mantine to run after TailwindCSS load (prevent override the component CSS)
@@ -50,7 +54,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             withGlobalStyles
             withNormalizeCSS
           >
-            {pageLayout(<Component {...pageProps} />)}
+            {clientPassedGuard ? (
+              pageLayout(<Component {...pageProps} />)
+            ) : (
+              <></>
+            )}
           </MantineProvider>
         </Provider>
       </QueryClientProvider>

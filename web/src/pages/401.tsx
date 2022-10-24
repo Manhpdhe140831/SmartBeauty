@@ -15,7 +15,11 @@ const PageUnauthenticated: AppPageInterface = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center space-y-4 text-gray-600 transition-all">
-      <h1 className={className.title}>Error 404</h1>
+      <h1 className={className.title}>
+        You are forbidden to access this page!
+      </h1>
+
+      <small className={"select-none text-gray-500"}>(error 401)</small>
 
       <Link href={authState.user ? "/" : "/login"} passHref>
         <Button sx={{ width: "200px" }} variant={"outline"} component={"a"}>

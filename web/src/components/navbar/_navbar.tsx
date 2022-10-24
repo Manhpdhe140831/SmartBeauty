@@ -1,14 +1,24 @@
 import { Divider, Navbar, ScrollArea } from "@mantine/core";
 import { IconLogout } from "@tabler/icons";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { USER_ROLE } from "../../const/user-role.const";
 import ButtonNavbar from "./button.navbar";
 import UserNavbar from "./user.navbar";
 import MainLinksNavbar from "./main-links.navbar";
 import useSidebarNav from "../../store/sidebar-nav.state";
+import useAccessToken from "../../store/access-token.atom";
+import { useAuthUser } from "../../store/auth-user.state";
 
 /**
- * TODO: get user from Zustand store.
+ * This component renders the sidebar of the web.
+ * The sidebar contains 3 main sections
+ * - User section (get the state from useAuthUser)
+ * - Dynamic links section (get the state from useSidebarNav)
+ * - Logout section (trigger logout action).
+ *
+ * NOTE: logout action clears token and user data from both localStorage and memory.
+ * The navigation to '/login' route is handled by `needRedirectedOnRole()`
+ * in `_app.tsx`.
  * @param props
  * @constructor
  */
@@ -16,8 +26,23 @@ const CoreNavbar: FC<{
   userRole: USER_ROLE;
   width?: Partial<Record<string, string | number>> | undefined;
 }> = (props) => {
+  const { resetToken } = useAccessToken();
+  const logoutFn = useAuthUser((s) => s.logout);
+  const userRole = useAuthUser((s) => s.user?.role);
   // depends on the user role, the state here will be updated.
   const links = useSidebarNav((s) => s.config);
+  const updateConfig = useSidebarNav((s) => s.updateByRole);
+
+  useEffect(() => {
+    updateConfig(userRole);
+  }, [userRole]);
+
+  function logout() {
+    // remove token
+    resetToken();
+    // remove auth state
+    logoutFn();
+  }
 
   return (
     <Navbar
@@ -29,16 +54,18 @@ const CoreNavbar: FC<{
       width={props.width}
     >
       <Navbar.Section mt="xs">
-        {/* TODO: User*/}
         <UserNavbar />
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mt="md">
-        <MainLinksNavbar links={links}></MainLinksNavbar>
+        <MainLinksNavbar links={links} />
       </Navbar.Section>
       <Navbar.Section>
-        {/*TODO: logout section*/}
-        <Divider my={"1rem"}></Divider>
-        <ButtonNavbar icon={<IconLogout />} label="Logout"></ButtonNavbar>
+        <Divider my={"1rem"} />
+        <ButtonNavbar
+          icon={<IconLogout />}
+          onClick={() => logout()}
+          label="Logout"
+        ></ButtonNavbar>
       </Navbar.Section>
     </Navbar>
   );

@@ -1,6 +1,10 @@
+import { USER_ROLE } from "../const/user-role.const";
+
 export interface UserModel {
+  id: string;
   name: string;
   email: string;
   password?: string;
-  role?: number;
+  role?: USER_ROLE;
+  avatar?: string;
 }

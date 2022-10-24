@@ -2,9 +2,10 @@
  * User role.
  */
 export enum USER_ROLE {
-  admin = -2,
-  all = -1,
-  anonymous = 0,
-  authenticated = 1,
-  manager = 2,
+  all = "all",
+  anonymous = "unauthenticated",
+  authenticated = "authenticated",
+  admin = "admin",
+  manager = "manager",
+  employee = "employee",
 }

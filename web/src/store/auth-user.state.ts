@@ -9,7 +9,7 @@ import { waitForWindow } from "../utilities/ssr.helper";
  */
 function initUser() {
   // get from the localStorage
-  const storageData = waitForWindow(() => localStorage?.getItem("token"));
+  const storageData = waitForWindow(() => localStorage?.getItem("accessToken"));
   if (!storageData) {
     return null;
   }

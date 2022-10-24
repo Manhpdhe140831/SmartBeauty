@@ -1,31 +1,34 @@
-import { Avatar, NavLink, Text, useMantineTheme } from "@mantine/core";
+import { Avatar, NavLink, Text, Tooltip, useMantineTheme } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useAuthUser } from "../../store/auth-user.state";
 
 const UserNavbar = () => {
+  const user = useAuthUser((s) => s.user);
   const theme = useMantineTheme();
   const router = useRouter();
+
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <Link href={"/profile"} passHref>
       <NavLink
         component={"a"}
         active={router.pathname.startsWith("/profile")}
-        icon={
-          <Avatar
-            src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
-            radius="xl"
-          />
-        }
+        icon={<Avatar src={user.avatar} radius="xl" />}
         label={
-          <Text size="sm" weight={500}>
-            Amy Horsefighter
-          </Text>
+          <Tooltip label={user.email}>
+            <Text size="sm" weight={500}>
+              {user.name}
+            </Text>
+          </Tooltip>
         }
         description={
-          <Text color="dimmed" size="xs">
-            ADMIN
+          <Text color="dimmed" className={"uppercase"} size="xs">
+            {user.role}
           </Text>
         }
         rightSection={<IconChevronRight size={18} />}

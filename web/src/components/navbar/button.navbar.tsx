@@ -1,12 +1,13 @@
 import { Group, Text, UnstyledButton } from "@mantine/core";
-import React, { FC } from "react";
+import React, { FC, MouseEvent } from "react";
 
 interface MainLinkProps {
   icon?: React.ReactNode;
   label: string;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const ButtonNavbar: FC<MainLinkProps> = ({ icon, label }) => {
+const ButtonNavbar: FC<MainLinkProps> = ({ icon, label, onClick }) => {
   return (
     <UnstyledButton
       className="!text-white hover:!bg-gray-700"
@@ -16,6 +17,9 @@ const ButtonNavbar: FC<MainLinkProps> = ({ icon, label }) => {
         padding: theme.spacing.xs,
         borderRadius: theme.radius.sm,
       })}
+      onClick={(e: MouseEvent<HTMLButtonElement>) => {
+        onClick && onClick(e);
+      }}
     >
       <Group>
         {icon ? icon : <></>}
