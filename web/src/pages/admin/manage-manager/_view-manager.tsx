@@ -14,13 +14,13 @@ import {
   TextInput,
 } from "@mantine/core";
 import FormErrorMessage from "../../../components/form-error-message";
-import { validateSchema } from "../../../validation/account-model.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { DatePicker } from "@mantine/dates";
 import { GENDER } from "../../../const/gender.const";
+import { managerModelSchema } from "../../../validation/account-model.schema";
 
 type DialogProps = {
   manager: ManagerModel;
@@ -35,7 +35,7 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
     reset,
     formState: { errors, isValid, isDirty },
   } = useForm<ManagerPayload>({
-    resolver: zodResolver(validateSchema),
+    resolver: zodResolver(managerModelSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {

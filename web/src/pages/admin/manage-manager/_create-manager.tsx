@@ -22,7 +22,11 @@ import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { IconPlus } from "@tabler/icons";
 import dayjs from "dayjs";
-import { validateSchema } from "../../../validation/account-model.schema";
+import {
+  managerModelSchema,
+  userRegisterSchemaFn,
+} from "../../../validation/account-model.schema";
+import { USER_ROLE } from "../../../const/user-role.const";
 
 /**
  * Entity model to be sent to server.
@@ -32,6 +36,7 @@ import { validateSchema } from "../../../validation/account-model.schema";
 type managerEntity = Omit<ManagerModel, "id" | "avatar" | "dateOfBirth"> & {
   avatar?: File;
   dateOfBirth: Date;
+  role: USER_ROLE.manager;
 };
 
 /**
@@ -43,13 +48,15 @@ type CreateManagerProp = {
 };
 
 const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
+  const createManagerSchema = userRegisterSchemaFn(managerModelSchema);
+
   const {
     control,
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<z.infer<typeof validateSchema>>({
-    resolver: zodResolver(validateSchema),
+  } = useForm<z.infer<typeof createManagerSchema>>({
+    resolver: zodResolver(createManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {

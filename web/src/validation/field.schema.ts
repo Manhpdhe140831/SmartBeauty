@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ACCEPTED_IMAGE_TYPES } from "../const/file.const";
 import { GENDER } from "../const/gender.const";
 import dayjs from "dayjs";
+import { USER_ROLE } from "../const/user-role.const";
 
 export const nameSchema = z.string().min(3).max(120);
 export const emailSchema = z.string().email().max(120);
@@ -46,4 +47,9 @@ export const passwordSchema = z.string().min(3).max(32);
 export const createPasswordSchema = z.object({
   password: passwordSchema,
   confirmPassword: passwordSchema,
+});
+
+export const roleSchema = z.nativeEnum(USER_ROLE, {
+  required_error: "The role is required.",
+  invalid_type_error: "The role type is invalid",
 });
