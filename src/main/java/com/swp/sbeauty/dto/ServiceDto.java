@@ -21,7 +21,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class ServiceDto {
     private long id;
-    private double price;
     private String codeService;
     private String nameService;
     private Date startDiscount;

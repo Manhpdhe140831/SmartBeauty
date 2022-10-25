@@ -16,13 +16,13 @@ public class CourseDto {
     private int MinSession;
 
     public CourseDto(Course course){
-        if (null != course){
-            this.setId(course.getId());
-            this.setName(course.getName());
-            this.setPrice(course.getPrice());
-            this.setImageURL(course.getImageURL());
-            this.setDescription(course.getDescription());
-            this.setMinSession(course.getMinSession());
-        }
+//        if (null != course){
+//            this.setId(course.getId());
+//            this.setName(course.getName());
+//            this.setPrice(course.getPrice());
+//            this.setImageURL(course.getImageURL());
+//            this.setDescription(course.getDescription());
+//            this.setMinSession(course.getMinSession());
+//        }
     }
 }

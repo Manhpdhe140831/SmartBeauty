@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SupplierDto {
+
     private Long id;
     private String supplierCode;
     private String taxCode;
@@ -16,7 +17,10 @@ public class SupplierDto {
     private String email;
     private String address;
     private String supplierImage;
-    public SupplierDto(){}
+
+    public SupplierDto() {
+    }
+
     public SupplierDto(Supplier supplier) {
         if (supplier != null) {
             this.setId(supplier.getId());
@@ -29,5 +33,7 @@ public class SupplierDto {
             this.setSupplierImage(supplier.getSupplierImage());
 
         }
+
+
     }
 }

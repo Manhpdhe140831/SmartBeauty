@@ -21,16 +21,12 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierRepository supplierRepository;
     @Override
     public List<SupplierDto> getSupplier() {
-        List<Supplier> list = supplierRepository.findAll();
-        List<SupplierDto> result = new ArrayList<>();
-        for (Supplier supplier :list){
-            result.add(new SupplierDto(supplier));
-        }
-        return result;
+        return null;
     }
 
     @Override
     public SupplierDto saveSupplier(SupplierDto supplierDto) {
+
         if(supplierDto != null){
             Supplier supplier = new Supplier();
             supplier.setSupplierCode(supplierDto.getSupplierCode());
@@ -45,11 +41,13 @@ public class SupplierServiceImpl implements SupplierService {
                 return new SupplierDto(supplier);
             }
         }
+
         return null;
     }
 
     @Override
     public SupplierDto updateSupplier(SupplierDto supplierDto, Long id) {
+
         if(supplierDto !=null){
             Supplier supplier = null;
             if(id !=null){
@@ -72,6 +70,66 @@ public class SupplierServiceImpl implements SupplierService {
                 return null;
             }
         }
+
         return null;
     }
+//    @Autowired
+//    private SupplierRepository supplierRepository;
+//    @Override
+//    public List<SupplierDto> getSupplier() {
+//        List<Supplier> list = supplierRepository.findAll();
+//        List<SupplierDto> result = new ArrayList<>();
+//        for (Supplier supplier :list){
+//            result.add(new SupplierDto(supplier));
+//        }
+//        return result;
+//    }
+//
+//    @Override
+//    public SupplierDto saveSupplier(SupplierDto supplierDto) {
+//        if(supplierDto != null){
+//            Supplier supplier = new Supplier();
+//            supplier.setName(supplierDto.getName());
+//            supplier.setPhone(supplierDto.getPhone());
+//            supplier.setEmail(supplierDto.getEmail());
+//            supplier.setCertificateImageURL(supplierDto.getCertificateImageURL());
+//            supplier.setCountry(supplierDto.getCountry());
+//            supplier.setCity(supplierDto.getCity());
+//            supplier.setDistrict(supplierDto.getDistrict());
+//            supplier.setStreet(supplierDto.getStreet());
+//            supplier = supplierRepository.save(supplier);
+//            if(supplier != null){
+//                return new SupplierDto(supplier);
+//            }
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public SupplierDto updateSupplier(SupplierDto supplierDto, Long id) {
+//        if(supplierDto !=null){
+//            Supplier supplier = null;
+//            if(id !=null){
+//                Optional<Supplier> optional =supplierRepository.findById(id);
+//                if(optional.isPresent()){
+//                    supplier = optional.get();
+//                }
+//            }
+//            if(supplier != null){
+//                supplier.setName(supplierDto.getName());
+//                supplier.setPhone(supplierDto.getPhone());
+//                supplier.setEmail(supplierDto.getEmail());
+//                supplier.setCertificateImageURL(supplierDto.getCertificateImageURL());
+//                supplier.setCountry(supplierDto.getCountry());
+//                supplier.setCity(supplierDto.getCity());
+//                supplier.setDistrict(supplierDto.getDistrict());
+//                supplier.setStreet(supplierDto.getStreet());
+//                supplier = supplierRepository.save(supplier);
+//                return new SupplierDto(supplier);
+//            } else {
+//                return null;
+//            }
+//        }
+//        return null;
+//    }
 }

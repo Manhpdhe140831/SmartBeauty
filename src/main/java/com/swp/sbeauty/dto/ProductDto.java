@@ -29,6 +29,7 @@ public class ProductDto {
     public ProductDto(){}
 
     public ProductDto(Product product){
+
         if(product != null){
             this.setId(product.getId());
             this.setProductCode(product.getProductCode());
@@ -53,5 +54,22 @@ public class ProductDto {
                 }
             }
         }
+
+//        if(product != null){
+//            this.setId(product.getId());
+//            this.setName(product.getName());
+//            this.setImportPrice(product.getImportPrice());
+//            this.setSalePrice(product.getSalePrice());
+//            this.setEXP(product.getEXP());
+//            this.setMFG(product.getMFG());
+//            this.setDescription(product.getDescription());
+//            if(product.getSupplier() != null){
+//                supplier = new SupplierDto(product.getSupplier());
+//            }
+//            if(product.getCategory() != null){
+//                category = new CategoryDto(product.getCategory());
+//            }
+//        }
+
     }
 }
