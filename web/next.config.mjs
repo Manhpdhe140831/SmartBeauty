@@ -22,4 +22,7 @@ export default defineNextConfig({
   //   locales: ["en"],
   //   defaultLocale: "en",
   // },
+  images: {
+    domains: ["dummyimage.com"],
+  },
 });

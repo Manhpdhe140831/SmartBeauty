@@ -6,21 +6,21 @@ module.exports = {
     extend: {
       spacing: {
         inherit: "inherit",
-        none: "none"
+        none: "none",
       },
       minHeight: (theme) => ({
-        ...theme("spacing")
+        ...theme("spacing"),
       }),
       maxHeight: (theme) => ({
-        ...theme("spacing")
+        ...theme("spacing"),
       }),
       minWidth: (theme) => ({
-        ...theme("spacing")
+        ...theme("spacing"),
       }),
       maxWidth: (theme) => ({
-        ...theme("spacing")
-      })
-    }
+        ...theme("spacing"),
+      }),
+    },
   },
-  plugins: []
+  plugins: [require("@tailwindcss/line-clamp")],
 };
