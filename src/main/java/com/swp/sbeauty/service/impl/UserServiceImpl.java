@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
             user.setDateOfBirth(userDto.getDateOfBirth());
             user.setGender(userDto.getGender());
             user.setAddress(userDto.getAddress());
-            user.setUsername(userDto.getUsername());
             user.setPassword(encoder.encode(userDto.getPassword()));
             Set<Role> roles = new HashSet<>();
             if(userDto.getRoles()!=null && userDto.getRoles().size()>0){
@@ -83,7 +82,6 @@ public class UserServiceImpl implements UserService {
                 user.setDateOfBirth(userDto.getDateOfBirth());
                 user.setGender(userDto.getGender());
                 user.setAddress(userDto.getAddress());
-                user.setUsername(user.getUsername());
                 user.setPassword(encoder.encode(userDto.getPassword()));
                 Set<Role> roles = new HashSet<>();
                 if(user.getRoles()!=null && user.getRoles().size()>0){

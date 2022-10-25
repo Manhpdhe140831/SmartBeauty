@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto userDto){
         UserDto result = userService.saveUser(userDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -52,7 +53,7 @@ public class UserController {
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);

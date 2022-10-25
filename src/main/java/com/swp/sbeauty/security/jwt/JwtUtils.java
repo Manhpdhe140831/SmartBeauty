@@ -27,7 +27,6 @@ public class JwtUtils {
                 .setSubject((userPrincipal.getId().toString()))
                 .claim("id", userPrincipal.getId().toString())
                 .claim("name", userPrincipal.getName())
-                .claim("username", userPrincipal.getUsername())
                 .claim("email", userPrincipal.getEmail())
                 .claim("roles", userPrincipal.getAuthorities())
                 .claim("dateOfBirth", userPrincipal.getDateOfBirth())

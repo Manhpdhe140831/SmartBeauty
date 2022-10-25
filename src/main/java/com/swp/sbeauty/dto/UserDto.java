@@ -1,12 +1,10 @@
 package com.swp.sbeauty.dto;
 
-
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Column;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,13 +13,18 @@ import java.util.Set;
 @Setter
 public class UserDto {
     private Long id;
+    @NotEmpty
+    @Size(min = 3, message = "user name should have at least 3 characters")
     private String name;
+    @NotEmpty
+    @Email
     private String email;
+    @NotEmpty
+    @Pattern(regexp="(^$|[0-9]{10,11})", message = "phone number must consist of 10-11 digits")
     private String mobile;
     private Date dateOfBirth;
     private String gender;
     private String address;
-    private String username;
     private String password;
     private Set<RoleDto> roles;
 
@@ -36,7 +39,6 @@ public class UserDto {
             this.setDateOfBirth(user.getDateOfBirth());
             this.setGender(user.getGender());
             this.setAddress(user.getAddress());
-            this.setUsername(user.getUsername());
             this.setPassword(user.getPassword());
             if(user.getRoles()!=null){
                 this.roles = new HashSet<>();
@@ -44,12 +46,6 @@ public class UserDto {
                     this.roles.add(new RoleDto(role));
                 }
             }
-//            if (entity.getPersonCertificate() != null) {
-//                this.personCertificate = new HashSet<PersonCertificateDto>();
-//                for (PersonCertificate history : entity.getPersonCertificate()) {
-//                    this.personCertificate.add(new PersonCertificateDto(history));
-//                }
-//            }
         }
     }
 }
