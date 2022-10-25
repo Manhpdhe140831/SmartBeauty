@@ -1,34 +1,24 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.ServiceDto;
+import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.repository.ServiceRepository;
 import com.swp.sbeauty.service.ServiceSpaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
-
+@org.springframework.stereotype.Service
 public class ServiceSpaServiceImpl implements ServiceSpaService {
 
-    @Override
-    public List<ServiceDto> getAll() {
-        return null;
-    }
+    @Autowired
+    ServiceRepository repository;
 
     @Override
-    public ServiceDto updateService(ServiceDto serviceDto, Long id) {
-        return null;
-    }
-
-    @Override
-    public ServiceDto addService(ServiceDto serviceDto) {
-        return null;
-    }
-
-    @Override
-    public Boolean removeService(Long id) {
-        return null;
-    }
-
-    @Override
-    public List<ServiceDto> searchServiceByServiceGroupId(Long id) {
-        return null;
+    public Page<ServiceDto> getListServiceSpa(int offset, int pageSize) {
+        Page<Service> services = repository.findAll(PageRequest.of(offset, pageSize));
+        Page<ServiceDto> result = services.map(service -> new ServiceDto(service));
+        return result;
     }
 }
