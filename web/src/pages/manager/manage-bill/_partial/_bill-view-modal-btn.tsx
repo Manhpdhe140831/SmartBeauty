@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { IconSettings } from "@tabler/icons";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
-import { BranchModel } from "../../../../model/branch.model";
 import { ManagerModel } from "../../../../model/manager.model";
 import { BillModel } from "../../../../model/bill.model";
 import BillInfo from "../_view-bill";
@@ -12,12 +11,12 @@ type ModalProps = {
 };
 
 const BillViewModalBtn = ({ onChanged, billData }: ModalProps) => {
-  const [viewBranch, setViewBranch] = useState<boolean>(false);
+  const [viewBill, setViewBill] = useState<boolean>(false);
 
   return (
     <>
-      {/* Button view branch -> trigger modal*/}
-      <Tooltip onClick={() => setViewBranch(true)} label={"View / Edit"}>
+      {/* Button view Bill -> trigger modal*/}
+      <Tooltip onClick={() => setViewBill(true)} label={"View / Edit"}>
         <ActionIcon className="!inline-flex" color="orange" variant="filled">
           <IconSettings size={12} />
         </ActionIcon>
@@ -26,13 +25,13 @@ const BillViewModalBtn = ({ onChanged, billData }: ModalProps) => {
         title={
           <h1 className="text-center font-thin capitalize">Bill Detail</h1>
         }
-        opened={viewBranch}
+        opened={viewBill}
         size={"auto"}
         onClose={() => {
           console.log("closed");
           // close dialog without update to the list screen
           onChanged && onChanged();
-          setViewBranch(false);
+          setViewBill(false);
         }}
       >
         <BillInfo
@@ -41,7 +40,7 @@ const BillViewModalBtn = ({ onChanged, billData }: ModalProps) => {
             console.log(e);
             // close dialog and update to the list screen
             onChanged && onChanged(true);
-            setViewBranch(false);
+            setViewBill(false);
           }}
           billData={billData}
         />

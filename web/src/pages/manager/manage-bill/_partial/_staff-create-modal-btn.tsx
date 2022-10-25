@@ -3,30 +3,30 @@ import { IconPlus } from "@tabler/icons";
 import { useState } from "react";
 // import CreateStaff from "../_create-branch";
 
-type BranchModalProps = {
+type BillModalProps = {
   onChanged: (updated?: boolean) => void;
 };
 
-const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
-  const [newBranchModal, setNewBranchModal] = useState<boolean>(false);
+const BillCreateModalBtn = ({ onChanged }: BillModalProps) => {
+  const [newBillModal, setNewBillModal] = useState<boolean>(false);
 
   return (
     <>
       {/* Button add new branch -> trigger modal*/}
       <Button
-        onClick={() => setNewBranchModal(true)}
+        onClick={() => setNewBillModal(true)}
         color={"green"}
         leftIcon={<IconPlus />}
       >
-        New Staff
+        New Bill
       </Button>
       <Modal
         title={<h1 className="text-center font-thin capitalize">New Bill</h1>}
-        opened={newBranchModal}
+        opened={newBillModal}
         onClose={() => {
           console.log("closed");
           // close dialog without update to the list screen
-          setNewBranchModal(false);
+          setNewBillModal(false);
           onChanged();
         }}
       >
@@ -44,4 +44,4 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
   );
 };
 
-export default BranchCreateModalBtn;
+export default BillCreateModalBtn;

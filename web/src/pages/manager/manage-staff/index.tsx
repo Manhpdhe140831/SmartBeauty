@@ -16,6 +16,7 @@ import { ManagerModel } from "../../../model/manager.model";
 import { StaffModel } from "../../../model/staff.model";
 import mockStaff from "../../../mock/staff";
 import StaffViewModalBtn from "./_partial/_staff-view-modal-btn";
+import StaffCreateModalBtn from "./_partial/_staff-create-modal-btn";
 
 const Index: AppPageInterface = () => {
     const [page, setPage] = useState(1);
@@ -35,12 +36,12 @@ const Index: AppPageInterface = () => {
     return (
       <div className="flex min-h-full flex-col space-y-4 p-4">
         <div className="flex justify-end space-x-2">
-          <BranchCreateModalBtn onChanged={(u) => u && refetch()} />
+          <StaffCreateModalBtn onChanged={(u) => u && refetch()} />
   
           {/*Search by name*/}
           <Input
             icon={<IconSearch />}
-            placeholder={"staff name..."}
+            placeholder={"Staff name..."}
             type={"text"}
             className="w-56"
           />

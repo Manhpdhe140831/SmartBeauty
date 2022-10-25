@@ -10,6 +10,7 @@ import BranchCreateModalBtn from "../manage-staff/_partial/_staff-create-modal-b
 import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
 import BillViewModalBtn from "./_partial/_bill-view-modal-btn";
+import BillCreateModalBtn from "./_partial/_staff-create-modal-btn";
 
 
 const Index: AppPageInterface = () => {
@@ -17,25 +18,25 @@ const Index: AppPageInterface = () => {
     const [totalRecords, setTotalRecords] = useState(0);
   
     const {
-      data: staffs,
+      data: bills,
       isLoading,
       refetch,
     } = useQuery<BillModel[]>(["list-bill", page], async () => {
-      const staffs = await mockBill();
-      setTotalRecords(staffs.length);
+      const bills = await mockBill();
+      setTotalRecords(bills.length);
       setPage(1);
-      return staffs;
+      return bills;
     });
   
     return (
       <div className="flex min-h-full flex-col space-y-4 p-4">
         <div className="flex justify-end space-x-2">
-          <BranchCreateModalBtn onChanged={(u) => u && refetch()} />
+          <BillCreateModalBtn onChanged={(u) => u && refetch()} />
   
           {/*Search by name*/}
           <Input
             icon={<IconSearch />}
-            placeholder={"bill name..."}
+            placeholder={"Bill name..."}
             type={"text"}
             className="w-56"
           />
@@ -70,8 +71,8 @@ const Index: AppPageInterface = () => {
                   }
                 />
               ) : (
-                staffs &&
-                staffs.map((d, i) => (
+                bills &&
+                bills.map((d, i) => (
                   <TableRecord
                     key={d.id}
                     no={i + 1}
