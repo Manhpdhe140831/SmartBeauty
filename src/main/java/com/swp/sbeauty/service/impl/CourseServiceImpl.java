@@ -14,50 +14,64 @@ import java.util.Optional;
 
 @Service @Transactional @Slf4j
 public class CourseServiceImpl implements CourseService {
-
-    private CourseRepository repository;
     @Override
     public List<CourseDto> getAl() {
-        List<Course> listCourse = repository.findAll();
-
-            List<CourseDto> listCourseDto = new ArrayList<>();
-            for (Course item : listCourse
-            ) {
-                listCourseDto.add(new CourseDto(item));
-            }
-            return listCourseDto;
-
-
-
+        return null;
     }
 
     @Override
     public CourseDto save(CourseDto courseDto) {
-        if(null != courseDto){
-            Course course = new Course();
-            course.setName(courseDto.getName());
-            course.setPrice(courseDto.getPrice());
-            course.setImageURL(courseDto.getImageURL());
-            course.setMinSession(courseDto.getMinSession());
-            if (null != course){
-                return new CourseDto(course);
-            }
-        }
         return null;
     }
 
     @Override
     public Boolean remove(Long id) {
-        Course course = null;
-        Optional<Course> courseOptional = repository.findById(id);
-        if (courseOptional.isPresent()){
-            course = courseOptional.get();
-        }
-        if (null != course){
-            repository.delete(course);
-            return true;
-        }
-        return false;
+        return null;
     }
+//
+//    private CourseRepository repository;
+//    @Override
+//    public List<CourseDto> getAl() {
+//        List<Course> listCourse = repository.findAll();
+//
+//            List<CourseDto> listCourseDto = new ArrayList<>();
+//            for (Course item : listCourse
+//            ) {
+//                listCourseDto.add(new CourseDto(item));
+//            }
+//            return listCourseDto;
+//
+//
+//
+//    }
+//
+//    @Override
+//    public CourseDto save(CourseDto courseDto) {
+//        if(null != courseDto){
+//            Course course = new Course();
+//            course.setName(courseDto.getName());
+//            course.setPrice(courseDto.getPrice());
+//            course.setImageURL(courseDto.getImageURL());
+//            course.setMinSession(courseDto.getMinSession());
+//            if (null != course){
+//                return new CourseDto(course);
+//            }
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public Boolean remove(Long id) {
+//        Course course = null;
+//        Optional<Course> courseOptional = repository.findById(id);
+//        if (courseOptional.isPresent()){
+//            course = courseOptional.get();
+//        }
+//        if (null != course){
+//            repository.delete(course);
+//            return true;
+//        }
+//        return false;
+//    }
 
 }

@@ -10,15 +10,23 @@ public class BranchDto {
     private Long id;
     private String name;
     private String phone;
-    private String email;
-    private String country;
-    private String city;
-    private String district;
-    private String street;
+    private String address;
+    private String image;
+    private UserDto users;
 
     public BranchDto(){}
 
     public BranchDto(Branch branch){
+        if(branch != null){
+            this.setId(branch.getId());
+            this.setName(branch.getName());
+            this.setPhone(branch.getPhone());
+            this.setAddress(branch.getAddress());
+            this.setImage(branch.getImage());
+            if(branch.getUser() != null){
+                users = new UserDto(branch.getUser());
+            }
+        }
 
     }
 }

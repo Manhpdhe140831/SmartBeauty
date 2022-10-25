@@ -20,4 +20,6 @@ public interface BranchService {
     Page<Branch> findBranchsWithPaginnation(int offset,int pageSize);
 
     Page<Branch> findBranchsWithPaginnationAnSort(int offset,int pageSize, String field);
+
+    Page<Branch> findBranchsPaginationAnSort(int offset,int pageSize, String field,String direction);
 }
