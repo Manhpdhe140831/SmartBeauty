@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -48,6 +49,11 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id){
         UserDto result = userService.updateUser(userDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    @GetMapping(value = "user/{id}")
+    public ResponseEntity<UserDto> getById(@PathVariable Long id) {
+        UserDto result = userService.getById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {

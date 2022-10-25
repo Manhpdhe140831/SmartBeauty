@@ -110,6 +110,17 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public UserDto getById(Long id) {
+        if (id != null) {
+            User entity = userRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new UserDto(entity);
+            }
+        }
+        return null;
+    }
+
     //    @Override
 //    public RoleDto saveRole(RoleDto roleDto) {
 //        if(roleDto != null){
