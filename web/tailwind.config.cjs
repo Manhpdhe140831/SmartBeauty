@@ -1,26 +1,27 @@
 /** @type {import("tailwindcss").Config} */
 module.exports = {
   mode: "jit",
+  darkMode: "class",
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       spacing: {
         inherit: "inherit",
-        none: "none",
+        none: "none"
       },
       minHeight: (theme) => ({
-        ...theme("spacing"),
+        ...theme("spacing")
       }),
       maxHeight: (theme) => ({
-        ...theme("spacing"),
+        ...theme("spacing")
       }),
       minWidth: (theme) => ({
-        ...theme("spacing"),
+        ...theme("spacing")
       }),
       maxWidth: (theme) => ({
-        ...theme("spacing"),
-      }),
-    },
+        ...theme("spacing")
+      })
+    }
   },
-  plugins: [require("@tailwindcss/line-clamp")],
+  plugins: [require("@tailwindcss/line-clamp")]
 };

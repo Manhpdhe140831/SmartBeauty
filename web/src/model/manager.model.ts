@@ -19,8 +19,21 @@ export interface ManagerModel extends UserModel {
  * This payload interface will not have id field,
  * and dataType of dateOfBirth and avatar will be different.
  */
-export interface ManagerPayload
+export interface ManagerCreateEntity
   extends Omit<ManagerModel, "id" | "dateOfBirth" | "avatar"> {
+  dateOfBirth: Date;
+  // if the user does not update the avatar,
+  // the datatype will remain the same (as string)
+  // otherwise the avatar will be a File.
+  avatar?: File | string;
+}
+
+/**
+ * Interface for the payload to update manager.
+ * This payload interface will have dataType of dateOfBirth and avatar different.
+ */
+export interface ManagerUpdateEntity
+  extends Omit<ManagerModel, "dateOfBirth" | "avatar"> {
   dateOfBirth: Date;
   // if the user does not update the avatar,
   // the datatype will remain the same (as string)

@@ -1,17 +1,9 @@
-import { ManagerModel } from "../../../model/manager.model";
+import { ManagerCreateEntity } from "../../../model/manager.model";
 import { FC } from "react";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Avatar,
-  Button,
-  Divider,
-  Input,
-  Radio,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { Avatar, Button, Divider, Input, Radio, Textarea, TextInput } from "@mantine/core";
 import Link from "next/link";
 import FormErrorMessage from "../../../components/form-error-message";
 import MaskedInput from "react-text-mask";
@@ -22,29 +14,15 @@ import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { IconPlus } from "@tabler/icons";
 import dayjs from "dayjs";
-import {
-  managerModelSchema,
-  userRegisterSchemaFn,
-} from "../../../validation/account-model.schema";
+import { managerModelSchema, userRegisterSchemaFn } from "../../../validation/account-model.schema";
 import { USER_ROLE } from "../../../const/user-role.const";
-
-/**
- * Entity model to be sent to server.
- * This type omits the generated fields of the server (id, avatar) and
- * dataType from the server (dateOfBirth).
- */
-type managerEntity = Omit<ManagerModel, "id" | "avatar" | "dateOfBirth"> & {
-  avatar?: File;
-  dateOfBirth: Date;
-  role: USER_ROLE.manager;
-};
 
 /**
  * Component props
  * `onSave()` will trigger with the data from the form.
  */
 type CreateManagerProp = {
-  onSave: (managerData: managerEntity) => void;
+  onSave: (managerData: ManagerCreateEntity) => void;
 };
 
 const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
@@ -54,14 +32,15 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid }
   } = useForm<z.infer<typeof createManagerSchema>>({
     resolver: zodResolver(createManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       gender: GENDER.other,
-    },
+      role: USER_ROLE.manager
+    }
   });
 
   return (

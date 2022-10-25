@@ -6,7 +6,7 @@ import UpdatePasswordManagerDialog from "./_update-password-manager";
 
 type btnProps = {
   manager: ManagerModel;
-  onChanged: (newUpdate?: boolean) => void;
+  onChanged?: (newUpdate?: boolean) => void;
 };
 
 const BtnPasswordManager: FC<btnProps> = ({ manager, onChanged }) => {

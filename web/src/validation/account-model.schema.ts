@@ -25,7 +25,9 @@ export const baseUserSchema = z.object({
   avatar: fileUploadSchema
     .and(imageTypeSchema)
     // or the avatar field can be url src of the image.
-    .or(z.string().url()),
+    .or(z.string().url())
+    // this field is not required.
+    .optional(),
 });
 
 /**

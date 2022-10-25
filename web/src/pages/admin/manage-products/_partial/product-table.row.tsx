@@ -1,98 +1,106 @@
-import Image from "next/image";
-import { Badge, Text, Tooltip } from "@mantine/core";
+import { Badge, Image, Text, Tooltip } from "@mantine/core";
 import styleRow from "../../../../styles/product-row.module.scss";
 import { IconArrowDown } from "@tabler/icons";
+import { ProductModel } from "../../../../model/product.model";
+import { FC, useState } from "react";
+import ProductPriceCell from "./_product-price.cell";
+import dayjs from "dayjs";
+import ProductDetailDialog from "../_product-detail-dialog";
 
-const ProductTableRow = () => {
-  const viewProductDetail = () => {
-    console.log("ProductDetail");
-  };
+type productRowProps = {
+  product: ProductModel,
+  no: number
+  rowUpdated?: () => void
+}
+
+const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
+  const [viewingDetail, setViewingDetail] = useState(false);
 
   const firstRow = (
-    <tr onClick={() => viewProductDetail()} className={styleRow.custom_table_row}>
+    <tr
+      onClick={() => setViewingDetail(true)}
+      className={styleRow.custom_table_row}
+    >
       <td className={"text-right"} rowSpan={2}>
-        1
+        {no}
       </td>
       <td rowSpan={2}>
         <div
           className={"aspect-video w-24 overflow-hidden rounded-lg shadow-lg"}
         >
           <Image
-            objectFit={"cover"}
-            objectPosition={"center"}
-            src={"http://dummyimage.com/230x100.png/5fa2dd/ffffff"}
-            width={"100%"}
-            height={"100%"}
+            src={product.image}
+            withPlaceholder
+            alt={"product name"}
+            fit="contain"
           />
         </div>
       </td>
       <td className="overflow-hidden text-ellipsis whitespace-nowrap !pl-0 !pr-1 !pt-2 !pb-1">
         <Tooltip
           label={
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, ullam."
+            product.name
           }
         >
           <span className={"text-lg font-semibold"}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, ullam.
+           {product.name}
           </span>
         </Tooltip>
       </td>
 
-      <td className="!pb-0 !pt-1">
-        <div className="flex flex-col items-center justify-center space-y-1">
-          <Text color={"dimmed"} strikethrough size={"xs"}>
-            19.000.000
-          </Text>
-          <Text>16.150.000</Text>
-        </div>
+      <td rowSpan={product.salePercent !== null ? 1 : 2} className="!pb-0 !pt-1">
+        <ProductPriceCell product={product} />
       </td>
 
       <td className={"text-center"} rowSpan={2}>
-        Vietnam
+        {product.origin}
       </td>
       <td>
         <div className="flex flex-col">
           <Text size={"xs"} color={"dimmed"}>
             Import at
           </Text>
-          <Text>20/11/2022</Text>
+          <Text>{dayjs(product.importedDate).format("DD/MM/YYYY")}</Text>
         </div>
       </td>
     </tr>
   );
 
   const secondRow = (
-    <tr onClick={() => viewProductDetail()}>
+    <tr onClick={() => setViewingDetail(true)}>
       {/*  No. col*/}
       {/*  image col*/}
       <td className="!pl-0 !pr-1 !pt-2 !pb-1">
         <div className="flex flex-col space-y-1 text-gray-600 line-clamp-2">
           <small>
-            <span className={"font-semibold"}>Description: </span>Lorem ipsum
-            dolor sit amet, consectetur adipisicing elit. Ad cumque eligendi
-            iste minus, numquam quas velit? Consequatur ea error quidem.
+            <span className={"font-semibold"}>Description: </span>{product.description}
           </small>
         </div>
       </td>
 
-      <td className="text-center">
-        <Tooltip position={"bottom"} label={"Till 22/12/2022"}>
+      {product.salePercent !== null && <td className="text-center">
+        <Tooltip label={<div className={"flex flex-col items-start"}>
+          <small className={"text-gray-500"}>From</small>
+          <small>{product.saleStart ? dayjs(product.saleStart).format("DD/MM/YYYY") : "-"}</small>
+          <small className={"text-gray-500"}>To</small>
+          <small>{product.saleEnd ? dayjs(product.saleEnd).format("DD/MM/YYYY") : "-"}</small>
+        </div>}>
           <Badge
             variant={"filled"}
             color={"red"}
-            leftSection={<IconArrowDown size={8} />}
+            leftSection={<IconArrowDown size={14} />}
           >
-            15%
+            {product.salePercent}%
           </Badge>
         </Tooltip>
-      </td>
+      </td>}
       {/*  origin col*/}
       <td>
         <div className="flex flex-col">
           <Text size={"xs"} color={"dimmed"}>
             Expired at
           </Text>
-          <Text>01/11/2025</Text>
+          <Text>{dayjs(product.expiredDate).format("DD/MM/YYYY")}</Text>
         </div>
       </td>
     </tr>
@@ -102,6 +110,12 @@ const ProductTableRow = () => {
     <>
       {firstRow}
       {secondRow}
+      <ProductDetailDialog key={product.id} opened={viewingDetail} product={product} onClosed={(update) => {
+        if (update) {
+          rowUpdated && rowUpdated();
+        }
+        setViewingDetail(false);
+      }} />
     </>
   );
 };

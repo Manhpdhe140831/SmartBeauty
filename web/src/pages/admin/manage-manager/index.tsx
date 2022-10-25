@@ -1,5 +1,4 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ManagerModel } from "../../../model/manager.model";
 import mockManager from "../../../mock/manager";
@@ -10,20 +9,24 @@ import TableRecordHolder from "../../../components/table-record-holder";
 import TableRecord from "./_partial/_table-record";
 import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
+import usePaginationHook from "../../../hooks/pagination.hook";
 
 const ManageManager: AppPageInterface = () => {
-  const [page, setPage] = useState(1);
-  const [totalRecords, setTotalRecords] = useState(0);
+  const {
+    pageSize,
+    currentPage,
+    totalRecord,
+    update: updatePagination,
+  } = usePaginationHook();
 
   // query to get the list of the manager
   const {
     data: managers,
     isLoading,
     refetch,
-  } = useQuery<ManagerModel[]>(["list-manager", page], async () => {
+  } = useQuery<ManagerModel[]>(["list-manager", currentPage], async () => {
     const managers = await mockManager();
-    setTotalRecords(managers.length);
-    setPage(1);
+    updatePagination({ total: managers.length });
     return managers;
   });
 
@@ -32,7 +35,7 @@ const ManageManager: AppPageInterface = () => {
       {/*  Search section   */}
       <div className="flex justify-end space-x-2">
         {/*  Btn create new manager   */}
-        <BtnCreateManager onChanged={(e) => console.log(e)} />
+        <BtnCreateManager onChanged={(e) => e && refetch()} />
       </div>
 
       <Divider my={8}></Divider>
@@ -91,9 +94,9 @@ const ManageManager: AppPageInterface = () => {
       {/*Total record / 10 (per-page)*/}
       <Pagination
         position={"center"}
-        page={page}
-        onChange={setPage}
-        total={totalRecords / 10}
+        page={currentPage}
+        onChange={(page) => updatePagination({ newPage: page })}
+        total={totalRecord / pageSize}
       ></Pagination>
     </div>
   );

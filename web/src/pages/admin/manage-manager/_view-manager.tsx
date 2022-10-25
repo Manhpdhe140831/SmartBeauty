@@ -1,49 +1,45 @@
-import { ManagerModel, ManagerPayload } from "../../../model/manager.model";
 import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
-import {
-  Button,
-  Divider,
-  Image as MantineImage,
-  Input,
-  Radio,
-  Text,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
-import FormErrorMessage from "../../../components/form-error-message";
+import { Button, Divider, Image as MantineImage, Input, Radio, Text, Textarea, TextInput } from "@mantine/core";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import MaskedInput from "react-text-mask";
-import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { DatePicker } from "@mantine/dates";
+import { z } from "zod";
+import { ManagerModel, ManagerUpdateEntity } from "../../../model/manager.model";
+import BtnSingleUploader from "../../../components/btn-single-uploader";
+import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
+import FormErrorMessage from "../../../components/form-error-message";
+import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { GENDER } from "../../../const/gender.const";
 import { managerModelSchema } from "../../../validation/account-model.schema";
 
 type DialogProps = {
   manager: ManagerModel;
-  onClosed?: (manager?: ManagerPayload) => void;
+  onClosed?: (manager?: ManagerUpdateEntity) => void;
 };
 
 const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
+  const updateManagerSchema = managerModelSchema.merge(z.object({
+    id: z.literal(manager.id)
+  }));
+
   const {
     control,
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty },
-  } = useForm<ManagerPayload>({
-    resolver: zodResolver(managerModelSchema),
+    formState: { errors, isValid, isDirty }
+  } = useForm<ManagerUpdateEntity>({
+    resolver: zodResolver(updateManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       ...manager,
-      dateOfBirth: dayjs(manager.dateOfBirth).toDate(),
-    },
+      dateOfBirth: dayjs(manager.dateOfBirth).toDate()
+    }
   });
-  const onSubmit = (data: ManagerPayload) => onClosed && onClosed(data);
+  const onSubmit = (data: ManagerUpdateEntity) => onClosed && onClosed(data);
 
   return (
     <form
