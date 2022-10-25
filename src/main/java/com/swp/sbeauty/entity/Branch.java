@@ -18,11 +18,14 @@ public class Branch {
     private long id;
     private String name;
     private String phone;
-    private String email;
-    private String country;
-    private String city;
-    private String district;
-    private String street;
+    private String address;
+    private String image;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
 
 
 
