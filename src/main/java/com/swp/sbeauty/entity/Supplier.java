@@ -17,13 +17,11 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
+    private String supplierCode;
+    private String taxCode;
+    private String description;
     private String phone;
     private String email;
-    private String certificateImageURL;
-    private String country;
-    private String city;
-    private String district;
-    private String street;
-
+    private String address;
+    private String supplierImage;
 }
