@@ -19,15 +19,6 @@ public class BranchDto {
     public BranchDto(){}
 
     public BranchDto(Branch branch){
-        if(branch != null){
-            this.setId(branch.getId());
-            this.setName(branch.getName());
-            this.setPhone(                                             branch.getPhone());
-            this.setEmail(branch.getEmail());
-            this.setCountry(branch.getCountry());
-            this.setCity(branch.getCity());
-            this.setDistrict(branch.getDistrict());
-            this.setStreet(branch.getStreet());
-        }
+
     }
 }
