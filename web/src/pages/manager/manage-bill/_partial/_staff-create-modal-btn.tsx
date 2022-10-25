@@ -21,7 +21,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
         New Staff
       </Button>
       <Modal
-        title={<h1 className="text-center font-thin capitalize">New Staff</h1>}
+        title={<h1 className="text-center font-thin capitalize">New Bill</h1>}
         opened={newBranchModal}
         onClose={() => {
           console.log("closed");

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { IconSettings } from "@tabler/icons";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
-import StaffInfo from "../_view-staff";
 import { BranchModel } from "../../../../model/branch.model";
 import { ManagerModel } from "../../../../model/manager.model";
-import { StaffModel } from "../../../../model/staff.model";
+import { BillModel } from "../../../../model/bill.model";
+import BillInfo from "../_view-bill";
 
 type ModalProps = {
   onChanged?: (updated?: boolean) => void;
-  staffData: StaffModel<ManagerModel>;
+  billData: BillModel;
 };
 
-const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
+const BillViewModalBtn = ({ onChanged, billData }: ModalProps) => {
   const [viewBranch, setViewBranch] = useState<boolean>(false);
 
   return (
@@ -24,7 +24,7 @@ const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
       </Tooltip>
       <Modal
         title={
-          <h1 className="text-center font-thin capitalize">Staff Detail</h1>
+          <h1 className="text-center font-thin capitalize">Bill Detail</h1>
         }
         opened={viewBranch}
         size={"auto"}
@@ -35,7 +35,7 @@ const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
           setViewBranch(false);
         }}
       >
-        <StaffInfo
+        <BillInfo
           onClose={(e) => {
             //  TODO: handle API call
             console.log(e);
@@ -43,11 +43,11 @@ const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
             onChanged && onChanged(true);
             setViewBranch(false);
           }}
-          staffData={staffData}
+          billData={billData}
         />
       </Modal>
     </>
   );
 };
 
-export default StaffViewModalBtn;
+export default BillViewModalBtn;

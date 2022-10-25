@@ -1,21 +1,16 @@
 import { Divider, Input, Pagination, Table } from "@mantine/core";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { IconSearch } from "@tabler/icons";
-
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import TableRecordHolder from "../../../components/table-record-holder";
-
-import BranchCreateModalBtn from "../../admin/manage-branches/_partial/_branch-create-modal-btn";
-import BranchViewModalBtn from "../../admin/manage-branches/_partial/_branch-view-modal-btn";
+import { BillModel } from "../../../model/bill.model";
+import mockBill from "../../../mock/bill";
+import BranchCreateModalBtn from "../manage-staff/_partial/_staff-create-modal-btn";
 import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
- import { mockBranchWithManager } from "../../../mock/branch";
-import { BranchModel } from "../../../model/branch.model";
-import { ManagerModel } from "../../../model/manager.model";
-import { StaffModel } from "../../../model/staff.model";
-import mockStaff from "../../../mock/staff";
-import StaffViewModalBtn from "./_partial/_staff-view-modal-btn";
+import BillViewModalBtn from "./_partial/_bill-view-modal-btn";
+
 
 const Index: AppPageInterface = () => {
     const [page, setPage] = useState(1);
@@ -25,8 +20,8 @@ const Index: AppPageInterface = () => {
       data: staffs,
       isLoading,
       refetch,
-    } = useQuery<StaffModel<ManagerModel>[]>(["list-staff", page], async () => {
-      const staffs = await mockStaff();
+    } = useQuery<BillModel[]>(["list-bill", page], async () => {
+      const staffs = await mockBill();
       setTotalRecords(staffs.length);
       setPage(1);
       return staffs;
@@ -40,7 +35,7 @@ const Index: AppPageInterface = () => {
           {/*Search by name*/}
           <Input
             icon={<IconSearch />}
-            placeholder={"staff name..."}
+            placeholder={"bill name..."}
             type={"text"}
             className="w-56"
           />
@@ -60,7 +55,7 @@ const Index: AppPageInterface = () => {
               <col className="w-32" />
               <col className="w-28" />
               {/* <col /> */}
-              {/* <col className="w-14" /> */}
+              <col className="w-14" />
             </colgroup>
             <TableHeader />
             <tbody>
@@ -81,7 +76,7 @@ const Index: AppPageInterface = () => {
                     key={d.id}
                     no={i + 1}
                     data={d}
-                    action={<StaffViewModalBtn staffData={d} />}
+                    action={<BillViewModalBtn billData={d} />}
                   />
                 ))
               )}
@@ -100,7 +95,7 @@ const Index: AppPageInterface = () => {
     );
   };
   
-  Index.routerName = "List of Staff";
+  Index.routerName = "List of Bill";
   
   export default Index;
   

@@ -25,5 +25,21 @@ export const branchAdminConfig: NavLinkItemProp[] = [
   { href: "/admin/reports", label: "Báo Cáo" },
 ];
 
-export const branchManagerConfig: NavLinkItemProp[] = [];
+export const branchManagerConfig: NavLinkItemProp[] = [
+  {
+    href: "/manager/manage-staff",
+    label: "Quản lý nhân viên",
+  },
+  {
+    href: "/manager/manage-bill",
+    label: "Quản lý đơn hàng",
+  },
+  {
+    href: "/manager/manage-guest",
+    label: "Quản lý khách hàng",
+  }, {
+    href: "/manager/manage-guest",
+    label: "Quản lý kho ",
+  }
+];
 export const branchEmployeeConfig: NavLinkItemProp[] = [];
