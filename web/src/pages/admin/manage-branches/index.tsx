@@ -11,6 +11,7 @@ import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
 import { mockBranchWithManager } from "../../../mock/branch";
 import { BranchModel } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
+import { USER_ROLE } from "../../../const/user-role.const";
 
 const Index: AppPageInterface = () => {
   const [page, setPage] = useState(1);
@@ -96,5 +97,6 @@ const Index: AppPageInterface = () => {
 };
 
 Index.routerName = "List of Branches";
+Index.guarded = USER_ROLE.admin;
 
 export default Index;

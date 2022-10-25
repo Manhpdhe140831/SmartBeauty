@@ -30,7 +30,7 @@ const PageUnauthenticated: AppPageInterface = () => {
   );
 };
 
-PageUnauthenticated.guarded = USER_ROLE.anonymous;
+PageUnauthenticated.guarded = USER_ROLE.authenticated;
 PageUnauthenticated.useLayout = (p) => p;
 
 export default PageUnauthenticated;

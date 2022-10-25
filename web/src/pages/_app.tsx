@@ -15,9 +15,6 @@ import { useEffect, useState } from "react";
 // Create a react-query client
 const queryClient = new QueryClient();
 
-/**
- * TODO: managing state
- */
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [clientPassedGuard, setClientPassedGuard] = useState(false);
   const authState = useAuthUser((s) => s.user);
@@ -34,8 +31,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
   // Default all routes are guarded.
   const isGuarded: USER_ROLE = RenderPage.guarded ?? USER_ROLE.authenticated;
-  // TODO: uncomment this when integrate with authentication API.
-
   useEffect(() => {
     setClientPassedGuard(!needRedirectedOnRole(router, isGuarded, authState));
   }, [isGuarded, authState]);

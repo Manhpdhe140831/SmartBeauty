@@ -17,16 +17,16 @@ export function needRedirectedOnRole(
   if (isGuarded !== USER_ROLE.all) {
     // the page is limited to specific role config.
     if (isGuarded !== USER_ROLE.anonymous) {
-      if (isGuarded === USER_ROLE.authenticated) {
-        // this page is guard for authenticated user only.
-        if (user) {
-          // allow the user to access this page -> no need to redirect.
-          return false;
-        }
-
+      if (!user) {
         // user doesn't login, we navigate to login page.
         void router.push("/login");
         return true;
+      }
+
+      if (isGuarded === USER_ROLE.authenticated) {
+        // this page is guard for authenticated user only.
+        // allow the user to access this page -> no need to redirect.
+        return false;
       }
 
       // the page is protected by a role config

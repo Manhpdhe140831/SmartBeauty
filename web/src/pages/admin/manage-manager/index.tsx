@@ -10,6 +10,7 @@ import TableRecord from "./_partial/_table-record";
 import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
 import usePaginationHook from "../../../hooks/pagination.hook";
+import { USER_ROLE } from "../../../const/user-role.const";
 
 const ManageManager: AppPageInterface = () => {
   const {
@@ -103,5 +104,6 @@ const ManageManager: AppPageInterface = () => {
 };
 
 ManageManager.routerName = "Account Manager";
+ManageManager.guarded = USER_ROLE.admin;
 
 export default ManageManager;
