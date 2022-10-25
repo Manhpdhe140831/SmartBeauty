@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,18 +20,23 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
-    private double importPrice;
-    private double salePrice;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date EXP;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date MFG;
+    private String productCode;
+    private String productName;
+    private double productPrice;
+    private Date productBeginDiscount;
+    private Date productEndDiscount;
+    private double discountPercent;
+    private String productImage;
+    private int quantity;
+    private String unit;
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "suppler_id")
+    @JoinColumn(name = "supplier_id")
     private Supplier supplier;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(  name = "product_branch",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "branch_id"))
+    private Set<Branch> branches = new HashSet<>();
 }
