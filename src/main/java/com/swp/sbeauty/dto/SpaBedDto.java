@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class SpaBedDto {
     private Long id;
-    private String status;
+    private String name;
     private BranchDto branch;
 
     public SpaBedDto(){}
@@ -17,7 +17,7 @@ public class SpaBedDto {
     public SpaBedDto(SpaBed spaBed){
         if(spaBed != null){
             this.setId(spaBed.getId());
-            this.setStatus(spaBed.getStatus());
+            this.setName(spaBed.getName());
             if(spaBed.getBranch() != null){
                 branch = new BranchDto(spaBed.getBranch());
             }

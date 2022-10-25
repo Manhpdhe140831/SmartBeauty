@@ -39,7 +39,7 @@ public class SpaBedServiceImpl implements SpaBedService {
     public SpaBedDto saveBed(SpaBedDto spaBedDto) {
         if(spaBedDto != null){
             SpaBed spaBed = new SpaBed();
-            spaBed.setStatus(spaBedDto.getStatus());
+            spaBed.setName(spaBedDto.getName());
             if(spaBedDto.getBranch()!=null){
                 Branch branch = null;
                 Optional<Branch> optional = branchRepository.findById(spaBedDto.getBranch().getId());
@@ -67,7 +67,7 @@ public class SpaBedServiceImpl implements SpaBedService {
                 }
             }
             if(spaBed != null){
-                spaBed.setStatus(spaBedDto.getStatus());
+                spaBed.setName(spaBedDto.getName());
                 if(spaBedDto.getBranch()!=null){
                     Branch branch = null;
                     Optional<Branch> optional = branchRepository.findById(spaBedDto.getBranch().getId());
