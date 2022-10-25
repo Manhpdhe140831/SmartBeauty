@@ -42,7 +42,14 @@ public class BranchController {
         Page<Branch> branchesWithPagination = branchService.findBranchsWithPaginnation(offset,pageSize);
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }
-
+    @GetMapping("/branch")
+    private APIResponse<Page<Branch>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
+            ,@RequestParam(value = "direction") String direction){
+        Page<Branch> branchesWithPagination = branchService.findBranchsPaginationAnSort(page -1,pageSize,sort,direction);
+        return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
+    }
     @GetMapping("/branch/paging/page={offset}/{field}")
     private APIResponse<Page<Branch>> getBranchWithPaginationAndSort(@PathVariable int offset,@PathVariable String field){
         int pageSize =2;

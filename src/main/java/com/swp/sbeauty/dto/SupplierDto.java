@@ -8,28 +8,26 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SupplierDto {
-        private Long id;
-        private String name;
-        private String phone;
-        private String email;
-        private String certificateImageURL;
-        private String country;
-        private String city;
-        private String district;
-        private String street;
-
-        public SupplierDto(){}
-    public SupplierDto(Supplier supplier){
-        if(supplier != null){
+    private Long id;
+    private String supplierCode;
+    private String taxCode;
+    private String description;
+    private String phone;
+    private String email;
+    private String address;
+    private String supplierImage;
+    public SupplierDto(){}
+    public SupplierDto(Supplier supplier) {
+        if (supplier != null) {
             this.setId(supplier.getId());
-            this.setName(supplier.getName());
+            this.setSupplierCode(supplier.getSupplierCode());
+            this.setTaxCode(supplier.getTaxCode());
+            this.setDescription(supplier.getDescription());
             this.setPhone(supplier.getPhone());
             this.setEmail(supplier.getEmail());
-            this.setCertificateImageURL(supplier.getCertificateImageURL());
-            this.setCountry(supplier.getCountry());
-            this.setCity(supplier.getCity());
-            this.setDistrict(supplier.getDistrict());
-            this.setStreet(supplier.getStreet());
+            this.setAddress(supplier.getAddress());
+            this.setSupplierImage(supplier.getSupplierImage());
+
         }
     }
 }

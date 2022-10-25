@@ -6,6 +6,7 @@ import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.BranchRepository;
+import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.BranchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import java.util.Optional;
 public class BranchServiceImpl implements BranchService {
     @Autowired
     private BranchRepository branchRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<BranchDto> getBranch() {
@@ -59,11 +62,16 @@ public class BranchServiceImpl implements BranchService {
             Branch branch = new Branch();
             branch.setName(branchDto.getName());
             branch.setPhone(branchDto.getPhone());
-            branch.setEmail(branchDto.getEmail());
-            branch.setCountry(branchDto.getCountry());
-            branch.setCity(branchDto.getCity());
-            branch.setDistrict(branchDto.getDistrict());
-            branch.setStreet(branchDto.getStreet());
+            branch.setAddress(branchDto.getAddress());
+            branch.setImage(branchDto.getImage());
+            if(branchDto.getUsers()!=null){
+                User user = null;
+                Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
+                if (optional.isPresent()) {
+                    user = optional.get();
+                }
+                branch.setUser(user);
+            }
             branch = branchRepository.save(branch);
             if(branch != null){
                 return new BranchDto(branch);
@@ -85,11 +93,16 @@ public class BranchServiceImpl implements BranchService {
             if(branch != null){
                 branch.setName(branchDto.getName());
                 branch.setPhone(branchDto.getPhone());
-                branch.setEmail(branchDto.getEmail());
-                branch.setCountry(branchDto.getCountry());
-                branch.setCity(branchDto.getCity());
-                branch.setDistrict(branchDto.getDistrict());
-                branch.setStreet(branchDto.getStreet());
+                branch.setAddress(branchDto.getAddress());
+                branch.setImage(branchDto.getImage());
+                if(branchDto.getUsers()!=null){
+                    User user = null;
+                    Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
+                    if (optional.isPresent()) {
+                        user = optional.get();
+                    }
+                    branch.setUser(user);
+                }
                 branch = branchRepository.save(branch);
                 return new BranchDto(branch);
             } else {
@@ -108,6 +121,13 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Page<Branch> findBranchsWithPaginnationAnSort(int offset, int pageSize, String field) {
         Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(field)));
+        return branches;
+    }
+
+    @Override
+    public Page<Branch> findBranchsPaginationAnSort(int offset, int pageSize, String field, String direction) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize,sort));
         return branches;
     }
 }

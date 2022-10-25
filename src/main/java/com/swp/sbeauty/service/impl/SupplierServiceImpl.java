@@ -33,14 +33,13 @@ public class SupplierServiceImpl implements SupplierService {
     public SupplierDto saveSupplier(SupplierDto supplierDto) {
         if(supplierDto != null){
             Supplier supplier = new Supplier();
-            supplier.setName(supplierDto.getName());
+            supplier.setSupplierCode(supplierDto.getSupplierCode());
+            supplier.setTaxCode(supplierDto.getTaxCode());
+            supplier.setDescription(supplierDto.getDescription());
             supplier.setPhone(supplierDto.getPhone());
             supplier.setEmail(supplierDto.getEmail());
-            supplier.setCertificateImageURL(supplierDto.getCertificateImageURL());
-            supplier.setCountry(supplierDto.getCountry());
-            supplier.setCity(supplierDto.getCity());
-            supplier.setDistrict(supplierDto.getDistrict());
-            supplier.setStreet(supplierDto.getStreet());
+            supplier.setAddress(supplierDto.getAddress());
+            supplier.setSupplierImage(supplierDto.getSupplierImage());
             supplier = supplierRepository.save(supplier);
             if(supplier != null){
                 return new SupplierDto(supplier);
@@ -60,14 +59,13 @@ public class SupplierServiceImpl implements SupplierService {
                 }
             }
             if(supplier != null){
-                supplier.setName(supplierDto.getName());
+                supplier.setSupplierCode(supplierDto.getSupplierCode());
+                supplier.setTaxCode(supplierDto.getTaxCode());
+                supplier.setDescription(supplierDto.getDescription());
                 supplier.setPhone(supplierDto.getPhone());
                 supplier.setEmail(supplierDto.getEmail());
-                supplier.setCertificateImageURL(supplierDto.getCertificateImageURL());
-                supplier.setCountry(supplierDto.getCountry());
-                supplier.setCity(supplierDto.getCity());
-                supplier.setDistrict(supplierDto.getDistrict());
-                supplier.setStreet(supplierDto.getStreet());
+                supplier.setAddress(supplierDto.getAddress());
+                supplier.setSupplierImage(supplierDto.getSupplierImage());
                 supplier = supplierRepository.save(supplier);
                 return new SupplierDto(supplier);
             } else {
