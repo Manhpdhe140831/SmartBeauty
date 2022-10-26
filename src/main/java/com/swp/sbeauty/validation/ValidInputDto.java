@@ -1,5 +1,6 @@
 package com.swp.sbeauty.validation;
 
+import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.UserDto;
 
 import java.util.regex.Pattern;
@@ -23,6 +24,23 @@ public class ValidInputDto {
         }
         if(userDto.getMobile() == null){
             result+= "Phone is not empty\n";
+        }
+        return result;
+    }
+    public String validBranch(BranchDto branchDto){
+        String result = "";
+        if(branchDto.getName().length() < 3) {
+            result += "Branch name should have at least 3 characters";
+        }
+        Pattern p1 = Pattern.compile("^[0-9]{10,11}$");
+        if(!p1.matcher(branchDto.getPhone()).find()){
+            result += "Phone is not valid";
+        }
+        if(branchDto.getPhone() == null){
+            result+= "Phone is not empty";
+        }
+        if(branchDto.getAddress() == null){
+            result+= "Address is not empty";
         }
         return result;
     }

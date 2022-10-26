@@ -22,5 +22,5 @@ public interface BranchService {
     Page<Branch> findBranchsWithPaginnationAnSort(int offset,int pageSize, String field);
 
     Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize, String field,String direction);
-    Page<Branch> findBranchsPaginationAndSearch(int offset,int pageSize, String field,String value);
+    Page<Branch> findBranchsPaginationAndSearch(int offset,int pageSize, String name,String address);
 }

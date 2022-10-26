@@ -45,68 +45,70 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto saveProduct(ProductDto productDto) {
 
+        try{
+            if(productDto != null){
+                Product product = new Product();
+                product.setProductCode(productDto.getProductCode());
+                product.setProductName(productDto.getProductName());
+                product.setProductPrice(productDto.getProductPrice());
+                product.setProductBeginDiscount(productDto.getProductBeginDiscount());
+                product.setProductEndDiscount(productDto.getProductEndDiscount());
+                product.setDiscountPercent(productDto.getDiscountPercent());
+                product.setProductImage(productDto.getProductImage());
+                product.setQuantity(productDto.getQuantity());
+                product.setUnit(productDto.getUnit());
+                product.setDescription(productDto.getDescription());
 
-        if(productDto != null){
-            Product product = new Product();
-            product.setProductCode(productDto.getProductCode());
-            product.setProductName(productDto.getProductName());
-            product.setProductPrice(productDto.getProductPrice());
-            product.setProductBeginDiscount(productDto.getProductBeginDiscount());
-            product.setProductEndDiscount(productDto.getProductEndDiscount());
-            product.setDiscountPercent(productDto.getDiscountPercent());
-            product.setProductImage(productDto.getProductImage());
-            product.setQuantity(productDto.getQuantity());
-            product.setUnit(productDto.getUnit());
-            product.setDescription(productDto.getDescription());
-
-            product.setDescription(product.getDescription());
-            if(productDto.getSupplier()!=null){
-                Supplier supplier = null;
-                Optional<Supplier> optional = supplierRepository.findById(productDto.getSupplier().getId());
-                if (optional.isPresent()) {
-                    supplier = optional.get();
+                product.setDescription(product.getDescription());
+                if(productDto.getSupplier()!=null){
+                    Supplier supplier = null;
+                    Optional<Supplier> optional = supplierRepository.findById(productDto.getSupplier().getId());
+                    if (optional.isPresent()) {
+                        supplier = optional.get();
+                    }
+                    product.setSupplier(supplier);
                 }
-                product.setSupplier(supplier);
-            }
-            if(productDto.getCategory()!=null){
-                Category category = null;
-                Optional<Category> optional = categoryRepository.findById(productDto.getCategory().getId());
-                if (optional.isPresent()) {
-                    category = optional.get();
+                if(productDto.getCategory()!=null){
+                    Category category = null;
+                    Optional<Category> optional = categoryRepository.findById(productDto.getCategory().getId());
+                    if (optional.isPresent()) {
+                        category = optional.get();
+                    }
+                    product.setCategory(category);
                 }
-                product.setCategory(category);
-            }
-            Set<Branch> branches = new HashSet<>();
-            if(productDto.getBranch()!=null && product.getBranches().size()>0){
-                for (BranchDto branchDto : productDto.getBranch()){
-                    if(branchDto!=null){
-                        Branch branch = null;
-                        if(branchDto.getId()!=null){
-                            Optional<Branch> optional =branchRepository.findById(branchDto.getId());
-                            if(optional.isPresent()){
-                                branch = optional.get();
-                            }
-                            if(branch!=null){
-                                branches.add(branch);
+                Set<Branch> branches = new HashSet<>();
+                if(productDto.getBranch()!=null && product.getBranches().size()>0){
+                    for (BranchDto branchDto : productDto.getBranch()){
+                        if(branchDto!=null){
+                            Branch branch = null;
+                            if(branchDto.getId()!=null){
+                                Optional<Branch> optional =branchRepository.findById(branchDto.getId());
+                                if(optional.isPresent()){
+                                    branch = optional.get();
+                                }
+                                if(branch!=null){
+                                    branches.add(branch);
+                                }
                             }
                         }
                     }
+                    product.setBranches(branches);
                 }
-                product.setBranches(branches);
+                product = productRepository.save(product);
+                if(product != null){
+                    return new ProductDto(product);
+                }
             }
-            product = productRepository.save(product);
-            if(product != null){
-                return new ProductDto(product);
-            }
+        }catch (Exception e){
+            throw e;
         }
-
         return null;
     }
 
     @Override
     public ProductDto updateProduct(ProductDto productDto, Long id) {
 
-
+    try{
         if(productDto !=null){
             Product product = null;
             if(id !=null){
@@ -168,6 +170,10 @@ public class ProductServiceImpl implements ProductService {
                 return null;
             }
         }
+    }catch (Exception e){
+        throw e;
+    }
+
 
         return null;
     }

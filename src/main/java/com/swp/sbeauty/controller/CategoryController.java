@@ -2,8 +2,12 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.entity.APIResponse;
+import com.swp.sbeauty.entity.Category;
+import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +35,13 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Long id){
         CategoryDto result = categoryService.updateCategory(categoryDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    @GetMapping("/category")
+    private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
+            , @RequestParam(value = "direction") String direction){
+        Page<Category> categorysWithPagination = categoryService.findCategoryPaginationAndSort(page -1,pageSize,sort,direction);
+        return new APIResponse<>(categorysWithPagination.getSize(),categorysWithPagination);
     }
 }
