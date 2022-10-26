@@ -7,6 +7,7 @@ import com.swp.sbeauty.security.jwt.JwtResponse;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.security.services.UserDetailsImpl;
 import com.swp.sbeauty.service.UserService;
+import com.swp.sbeauty.validation.ValidInputDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,25 @@ public class UserController {
     @Autowired
     JwtUtils jwtUtils;
 
+    ValidInputDto valid = new ValidInputDto();
+
     @GetMapping("/user/list")
     public ResponseEntity<List<UserDto>> getUsers(){
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<UserDto> saveUser(@Valid @RequestBody UserDto userDto){
-        UserDto result = userService.saveUser(userDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto){
+        String check =valid.validUser(userDto);
+        if(check == ""){
+            userDto.setErrorMessage(null);
+            UserDto result = userService.saveUser(userDto);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }else{
+            userDto.setErrorMessage(check);
+            return new ResponseEntity<>(userDto, HttpStatus.BAD_REQUEST);
+        }
+
     }
     @PutMapping ("/user/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id){
