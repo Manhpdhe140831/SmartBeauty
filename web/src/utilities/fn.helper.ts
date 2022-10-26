@@ -10,3 +10,23 @@ export function shuffleArray<T>(originalArr: T[]) {
   }
   return array;
 }
+
+export function formatPrice(price: number) {
+  // 123456 -> 123.456
+  return new Intl.NumberFormat("vi-VN").format(price);
+}
+
+export const formatterNumberInput = (value: string | undefined): string => {
+  if (value === undefined) {
+    return "";
+  }
+  let priceCandidate = value;
+  if (Number.isNaN(+value)) {
+    priceCandidate = value.replace(/[^0-9]/g, "");
+  }
+  return formatPrice(+priceCandidate);
+};
+
+export const parserNumberInput = (
+  value: string | undefined
+): string | undefined => value?.replace(/[.,]*/g, "");

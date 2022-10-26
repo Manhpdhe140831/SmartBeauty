@@ -1,12 +1,12 @@
-import { ProviderModel } from "../model/provider.model";
+import { SupplierModel } from "../model/supplier.model";
 
-export const providers: ProviderModel[] = [
-  { id: 1, name: "HNC", taxNumber: "AASC-HNC" },
-  { id: 2, name: "An Phat", taxNumber: "AASC-ANPHAT" },
+export const providers: SupplierModel[] = [
+  { id: 1, name: "HNC", taxCode: "AASC-HNC" },
+  { id: 2, name: "An Phat", taxCode: "AASC-ANPHAT" },
 ];
 
 const mockProviders = (find?: string) =>
-  new Promise<ProviderModel[]>((resolve) =>
+  new Promise<SupplierModel[]>((resolve) =>
     setTimeout(
       () =>
         resolve(

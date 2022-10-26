@@ -30,8 +30,14 @@ import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import { IconPercentage } from "@tabler/icons";
+import {
+  formatterNumberInput,
+  parserNumberInput,
+} from "../../../utilities/fn.helper";
+import { MAX_PRICE } from "../../../const/_const";
 
 type DialogProps = {
+  mode?: "create" | "view";
   product: ProductModel;
   opened: boolean;
   onClosed?: (withUpdate?: ProductModel) => void;
@@ -47,7 +53,7 @@ const ProductDetailDialog: FC<DialogProps> = ({
       id: idDbSchema,
       name: nameSchema,
       description: descriptionSchema,
-      unitType: unitProductSchema,
+      unit: unitProductSchema,
       quantity: amountPerUnitSchema,
       price: priceSchema,
       provider: idDbSchema,
@@ -59,7 +65,8 @@ const ProductDetailDialog: FC<DialogProps> = ({
     control,
     register,
     handleSubmit,
-    getValues,
+    watch,
+    reset,
     formState: { errors },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
@@ -73,14 +80,17 @@ const ProductDetailDialog: FC<DialogProps> = ({
       discountEnd: product.discountEnd
         ? dayjs(product.discountEnd).toDate()
         : null,
-      salePercent: product.salePercent ?? null,
+      discountPercent: product.discountPercent ?? null,
     },
   });
 
   return (
     <Modal
       title={<h2 className={"text-xl font-semibold"}>Product Detail</h2>}
-      onClose={() => onClosed && onClosed()}
+      onClose={() => {
+        onClosed && onClosed();
+        reset();
+      }}
       opened={opened}
       closeOnClickOutside={false}
       size={"auto"}
@@ -120,20 +130,19 @@ const ProductDetailDialog: FC<DialogProps> = ({
                   />
                 )}
               ></Controller>
+              <FormErrorMessage errors={errors} name={"quantity"} />
             </div>
 
-            <div className="w-40">
+            <div className="w-50">
               <TextInput
                 required
                 label={"Unit Type"}
                 placeholder={"g, ml, etc..."}
-                {...register("unitType")}
+                {...register("unit")}
               />
+              <FormErrorMessage errors={errors} name={"unit"} />
             </div>
           </div>
-
-          <FormErrorMessage errors={errors} name={"quantity"} />
-          <FormErrorMessage errors={errors} name={"unitType"} />
 
           <Divider my={8} />
 
@@ -187,31 +196,34 @@ const ProductDetailDialog: FC<DialogProps> = ({
           <FormErrorMessage errors={errors} name={"discountEnd"} />
 
           <Controller
-            name={"salePercent"}
+            name={"discountPercent"}
             control={control}
             render={({ field }) => (
               <NumberInput
-                disabled={
-                  !getValues("discountStart") && !getValues("discountEnd")
-                }
+                disabled={!watch("discountStart") && !watch("discountEnd")}
                 placeholder={"sale percentage..."}
                 withAsterisk
                 hideControls
                 min={0}
+                precision={2}
+                step={0.05}
+                max={100}
                 label={"Discount Percent"}
                 defaultValue={field.value ?? undefined}
                 onChange={(v) => field.onChange(v ?? null)}
                 onBlur={field.onBlur}
-                rightSection={<IconPercentage color={"#939393"} className={'mr-2'} />}
+                rightSection={
+                  <IconPercentage color={"#939393"} className={"mr-2"} />
+                }
               />
             )}
           ></Controller>
-          <FormErrorMessage errors={errors} name={"salePercent"} />
+          <FormErrorMessage errors={errors} name={"discountPercent"} />
         </div>
 
         <Divider orientation={"vertical"} />
 
-        <div className="flex flex-1 flex-col">
+        <div className="flex w-48 flex-col">
           <label
             htmlFor="file"
             className="text-[14px] font-[500] text-gray-900"
@@ -265,13 +277,24 @@ const ProductDetailDialog: FC<DialogProps> = ({
             render={({ field }) => (
               <NumberInput
                 placeholder={"price of the product..."}
-                withAsterisk
                 hideControls
                 min={0}
-                label={"Price"}
+                max={MAX_PRICE}
+                label={
+                  <label
+                    htmlFor="file"
+                    className="text-[14px] font-[500] text-gray-900"
+                  >
+                    Product Price <span className="text-red-500">*</span>
+                  </label>
+                }
                 defaultValue={field.value}
                 onChange={(v) => field.onChange(v)}
                 onBlur={field.onBlur}
+                size={"lg"}
+                parser={parserNumberInput}
+                formatter={formatterNumberInput}
+                rightSection={<span className={"text-xs"}>VND</span>}
               />
             )}
           ></Controller>

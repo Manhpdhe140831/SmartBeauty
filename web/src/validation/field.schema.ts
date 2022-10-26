@@ -62,10 +62,10 @@ export const saleSchema = z
   .object({
     discountStart: z.date().nullable(),
     discountEnd: z.date().nullable(),
-    salePercent: z.number().nullable(),
+    discountPercent: z.number().nullable(),
   })
-  .refine(({ salePercent, discountEnd, discountStart }) => {
-    if (salePercent !== undefined) {
+  .refine(({ discountPercent, discountEnd, discountStart }) => {
+    if (discountPercent !== undefined) {
       return discountEnd !== undefined || discountStart !== undefined;
     }
 
@@ -96,7 +96,7 @@ export const saleSchema = z
   ) as unknown as ZodObject<{
   discountStart: z.ZodNullable<z.ZodDate>;
   discountEnd: z.ZodNullable<z.ZodDate>;
-  salePercent: z.ZodNullable<z.ZodNumber>;
+  discountPercent: z.ZodNullable<z.ZodNumber>;
 }>;
 
 export const unitProductSchema = z.string().min(1);

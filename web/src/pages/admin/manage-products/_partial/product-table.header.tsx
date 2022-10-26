@@ -16,7 +16,7 @@ const ProductTableHeader = () => {
           <td className={"p-2 text-center"}>Image</td>
           <td className={"py-2 pr-2"}>Name</td>
           <td className={"p-2 text-center"}>Price</td>
-          <td className={"p-2 text-center"}>Origin</td>
+          <td className={"p-2 text-center"}>Supplier</td>
           <td className={"p-2"}>Import/Expire</td>
         </tr>
       </thead>

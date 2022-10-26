@@ -1,7 +1,7 @@
-import { ProviderModel } from "./provider.model";
+import { SupplierModel } from "./supplier.model";
 
 export interface ProductModel<
-  provider extends number | ProviderModel = number
+  supplierModel extends number | SupplierModel = number
 > {
   id: number;
   name: string;
@@ -12,10 +12,10 @@ export interface ProductModel<
   description: string;
   discountStart: string | null;
   discountEnd: string | null;
-  salePercent: number | null;
+  discountPercent: number | null;
   image?: string;
-  provider: provider;
-  unitType?: string;
+  supplier: supplierModel;
+  unit: string;
   quantity?: number;
 }
 
