@@ -80,40 +80,34 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchDto updateBranch(BranchDto branchDto, Long id) {
-try{
-    if(branchDto !=null){
-        Branch branch = null;
-        if(id !=null){
-            Optional<Branch> optional =branchRepository.findById(id);
-            if(optional.isPresent()){
-                branch = optional.get();
-            }
-        }
-        if(branch != null){
-            branch.setName(branchDto.getName());
-            branch.setPhone(branchDto.getPhone());
-            branch.setAddress(branchDto.getAddress());
-            branch.setImage(branchDto.getImage());
 
-            if(branchDto.getUsers()!=null){
-                User user = null;
-                Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
-                if (optional.isPresent()) {
-                    user = optional.get();
+        if(branchDto !=null){
+            Branch branch = null;
+            if(id !=null){
+                Optional<Branch> optional =branchRepository.findById(id);
+                if(optional.isPresent()){
+                    branch = optional.get();
                 }
-                branch.setUser(user);
-
             }
-            branch = branchRepository.save(branch);
-            return new BranchDto(branch);
-        } else {
-            return null;
+            if(branch != null){
+                branch.setName(branchDto.getName());
+                branch.setPhone(branchDto.getPhone());
+                branch.setAddress(branchDto.getAddress());
+                branch.setImage(branchDto.getImage());
+                if(branchDto.getUsers()!=null){
+                    User user = null;
+                    Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
+                    if (optional.isPresent()) {
+                        user = optional.get();
+                    }
+                    branch.setUser(user);
+                }
+                branch = branchRepository.save(branch);
+                return new BranchDto(branch);
+            } else {
+                return null;
+            }
         }
-    }
-}catch (Exception e){
-    throw e;
-}
-
 
         return null;
     }
