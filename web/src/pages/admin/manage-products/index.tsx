@@ -27,7 +27,7 @@ const Index: AppPageInterface = () => {
   );
 
   return (
-    <div className="flex h-full flex-col space-y-4 p-4">
+    <div className="flex min-h-full flex-col space-y-4 p-4">
       <div className="flex justify-end space-x-2">
         <Button leftIcon={<IconPlus />}>New Product</Button>
 
@@ -39,7 +39,6 @@ const Index: AppPageInterface = () => {
         />
       </div>
       <Divider my={8} />
-
       <div className="flex-1">
         <Table withBorder className="table-fixed">
           <ProductTableHeader />
@@ -60,9 +59,7 @@ const Index: AppPageInterface = () => {
           </tbody>
         </Table>
       </div>
-
       <Divider my={8} />
-
       {/*Total record / 10 (per-page)*/}
       <Pagination
         position={"center"}

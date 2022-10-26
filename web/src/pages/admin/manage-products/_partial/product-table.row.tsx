@@ -53,7 +53,7 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
       </td>
 
       <td className={"text-center"} rowSpan={2}>
-        {product.origin}
+        {product.provider}
       </td>
       <td>
         <div className="flex flex-col">
@@ -81,9 +81,9 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
       {product.salePercent !== null && <td className="text-center">
         <Tooltip label={<div className={"flex flex-col items-start"}>
           <small className={"text-gray-500"}>From</small>
-          <small>{product.saleStart ? dayjs(product.saleStart).format("DD/MM/YYYY") : "-"}</small>
+          <small>{product.discountStart ? dayjs(product.discountStart).format("DD/MM/YYYY") : "-"}</small>
           <small className={"text-gray-500"}>To</small>
-          <small>{product.saleEnd ? dayjs(product.saleEnd).format("DD/MM/YYYY") : "-"}</small>
+          <small>{product.discountEnd ? dayjs(product.discountEnd).format("DD/MM/YYYY") : "-"}</small>
         </div>}>
           <Badge
             variant={"filled"}
