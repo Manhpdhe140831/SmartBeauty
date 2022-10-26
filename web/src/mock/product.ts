@@ -15,6 +15,8 @@ const products: ProductModel[] = [
     discountEnd: "2022-07-22T02:24:11Z",
     discountPercent: 73.3,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 2,
@@ -28,6 +30,8 @@ const products: ProductModel[] = [
     discountEnd: "2021-12-01T05:27:45Z",
     discountPercent: 93.0,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 3,
@@ -41,6 +45,8 @@ const products: ProductModel[] = [
     discountEnd: "2021-10-31T03:16:52Z",
     discountPercent: 6.7,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 4,
@@ -54,6 +60,8 @@ const products: ProductModel[] = [
     discountEnd: null,
     discountPercent: null,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 5,
@@ -67,6 +75,8 @@ const products: ProductModel[] = [
     discountEnd: "2021-11-02T06:47:35Z",
     discountPercent: 7.5,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 6,
@@ -80,6 +90,8 @@ const products: ProductModel[] = [
     discountEnd: "2022-10-11T16:56:57Z",
     discountPercent: null,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 7,
@@ -93,6 +105,8 @@ const products: ProductModel[] = [
     discountEnd: "2022-10-25T16:56:16Z",
     discountPercent: 12.9,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 8,
@@ -107,6 +121,8 @@ const products: ProductModel[] = [
     discountEnd: "2022-10-16T04:57:12Z",
     discountPercent: 2.3,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 9,
@@ -120,6 +136,8 @@ const products: ProductModel[] = [
     discountEnd: "2022-07-28T22:20:44Z",
     discountPercent: 43.9,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
   {
     id: 10,
@@ -133,6 +151,8 @@ const products: ProductModel[] = [
     discountEnd: "2022-05-21T12:34:01Z",
     discountPercent: 70.5,
     supplier: providers[0]!.id,
+    unit: "gram",
+    quantity: 12,
   },
 ];
 

@@ -19,6 +19,7 @@
 # production
 /build
 /client-static
+/.docker/.mysql
 
 # misc
 .DS_Store
