@@ -20,7 +20,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class ServiceDto {
-    private long id;
+    private Long id;
     private String codeService;
     private String nameService;
     private Date startDiscount;

@@ -43,7 +43,6 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "branch_id"))
     private Set<Branch> branches = new HashSet<>();
 
-;
 }
 
 
