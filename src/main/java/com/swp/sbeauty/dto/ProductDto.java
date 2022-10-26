@@ -5,6 +5,8 @@ import com.swp.sbeauty.entity.Product;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +15,11 @@ import java.util.Set;
 @Setter
 public class ProductDto {
     private Long id;
+    @NotEmpty
+    @Size(min = 5, message = "product code should have at least 5 characters")
     private String productCode;
+    @NotEmpty
+    @Size(min = 3, message = "product name should have at least 3 characters")
     private String productName;
     private Double productPrice;
     private Date productBeginDiscount;
@@ -21,6 +27,7 @@ public class ProductDto {
     private double discountPercent;
     private String productImage;
     private int quantity;
+    @NotEmpty
     private String unit;
     private String description;
     private SupplierDto supplier;

@@ -11,6 +11,9 @@ import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,7 +34,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProducts() {
-        return null;
+        List<Product> list = productRepository.findAll();
+        List<ProductDto> result =new ArrayList<>();
+        for(Product product : list){
+            result.add(new ProductDto(product));
+        }
+        return result;
     }
 
     @Override
@@ -162,6 +170,13 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return null;
+    }
+
+    @Override
+    public Page<Product> findProductsPaginationAndSort(int offset, int pageSize, String field, String direction) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Product> products =productRepository.findAll(PageRequest.of(offset,pageSize,sort));
+        return products;
     }
 //    @Autowired
 //    private ProductRepository productRepository;

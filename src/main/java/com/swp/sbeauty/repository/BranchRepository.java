@@ -1,8 +1,13 @@
 package com.swp.sbeauty.repository;
 
+import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface BranchRepository extends JpaRepository<Branch,Long> {

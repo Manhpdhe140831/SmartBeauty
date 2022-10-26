@@ -11,6 +11,7 @@ import com.swp.sbeauty.service.BranchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service @Transactional @Slf4j
@@ -31,7 +33,13 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<BranchDto> getBranch() {
-        return null;
+
+        List<Branch> list = branchRepository.findAll();
+        List<BranchDto> result =new ArrayList<>();
+        for(Branch branch : list){
+            result.add(new BranchDto(branch));
+        }
+        return result;
     }
 
     @Override
@@ -116,10 +124,18 @@ public class BranchServiceImpl implements BranchService {
 
 
     @Override
-    public Page<Branch> findBranchsPaginationAnSort(int offset, int pageSize, String field, String direction) {
+    public Page<Branch> findBranchsPaginationAndSort(int offset, int pageSize, String field, String direction) {
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
         Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize,sort));
         return branches;
+    }
+
+    @Override
+    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize, String field, String value) {
+        /*List<Branch> search = new ArrayList<>();
+                search = branchRepository.searchBranch(field,value);
+        Page<Branch> branches = branchRepository.findAll(PageRequest.of(offset, pageSize,));*/
+        return null;
     }
 
 //    @Autowired

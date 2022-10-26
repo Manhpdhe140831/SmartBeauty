@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -47,9 +48,10 @@ public class BranchController {
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
             ,@RequestParam(value = "direction") String direction){
-        Page<Branch> branchesWithPagination = branchService.findBranchsPaginationAnSort(page -1,pageSize,sort,direction);
+        Page<Branch> branchesWithPagination = branchService.findBranchsPaginationAndSort(page -1,pageSize,sort,direction);
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }
+
     @GetMapping("/branch/paging/page={offset}/{field}")
     private APIResponse<Page<Branch>> getBranchWithPaginationAndSort(@PathVariable int offset,@PathVariable String field){
         int pageSize =2;
@@ -57,12 +59,12 @@ public class BranchController {
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }
     @PostMapping("/branch/save")
-    public ResponseEntity<BranchDto> saveBranch(@RequestBody BranchDto branchDto){
+    public ResponseEntity<BranchDto> saveBranch(@Valid @RequestBody BranchDto branchDto){
         BranchDto result = branchService.saveBranch(branchDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PutMapping ("/branch/update/{id}")
-    public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @PathVariable Long id){
+    public ResponseEntity<BranchDto> updateBranch(@Valid @RequestBody BranchDto branchDto, @PathVariable Long id){
         BranchDto result = branchService.updateBranch(branchDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

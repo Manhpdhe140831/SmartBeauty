@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,12 +23,12 @@ public class SupplierController {
     }
 
     @PostMapping("/supplier/save")
-    public ResponseEntity<SupplierDto> saveSupplier(@RequestBody SupplierDto supplierDto){
+    public ResponseEntity<SupplierDto> saveSupplier(@Valid @RequestBody SupplierDto supplierDto){
         SupplierDto result = supplierService.saveSupplier(supplierDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PutMapping ("/supplier/update/{id}")
-    public ResponseEntity<SupplierDto> updateSupplier(@RequestBody SupplierDto supplierDto, @PathVariable Long id){
+    public ResponseEntity<SupplierDto> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @PathVariable Long id){
         SupplierDto result = supplierService.updateSupplier(supplierDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

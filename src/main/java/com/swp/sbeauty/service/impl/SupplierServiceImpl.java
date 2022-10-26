@@ -2,8 +2,10 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.SupplierDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Supplier;
+import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,12 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierRepository supplierRepository;
     @Override
     public List<SupplierDto> getSupplier() {
-        return null;
+        List<Supplier> list = supplierRepository.findAll();
+        List<SupplierDto> result =new ArrayList<>();
+        for(Supplier supplier : list){
+            result.add(new SupplierDto(supplier));
+        }
+        return result;
     }
 
     @Override
