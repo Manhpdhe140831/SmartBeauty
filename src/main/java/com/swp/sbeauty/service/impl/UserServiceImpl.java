@@ -121,6 +121,17 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public List<User> getByRole(Long id) {
+        if(id!=null){
+            List<User> result = userRepository.findUserByRoleId(id);
+            if(result != null){
+                return result;
+            }
+        }
+        return null;
+    }
+
     //    @Override
 //    public RoleDto saveRole(RoleDto roleDto) {
 //        if(roleDto != null){

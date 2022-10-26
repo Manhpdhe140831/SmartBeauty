@@ -1,6 +1,7 @@
 package com.swp.sbeauty.service;
 
 import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.entity.User;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface UserService {
 
 
     UserDto getById(Long id);
+
+    List<User> getByRole(Long id);
 }

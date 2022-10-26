@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 
 import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.security.jwt.JwtResponse;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.security.services.UserDetailsImpl;
@@ -53,6 +54,11 @@ public class UserController {
     @GetMapping(value = "user/{id}")
     public ResponseEntity<UserDto> getById(@PathVariable Long id) {
         UserDto result = userService.getById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+    @GetMapping(value = "user/getByRole/{id}")
+    public ResponseEntity<List<User>> getByRole(@PathVariable Long id) {
+        List<User> result = userService.getByRole(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/auth/signin")
