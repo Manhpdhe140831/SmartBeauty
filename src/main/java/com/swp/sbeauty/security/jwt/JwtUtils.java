@@ -25,13 +25,14 @@ public class JwtUtils {
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getId().toString()))
-                .claim("id", userPrincipal.getId().toString())
+                .claim("id", userPrincipal.getId())
                 .claim("name", userPrincipal.getName())
                 .claim("email", userPrincipal.getEmail())
                 .claim("roles", userPrincipal.getAuthorities())
                 .claim("dateOfBirth", userPrincipal.getDateOfBirth())
                 .claim("gender", userPrincipal.getGender())
                 .claim("mobile", userPrincipal.getMobile())
+
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
