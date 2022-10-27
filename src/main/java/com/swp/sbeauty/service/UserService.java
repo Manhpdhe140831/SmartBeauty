@@ -9,7 +9,7 @@ public interface UserService {
     List<UserDto> getUsers();
 
 
-    UserDto saveUser(UserDto userDto);
+    Boolean saveUser(UserDto userDto);
 
     UserDto updateUser(UserDto userDto, Long id);
 

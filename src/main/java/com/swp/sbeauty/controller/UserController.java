@@ -45,8 +45,8 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto){
-        UserDto result = userService.saveUser(userDto);
+    public ResponseEntity<Boolean> saveUser(@RequestBody UserDto userDto){
+        Boolean result = userService.saveUser(userDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PutMapping ("/user/update")

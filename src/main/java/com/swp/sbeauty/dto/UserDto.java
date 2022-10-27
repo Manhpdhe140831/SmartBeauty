@@ -21,6 +21,7 @@ public class UserDto {
     private String address;
     private String password;
     private String urlImage;
+    private String role;
     private Set<RoleDto> roles;
 
     public UserDto(){}

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
 
     @Override
-    public UserDto saveUser(UserDto userDto) {
+    public Boolean saveUser(UserDto userDto) {
         if(userDto != null){
             User user = new User();
             user.setName(userDto.getName());
@@ -39,31 +39,27 @@ public class UserServiceImpl implements UserService {
             user.setGender(userDto.getGender());
             user.setAddress(userDto.getAddress());
             user.setPassword(encoder.encode(userDto.getPassword()));
-            user.setUrlImage(user.getUrlImage());
+            user.setUrlImage(userDto.getUrlImage());
             Set<Role> roles = new HashSet<>();
-            if(userDto.getRoles()!=null && userDto.getRoles().size()>0){
-                for (RoleDto roleDto : userDto.getRoles()){
-                    if(roleDto!=null){
-                        Role role = null;
-                        if(roleDto.getId()!=null){
-                            Optional<Role> optional =roleRepository.findById(roleDto.getId());
-                            if(optional.isPresent()){
-                                role = optional.get();
-                            }
-                            if(role!=null){
-                                roles.add(role);
-                            }
-                        }
-                    }
+            if(userDto.getRole()!=null){
+                Role role = null;
+                Optional<Role> optional =roleRepository.findByName(userDto.getRole());
+                if(optional.isPresent()){
+                    role = optional.get();
                 }
+                if(role!=null){
+                    roles.add(role);
+                }
+            }
+            if(roles!=null){
                 user.setRoles(roles);
             }
             user = userRepository.save(user);
             if(user != null){
-                return new UserDto(user);
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     @Override
