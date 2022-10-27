@@ -28,8 +28,8 @@ import {
   emailSchema,
   fileUploadSchema,
   imageTypeSchema,
-  phoneSchema,
   nameSchema,
+  phoneSchema,
 } from "../../../validation/field.schema";
 import { BranchModel } from "../../../model/branch.model";
 
@@ -142,6 +142,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
               component={MaskedInput}
               mask={PhoneNumberMask}
               placeholder={"0127749999"}
+              defaultValue={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
             />

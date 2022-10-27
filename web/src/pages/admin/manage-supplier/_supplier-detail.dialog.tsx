@@ -34,7 +34,7 @@ const SupplierDetailDialog = ({
     id: idSchema,
     name: nameSchema,
     taxCode: taxCodeSchema,
-    description: descriptionSchema,
+    description: descriptionSchema.nullable().optional(),
     phone: phoneSchema,
     email: emailSchema,
     address: addressSchema,
@@ -59,7 +59,6 @@ const SupplierDetailDialog = ({
   });
 
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
-    console.log(isDirty);
     e.preventDefault();
     e.stopPropagation();
     reset();
@@ -112,6 +111,7 @@ const SupplierDetailDialog = ({
                     component={MaskedInput}
                     mask={PhoneNumberMask}
                     placeholder={"0127749999"}
+                    defaultValue={field.value}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
                   />

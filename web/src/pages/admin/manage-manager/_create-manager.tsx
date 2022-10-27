@@ -84,6 +84,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
               component={MaskedInput}
               mask={PhoneNumberMask}
               placeholder={"0127749999"}
+              defaultValue={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
             />

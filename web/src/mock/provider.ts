@@ -4,17 +4,17 @@ export const providers: SupplierModel[] = [
   {
     id: 1,
     name: "HNC",
-    taxCode: "AASC-HNC",
-    phone: "1212312300",
-    address: "",
+    taxCode: "AASCHNCA12",
+    phone: "0212312300",
+    address: "123",
     email: "hnc@hnc.com",
   },
   {
     id: 2,
     name: "An Phat",
-    taxCode: "AASC-ANPHAT",
-    phone: "1212312300",
-    address: "",
+    taxCode: "AASCANPHAT",
+    phone: "0212312300",
+    address: "321",
     email: "ANPHAT@ANPHAT.com",
   },
 ];
