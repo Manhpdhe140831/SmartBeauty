@@ -46,16 +46,8 @@ public class UserController {
 
     @PostMapping("/user/save")
     public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto){
-        String check =valid.validUser(userDto);
-        if(check == ""){
-            userDto.setErrorMessage(null);
-            UserDto result = userService.saveUser(userDto);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        }else{
-            userDto.setErrorMessage(check);
-            return new ResponseEntity<>(userDto, HttpStatus.BAD_REQUEST);
-        }
-
+        UserDto result = userService.saveUser(userDto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PutMapping ("/user/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id){
@@ -80,8 +72,6 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
     //abc

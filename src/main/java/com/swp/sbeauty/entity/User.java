@@ -29,6 +29,8 @@ public class User {
     private String address;
     @Column(name="password")
     private String password;
+    @Column(name="urlImage")
+    private String urlImage;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(  name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
