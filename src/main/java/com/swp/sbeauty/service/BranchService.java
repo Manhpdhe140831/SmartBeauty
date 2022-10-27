@@ -9,7 +9,7 @@ import java.util.List;
 public interface BranchService {
     List<BranchDto> getBranch();
     List<Branch> findAllBranchs();
-
+    BranchDto getById(Long id);
     List<Branch> findBranchsWithSorting(String field);
 
     /*List<RecruiterAdminDto> getRecruiterByName(String name, int pageNo, int pageSize);*/
@@ -17,10 +17,6 @@ public interface BranchService {
 
     BranchDto updateBranch(BranchDto branchDto, Long id);
 
-    Page<Branch> findBranchsWithPaginnation(int offset,int pageSize);
-
-    Page<Branch> findBranchsWithPaginnationAnSort(int offset,int pageSize, String field);
-
     Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize, String field,String direction);
-    Page<Branch> findBranchsPaginationAndSearch(int offset,int pageSize, String name,String address);
+    Page<Branch> findBranchsPaginationAndSearch(int offset,int pageSize,String field,String direction, String value);
 }

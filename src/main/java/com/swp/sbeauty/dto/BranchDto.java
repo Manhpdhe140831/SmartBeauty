@@ -16,7 +16,6 @@ public class BranchDto {
     private String phone;
     private String address;
     private String image;
-    private String errorMessage;
     private UserDto users;
 
     public BranchDto(){}

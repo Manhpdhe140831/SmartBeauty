@@ -1,5 +1,6 @@
 package com.swp.sbeauty.controller;
 
+import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
@@ -25,7 +26,11 @@ public class SupplierController {
     public ResponseEntity<List<SupplierDto>> getSupplier(){
         return ResponseEntity.ok().body(supplierService.getSupplier());
     }
-
+    @GetMapping("/supplier/{id}")
+    public ResponseEntity<SupplierDto> getSupplierById(@PathVariable Long id) {
+        SupplierDto result = supplierService.getById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
     @PostMapping("/supplier/save")
     public ResponseEntity<SupplierDto> saveSupplier(@Valid @RequestBody SupplierDto supplierDto){
         SupplierDto result = supplierService.saveSupplier(supplierDto);
@@ -39,8 +44,8 @@ public class SupplierController {
     @GetMapping("/supplier")
     private APIResponse<Page<Supplier>> getSupplierWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
-            , @RequestParam(value = "direction") String direction){
+            , @RequestParam(value = "sort", required = false) String sort
+            , @RequestParam(value = "direction", defaultValue = "asc") String direction){
         Page<Supplier> suppliersWithPagination = supplierService.findSupplierPaginationAndSort(page -1,pageSize,sort,direction);
         return new APIResponse<>(suppliersWithPagination.getSize(),suppliersWithPagination);
     }

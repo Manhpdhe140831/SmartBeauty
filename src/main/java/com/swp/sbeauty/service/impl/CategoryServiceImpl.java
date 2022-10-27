@@ -1,6 +1,8 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.repository.CategoryRepository;
@@ -30,6 +32,17 @@ public class CategoryServiceImpl implements CategoryService {
             result.add(new CategoryDto(category));
         }
         return result;
+    }
+
+    @Override
+    public CategoryDto getById(Long id) {
+        if (id != null) {
+            Category entity = categoryRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new CategoryDto(entity);
+            }
+        }
+        return null;
     }
 
     @Override

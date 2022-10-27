@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.service.BranchService;
@@ -29,65 +30,52 @@ public class BranchController {
     public ResponseEntity<List<BranchDto>> getBranch(){
         return ResponseEntity.ok().body(branchService.getBranch());
     }
+    @GetMapping("/branch/{id}")
+    public ResponseEntity<BranchDto> getById(@PathVariable Long id) {
+        BranchDto result = branchService.getById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
     @GetMapping("/branch/paging")
     private APIResponse<List<Branch>> getAllBranch(){
         List<Branch> allBranchs = branchService.findAllBranchs();
         return new APIResponse<>(allBranchs.size(),allBranchs);
     }
-    @GetMapping("/branch/{field}")
+    /*@GetMapping("/branch/{field}")
     private APIResponse<List<Branch>> getBranchWithSort(@PathVariable String field){
         List<Branch> allBranchs = branchService.findBranchsWithSorting(field);
         return new APIResponse<>(allBranchs.size(),allBranchs);
-    }
+    }*/
 
 
 
     @GetMapping("/branch")
     private APIResponse<Page<Branch>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
-            ,@RequestParam(value = "direction") String direction){
-        Page<Branch> branchesWithPagination = branchService.findBranchsPaginationAndSort(page -1,pageSize,sort,direction);
+            , @RequestParam(value = "sort", required = false,defaultValue = "name") String sort
+            , @RequestParam(value = "value", required = false) String value
+            ,@RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+        Page<Branch> branchesWithPagination;
+        if(value  == "" ||value == null){
+            branchesWithPagination = branchService.findBranchsPaginationAndSort(page -1,pageSize,sort,direction);
+        }
+        else {
+            branchesWithPagination = branchService.findBranchsPaginationAndSearch(page -1,pageSize,sort,direction,value);
+        }
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }
-    @GetMapping("/branch1")
-    private APIResponse<Page<Branch>> getBranchWithPaginationAndSearch(@RequestParam(value = "page",required = false,defaultValue = "0") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name",required = false, defaultValue = "")  String name
-            ,@RequestParam(value = "address", required = false) String address ){
-        System.out.println(name);
-        Pageable pageable= PageRequest.of(page,pageSize);
-        Page<Branch> branches=branchService.findBranchsPaginationAndSearch(page,pageSize,name,address);
-        return new APIResponse<>(branches.getSize(),branches);
-    }
+
 
 
     @PostMapping("/branch/save")
     public ResponseEntity<BranchDto> saveBranch(@RequestBody BranchDto branchDto){
-        String check = valid.validBranch(branchDto);
-        if(check == ""){
-            branchDto.setErrorMessage(null);
             BranchDto result = branchService.saveBranch(branchDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }else {
-            branchDto.setErrorMessage(check);
-            return new ResponseEntity<>(branchDto,HttpStatus.BAD_REQUEST);
-        }
-
     }
 
 
-    @PutMapping ("/branch/update/{id}")
+    @PutMapping ("/branch/update/id={id}")
     public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @PathVariable Long id){
-        String check = valid.validBranch(branchDto);
-        if(check == "") {
-            branchDto.setErrorMessage(null);
             BranchDto result = branchService.updateBranch(branchDto, id);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }else {
-            branchDto.setErrorMessage(check);
-            return new ResponseEntity<>(branchDto,HttpStatus.BAD_REQUEST);
-
-        }
     }
 }

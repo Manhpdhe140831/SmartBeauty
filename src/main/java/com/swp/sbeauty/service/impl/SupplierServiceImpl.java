@@ -35,6 +35,17 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    public SupplierDto getById(Long id) {
+        if (id != null) {
+            Supplier entity = supplierRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new SupplierDto(entity);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public SupplierDto saveSupplier(SupplierDto supplierDto) {
         try{
             if(supplierDto != null){

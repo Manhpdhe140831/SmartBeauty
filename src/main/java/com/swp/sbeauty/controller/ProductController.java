@@ -1,6 +1,7 @@
 package com.swp.sbeauty.controller;
 
 
+import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.ProductDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.APIResponse;
@@ -26,6 +27,11 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getProducts(){
         return ResponseEntity.ok().body(productService.getProducts());
     }
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+        ProductDto result = productService.getProductById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
 
     @PostMapping("/product/save")
     public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto){
@@ -40,8 +46,8 @@ public class ProductController {
     @GetMapping("/product")
     private APIResponse<Page<Product>> getProductWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
-            , @RequestParam(value = "direction") String direction){
+            , @RequestParam(value = "sort", required = false) String sort
+            , @RequestParam(value = "direction", defaultValue = "asc") String direction){
         Page<Product> productsWithPagination = productService.findProductsPaginationAndSort(page -1,pageSize,sort,direction);
         return new APIResponse<>(productsWithPagination.getSize(),productsWithPagination);
     }

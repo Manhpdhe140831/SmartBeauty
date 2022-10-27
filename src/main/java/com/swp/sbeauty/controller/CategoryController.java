@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
@@ -25,6 +26,11 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDto>> getCategory(){
         return ResponseEntity.ok().body(categoryService.getCategory());
     }
+    @GetMapping("/category/{id}")
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        CategoryDto result = categoryService.getById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
 
     @PostMapping("/category/save")
     public ResponseEntity<CategoryDto> saveCategory(@RequestBody CategoryDto categoryDto){
@@ -39,8 +45,8 @@ public class CategoryController {
     @GetMapping("/category")
     private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
-            , @RequestParam(value = "direction") String direction){
+            , @RequestParam(value = "sort", required = false) String sort
+            , @RequestParam(value = "direction", defaultValue = "asc") String direction){
         Page<Category> categorysWithPagination = categoryService.findCategoryPaginationAndSort(page -1,pageSize,sort,direction);
         return new APIResponse<>(categorysWithPagination.getSize(),categorysWithPagination);
     }

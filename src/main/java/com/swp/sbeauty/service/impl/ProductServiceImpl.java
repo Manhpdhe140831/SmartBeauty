@@ -2,6 +2,7 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.ProductDto;
+import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.BranchRepository;
@@ -40,6 +41,17 @@ public class ProductServiceImpl implements ProductService {
             result.add(new ProductDto(product));
         }
         return result;
+    }
+
+    @Override
+    public ProductDto getProductById(Long id) {
+        if (id != null) {
+            Product entity = productRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new ProductDto(entity);
+            }
+        }
+        return null;
     }
 
     @Override

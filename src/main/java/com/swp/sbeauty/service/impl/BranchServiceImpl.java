@@ -2,6 +2,7 @@ package com.swp.sbeauty.service.impl;
 
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.BranchRepository;
@@ -42,6 +43,17 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<Branch> findAllBranchs() {
+        return null;
+    }
+
+    @Override
+    public BranchDto getById(Long id) {
+        if (id != null) {
+            Branch entity = branchRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new BranchDto(entity);
+            }
+        }
         return null;
     }
 
@@ -116,15 +128,15 @@ public class BranchServiceImpl implements BranchService {
         return null;
     }
 
-    @Override
-    public Page<Branch> findBranchsWithPaginnation(int offset, int pageSize) {
-        return null;
-    }
+
 
     @Override
-    public Page<Branch> findBranchsWithPaginnationAnSort(int offset, int pageSize, String field) {
-        return null;
+    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize,String field,String direction,String value) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Branch> branches =branchRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+        return branches;
     }
+
 
 
     @Override
@@ -134,14 +146,12 @@ public class BranchServiceImpl implements BranchService {
         return branches;
     }
 
-    @Override
-    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize, String name,String address) {
-        Pageable pageable=PageRequest.of(offset,pageSize);
-        Page<Branch> branches = branchRepository.getBranchByFilter(name,address,pageable);
-        System.out.println(branches);
 
-        return branches;
-    }
+
+
+
+
+
 
 //    @Autowired
 //    private BranchRepository branchRepository;
@@ -232,5 +242,4 @@ public class BranchServiceImpl implements BranchService {
 //        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(field)));
 //        return branches;
 //    }
-
 }
