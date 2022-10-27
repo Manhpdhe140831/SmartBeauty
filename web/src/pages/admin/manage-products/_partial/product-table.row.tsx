@@ -123,6 +123,7 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
       {firstRow}
       {secondRow}
       <ProductDetailDialog
+        mode={"view"}
         key={product.id}
         opened={viewingDetail}
         product={product}
