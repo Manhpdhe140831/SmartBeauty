@@ -17,11 +17,11 @@ export const branchAdminConfig: NavLinkItemProp[] = [
   },
   { href: "/admin/manage-supplier", label: "Manager Supplier" },
   { href: "/admin/manage-products", label: "Manage Products" },
+  { href: "/admin/manage-services", label: "Manage Services" },
   {
     href: "/admin/manage-treatment-courses",
     label: "Treatment Courses",
   },
-  { href: "/admin/manage-services", label: "Quản Lý Dịch Vụ" },
   { href: "/admin/reports", label: "Báo Cáo" },
 ];
 

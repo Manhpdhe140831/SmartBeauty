@@ -3,7 +3,7 @@ import { USER_ROLE } from "../../../const/user-role.const";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
 import { useQuery } from "@tanstack/react-query";
 import { Divider, Pagination, Table } from "@mantine/core";
-import TableRecordHolder from "../../../components/table-record-holder";
+import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import { SupplierModel } from "../../../model/supplier.model";
 import mockProviders from "../../../mock/provider";
 import SupplierHeaderTable from "./_partial/supplier-header.table";
@@ -57,7 +57,7 @@ const Index: AppPageInterface = () => {
 
           <tbody>
             {isLoading ? (
-              <TableRecordHolder
+              <RowPlaceholderTable
                 colSpan={6}
                 className={"min-h-12"}
                 message={

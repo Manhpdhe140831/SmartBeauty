@@ -5,7 +5,7 @@ import mockManager from "../../../mock/manager";
 import BtnCreateManager from "./_partial/_btn-create-manager";
 import { Divider, Group, Pagination, Table } from "@mantine/core";
 import ManagerHeaderTable from "./_partial/manager-header.table";
-import TableRecordHolder from "../../../components/table-record-holder";
+import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import ManageRowTable from "./_partial/manager-row.table";
 import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
@@ -52,7 +52,7 @@ const ManageManager: AppPageInterface = () => {
 
           <tbody>
             {isLoading ? (
-              <TableRecordHolder
+              <RowPlaceholderTable
                 colSpan={6}
                 className={"min-h-12"}
                 message={

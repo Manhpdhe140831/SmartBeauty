@@ -1,18 +1,12 @@
 import { SupplierModel } from "./supplier.model";
+import { BasePriceModel } from "./_price.model";
 
 export interface ProductModel<
   supplierModel extends number | SupplierModel = number
-> {
+> extends BasePriceModel {
   id: number;
   name: string;
-  price: number;
-  importedDate?: string;
-  // some rare case the product doesn't have expired date.
-  expiredDate?: string;
   description: string;
-  discountStart: string | null;
-  discountEnd: string | null;
-  discountPercent: number | null;
   image?: string;
   supplier: supplierModel;
   unit: string;

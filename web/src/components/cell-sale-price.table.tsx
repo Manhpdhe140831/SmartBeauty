@@ -1,10 +1,12 @@
-import { ProductModel } from "../../../../model/product.model";
 import { FC, useEffect, useState } from "react";
 import { Text } from "@mantine/core";
-import { formatPrice } from "../../../../utilities/fn.helper";
+import { formatPrice } from "../utilities/fn.helper";
+import { BasePriceModel } from "../model/_price.model";
 
 type cellProps = {
-  product: ProductModel;
+  priceModel: BasePriceModel;
+  before?: JSX.Element;
+  after?: JSX.Element;
 };
 
 type displayPriceType = {
@@ -13,32 +15,40 @@ type displayPriceType = {
   percentage?: number;
 };
 
-const ProductPriceCell: FC<cellProps> = ({ product }) => {
+/**
+ * TODO: calculate price based on date too.
+ * @param priceModel
+ * @constructor
+ */
+const SalePriceTableCell: FC<cellProps> = ({ priceModel, before, after }) => {
   const [displayPrice, setDisplayPrice] = useState<displayPriceType>({
-    actualPrice: formatPrice(product.price),
+    actualPrice: formatPrice(priceModel.price),
   });
 
   useEffect(() => {
-    if (product.discountPercent === null) {
+    if (priceModel.discountPercent === null) {
       // skip the process. The sale context is invalid
       // -> display price as not sale.
       setDisplayPrice({
-        actualPrice: formatPrice(product.price),
+        actualPrice: formatPrice(priceModel.price),
       });
       return;
     }
 
     setDisplayPrice({
-      discountedFrom: formatPrice(product.price),
+      discountedFrom: formatPrice(priceModel.price),
       actualPrice: formatPrice(
-        Math.round((product.price / 100) * (100 - product.discountPercent))
+        Math.round(
+          (priceModel.price / 100) * (100 - priceModel.discountPercent)
+        )
       ),
-      percentage: product.discountPercent,
+      percentage: priceModel.discountPercent,
     });
-  }, [product]);
+  }, [priceModel]);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-1">
+      {before}
       {displayPrice.percentage ? (
         <>
           <Text
@@ -54,8 +64,9 @@ const ProductPriceCell: FC<cellProps> = ({ product }) => {
       ) : (
         <Text>{displayPrice.actualPrice}</Text>
       )}
+      {after}
     </div>
   );
 };
 
-export default ProductPriceCell;
+export default SalePriceTableCell;

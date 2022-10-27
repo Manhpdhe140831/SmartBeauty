@@ -18,7 +18,7 @@ type RecordSpanType = {
  * @param message
  * @constructor
  */
-const TableRecordHolder: FC<RecordSpanType> = ({
+const RowPlaceholderTable: FC<RecordSpanType> = ({
   className,
   tdClassName,
   colSpan,
@@ -34,4 +34,4 @@ const TableRecordHolder: FC<RecordSpanType> = ({
   );
 };
 
-export default TableRecordHolder;
+export default RowPlaceholderTable;

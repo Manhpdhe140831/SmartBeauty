@@ -7,7 +7,7 @@ import ProductRowTable from "./_partial/product-row.table";
 import { useQuery } from "@tanstack/react-query";
 import { ProductModel } from "../../../model/product.model";
 import mockProduct from "../../../mock/product";
-import TableRecordHolder from "../../../components/table-record-holder";
+import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
 import ProductCreateButton from "./_partial/product-create.button";
 
@@ -53,7 +53,7 @@ const Index: AppPageInterface = () => {
           <ProductHeaderTable />
           <tbody>
             {isLoading ? (
-              <TableRecordHolder
+              <RowPlaceholderTable
                 colSpan={7}
                 className={"min-h-12"}
                 message={

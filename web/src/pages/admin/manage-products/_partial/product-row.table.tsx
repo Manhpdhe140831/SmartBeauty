@@ -1,9 +1,9 @@
-import { Badge, Image, Text, Tooltip } from "@mantine/core";
+import { Badge, Image, Tooltip } from "@mantine/core";
 import styleRow from "../../../../styles/product-row.module.scss";
 import { IconArrowDown } from "@tabler/icons";
 import { ProductModel } from "../../../../model/product.model";
 import { FC, useState } from "react";
-import ProductPriceCell from "./_product-price.cell";
+import SalePriceTableCell from "../../../../components/cell-sale-price.table";
 import dayjs from "dayjs";
 import ProductDetailDialog from "../_product-detail-dialog";
 
@@ -46,19 +46,14 @@ const ProductRowTable: FC<productRowProps> = ({ data, no, rowUpdated }) => {
         rowSpan={data.discountPercent !== null ? 1 : 2}
         className="!pb-0 !pt-1"
       >
-        <ProductPriceCell product={data} />
+        <SalePriceTableCell priceModel={data} />
       </td>
 
       <td className={"text-center"} rowSpan={2}>
         {data.supplier}
       </td>
       <td>
-        <div className="flex flex-col">
-          <Text size={"xs"} color={"dimmed"}>
-            Import at
-          </Text>
-          <Text>{dayjs(data.importedDate).format("DD/MM/YYYY")}</Text>
-        </div>
+        <div className="flex flex-col">TBD</div>
       </td>
     </tr>
   );
@@ -108,12 +103,7 @@ const ProductRowTable: FC<productRowProps> = ({ data, no, rowUpdated }) => {
       )}
       {/*  origin col*/}
       <td>
-        <div className="flex flex-col">
-          <Text size={"xs"} color={"dimmed"}>
-            Expired at
-          </Text>
-          <Text>{dayjs(data.expiredDate).format("DD/MM/YYYY")}</Text>
-        </div>
+        <div className="flex flex-col">TBD</div>
       </td>
     </tr>
   );
