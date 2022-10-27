@@ -4,6 +4,7 @@ import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.SupplierRepository;
@@ -107,6 +108,15 @@ public class SupplierServiceImpl implements SupplierService {
         Page<Supplier> suppliers =supplierRepository.findAll(PageRequest.of(offset,pageSize,sort));
         return suppliers;
     }
+
+    @Override
+    public Page<Supplier> findSupplierPaginationAndSearch(int offset, int pageSize, String field, String direction, String value) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Supplier> suppliers =supplierRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+        return suppliers;
+    }
+
+
 //    @Autowired
 //    private SupplierRepository supplierRepository;
 //    @Override

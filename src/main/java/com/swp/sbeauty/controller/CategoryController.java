@@ -4,6 +4,7 @@ import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.CategoryDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.entity.APIResponse;
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.CategoryService;
@@ -45,9 +46,16 @@ public class CategoryController {
     @GetMapping("/category")
     private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false) String sort
-            , @RequestParam(value = "direction", defaultValue = "asc") String direction){
-        Page<Category> categorysWithPagination = categoryService.findCategoryPaginationAndSort(page -1,pageSize,sort,direction);
-        return new APIResponse<>(categorysWithPagination.getSize(),categorysWithPagination);
+            , @RequestParam(value = "sort", required = false,defaultValue = "name") String sort
+            , @RequestParam(value = "value", required = false) String value
+            , @RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+        Page<Category> categoriesWithPagination;
+        if(value  == "" ||value == null){
+            categoriesWithPagination = categoryService.findCategoryPaginationAndSort(page -1,pageSize,sort,direction);
+        }
+        else {
+            categoriesWithPagination = categoryService.findCategoryPaginationAndSearch(page -1,pageSize,sort,direction,value);
+        }
+        return new APIResponse<>(categoriesWithPagination.getSize(),categoriesWithPagination);
     }
 }

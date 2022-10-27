@@ -94,4 +94,12 @@ public class CategoryServiceImpl implements CategoryService {
         Page<Category> categories =categoryRepository.findAll(PageRequest.of(offset,pageSize,sort));
         return categories;
     }
+
+    @Override
+    public Page<Category> findCategoryPaginationAndSearch(int offset, int pageSize, String field, String direction, String value) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Category> categories =categoryRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+        return categories;
+    }
+
 }

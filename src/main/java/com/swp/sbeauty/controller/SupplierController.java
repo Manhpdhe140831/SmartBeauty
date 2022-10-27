@@ -4,6 +4,7 @@ import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,16 @@ public class SupplierController {
     @GetMapping("/supplier")
     private APIResponse<Page<Supplier>> getSupplierWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false) String sort
-            , @RequestParam(value = "direction", defaultValue = "asc") String direction){
-        Page<Supplier> suppliersWithPagination = supplierService.findSupplierPaginationAndSort(page -1,pageSize,sort,direction);
+            , @RequestParam(value = "sort", required = false,defaultValue = "supplierCode") String sort
+            , @RequestParam(value = "value", required = false) String value
+            , @RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+        Page<Supplier> suppliersWithPagination;
+        if(value  == "" ||value == null){
+            suppliersWithPagination = supplierService.findSupplierPaginationAndSort(page -1,pageSize,sort,direction);
+        }
+        else {
+            suppliersWithPagination = supplierService.findSupplierPaginationAndSearch(page -1,pageSize,sort,direction,value);
+        }
         return new APIResponse<>(suppliersWithPagination.getSize(),suppliersWithPagination);
     }
 }

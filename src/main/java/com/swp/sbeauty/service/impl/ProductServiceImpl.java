@@ -191,11 +191,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findProductsPaginationAndSort(int offset, int pageSize, String field, String direction) {
+    public Page<Product> findProductPaginationAndSort(int offset, int pageSize, String field, String direction) {
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
         Page<Product> products =productRepository.findAll(PageRequest.of(offset,pageSize,sort));
         return products;
     }
+
+    @Override
+    public Page<Product> findProductPaginationAndSearch(int offset, int pageSize, String field, String direction, String value) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Product> products =productRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+        return products;
+    }
+
 //    @Autowired
 //    private ProductRepository productRepository;
 //    @Autowired
