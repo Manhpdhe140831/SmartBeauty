@@ -17,4 +17,6 @@ public interface UserService {
     UserDto getById(Long id);
 
     List<User> getByRole(Long id);
+
+    String validateUser(UserDto userDto);
 }

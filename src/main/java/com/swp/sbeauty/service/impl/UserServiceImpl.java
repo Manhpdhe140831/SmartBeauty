@@ -1,5 +1,6 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.RoleDto;
 import com.swp.sbeauty.dto.UserDto;
 
@@ -12,6 +13,8 @@ import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,6 +131,18 @@ public class UserServiceImpl implements UserService {
             }
         }
         return null;
+    }
+
+    @Override
+    public String validateUser(UserDto userDto) {
+        String result = "";
+        if(userRepository.existsByEmail(userDto.getEmail())){
+            result += "Email already exists in data, ";
+        }
+        if(userRepository.existsByMobile(userDto.getMobile())){
+            result += "Mobile already exists in data";
+        }
+        return result;
     }
 
     //    @Override

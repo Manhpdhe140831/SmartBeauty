@@ -1,8 +1,10 @@
 package com.swp.sbeauty.controller;
 
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.User;
+import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.security.jwt.JwtResponse;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.security.services.UserDetailsImpl;
@@ -28,11 +30,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -45,9 +51,14 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<Boolean> saveUser(@RequestBody UserDto userDto){
-        Boolean result = userService.saveUser(userDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto){
+        String check = userService.validateUser(userDto);
+        if(check ==""){
+            Boolean result = userService.saveUser(userDto);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
     }
     @PutMapping ("/user/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id){
