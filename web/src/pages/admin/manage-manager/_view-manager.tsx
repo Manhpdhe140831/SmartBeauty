@@ -116,10 +116,10 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
 
         {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
         <Controller
-          name={"mobile"}
+          name={"phone"}
           control={control}
           render={({ field }) => (
-            <Input.Wrapper required id={"phone"} label={"Mobile"}>
+            <Input.Wrapper required id={"phone"} label={"Phone Number"}>
               <Input
                 component={MaskedInput}
                 mask={PhoneNumberMask}

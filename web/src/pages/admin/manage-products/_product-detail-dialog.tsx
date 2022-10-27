@@ -5,7 +5,6 @@ import {
 } from "../../../model/product.model";
 import { FormEvent } from "react";
 import {
-  Button,
   Divider,
   Image as MantineImage,
   Modal,
@@ -39,24 +38,15 @@ import {
   parserNumberInput,
 } from "../../../utilities/fn.helper";
 import { MAX_PRICE } from "../../../const/_const";
+import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
+import DialogDetailAction from "../../../components/dialog-detail-action";
 
-type DialogProps<mode extends "create" | "view"> = {
-  mode: mode;
-  product?: ProductModel;
-  opened: boolean;
-  onClosed?: (
-    withUpdate?: mode extends "create"
-      ? ProductCreateEntity
-      : ProductUpdateEntity
-  ) => void;
-};
-
-const ProductDetailDialog = <ModeType extends "create" | "view">({
-  product,
+const ProductDetailDialog = ({
+  data,
   opened,
   onClosed,
   mode,
-}: DialogProps<ModeType>) => {
+}: DialogProps<ProductModel, ProductUpdateEntity, ProductCreateEntity>) => {
   const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
   const validateSchema = z
     .object({
@@ -83,16 +73,16 @@ const ProductDetailDialog = <ModeType extends "create" | "view">({
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues:
-      mode === "view" && product
+      mode === "view" && data
         ? {
-            ...product,
-            discountStart: product.discountStart
-              ? dayjs(product.discountStart).toDate()
+            ...data,
+            discountStart: data.discountStart
+              ? dayjs(data.discountStart).toDate()
               : null,
-            discountEnd: product.discountEnd
-              ? dayjs(product.discountEnd).toDate()
+            discountEnd: data.discountEnd
+              ? dayjs(data.discountEnd).toDate()
               : null,
-            discountPercent: product.discountPercent ?? null,
+            discountPercent: data.discountPercent ?? null,
           }
         : undefined,
   });
@@ -101,6 +91,7 @@ const ProductDetailDialog = <ModeType extends "create" | "view">({
     e.preventDefault();
     e.stopPropagation();
     reset();
+    onClosed && onClosed();
   };
 
   return (
@@ -111,9 +102,9 @@ const ProductDetailDialog = <ModeType extends "create" | "view">({
       }}
       opened={opened}
       closeOnClickOutside={false}
+      withCloseButton={false}
       size={"auto"}
       padding={0}
-      withCloseButton={false}
     >
       <div
         className={`rounded-[4px] border-2 ${
@@ -139,7 +130,7 @@ const ProductDetailDialog = <ModeType extends "create" | "view">({
               Information
             </h2>
             <TextInput required label={"Product Name"} {...register("name")} />
-            <FormErrorMessage errors={errors} name={""} />
+            <FormErrorMessage errors={errors} name={"name"} />
 
             <Textarea
               required
@@ -339,18 +330,11 @@ const ProductDetailDialog = <ModeType extends "create" | "view">({
           </div>
 
           <div className="mt-4 flex w-full justify-end">
-            {mode === "view" && isDirty ? (
-              <div className={"flex space-x-2"}>
-                <Button type={"submit"} disabled={!isValid}>
-                  Update
-                </Button>
-                <Button type={"submit"} disabled={!isValid}>
-                  Update
-                </Button>
-              </div>
-            ) : (
-              <Button onClick={() => onClosed && onClosed()}>Close</Button>
-            )}
+            <DialogDetailAction
+              mode={mode}
+              isDirty={isDirty}
+              isValid={isValid}
+            />
           </div>
         </form>
       </div>

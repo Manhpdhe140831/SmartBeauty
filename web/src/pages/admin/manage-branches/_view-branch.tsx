@@ -22,11 +22,10 @@ import {
   emailSchema,
   fileUploadSchema,
   imageTypeSchema,
-  mobileSchema,
   nameSchema,
+  phoneSchema,
 } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import MaskedInput from "react-text-mask";
@@ -42,7 +41,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
   const updateSchema = z.object({
     name: nameSchema,
     email: emailSchema,
-    mobile: mobileSchema,
+    phone: phoneSchema,
     manager: z.number().min(1),
     address: addressSchema,
     logo: fileUploadSchema.and(imageTypeSchema).or(z.string().url()),
@@ -69,7 +68,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,
-      description: m.mobile,
+      description: m.phone,
     }));
   });
 
@@ -155,10 +154,10 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
 
         {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
         <Controller
-          name={"mobile"}
+          name={"phone"}
           control={control}
           render={({ field }) => (
-            <Input.Wrapper required id={"phone"} label={"Mobile"}>
+            <Input.Wrapper required id={"phone"} label={"Phone Number"}>
               <Input
                 component={MaskedInput}
                 mask={PhoneNumberMask}

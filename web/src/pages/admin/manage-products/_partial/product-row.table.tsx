@@ -8,12 +8,12 @@ import dayjs from "dayjs";
 import ProductDetailDialog from "../_product-detail-dialog";
 
 type productRowProps = {
-  product: ProductModel;
-  no: number;
+  data: ProductModel;
   rowUpdated?: () => void;
+  no: number;
 };
 
-const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
+const ProductRowTable: FC<productRowProps> = ({ data, no, rowUpdated }) => {
   const [viewingDetail, setViewingDetail] = useState(false);
 
   const firstRow = (
@@ -21,7 +21,7 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
       onClick={() => setViewingDetail(true)}
       className={styleRow.custom_table_row}
     >
-      <td className={"text-right"} rowSpan={2}>
+      <td className={"text-center"} rowSpan={2}>
         {no}
       </td>
       <td rowSpan={2}>
@@ -29,7 +29,7 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
           className={"aspect-video w-24 overflow-hidden rounded-lg shadow-lg"}
         >
           <Image
-            src={product.image}
+            src={data.image}
             withPlaceholder
             alt={"product name"}
             fit="contain"
@@ -37,27 +37,27 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
         </div>
       </td>
       <td className="overflow-hidden text-ellipsis whitespace-nowrap !pl-0 !pr-1 !pt-2 !pb-1">
-        <Tooltip label={product.name}>
-          <span className={"text-lg font-semibold"}>{product.name}</span>
+        <Tooltip label={data.name}>
+          <span className={"text-lg font-semibold"}>{data.name}</span>
         </Tooltip>
       </td>
 
       <td
-        rowSpan={product.discountPercent !== null ? 1 : 2}
+        rowSpan={data.discountPercent !== null ? 1 : 2}
         className="!pb-0 !pt-1"
       >
-        <ProductPriceCell product={product} />
+        <ProductPriceCell product={data} />
       </td>
 
       <td className={"text-center"} rowSpan={2}>
-        {product.supplier}
+        {data.supplier}
       </td>
       <td>
         <div className="flex flex-col">
           <Text size={"xs"} color={"dimmed"}>
             Import at
           </Text>
-          <Text>{dayjs(product.importedDate).format("DD/MM/YYYY")}</Text>
+          <Text>{dayjs(data.importedDate).format("DD/MM/YYYY")}</Text>
         </div>
       </td>
     </tr>
@@ -71,26 +71,26 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
         <div className="flex flex-col space-y-1 text-gray-600 line-clamp-2">
           <small>
             <span className={"font-semibold"}>Description: </span>
-            {product.description}
+            {data.description}
           </small>
         </div>
       </td>
 
-      {product.discountPercent !== null && (
+      {data.discountPercent !== null && (
         <td className="text-center">
           <Tooltip
             label={
               <div className={"flex flex-col items-start"}>
                 <small className={"text-gray-500"}>From</small>
                 <small>
-                  {product.discountStart
-                    ? dayjs(product.discountStart).format("DD/MM/YYYY")
+                  {data.discountStart
+                    ? dayjs(data.discountStart).format("DD/MM/YYYY")
                     : "-"}
                 </small>
                 <small className={"text-gray-500"}>To</small>
                 <small>
-                  {product.discountEnd
-                    ? dayjs(product.discountEnd).format("DD/MM/YYYY")
+                  {data.discountEnd
+                    ? dayjs(data.discountEnd).format("DD/MM/YYYY")
                     : "-"}
                 </small>
               </div>
@@ -101,7 +101,7 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
               color={"red"}
               leftSection={<IconArrowDown size={14} />}
             >
-              {product.discountPercent}%
+              {data.discountPercent}%
             </Badge>
           </Tooltip>
         </td>
@@ -112,7 +112,7 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
           <Text size={"xs"} color={"dimmed"}>
             Expired at
           </Text>
-          <Text>{dayjs(product.expiredDate).format("DD/MM/YYYY")}</Text>
+          <Text>{dayjs(data.expiredDate).format("DD/MM/YYYY")}</Text>
         </div>
       </td>
     </tr>
@@ -124,9 +124,9 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
       {secondRow}
       <ProductDetailDialog
         mode={"view"}
-        key={product.id}
+        key={data.id}
+        data={data}
         opened={viewingDetail}
-        product={product}
         onClosed={(update) => {
           if (update) {
             rowUpdated && rowUpdated();
@@ -138,4 +138,4 @@ const ProductTableRow: FC<productRowProps> = ({ product, no, rowUpdated }) => {
   );
 };
 
-export default ProductTableRow;
+export default ProductRowTable;

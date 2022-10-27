@@ -2,8 +2,8 @@ import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
 import { Divider, Input, Pagination, Table } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
-import ProductTableHeader from "./_partial/product-table.header";
-import ProductTableRow from "./_partial/product-table.row";
+import ProductHeaderTable from "./_partial/product-header.table";
+import ProductRowTable from "./_partial/product-row.table";
 import { useQuery } from "@tanstack/react-query";
 import { ProductModel } from "../../../model/product.model";
 import mockProduct from "../../../mock/product";
@@ -38,7 +38,7 @@ const Index: AppPageInterface = () => {
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
       <div className="flex justify-end space-x-2">
-        <ProductCreateButton />
+        <ProductCreateButton onCreated={refetch} />
 
         <Input
           icon={<IconSearch />}
@@ -50,7 +50,7 @@ const Index: AppPageInterface = () => {
       <Divider my={8} />
       <div className="flex-1">
         <Table withBorder className="table-fixed">
-          <ProductTableHeader />
+          <ProductHeaderTable />
           <tbody>
             {isLoading ? (
               <TableRecordHolder
@@ -65,10 +65,10 @@ const Index: AppPageInterface = () => {
             ) : (
               products &&
               products.map((p, i) => (
-                <ProductTableRow
+                <ProductRowTable
                   rowUpdated={refetch}
                   key={p.id}
-                  product={p}
+                  data={p}
                   no={getItemNo(i, currentPage, pageSize)}
                 />
               ))

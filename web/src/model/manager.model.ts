@@ -6,7 +6,7 @@ import { UserModel } from "./user.model";
  * Raw representation data from the server response.
  */
 export interface ManagerModel extends UserModel {
-  mobile: string;
+  phone: string;
   dateOfBirth: string;
   gender: GENDER;
   address: string;

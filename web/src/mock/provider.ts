@@ -1,8 +1,22 @@
 import { SupplierModel } from "../model/supplier.model";
 
 export const providers: SupplierModel[] = [
-  { id: 1, name: "HNC", taxCode: "AASC-HNC", mobile: "12123123" },
-  { id: 2, name: "An Phat", taxCode: "AASC-ANPHAT", mobile: "12123123" },
+  {
+    id: 1,
+    name: "HNC",
+    taxCode: "AASC-HNC",
+    phone: "1212312300",
+    address: "",
+    email: "hnc@hnc.com",
+  },
+  {
+    id: 2,
+    name: "An Phat",
+    taxCode: "AASC-ANPHAT",
+    phone: "1212312300",
+    address: "",
+    email: "ANPHAT@ANPHAT.com",
+  },
 ];
 
 const mockProviders = (find?: string) =>

@@ -4,9 +4,9 @@ import { ManagerModel } from "../../../model/manager.model";
 import mockManager from "../../../mock/manager";
 import BtnCreateManager from "./_partial/_btn-create-manager";
 import { Divider, Group, Pagination, Table } from "@mantine/core";
-import TableHeader from "./_partial/_table-header";
+import ManagerHeaderTable from "./_partial/manager-header.table";
 import TableRecordHolder from "../../../components/table-record-holder";
-import TableRecord from "./_partial/_table-record";
+import ManageRowTable from "./_partial/manager-row.table";
 import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
 import usePaginationHook from "../../../hooks/pagination.hook";
@@ -48,15 +48,7 @@ const ManageManager: AppPageInterface = () => {
           withColumnBorders
           highlightOnHover
         >
-          <colgroup>
-            <col className="w-14" />
-            <col className="w-44" />
-            <col className="w-32" />
-            <col className="w-44" />
-            <col />
-            <col className="w-[104px]" />
-          </colgroup>
-          <TableHeader />
+          <ManagerHeaderTable />
 
           <tbody>
             {isLoading ? (
@@ -72,7 +64,7 @@ const ManageManager: AppPageInterface = () => {
             ) : (
               managers &&
               managers.map((d, i) => (
-                <TableRecord
+                <ManageRowTable
                   key={d.id}
                   no={i + 1}
                   data={d}
