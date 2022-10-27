@@ -77,7 +77,13 @@ const SupplierDetailDialog = ({
       size={"auto"}
       padding={0}
     >
-      <div className="p-4">
+      <div
+        className={`rounded-[4px] border-2 p-4 ${
+          mode === "view" && isDirty
+            ? "border-yellow-600"
+            : "border-transparent"
+        }`}
+      >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
           {mode === "view" ? "Supplier Detail" : "Add Supplier"}
         </h2>

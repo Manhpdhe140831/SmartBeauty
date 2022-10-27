@@ -23,11 +23,17 @@ const Index: AppPageInterface = () => {
     data: suppliers,
     isLoading,
     refetch,
-  } = useQuery<SupplierModel[]>(["list-supplier", currentPage], async () => {
-    const suppliers = await mockProviders();
-    updatePagination({ total: suppliers.length });
-    return suppliers;
-  });
+  } = useQuery<SupplierModel[]>(
+    ["list-supplier", currentPage],
+    async () => {
+      const suppliers = await mockProviders();
+      updatePagination({ total: suppliers.length });
+      return suppliers;
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   return (
     <div className="flex h-full flex-col space-y-4 p-4">
@@ -64,6 +70,7 @@ const Index: AppPageInterface = () => {
               suppliers &&
               suppliers.map((d, i) => (
                 <SupplierRowTable
+                  rowUpdated={refetch}
                   key={d.id}
                   data={d}
                   no={getItemNo(i, currentPage, pageSize)}
@@ -74,7 +81,7 @@ const Index: AppPageInterface = () => {
         </Table>
       </div>
 
-      <Divider my={8}></Divider>
+      <Divider my={8} />
 
       {/*Total record / 10 (per-page)*/}
       <Pagination

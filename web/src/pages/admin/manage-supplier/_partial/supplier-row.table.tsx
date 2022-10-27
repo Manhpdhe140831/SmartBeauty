@@ -10,54 +10,52 @@ type RowProps = {
   rowUpdated?: () => void;
 };
 
-const SupplierRowTable = (props: RowProps) => {
+const SupplierRowTable = ({ data, no, rowUpdated }: RowProps) => {
   const clipboard = useClipboard({ timeout: 500 });
   const [view, setView] = useState(false);
 
   return (
     <>
       <tr onClick={() => setView(true)} className={"cursor-pointer"}>
-        <td className="text-center">{props.no}</td>
+        <td className="text-center">{no}</td>
         <td>
           <div className={"aspect-square w-full"}>
-            <Image src={props.data.supplierImage} />
+            <Image src={data.supplierImage} />
           </div>
         </td>
         <td
-          onClick={() => clipboard.copy(props.data.name)}
+          onClick={() => clipboard.copy(data.name)}
           className="overflow-hidden text-ellipsis"
         >
-          <Tooltip label={props.data.name}>
-            <span>{props.data.name}</span>
+          <Tooltip label={data.name}>
+            <span>{data.name}</span>
           </Tooltip>
         </td>
 
-        <td onClick={() => clipboard.copy(props.data.phone)}>
-          {props.data.phone}
-        </td>
+        <td onClick={() => clipboard.copy(data.phone)}>{data.phone}</td>
         <td
-          onClick={() => clipboard.copy(props.data.email)}
+          onClick={() => clipboard.copy(data.email)}
           className="overflow-hidden text-ellipsis"
         >
-          {props.data.email}
+          {data.email}
         </td>
         <td
-          onClick={() => clipboard.copy(props.data.address)}
+          onClick={() => clipboard.copy(data.address)}
           className="overflow-hidden text-ellipsis"
         >
-          <Tooltip label={props.data.address}>
-            <span>{props.data.address}</span>
+          <Tooltip label={data.address}>
+            <span>{data.address}</span>
           </Tooltip>
         </td>
       </tr>
       <SupplierDetailDialog
         mode={"view"}
-        key={props.data.id}
-        data={props.data}
+        key={data.id}
+        data={data}
         opened={view}
         onClosed={(u) => {
           if (u) {
-            props.rowUpdated && props.rowUpdated();
+            rowUpdated && rowUpdated();
           }
           setView(false);
         }}
