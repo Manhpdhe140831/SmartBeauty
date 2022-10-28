@@ -6,6 +6,7 @@ import com.swp.sbeauty.dto.UserDto;
 
 import java.util.*;
 
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.RoleRepository;
@@ -13,6 +14,8 @@ import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -144,6 +147,19 @@ public class UserServiceImpl implements UserService {
         }
         return result;
     }
+
+    @Override
+    public Page<User> getAllUsersPagination(int offset, int pageSize, int roleId) {
+        Page<User> users = userRepository.getUserByRoleId(roleId,PageRequest.of(offset,pageSize));
+        return users;
+    }
+
+    @Override
+    public Page<User> getAllUsers(int offset, int pageSize) {
+        Page<User> users = userRepository.findAll(PageRequest.of(offset,pageSize));
+        return users;
+    }
+
 
     //    @Override
 //    public RoleDto saveRole(RoleDto roleDto) {

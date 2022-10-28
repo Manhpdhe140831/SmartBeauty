@@ -35,7 +35,6 @@ public class UserDto {
             this.setDateOfBirth(user.getDateOfBirth());
             this.setGender(user.getGender());
             this.setAddress(user.getAddress());
-            this.setPassword(user.getPassword());
             if(user.getRoles()!=null){
                 this.roles = new HashSet<>();
                 for(Role role : user.getRoles()){

@@ -131,18 +131,18 @@ public class BranchServiceImpl implements BranchService {
 
 
     @Override
-    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize,String field,String direction,String value) {
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
-        Page<Branch> branches =branchRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize,String value) {
+        //Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize));
         return branches;
     }
 
 
 
     @Override
-    public Page<Branch> findBranchsPaginationAndSort(int offset, int pageSize, String field, String direction) {
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
-        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize,sort));
+    public Page<Branch> findBranchsPaginationAndSort(int offset, int pageSize) {
+        //Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize));
         return branches;
     }
 

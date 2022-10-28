@@ -51,15 +51,14 @@ public class BranchController {
     @GetMapping("/branch")
     private APIResponse<Page<Branch>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false,defaultValue = "name") String sort
             , @RequestParam(value = "value", required = false) String value
-            ,@RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+            ){
         Page<Branch> branchesWithPagination;
         if(value  == "" ||value == null){
-            branchesWithPagination = branchService.findBranchsPaginationAndSort(page -1,pageSize,sort,direction);
+            branchesWithPagination = branchService.findBranchsPaginationAndSort(page -1,pageSize);
         }
         else {
-            branchesWithPagination = branchService.findBranchsPaginationAndSearch(page -1,pageSize,sort,direction,value);
+            branchesWithPagination = branchService.findBranchsPaginationAndSearch(page -1,pageSize,value);
         }
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }

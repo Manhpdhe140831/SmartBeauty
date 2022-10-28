@@ -3,6 +3,8 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.entity.APIResponse;
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.security.jwt.JwtResponse;
@@ -13,6 +15,7 @@ import com.swp.sbeauty.validation.ValidInputDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -84,6 +87,34 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         return ResponseEntity.ok(new JwtResponse(jwt));
+    }
+    /*@GetMapping("/user")
+    private APIResponse<Page<User>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "roleName", required = false) String roleName
+    ){
+        Page<User> getAllUser;
+        if(roleName  == "" ||roleName == null){
+            getAllUser = userService.getAllUsers(page -1,pageSize);
+        }
+        else {
+            getAllUser = userService.getAllUsersPagination(page -1,pageSize,roleName);
+        }
+        return new APIResponse<>(getAllUser.getSize(),getAllUser);
+    }*/
+    @GetMapping("/user")
+    private APIResponse<Page<User>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId
+    ){
+        Page<User> getAllUser;
+        if((Integer)roleId == 0){
+            getAllUser = userService.getAllUsers(page -1,pageSize);
+        }
+        else {
+            getAllUser = userService.getAllUsersPagination(page -1,pageSize,roleId);
+        }
+        return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }
     //abc
 //
