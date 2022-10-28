@@ -1,61 +1,60 @@
+import { FC, FormEvent } from "react";
+import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import {
-  ProductCreateEntity,
-  ProductModel,
-  ProductUpdateEntity,
-} from "../../../model/product.model";
-import { FormEvent } from "react";
-import {
-  Divider,
-  Image as MantineImage,
-  Modal,
-  NumberInput,
-  Text,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
-import { Controller, useForm } from "react-hook-form";
-import FormErrorMessage from "../../../components/form-error-message";
-import { z } from "zod";
-import {
-  amountPerUnitSchema,
   descriptionSchema,
   fileUploadSchema,
   idDbSchema,
   imageTypeSchema,
   nameSchema,
   saleSchema,
-  unitProductSchema,
 } from "../../../validation/field.schema";
+import {
+  ServiceCreateEntity,
+  ServiceModel,
+  ServiceUpdateEntity,
+} from "../../../model/service.model";
+import { z } from "zod";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
+import {
+  Divider,
+  Image as MantineImage,
+  Modal,
+  NumberInput,
+  Table,
+  Text,
+  Textarea,
+  TextInput,
+} from "@mantine/core";
+import DialogDetailAction from "../../../components/dialog-detail-action";
+import FormErrorMessage from "../../../components/form-error-message";
+import { DatePicker } from "@mantine/dates";
+import { IconPercentage } from "@tabler/icons";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
-import { DatePicker } from "@mantine/dates";
-import dayjs from "dayjs";
-import { IconPercentage } from "@tabler/icons";
+import { MAX_PRICE } from "../../../const/_const";
 import {
   formatterNumberInput,
   parserNumberInput,
 } from "../../../utilities/fn.helper";
-import { MAX_PRICE } from "../../../const/_const";
-import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
-import DialogDetailAction from "../../../components/dialog-detail-action";
+import ProductInServiceRowTable from "./_partial/_product-in-service-row.table";
 
-const ProductDetailDialog = ({
-  data,
-  opened,
-  onClosed,
-  mode,
-}: DialogProps<ProductModel, ProductUpdateEntity, ProductCreateEntity>) => {
+const ServiceDetailDialog: FC<
+  DialogProps<ServiceModel, ServiceUpdateEntity, ServiceCreateEntity>
+> = ({ data, opened, onClosed, mode }) => {
   const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
   const validateSchema = z
     .object({
       id: idSchema,
-      name: nameSchema,
+      nameService: nameSchema,
       description: descriptionSchema,
-      unit: unitProductSchema,
-      quantity: amountPerUnitSchema,
-      provider: idDbSchema,
-      image: fileUploadSchema.and(imageTypeSchema).or(z.string().url()),
+      duration: z.number().min(0),
+      image: fileUploadSchema
+        .and(imageTypeSchema)
+        .or(z.string().url())
+        .nullable(),
+      products: z.any(),
     })
     .extend(saleSchema.shape);
 
@@ -85,6 +84,16 @@ const ProductDetailDialog = ({
         : undefined,
   });
 
+  const {
+    fields: productsArray,
+    append,
+    update,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "products",
+  });
+
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -112,12 +121,13 @@ const ProductDetailDialog = ({
         }`}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
-          {mode === "view" ? "Product Detail" : "Create Product"}
+          {mode === "view" ? "Service Detail" : "Service Product"}
         </h2>
+
         <form
+          className="flex w-[800px] flex-wrap p-4"
           onReset={handleReset}
           onSubmit={onClosed && handleSubmit(onClosed as never)}
-          className={`flex w-[800px] flex-wrap space-x-4 p-4`}
         >
           <div className="flex flex-1 flex-col">
             <h2
@@ -127,7 +137,11 @@ const ProductDetailDialog = ({
             >
               Information
             </h2>
-            <TextInput required label={"Product Name"} {...register("name")} />
+            <TextInput
+              required
+              label={"Service Name"}
+              {...register("nameService")}
+            />
             <FormErrorMessage errors={errors} name={"name"} />
 
             <Textarea
@@ -136,36 +150,6 @@ const ProductDetailDialog = ({
               {...register("description")}
             />
             <FormErrorMessage errors={errors} name={"description"} />
-
-            <div className="flex space-x-1">
-              <div className="flex-1">
-                <Controller
-                  name={"quantity"}
-                  control={control}
-                  render={({ field }) => (
-                    <NumberInput
-                      placeholder={"amount of quantity per unit"}
-                      defaultValue={field.value}
-                      label={"Product quantity"}
-                      onChange={(v) => field.onChange(v)}
-                      onBlur={field.onBlur}
-                      hideControls
-                    />
-                  )}
-                ></Controller>
-                <FormErrorMessage errors={errors} name={"quantity"} />
-              </div>
-
-              <div className="w-50">
-                <TextInput
-                  required
-                  label={"Unit Type"}
-                  placeholder={"g, ml, etc..."}
-                  {...register("unit")}
-                />
-                <FormErrorMessage errors={errors} name={"unit"} />
-              </div>
-            </div>
 
             <Divider my={8} />
 
@@ -244,14 +228,14 @@ const ProductDetailDialog = ({
             <FormErrorMessage errors={errors} name={"discountPercent"} />
           </div>
 
-          <Divider orientation={"vertical"} />
+          <Divider mx={16} orientation={"vertical"} />
 
           <div className="flex w-48 flex-col">
             <label
               htmlFor="file"
               className="text-[14px] font-[500] text-gray-900"
             >
-              Product Image <span className="text-red-500">*</span>
+              Service Image <span className="text-red-500">*</span>
             </label>
             <small className="mb-1 text-[12px] leading-tight text-gray-400">
               The image must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP
@@ -327,6 +311,55 @@ const ProductDetailDialog = ({
             <FormErrorMessage errors={errors} name={"price"} />
           </div>
 
+          <div className="mt-4 flex w-full flex-col">
+            <Divider my={8} />
+            <h2
+              className={
+                "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
+              }
+            >
+              Products
+              <small className={"block w-full text-xs text-gray-400"}>
+                Product included in the service
+              </small>
+            </h2>
+            <Table className={"table-fixed"}>
+              <colgroup>
+                <col className={"w-14"} />
+                <col className={"w-24"} />
+                <col />
+                <col className={"w-28"} />
+                <col className={"w-28"} />
+                <col className={"w-32"} />
+                <col className={"w-14"} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Dose</th>
+                  <th>Unit</th>
+                  <th>Uses</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {productsArray.map((item, index) => (
+                  <ProductInServiceRowTable
+                    key={item.id}
+                    field={item}
+                    index={index}
+                    parentName={"products"}
+                    remove={remove}
+                    errors={errors}
+                    register={register}
+                  />
+                ))}
+              </tbody>
+            </Table>
+          </div>
+
           <div className="mt-4 flex w-full justify-end">
             <DialogDetailAction
               mode={mode}
@@ -340,4 +373,4 @@ const ProductDetailDialog = ({
   );
 };
 
-export default ProductDetailDialog;
+export default ServiceDetailDialog;

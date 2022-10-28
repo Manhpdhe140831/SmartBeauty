@@ -2,25 +2,18 @@ import { Badge, Image, Tooltip } from "@mantine/core";
 import styleRow from "../../../../styles/product-row.module.scss";
 import { IconArrowDown } from "@tabler/icons";
 import { ProductModel } from "../../../../model/product.model";
-import { FC, useState } from "react";
+import { FC } from "react";
 import SalePriceTableCell from "../../../../components/cell-sale-price.table";
 import dayjs from "dayjs";
-import ProductDetailDialog from "../_product-detail-dialog";
+import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
 
-type productRowProps = {
-  data: ProductModel;
-  rowUpdated?: () => void;
-  no: number;
-};
-
-const ProductRowTable: FC<productRowProps> = ({ data, no, rowUpdated }) => {
-  const [viewingDetail, setViewingDetail] = useState(false);
-
+const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
+  data,
+  no,
+  onClick,
+}) => {
   const firstRow = (
-    <tr
-      onClick={() => setViewingDetail(true)}
-      className={styleRow.custom_table_row}
-    >
+    <tr onClick={() => onClick(data)} className={styleRow.custom_table_row}>
       <td className={"text-center"} rowSpan={2}>
         {no}
       </td>
@@ -59,7 +52,7 @@ const ProductRowTable: FC<productRowProps> = ({ data, no, rowUpdated }) => {
   );
 
   const secondRow = (
-    <tr onClick={() => setViewingDetail(true)}>
+    <tr onClick={() => onClick(data)}>
       {/*  No. col*/}
       {/*  image col*/}
       <td className="!pl-0 !pr-1 !pt-2 !pb-1">
@@ -112,18 +105,6 @@ const ProductRowTable: FC<productRowProps> = ({ data, no, rowUpdated }) => {
     <>
       {firstRow}
       {secondRow}
-      <ProductDetailDialog
-        mode={"view"}
-        key={data.id}
-        data={data}
-        opened={viewingDetail}
-        onClosed={(update) => {
-          if (update) {
-            rowUpdated && rowUpdated();
-          }
-          setViewingDetail(false);
-        }}
-      />
     </>
   );
 };

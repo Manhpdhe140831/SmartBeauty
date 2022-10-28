@@ -6,7 +6,9 @@ import { USER_ROLE } from "../const/user-role.const";
 import { ZodObject } from "zod/lib/types";
 
 export const idDbSchema = z.number().min(1);
-
+export const unitProductSchema = z.string().min(1);
+export const amountPerUnitSchema = z.number().min(0);
+export const priceSchema = z.number().min(0);
 export const nameSchema = z.string().min(3).max(120);
 export const taxCodeSchema = z.string().length(10);
 export const descriptionSchema = z.string().max(200);
@@ -61,6 +63,7 @@ export const roleSchema = z.nativeEnum(USER_ROLE, {
 
 export const saleSchema = z
   .object({
+    price: priceSchema,
     discountStart: z.date().nullable(),
     discountEnd: z.date().nullable(),
     discountPercent: z.number().nullable(),
@@ -95,11 +98,8 @@ export const saleSchema = z
     ({ discountStart }) =>
       !discountStart || dayjs(discountStart).isAfter(new Date())
   ) as unknown as ZodObject<{
+  price: z.ZodNumber;
   discountStart: z.ZodNullable<z.ZodDate>;
   discountEnd: z.ZodNullable<z.ZodDate>;
   discountPercent: z.ZodNullable<z.ZodNumber>;
 }>;
-
-export const unitProductSchema = z.string().min(1);
-export const amountPerUnitSchema = z.number().min(0);
-export const priceSchema = z.number().min(0);
