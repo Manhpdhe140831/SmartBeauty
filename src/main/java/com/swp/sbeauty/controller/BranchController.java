@@ -26,39 +26,26 @@ public class BranchController {
     private BranchService branchService;
 
     ValidInputDto valid = new ValidInputDto();
-    @GetMapping("/branch/list")
-    public ResponseEntity<List<BranchDto>> getBranch(){
-        return ResponseEntity.ok().body(branchService.getBranch());
-    }
-    @GetMapping("/branch/{id}")
-    public ResponseEntity<BranchDto> getById(@PathVariable Long id) {
+    @GetMapping("/branch/getbyid")
+    public ResponseEntity<BranchDto> getById(@RequestParam(value = "id",required = false) Long id) {
         BranchDto result = branchService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/branch/paging")
-    private APIResponse<List<Branch>> getAllBranch(){
-        List<Branch> allBranchs = branchService.findAllBranchs();
-        return new APIResponse<>(allBranchs.size(),allBranchs);
-    }
-    /*@GetMapping("/branch/{field}")
-    private APIResponse<List<Branch>> getBranchWithSort(@PathVariable String field){
-        List<Branch> allBranchs = branchService.findBranchsWithSorting(field);
-        return new APIResponse<>(allBranchs.size(),allBranchs);
-    }*/
 
 
-
-    @GetMapping("/branch")
+    @GetMapping("/branch/getallbranch")
     private APIResponse<Page<Branch>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "value", required = false) String value
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            , @RequestParam(value = "address", required = false,defaultValue = "") String address
+            , @RequestParam(value = "phone", required = false,defaultValue = "") String phone
             ){
         Page<Branch> branchesWithPagination;
-        if(value  == "" ||value == null){
+        if(name  == "" && address == "" && phone == ""){
             branchesWithPagination = branchService.findBranchsPaginationAndSort(page -1,pageSize);
         }
         else {
-            branchesWithPagination = branchService.findBranchsPaginationAndSearch(page -1,pageSize,value);
+            branchesWithPagination = branchService.findBranchsPaginationAndSearch(name,address,phone,page -1,pageSize);
         }
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }
@@ -72,8 +59,8 @@ public class BranchController {
     }
 
 
-    @PutMapping ("/branch/update/id={id}")
-    public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @PathVariable Long id){
+    @PutMapping ("/branch/updatebranch")
+    public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
             BranchDto result = branchService.updateBranch(branchDto, id);
             return new ResponseEntity<>(result, HttpStatus.OK);
     }

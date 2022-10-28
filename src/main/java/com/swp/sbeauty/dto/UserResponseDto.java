@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class UserDto {
+public class UserResponseDto {
     private Long id;
     private String name;
     private String email;
@@ -19,14 +19,13 @@ public class UserDto {
     private Date dateOfBirth;
     private String gender;
     private String address;
-    private String password;
     private String urlImage;
     private String role;
     private Set<RoleDto> roles;
 
-    public UserDto(){}
+    public UserResponseDto(){}
 
-    public UserDto(Users user){
+    public UserResponseDto(Users user){
         if(user != null){
             this.setId(user.getId());
             this.setName(user.getName());

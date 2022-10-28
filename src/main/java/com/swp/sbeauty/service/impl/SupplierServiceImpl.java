@@ -1,19 +1,13 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.SupplierDto;
-import com.swp.sbeauty.dto.UserDto;
-import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
-import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -103,77 +97,16 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Page<Supplier> findSupplierPaginationAndSort(int offset, int pageSize, String field, String direction) {
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
-        Page<Supplier> suppliers =supplierRepository.findAll(PageRequest.of(offset,pageSize,sort));
+    public Page<Supplier> getAllSupplierPagination(int offset, int pageSize) {
+        Page<Supplier> suppliers =supplierRepository.findAll(PageRequest.of(offset,pageSize));
         return suppliers;
     }
 
     @Override
-    public Page<Supplier> findSupplierPaginationAndSearch(int offset, int pageSize, String field, String direction, String value) {
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
-        Page<Supplier> suppliers =supplierRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+    public Page<Supplier> getSupplierPaginationAndSearch(String name, String address, String phone, int offset, int pageSize) {
+        Page<Supplier> suppliers =supplierRepository.searchListWithField(name,address,phone,PageRequest.of(offset,pageSize));
         return suppliers;
     }
 
 
-//    @Autowired
-//    private SupplierRepository supplierRepository;
-//    @Override
-//    public List<SupplierDto> getSupplier() {
-//        List<Supplier> list = supplierRepository.findAll();
-//        List<SupplierDto> result = new ArrayList<>();
-//        for (Supplier supplier :list){
-//            result.add(new SupplierDto(supplier));
-//        }
-//        return result;
-//    }
-//
-//    @Override
-//    public SupplierDto saveSupplier(SupplierDto supplierDto) {
-//        if(supplierDto != null){
-//            Supplier supplier = new Supplier();
-//            supplier.setName(supplierDto.getName());
-//            supplier.setPhone(supplierDto.getPhone());
-//            supplier.setEmail(supplierDto.getEmail());
-//            supplier.setCertificateImageURL(supplierDto.getCertificateImageURL());
-//            supplier.setCountry(supplierDto.getCountry());
-//            supplier.setCity(supplierDto.getCity());
-//            supplier.setDistrict(supplierDto.getDistrict());
-//            supplier.setStreet(supplierDto.getStreet());
-//            supplier = supplierRepository.save(supplier);
-//            if(supplier != null){
-//                return new SupplierDto(supplier);
-//            }
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public SupplierDto updateSupplier(SupplierDto supplierDto, Long id) {
-//        if(supplierDto !=null){
-//            Supplier supplier = null;
-//            if(id !=null){
-//                Optional<Supplier> optional =supplierRepository.findById(id);
-//                if(optional.isPresent()){
-//                    supplier = optional.get();
-//                }
-//            }
-//            if(supplier != null){
-//                supplier.setName(supplierDto.getName());
-//                supplier.setPhone(supplierDto.getPhone());
-//                supplier.setEmail(supplierDto.getEmail());
-//                supplier.setCertificateImageURL(supplierDto.getCertificateImageURL());
-//                supplier.setCountry(supplierDto.getCountry());
-//                supplier.setCity(supplierDto.getCity());
-//                supplier.setDistrict(supplierDto.getDistrict());
-//                supplier.setStreet(supplierDto.getStreet());
-//                supplier = supplierRepository.save(supplier);
-//                return new SupplierDto(supplier);
-//            } else {
-//                return null;
-//            }
-//        }
-//        return null;
-//    }
 }

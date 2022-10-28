@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier,Long> {
-    @Query(value = "SELECT b FROM Supplier b where " +
-            "concat(b.supplierCode, b.address, b.phone,b.email)" +
-            "like %?1%")
-    public Page<Supplier> searchListWithField(String key, Pageable pageable);
+
+    @Query(value = "SELECT b FROM Supplier b where  " +
+            "b.supplierCode like %?1% and b.address like %?2% and b.phone like %?3%")
+    public Page<Supplier> searchListWithField(String key,String key2,String key3, Pageable pageable);
 }

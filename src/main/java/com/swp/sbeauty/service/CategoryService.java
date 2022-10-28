@@ -14,6 +14,6 @@ public interface CategoryService {
     CategoryDto getById(Long id);
     CategoryDto saveCategory(CategoryDto categoryDto);
     CategoryDto updateCategory(CategoryDto categoryDto, Long id);
-    Page<Category> findCategoryPaginationAndSort(int offset, int pageSize, String field, String direction);
-    Page<Category> findCategoryPaginationAndSearch(int offset,int pageSize,String field,String direction, String value);
+    Page<Category> getAllCategoryPagination(int offset, int pageSize);
+    Page<Category> findCategoryPaginationAndSearch(int offset,int pageSize,String name);
 }

@@ -4,18 +4,16 @@ package com.swp.sbeauty.controller;
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.APIResponse;
-import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.User;
+import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.security.jwt.JwtResponse;
 import com.swp.sbeauty.security.jwt.JwtUtils;
-import com.swp.sbeauty.security.services.UserDetailsImpl;
 import com.swp.sbeauty.service.UserService;
 import com.swp.sbeauty.validation.ValidInputDto;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,10 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -74,11 +69,11 @@ public class UserController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
     @GetMapping(value = "user/getByRole/{id}")
-    public ResponseEntity<List<User>> getByRole(@PathVariable Long id) {
-        List<User> result = userService.getByRole(id);
+    public ResponseEntity<List<Users>> getByRole(@PathVariable Long id) {
+        List<Users> result = userService.getByRole(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/auth/signin")
+        @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -103,11 +98,16 @@ public class UserController {
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }*/
     @GetMapping("/user")
-    private APIResponse<Page<User>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+    private APIResponse<Page<UserDto>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId
-    ){
-        Page<User> getAllUser;
+            , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId,
+                                                            @RequestHeader("Authorization") String authHeader
+                                                            ){
+        Page<UserDto> getAllUser;
+
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        String role = temp.get("role").toString();
+
         if((Integer)roleId == 0){
             getAllUser = userService.getAllUsers(page -1,pageSize);
         }

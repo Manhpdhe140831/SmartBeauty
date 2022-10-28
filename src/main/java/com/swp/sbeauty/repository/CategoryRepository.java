@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    @Query(value = "SELECT b FROM Category b where " +
-            "b.name " +
-            "like %?1%")
+    @Query(value = "SELECT b FROM Category b where  " +
+            "b.name like %?1%")
     public Page<Category> searchListWithField(String key, Pageable pageable);
 }

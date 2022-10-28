@@ -1,6 +1,6 @@
 package com.swp.sbeauty.security.services;
 
-import com.swp.sbeauty.entity.User;
+import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +16,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + email));
 
 
         return UserDetailsImpl.build(user);
     }
+
+
 }

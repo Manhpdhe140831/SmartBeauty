@@ -18,6 +18,6 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
     Page<Branch> getBranchByFilter(String search, String address, Pageable pageable);
 
     @Query(value = "SELECT b FROM Branch b where  " +
-            "b.name like %?1% and b.address like %?1% and b.phone like %?1%")
-    public Page<Branch> searchListWithField(String key,String key2, Pageable pageable);
+            "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
+    public Page<Branch> searchListWithField(String key,String key2,String key3, Pageable pageable);
 }

@@ -44,7 +44,7 @@ public class ProductController {
         ProductDto result = productService.updateProduct(productDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/product")
+   /* @GetMapping("/product")
     private APIResponse<Page<Product>> getSupplierWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "sort", required = false,defaultValue = "productName") String sort
@@ -58,5 +58,5 @@ public class ProductController {
             productsWithPagination = productService.findProductPaginationAndSearch(page -1,pageSize,sort,direction,value);
         }
         return new APIResponse<>(productsWithPagination.getSize(),productsWithPagination);
-    }
+    }*/
 }

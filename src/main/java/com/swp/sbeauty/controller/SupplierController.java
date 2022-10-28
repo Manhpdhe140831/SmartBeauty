@@ -23,12 +23,8 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
-    @GetMapping("/supplier/list")
-    public ResponseEntity<List<SupplierDto>> getSupplier(){
-        return ResponseEntity.ok().body(supplierService.getSupplier());
-    }
-    @GetMapping("/supplier/{id}")
-    public ResponseEntity<SupplierDto> getSupplierById(@PathVariable Long id) {
+    @GetMapping("/supplier/getsupplierbyid")
+    public ResponseEntity<SupplierDto> getSupplierById(@RequestParam(value = "id",required = false) Long id) {
         SupplierDto result = supplierService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
@@ -37,23 +33,24 @@ public class SupplierController {
         SupplierDto result = supplierService.saveSupplier(supplierDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/supplier/update/{id}")
-    public ResponseEntity<SupplierDto> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @PathVariable Long id){
+    @PutMapping ("/supplier/update")
+    public ResponseEntity<SupplierDto> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @RequestParam(value = "id",required = false) Long id){
         SupplierDto result = supplierService.updateSupplier(supplierDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/supplier")
-    private APIResponse<Page<Supplier>> getSupplierWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+    @GetMapping("/supplier/getallsupplier")
+    private APIResponse<Page<Supplier>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false,defaultValue = "supplierCode") String sort
-            , @RequestParam(value = "value", required = false) String value
-            , @RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            , @RequestParam(value = "address", required = false,defaultValue = "") String address
+            , @RequestParam(value = "phone", required = false,defaultValue = "") String phone
+    ){
         Page<Supplier> suppliersWithPagination;
-        if(value  == "" ||value == null){
-            suppliersWithPagination = supplierService.findSupplierPaginationAndSort(page -1,pageSize,sort,direction);
+        if(name  == "" && address == "" && phone == ""){
+            suppliersWithPagination = supplierService.getAllSupplierPagination(page -1,pageSize);
         }
         else {
-            suppliersWithPagination = supplierService.findSupplierPaginationAndSearch(page -1,pageSize,sort,direction,value);
+            suppliersWithPagination = supplierService.getSupplierPaginationAndSearch(name,address,phone,page -1,pageSize);
         }
         return new APIResponse<>(suppliersWithPagination.getSize(),suppliersWithPagination);
     }

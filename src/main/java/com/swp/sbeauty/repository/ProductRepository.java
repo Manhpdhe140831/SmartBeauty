@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
-    @Query(value = "SELECT b FROM Product b where " +
-            "concat(b.productCode, b.productName)" +
-            "like %?1%")
-    public Page<Product> searchListWithField(String key, Pageable pageable);
+    @Query(value = "SELECT b FROM Product b where  " +
+            "b.productCode like %?1% and b.productName like %?2%")
+    public Page<Product> searchListWithField(String key,String key2, Pageable pageable);
 }

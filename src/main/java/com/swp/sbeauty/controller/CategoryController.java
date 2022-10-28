@@ -23,12 +23,8 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/category/list")
-    public ResponseEntity<List<CategoryDto>> getCategory(){
-        return ResponseEntity.ok().body(categoryService.getCategory());
-    }
-    @GetMapping("/category/{id}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+    @GetMapping("/category/getbyid")
+    public ResponseEntity<CategoryDto> getCategoryById(@RequestParam(value = "id",required = false) Long id) {
         CategoryDto result = categoryService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
@@ -38,23 +34,21 @@ public class CategoryController {
         CategoryDto result = categoryService.saveCategory(categoryDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/category/update/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Long id){
+    @PutMapping ("/category/update")
+    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @RequestParam(value = "id",required = false) Long id){
         CategoryDto result = categoryService.updateCategory(categoryDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @GetMapping("/category")
     private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false,defaultValue = "name") String sort
-            , @RequestParam(value = "value", required = false) String value
-            , @RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+            , @RequestParam(value = "name", required = false,defaultValue = "") String name){
         Page<Category> categoriesWithPagination;
-        if(value  == "" ||value == null){
-            categoriesWithPagination = categoryService.findCategoryPaginationAndSort(page -1,pageSize,sort,direction);
+        if(name  == "" ||name == null){
+            categoriesWithPagination = categoryService.getAllCategoryPagination(page -1,pageSize);
         }
         else {
-            categoriesWithPagination = categoryService.findCategoryPaginationAndSearch(page -1,pageSize,sort,direction,value);
+            categoriesWithPagination = categoryService.findCategoryPaginationAndSearch(page -1,pageSize,name);
         }
         return new APIResponse<>(categoriesWithPagination.getSize(),categoriesWithPagination);
     }
