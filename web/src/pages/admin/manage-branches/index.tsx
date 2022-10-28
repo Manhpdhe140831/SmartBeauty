@@ -5,7 +5,7 @@ import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import TableRecordHolder from "../../../components/table-record-holder";
+import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import BranchCreateModalBtn from "./_partial/_branch-create-modal-btn";
 import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
 import { mockBranchWithManager } from "../../../mock/branch";
@@ -61,7 +61,7 @@ const Index: AppPageInterface = () => {
           <TableHeader />
           <tbody>
             {isLoading ? (
-              <TableRecordHolder
+              <RowPlaceholderTable
                 colSpan={7}
                 className={"min-h-12"}
                 message={

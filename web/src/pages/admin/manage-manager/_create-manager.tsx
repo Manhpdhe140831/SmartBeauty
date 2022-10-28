@@ -3,7 +3,15 @@ import { FC } from "react";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Avatar, Button, Divider, Input, Radio, Textarea, TextInput } from "@mantine/core";
+import {
+  Avatar,
+  Button,
+  Divider,
+  Input,
+  Radio,
+  Textarea,
+  TextInput,
+} from "@mantine/core";
 import Link from "next/link";
 import FormErrorMessage from "../../../components/form-error-message";
 import MaskedInput from "react-text-mask";
@@ -14,7 +22,10 @@ import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { IconPlus } from "@tabler/icons";
 import dayjs from "dayjs";
-import { managerModelSchema, userRegisterSchemaFn } from "../../../validation/account-model.schema";
+import {
+  managerModelSchema,
+  userRegisterSchemaFn,
+} from "../../../validation/account-model.schema";
 import { USER_ROLE } from "../../../const/user-role.const";
 
 /**
@@ -32,15 +43,15 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors, isValid },
   } = useForm<z.infer<typeof createManagerSchema>>({
     resolver: zodResolver(createManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       gender: GENDER.other,
-      role: USER_ROLE.manager
-    }
+      role: USER_ROLE.manager,
+    },
   });
 
   return (
@@ -65,21 +76,22 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
       <FormErrorMessage errors={errors} name={"name"} />
       {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
       <Controller
-        name={"mobile"}
+        name={"phone"}
         control={control}
         render={({ field }) => (
-          <Input.Wrapper required id={"phone"} label={"Mobile"}>
+          <Input.Wrapper required id={"phone"} label={"Phone Number"}>
             <Input
               component={MaskedInput}
               mask={PhoneNumberMask}
-              placeholder={"012 774 9999"}
+              placeholder={"0127749999"}
+              defaultValue={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
             />
           </Input.Wrapper>
         )}
       />
-      <FormErrorMessage errors={errors} name={"mobile"} />
+      <FormErrorMessage errors={errors} name={"phone"} />
       <TextInput
         required
         type="email"

@@ -22,7 +22,7 @@ import {
     emailSchema,
     fileUploadSchema,
     imageTypeSchema,
-    mobileSchema,
+    phoneSchema,
     nameSchema,
   } from "../../../validation/field.schema";
   import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,12 +32,12 @@ import {
   import MaskedInput from "react-text-mask";
   import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { StaffModel, StaffPayload } from "../../../model/staff.model";
-  
+
   type ViewStaffPropsType = {
     staffData: StaffModel<ManagerModel>;
     onClose: (staffData?: StaffPayload) => void;
   };
-  
+
   const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     // schema validation
     const updateSchema = z.object({
@@ -45,7 +45,7 @@ import { StaffModel, StaffPayload } from "../../../model/staff.model";
       Role: nameSchema,
       PhoneNumber: nameSchema
     });
-  
+
     const {
       control,
       register,
@@ -57,7 +57,7 @@ import { StaffModel, StaffPayload } from "../../../model/staff.model";
       mode: "onChange",
       defaultValues: { ...staffData },
     });
-  
+
     const { data: availableManager, isLoading: managerLoading } = useQuery<
       SelectItemGeneric<ManagerModel>[]
     >(["available-manager"], async () => {
@@ -67,12 +67,12 @@ import { StaffModel, StaffPayload } from "../../../model/staff.model";
         // add fields of SelectItemGeneric
         value: String(m.id),
         label: m.name,
-        description: m.mobile,
+        description: m.phone,
       }));
     });
-  
+
     const onSubmit = (data: StaffPayload) => onClose();
-  
+
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -113,28 +113,27 @@ import { StaffModel, StaffPayload } from "../../../model/staff.model";
           />
           <FormErrorMessage className={"text-sm"} errors={errors} name={"logo"} />
         </div>
-  
+
         <div className={"flex flex-1 flex-col"}>
           <small className={"leading-none text-gray-500"}>Branch</small>
           <h1 className={"mb-2 text-2xl font-semibold"}>{staffData.name}</h1>
-  
-          
+
+
           <FormErrorMessage errors={errors} name={"manager"} />
-  
-         
+
+
           <FormErrorMessage errors={errors} name={"address"} />
-  
+
           {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
-        
+
           <FormErrorMessage errors={errors} name={"phone"} />
-  
+
           <FormErrorMessage errors={errors} name={"email"} />
-  
-          
+
+
         </div>
       </form>
     );
   };
-  
+
   export default StaffInfo;
-  

@@ -28,7 +28,7 @@ public class JwtUtils {
                 .claim("id", userPrincipal.getId())
                 .claim("name", userPrincipal.getName())
                 .claim("email", userPrincipal.getEmail())
-                .claim("roles", userPrincipal.getAuthorities())
+                .claim("role", userPrincipal.getAuthorities().stream().findFirst().get().toString())
                 .claim("dateOfBirth", userPrincipal.getDateOfBirth())
                 .claim("gender", userPrincipal.getGender())
                 .claim("mobile", userPrincipal.getMobile())

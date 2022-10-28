@@ -1,8 +1,10 @@
 package com.swp.sbeauty.controller;
 
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.User;
+import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.security.jwt.JwtResponse;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.security.services.UserDetailsImpl;
@@ -28,11 +30,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -45,17 +51,14 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto){
-        String check =valid.validUser(userDto);
-        if(check == ""){
-            userDto.setErrorMessage(null);
-            UserDto result = userService.saveUser(userDto);
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto){
+        String check = userService.validateUser(userDto);
+        if(check ==""){
+            Boolean result = userService.saveUser(userDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }else{
-            userDto.setErrorMessage(check);
-            return new ResponseEntity<>(userDto, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
-
     }
     @PutMapping ("/user/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id){
@@ -80,8 +83,6 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
     //abc

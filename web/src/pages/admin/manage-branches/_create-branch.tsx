@@ -28,8 +28,8 @@ import {
   emailSchema,
   fileUploadSchema,
   imageTypeSchema,
-  mobileSchema,
   nameSchema,
+  phoneSchema,
 } from "../../../validation/field.schema";
 import { BranchModel } from "../../../model/branch.model";
 
@@ -54,7 +54,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
   const createSchema = z.object({
     name: nameSchema,
     email: emailSchema,
-    mobile: mobileSchema,
+    phone: phoneSchema,
     manager: z.number().min(1),
     address: addressSchema,
     logo: fileUploadSchema.and(imageTypeSchema),
@@ -79,7 +79,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,
-      description: m.mobile,
+      description: m.phone,
     }));
   });
 
@@ -134,21 +134,22 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
 
       {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
       <Controller
-        name={"mobile"}
+        name={"phone"}
         control={control}
         render={({ field }) => (
-          <Input.Wrapper required id={"phone"} label={"Mobile"}>
+          <Input.Wrapper required id={"phone"} label={"Phone number"}>
             <Input
               component={MaskedInput}
               mask={PhoneNumberMask}
-              placeholder={"012 774 9999"}
+              placeholder={"0127749999"}
+              defaultValue={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
             />
           </Input.Wrapper>
         )}
       />
-      <FormErrorMessage errors={errors} name={"mobile"} />
+      <FormErrorMessage errors={errors} name={"phone"} />
 
       <TextInput
         required

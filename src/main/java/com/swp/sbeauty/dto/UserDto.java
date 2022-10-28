@@ -20,8 +20,9 @@ public class UserDto {
     private String gender;
     private String address;
     private String password;
+    private String urlImage;
+    private String role;
     private Set<RoleDto> roles;
-    private String errorMessage;
 
     public UserDto(){}
 

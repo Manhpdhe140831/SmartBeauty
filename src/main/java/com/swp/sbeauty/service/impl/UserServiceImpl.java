@@ -1,5 +1,6 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.RoleDto;
 import com.swp.sbeauty.dto.UserDto;
 
@@ -12,6 +13,8 @@ import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
 
     @Override
-    public UserDto saveUser(UserDto userDto) {
+    public Boolean saveUser(UserDto userDto) {
         if(userDto != null){
             User user = new User();
             user.setName(userDto.getName());
@@ -39,30 +42,27 @@ public class UserServiceImpl implements UserService {
             user.setGender(userDto.getGender());
             user.setAddress(userDto.getAddress());
             user.setPassword(encoder.encode(userDto.getPassword()));
+            user.setUrlImage(userDto.getUrlImage());
             Set<Role> roles = new HashSet<>();
-            if(userDto.getRoles()!=null && userDto.getRoles().size()>0){
-                for (RoleDto roleDto : userDto.getRoles()){
-                    if(roleDto!=null){
-                        Role role = null;
-                        if(roleDto.getId()!=null){
-                            Optional<Role> optional =roleRepository.findById(roleDto.getId());
-                            if(optional.isPresent()){
-                                role = optional.get();
-                            }
-                            if(role!=null){
-                                roles.add(role);
-                            }
-                        }
-                    }
+            if(userDto.getRole()!=null){
+                Role role = null;
+                Optional<Role> optional =roleRepository.findByName(userDto.getRole());
+                if(optional.isPresent()){
+                    role = optional.get();
                 }
+                if(role!=null){
+                    roles.add(role);
+                }
+            }
+            if(roles!=null){
                 user.setRoles(roles);
             }
             user = userRepository.save(user);
             if(user != null){
-                return new UserDto(user);
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     @Override
@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
                 user.setGender(userDto.getGender());
                 user.setAddress(userDto.getAddress());
                 user.setPassword(encoder.encode(userDto.getPassword()));
+                user.setUrlImage(user.getUrlImage());
                 Set<Role> roles = new HashSet<>();
                 if(user.getRoles()!=null && user.getRoles().size()>0){
                     for (RoleDto roleDto : userDto.getRoles()){
@@ -130,6 +131,18 @@ public class UserServiceImpl implements UserService {
             }
         }
         return null;
+    }
+
+    @Override
+    public String validateUser(UserDto userDto) {
+        String result = "";
+        if(userRepository.existsByEmail(userDto.getEmail())){
+            result += "Email already exists in data, ";
+        }
+        if(userRepository.existsByMobile(userDto.getMobile())){
+            result += "Mobile already exists in data";
+        }
+        return result;
     }
 
     //    @Override

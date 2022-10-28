@@ -5,7 +5,7 @@ export default function TableHeader() {
         <th className="!py-2 !text-center !text-white">No.</th>
         <th className="!py-2 !text-center !text-white">Branch Name</th>
         <th className="!py-2 !text-center !text-white">Manager</th>
-        <th className="!py-2 !text-center !text-white">Mobile</th>
+        <th className="!py-2 !text-center !text-white">Phone Number</th>
         <th className="!py-2 !text-center !text-white">Email</th>
         <th className="!py-2 !text-center !text-white">Address</th>
         <th className="!py-2 !text-center !text-white"></th>

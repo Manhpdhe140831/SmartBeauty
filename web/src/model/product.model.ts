@@ -1,21 +1,15 @@
-import { ProviderModel } from "./provider.model";
+import { SupplierModel } from "./supplier.model";
+import { BasePriceModel } from "./_price.model";
 
 export interface ProductModel<
-  provider extends number | ProviderModel = number
-> {
+  supplierModel extends number | SupplierModel = number
+> extends BasePriceModel {
   id: number;
   name: string;
-  price: number;
-  importedDate?: string;
-  // some rare case the product doesn't have expired date.
-  expiredDate?: string;
   description: string;
-  discountStart: string | null;
-  discountEnd: string | null;
-  salePercent: number | null;
   image?: string;
-  provider: provider;
-  unitType?: string;
+  supplier: supplierModel;
+  unit: string;
   quantity?: number;
 }
 

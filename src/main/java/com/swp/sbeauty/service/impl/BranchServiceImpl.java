@@ -1,25 +1,22 @@
 package com.swp.sbeauty.service.impl;
 
+
 import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.BranchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
 
 @Service @Transactional @Slf4j
@@ -29,6 +26,8 @@ public class BranchServiceImpl implements BranchService {
     private BranchRepository branchRepository;
     @Autowired
     private UserRepository userRepository;
+
+
 
 
     @Override
@@ -48,48 +47,26 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    public BranchDto getById(Long id) {
+        if (id != null) {
+            Branch entity = branchRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new BranchDto(entity);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<Branch> findBranchsWithSorting(String field) {
         return null;
     }
 
     @Override
     public BranchDto saveBranch(BranchDto branchDto) {
-
-        if(branchDto != null){
-            Branch branch = new Branch();
-            branch.setName(branchDto.getName());
-            branch.setPhone(branchDto.getPhone());
-            branch.setAddress(branchDto.getAddress());
-            branch.setImage(branchDto.getImage());
-            if(branchDto.getUsers()!=null){
-                User user = null;
-                Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
-                if (optional.isPresent()) {
-                    user = optional.get();
-                }
-                branch.setUser(user);
-            }
-            branch = branchRepository.save(branch);
-            if(branch != null){
-                return new BranchDto(branch);
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public BranchDto updateBranch(BranchDto branchDto, Long id) {
-
-        if(branchDto !=null){
-            Branch branch = null;
-            if(id !=null){
-                Optional<Branch> optional =branchRepository.findById(id);
-                if(optional.isPresent()){
-                    branch = optional.get();
-                }
-            }
-            if(branch != null){
+        try{
+            if(branchDto != null){
+                Branch branch = new Branch();
                 branch.setName(branchDto.getName());
                 branch.setPhone(branchDto.getPhone());
                 branch.setAddress(branchDto.getAddress());
@@ -103,24 +80,63 @@ public class BranchServiceImpl implements BranchService {
                     branch.setUser(user);
                 }
                 branch = branchRepository.save(branch);
-                return new BranchDto(branch);
-            } else {
-                return null;
+                if(branch != null){
+                    return new BranchDto(branch);
+                }
             }
+        }catch (Exception e){
+            throw e;
+        }
+        return null;
+    }
+
+    @Override
+    public BranchDto updateBranch(BranchDto branchDto, Long id) {
+        try{
+            if(branchDto !=null){
+                Branch branch = null;
+                if(id !=null){
+                    Optional<Branch> optional =branchRepository.findById(id);
+                    if(optional.isPresent()){
+                        branch = optional.get();
+                    }
+                }
+                if(branch != null){
+                    branch.setName(branchDto.getName());
+                    branch.setPhone(branchDto.getPhone());
+                    branch.setAddress(branchDto.getAddress());
+                    branch.setImage(branchDto.getImage());
+                    if(branchDto.getUsers()!=null){
+                        User user = null;
+                        Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
+                        if (optional.isPresent()) {
+                            user = optional.get();
+                        }
+                        branch.setUser(user);
+                    }
+                    branch = branchRepository.save(branch);
+                    return new BranchDto(branch);
+                } else {
+                    return null;
+                }
+            }
+        }catch (Exception e){
+            throw e;
         }
 
+
         return null;
     }
 
-    @Override
-    public Page<Branch> findBranchsWithPaginnation(int offset, int pageSize) {
-        return null;
-    }
+
 
     @Override
-    public Page<Branch> findBranchsWithPaginnationAnSort(int offset, int pageSize, String field) {
-        return null;
+    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize,String field,String direction,String value) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
+        Page<Branch> branches =branchRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
+        return branches;
     }
+
 
 
     @Override
@@ -130,13 +146,12 @@ public class BranchServiceImpl implements BranchService {
         return branches;
     }
 
-    @Override
-    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize, String field, String value) {
-        /*List<Branch> search = new ArrayList<>();
-                search = branchRepository.searchBranch(field,value);
-        Page<Branch> branches = branchRepository.findAll(PageRequest.of(offset, pageSize,));*/
-        return null;
-    }
+
+
+
+
+
+
 
 //    @Autowired
 //    private BranchRepository branchRepository;
@@ -227,5 +242,4 @@ public class BranchServiceImpl implements BranchService {
 //        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(field)));
 //        return branches;
 //    }
-
 }

@@ -3,12 +3,12 @@ import { useClipboard } from "@mantine/hooks";
 import { Tooltip } from "@mantine/core";
 
 type RecordProps = {
-  no?: number;
+  no: number;
   data: ManagerModel;
   action: JSX.Element;
 };
 
-const TableRecord = (props: RecordProps) => {
+const ManageRowTable = (props: RecordProps) => {
   const clipboard = useClipboard({ timeout: 500 });
   return (
     <tr>
@@ -21,8 +21,8 @@ const TableRecord = (props: RecordProps) => {
           <span>{props.data.name}</span>
         </Tooltip>
       </td>
-      <td onClick={() => clipboard.copy(props.data.mobile)}>
-        {props.data.mobile}
+      <td onClick={() => clipboard.copy(props.data.phone)}>
+        {props.data.phone}
       </td>
       <td
         className="overflow-hidden text-ellipsis"
@@ -45,4 +45,4 @@ const TableRecord = (props: RecordProps) => {
   );
 };
 
-export default TableRecord;
+export default ManageRowTable;

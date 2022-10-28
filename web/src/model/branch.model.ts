@@ -13,7 +13,7 @@ export interface BranchModel<
   id: number;
   name: string;
   manager: managerType;
-  mobile: string;
+  phone: string;
   address: string;
   email: string;
   logo: string;

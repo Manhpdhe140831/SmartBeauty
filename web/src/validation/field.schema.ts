@@ -8,12 +8,13 @@ import { ZodObject } from "zod/lib/types";
 export const idDbSchema = z.number().min(1);
 
 export const nameSchema = z.string().min(3).max(120);
+export const taxCodeSchema = z.string().length(10);
 export const descriptionSchema = z.string().max(200);
 export const emailSchema = z.string().email().max(120);
-export const mobileSchema = z
+export const phoneSchema = z
   .string()
-  .refine((p) => !!p && p.replace(/\s/g, "").match(/^0\d{9}$/), {
-    message: "Mobile does not have correct format.",
+  .refine((p) => !!p && p.match(/^0\d{9}$/), {
+    message: "Phone number does not have correct format.",
   });
 
 export const addressSchema = z.string().min(3).max(200);
@@ -62,10 +63,10 @@ export const saleSchema = z
   .object({
     discountStart: z.date().nullable(),
     discountEnd: z.date().nullable(),
-    salePercent: z.number().nullable(),
+    discountPercent: z.number().nullable(),
   })
-  .refine(({ salePercent, discountEnd, discountStart }) => {
-    if (salePercent !== undefined) {
+  .refine(({ discountPercent, discountEnd, discountStart }) => {
+    if (discountPercent !== undefined) {
       return discountEnd !== undefined || discountStart !== undefined;
     }
 
@@ -96,7 +97,7 @@ export const saleSchema = z
   ) as unknown as ZodObject<{
   discountStart: z.ZodNullable<z.ZodDate>;
   discountEnd: z.ZodNullable<z.ZodDate>;
-  salePercent: z.ZodNullable<z.ZodNumber>;
+  discountPercent: z.ZodNullable<z.ZodNumber>;
 }>;
 
 export const unitProductSchema = z.string().min(1);

@@ -1,11 +1,13 @@
 package com.swp.sbeauty.controller;
 
 
+import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.ProductDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
+import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,11 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getProducts(){
         return ResponseEntity.ok().body(productService.getProducts());
     }
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+        ProductDto result = productService.getProductById(id);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
 
     @PostMapping("/product/save")
     public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto){
@@ -38,11 +45,18 @@ public class ProductController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @GetMapping("/product")
-    private APIResponse<Page<Product>> getProductWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+    private APIResponse<Page<Product>> getSupplierWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "sort", required = false, defaultValue = "asc") String sort
-            , @RequestParam(value = "direction") String direction){
-        Page<Product> productsWithPagination = productService.findProductsPaginationAndSort(page -1,pageSize,sort,direction);
+            , @RequestParam(value = "sort", required = false,defaultValue = "productName") String sort
+            , @RequestParam(value = "value", required = false) String value
+            , @RequestParam(value = "direction",defaultValue = "asc",required = false) String direction){
+        Page<Product> productsWithPagination;
+        if(value  == "" ||value == null){
+            productsWithPagination = productService.findProductPaginationAndSort(page -1,pageSize,sort,direction);
+        }
+        else {
+            productsWithPagination = productService.findProductPaginationAndSearch(page -1,pageSize,sort,direction,value);
+        }
         return new APIResponse<>(productsWithPagination.getSize(),productsWithPagination);
     }
 }

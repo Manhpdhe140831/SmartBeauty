@@ -12,11 +12,11 @@ import Link from "next/link";
 import { USER_ROLE } from "../../const/user-role.const";
 import { useMutation } from "@tanstack/react-query";
 import { IErrorResponse, ILoginResponse } from "../../interfaces/api.interface";
-import matchAuth from "../../mock/auth";
 import useAccessToken from "../../store/access-token.atom";
 import { useAuthUser } from "../../store/auth-user.state";
 import { UserModel } from "../../model/user.model";
 import { emailSchema, passwordSchema } from "../../validation/field.schema";
+import { loginApi } from "../../services/user.service";
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -46,44 +46,40 @@ const Login: AppPageInterface = () => {
     ILoginResponse,
     IErrorResponse,
     z.infer<typeof loginSchema>
-  >(
-    // TODO replace the MOCK
-    (payload) => matchAuth(payload.email, payload.password),
-    {
-      onSuccess: (response) => {
-        const userDecoded = authToken.setToken<UserModel>(response.accessToken);
-        if (!userDecoded) {
-          setNotify({
-            icon: <IconX size={18} />,
-            context: "There is some error. Please try again.",
-            color: "red",
-          });
-          return;
-        }
-        // user login success. set the decoded to state.
-        authUser.loginAs(userDecoded);
-        setNotify({
-          icon: <IconCheck size={18} />,
-          context: "Login success! Redirect you to homepage.",
-          color: "teal",
-        });
-        // navigate to homepage
-        void router.push("/");
-      },
-      onError: (error) => {
-        let context = "Login failed, please try again.";
-
-        if (error.status === 401) {
-          context = "Email or password is incorrect!";
-        }
+  >((payload) => loginApi(payload.email, payload.password), {
+    onSuccess: (response) => {
+      const userDecoded = authToken.setToken<UserModel>(response.accessToken);
+      if (!userDecoded) {
         setNotify({
           icon: <IconX size={18} />,
-          context,
+          context: "There is some error. Please try again.",
           color: "red",
         });
-      },
-    }
-  );
+        return;
+      }
+      // user login success. set the decoded to state.
+      authUser.loginAs(userDecoded);
+      setNotify({
+        icon: <IconCheck size={18} />,
+        context: "Login success! Redirecting you to homepage.",
+        color: "teal",
+      });
+      // navigate to homepage
+      void router.push("/");
+    },
+    onError: (error) => {
+      let context = "Login failed, please try again.";
+
+      if (error.status === 401) {
+        context = "Email or password is incorrect!";
+      }
+      setNotify({
+        icon: <IconX size={18} />,
+        context,
+        color: "red",
+      });
+    },
+  });
 
   return (
     <div className="grid min-h-screen w-full place-items-center">

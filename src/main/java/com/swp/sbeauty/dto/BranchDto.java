@@ -12,12 +12,8 @@ import javax.validation.constraints.Size;
 @Setter
 public class BranchDto {
     private Long id;
-    @NotEmpty
     private String name;
-    @NotEmpty
-    @Pattern(regexp="(^$|[0-9]{10,11})", message = "phone number must consist of 10-11 digits")
     private String phone;
-    @NotEmpty
     private String address;
     private String image;
     private UserDto users;

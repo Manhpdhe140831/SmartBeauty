@@ -7,7 +7,7 @@ import {
   fileUploadSchema,
   genderSchema,
   imageTypeSchema,
-  mobileSchema,
+  phoneSchema,
   nameSchema,
 } from "./field.schema";
 import { USER_ROLE } from "../const/user-role.const";
@@ -17,7 +17,7 @@ import { USER_ROLE } from "../const/user-role.const";
  */
 export const baseUserSchema = z.object({
   name: nameSchema,
-  mobile: mobileSchema,
+  phone: phoneSchema,
   email: emailSchema,
   dateOfBirth: ageSchemaFn(),
   gender: genderSchema,

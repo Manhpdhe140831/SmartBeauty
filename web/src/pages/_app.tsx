@@ -11,9 +11,17 @@ import { useAuthUser } from "../store/auth-user.state";
 import { useRouter } from "next/router";
 import { needRedirectedOnRole } from "../utilities/guard.helper";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { ApiHostRequestInterceptor } from "../utilities/axios.helper";
+import { URL_ENDPOINT } from "../const/_const";
 
 // Create a react-query client
 const queryClient = new QueryClient();
+
+/**
+ * Add hostname to every api request with axios.
+ */
+ApiHostRequestInterceptor(axios, `${URL_ENDPOINT}`);
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [clientPassedGuard, setClientPassedGuard] = useState(false);
