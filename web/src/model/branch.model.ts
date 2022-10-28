@@ -8,7 +8,7 @@ import { ManagerModel } from "./manager.model";
  * -
  */
 export interface BranchModel<
-  managerType extends number | ManagerModel = number
+  managerType extends number | ManagerModel | ManagerModel[] = number
 > {
   id: number;
   name: string;
