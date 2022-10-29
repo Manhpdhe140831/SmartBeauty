@@ -49,23 +49,12 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-//    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader){
-//        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-//        String roleCheck = temp.get("role").toString();
-//
-//
-//        String check = userService.validateUser(userDto);
-//        if(check ==""){
-//            Boolean result = userService.saveUser(userDto,roleCheck);
-//            return new ResponseEntity<>(result, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
-//        }
-//    }
-    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto){
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader) {
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        String roleCheck = temp.get("role").toString();
         String check = userService.validateUser(userDto);
-        if(check ==""){
-            Boolean result = userService.saveUser(userDto);
+        if (check == "") {
+            Boolean result = userService.saveUser(userDto, roleCheck);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -128,7 +117,7 @@ public class UserController {
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }
 
-    @GetMapping("/user/getallbyadmin")
+    @GetMapping("/user/getAll")
     private APIResponse<Page<UserDto>> getAllUserByAdmin(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestHeader("Authorization") String authHeader){
@@ -136,15 +125,12 @@ public class UserController {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String role = temp.get("role").toString();
     if (role.equalsIgnoreCase("admin")){
-
-
         getAllUser = userService.getAllUsersByAdmin(page -1,pageSize);
     }else if(role.equalsIgnoreCase("manager")){
         getAllUser = userService.getAllUsersByManager( page -1,pageSize);
     }else{
         getAllUser = userService.getAllUsers(page -1,pageSize);
     }
-
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }
 

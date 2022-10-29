@@ -63,19 +63,15 @@ public class UserServiceImpl implements UserService {
                 }
                 user.setRoles(roles);
             } else if (roleAuth.equalsIgnoreCase("manager")) {
-                if (userDto.getRole() != null) {
-                    Role role = null;
-                    Optional<Role> optional = roleRepository.findByName(userDto.getRole());
-                    if (optional.isPresent()) {
-                        role = optional.get();
-                    }
-                    if (role != null) {
-                        roles.add(role);
-                    }
+                Role role = null;
+                Optional<Role> optional = roleRepository.findByName("staff");
+                if (optional.isPresent()) {
+                    role = optional.get();
                 }
-                if (roles != null) {
-                    user.setRoles(roles);
+                if (role != null) {
+                    roles.add(role);
                 }
+                user.setRoles(roles);
             }
             user = userRepository.save(user);
             if (user != null) {

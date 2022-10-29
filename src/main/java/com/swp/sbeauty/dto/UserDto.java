@@ -1,5 +1,6 @@
 package com.swp.sbeauty.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.Users;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class UserDto {
     private String name;
     private String email;
     private String mobile;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
     private String gender;
     private String address;
@@ -35,12 +37,7 @@ public class UserDto {
             this.setDateOfBirth(user.getDateOfBirth());
             this.setGender(user.getGender());
             this.setAddress(user.getAddress());
-            if(user.getRoles()!=null){
-                this.roles = new HashSet<>();
-                for(Role role : user.getRoles()){
-                    this.roles.add(new RoleDto(role));
-                }
-            }
+            this.role = user.getRoles().stream().findFirst().get().getName();
         }
     }
 }
