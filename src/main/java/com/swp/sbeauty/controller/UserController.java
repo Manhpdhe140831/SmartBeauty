@@ -49,13 +49,23 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader){
-        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        String roleCheck = temp.get("role").toString();
-
+//    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader){
+//        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+//        String roleCheck = temp.get("role").toString();
+//
+//
+//        String check = userService.validateUser(userDto);
+//        if(check ==""){
+//            Boolean result = userService.saveUser(userDto,roleCheck);
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+//        }
+//    }
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto){
         String check = userService.validateUser(userDto);
         if(check ==""){
-            Boolean result = userService.saveUser(userDto,roleCheck);
+            Boolean result = userService.saveUser(userDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -117,19 +127,26 @@ public class UserController {
         }
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }
-    //abc
-//
-//    @PostMapping("/role/save")
-//    public ResponseEntity<RoleDto> saveUser(@RequestBody RoleDto roleDto){
-//        RoleDto result = userService.saveRole(roleDto);
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/role/add-to-user")
-//    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form){
-//        Boolean result = userService.addRoleToUser(form.getRoleId(), form.getUserId());
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
+
+    @GetMapping("/user/getallbyadmin")
+    private APIResponse<Page<UserDto>> getAllUserByAdmin(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestHeader("Authorization") String authHeader){
+        Page<UserDto> getAllUser;
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        String role = temp.get("role").toString();
+    if (role.equalsIgnoreCase("admin")){
+
+
+        getAllUser = userService.getAllUsersByAdmin(page -1,pageSize);
+    }else if(role.equalsIgnoreCase("manager")){
+        getAllUser = userService.getAllUsersByManager( page -1,pageSize);
+    }else{
+        getAllUser = userService.getAllUsers(page -1,pageSize);
+    }
+
+        return new APIResponse<>(getAllUser.getSize(),getAllUser);
+    }
 
 
 

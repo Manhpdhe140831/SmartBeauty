@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,9 +25,11 @@ public class Branch {
     private String address;
     private String image;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users user;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(  name = "branch_user",
+            joinColumns = @JoinColumn(name = "branch_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<Users> users = new HashSet<>();
 
 
 

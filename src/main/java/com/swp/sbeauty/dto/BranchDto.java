@@ -1,12 +1,14 @@
 package com.swp.sbeauty.dto;
 
 import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Users;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,7 +18,7 @@ public class BranchDto {
     private String phone;
     private String address;
     private String image;
-    private UserDto users;
+    private Set<UserDto> users;
 
     public BranchDto(){}
 
@@ -27,8 +29,12 @@ public class BranchDto {
             this.setPhone(branch.getPhone());
             this.setAddress(branch.getAddress());
             this.setImage(branch.getImage());
-            if(branch.getUser() != null){
-                users = new UserDto(branch.getUser());
+            if(branch.getUsers() != null){
+                for (Users itemU: branch.getUsers()
+                     ) {
+                    users.add(new UserDto(itemU));
+                }
+
             }
         }
 

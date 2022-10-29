@@ -13,10 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Optional;
+import java.util.*;
 
 @Service @Transactional @Slf4j
 public class BranchServiceImpl implements BranchService {
@@ -70,13 +67,15 @@ public class BranchServiceImpl implements BranchService {
                 branch.setPhone(branchDto.getPhone());
                 branch.setAddress(branchDto.getAddress());
                 branch.setImage(branchDto.getImage());
+                Set<Users> usersSet = new HashSet<>();
                 if(branchDto.getUsers()!=null){
                     Users user = null;
-                    Optional<Users> optional = userRepository.findById(branchDto.getUsers().getId());
+                    Optional<Users> optional = userRepository.findById(branchDto.getId());
                     if (optional.isPresent()) {
                         user = optional.get();
+                        usersSet.add(user);
                     }
-                    branch.setUser(user);
+                    branch.setUsers(usersSet);
                 }
                 branch = branchRepository.save(branch);
                 if(branch != null){
@@ -105,13 +104,15 @@ public class BranchServiceImpl implements BranchService {
                     branch.setPhone(branchDto.getPhone());
                     branch.setAddress(branchDto.getAddress());
                     branch.setImage(branchDto.getImage());
+                    Set<Users> users = new HashSet<>();
                     if(branchDto.getUsers()!=null){
                         Users user = null;
-                        Optional<Users> optional = userRepository.findById(branchDto.getUsers().getId());
+                        Optional<Users> optional = userRepository.findById(branchDto.getId());
                         if (optional.isPresent()) {
                             user = optional.get();
+                            users.add(user);
                         }
-                        branch.setUser(user);
+                        branch.setUsers(users);
                     }
                     branch = branchRepository.save(branch);
                     return new BranchDto(branch);
@@ -126,10 +127,6 @@ public class BranchServiceImpl implements BranchService {
 
         return null;
     }
-
-
-
-
 
 
 

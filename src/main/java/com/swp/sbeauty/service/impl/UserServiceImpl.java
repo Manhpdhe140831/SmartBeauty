@@ -38,9 +38,10 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
     @Autowired
     JwtUtils jwtUtils;
+
     @Override
     public Boolean saveUser(UserDto userDto,String roleAuth) {
-        if(userDto != null){
+        if (userDto != null) {
             Users user = new Users();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
@@ -51,38 +52,131 @@ public class UserServiceImpl implements UserService {
             user.setPassword(encoder.encode(userDto.getPassword()));
             user.setUrlImage(userDto.getUrlImage());
             Set<Role> roles = new HashSet<>();
-            if(roleAuth.equalsIgnoreCase("admin")) {
+            if (roleAuth.equalsIgnoreCase("admin")) {
                 Role role = null;
-                Optional<Role> optional =roleRepository.findByName("manager");
-                if(optional.isPresent()){
+                Optional<Role> optional = roleRepository.findByName("manager");
+                if (optional.isPresent()) {
                     role = optional.get();
                 }
-                if(role!=null){
+                if (role != null) {
                     roles.add(role);
                 }
                 user.setRoles(roles);
-            }else if(roleAuth.equalsIgnoreCase("manager")){
-                if(userDto.getRole()!=null){
+            } else if (roleAuth.equalsIgnoreCase("manager")) {
+                if (userDto.getRole() != null) {
                     Role role = null;
-                    Optional<Role> optional =roleRepository.findByName(userDto.getRole());
-                    if(optional.isPresent()){
+                    Optional<Role> optional = roleRepository.findByName(userDto.getRole());
+                    if (optional.isPresent()) {
                         role = optional.get();
                     }
-                    if(role!=null){
+                    if (role != null) {
                         roles.add(role);
                     }
                 }
-                if(roles!=null){
+                if (roles != null) {
                     user.setRoles(roles);
                 }
             }
             user = userRepository.save(user);
-            if(user != null){
+            if (user != null) {
                 return true;
             }
         }
-        return false;
+        return null;
     }
+
+    @Override
+    public Page<UserDto> getAllUsersByManager(int offset, int pageSize) {
+        Page<Users> users = userRepository.getAllUserByManager(PageRequest.of(offset,pageSize));
+        ModelMapper mapper = new ModelMapper();
+        List<UserDto> dtos = users
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    f.setPassword("");
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        Page<UserDto> pageResult = new PageImpl<>(dtos);
+        return pageResult;
+    }
+
+    //    @Override
+//    public Boolean saveUser(UserDto userDto,String roleAuth) {
+//        if(userDto != null){
+//            Users user = new Users();
+//            user.setName(userDto.getName());
+//            user.setEmail(userDto.getEmail());
+//            user.setMobile(userDto.getMobile());
+//            user.setDateOfBirth(userDto.getDateOfBirth());
+//            user.setGender(userDto.getGender());
+//            user.setAddress(userDto.getAddress());
+//            user.setPassword(encoder.encode(userDto.getPassword()));
+//            user.setUrlImage(userDto.getUrlImage());
+//            if(roleAuth.equalsIgnoreCase("admin")) {
+//// if admin then create user with role manager
+//
+//            }else if(roleAuth.equalsIgnoreCase("manager")){
+//                //if manager then create user with role staff
+//            }
+//            Set<Role> roles = new HashSet<>();
+//            if(userDto.getRole()!=null){
+//                Role role = null;
+//                Optional<Role> optional =roleRepository.findByName(userDto.getRole());
+//                if(optional.isPresent()){
+//                    role = optional.get();
+//                }
+//                if(role!=null){
+//                    roles.add(role);
+//                }
+//            }
+//            if(roles!=null){
+//                user.setRoles(roles);
+//            }
+//            user = userRepository.save(user);
+//            if(user != null){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+@Override
+public Boolean saveUser(UserDto userDto) {
+    if(userDto != null){
+        Users user = new Users();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setMobile(userDto.getMobile());
+        user.setDateOfBirth(userDto.getDateOfBirth());
+        user.setGender(userDto.getGender());
+        user.setAddress(userDto.getAddress());
+        user.setPassword(encoder.encode(userDto.getPassword()));
+        user.setUrlImage(userDto.getUrlImage());
+        Set<Role> roles = new HashSet<>();
+        if(userDto.getRole()!=null){
+            Role role = null;
+            Optional<Role> optional =roleRepository.findByName(userDto.getRole());
+            if(optional.isPresent()){
+                role = optional.get();
+            }
+            if(role!=null){
+                roles.add(role);
+
+            }
+        }
+        if(roles!=null){
+            user.setRoles(roles);
+        }
+        user = userRepository.save(user);
+        if(user != null){
+            return true;
+        }
+    }
+    return false;
+}
 
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
@@ -183,16 +277,46 @@ public class UserServiceImpl implements UserService {
         return pageResult;
     }
 
+
     @Override
     public Page<UserDto> getAllUsers(int offset, int pageSize) {
         Page<Users> users = userRepository.findAll(PageRequest.of(offset,pageSize));
-
         ModelMapper mapper = new ModelMapper();
-        List<UserDto> listUser = new ArrayList<>();
-        mapper.map(users, listUser);
-        Page<UserDto> pageResult = new PageImpl<>(listUser);
+        List<UserDto> dtos = users
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    f.setPassword("");
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        Page<UserDto> pageResult = new PageImpl<>(dtos);
         return pageResult;
     }
+
+    @Override
+    public Page<UserDto> getAllUsersByAdmin(int offset, int pageSize) {
+
+        Page<Users> users = userRepository.getAllUserByAdmin(PageRequest.of(offset,pageSize));
+        ModelMapper mapper = new ModelMapper();
+        List<UserDto> dtos = users
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    f.setPassword("");
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        Page<UserDto> pageResult = new PageImpl<>(dtos);
+        return pageResult;
+    }
+
 
 
     //    @Override
@@ -237,12 +361,11 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getUsers() {
         List<Users> list = userRepository.findAll();
         List<UserDto> result =new ArrayList<>();
-        for(Users user : list){
-            result.add(new UserDto(user));
+        for(Users users : list){
+            result.add(new UserDto(users));
         }
         return result;
     }
 
 
 }
-

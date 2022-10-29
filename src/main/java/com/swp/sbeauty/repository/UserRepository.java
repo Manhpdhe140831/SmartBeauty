@@ -23,8 +23,18 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     List<Users> findUserByRoleId(Long id);
     @Query(value = "select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = :roleId ", nativeQuery = true)
     Page<Users> getUserByRoleId(@Param("roleId") int roleId, Pageable pageable);
+
     Optional<Users> findByEmail(String email);
 
     Boolean existsByEmail(String email);
     Boolean existsByMobile(String mobile);
+//select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3
+    //select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = 2 or user_role.role_id =3
+    @Query(value = "select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3", nativeQuery = true)
+
+    Page<Users> getAllUserByAdmin( Pageable pageable);
+
+    @Query(value = "select users.* from users join branch_user on users.id = branch_user.user_id join user_role on  users.id = user_role.user_id\n" +
+            "    where  user_role.role_id =3", nativeQuery = true)
+    Page<Users>getAllUserByManager(Pageable pageable);
 }

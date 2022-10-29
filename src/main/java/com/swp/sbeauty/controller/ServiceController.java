@@ -4,6 +4,7 @@ import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.service.ServiceSpaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,8 @@ public class ServiceController {
         Page<ServiceDto> pageService = service.getListServiceSpa(offset, pageSize);
         return new ResponseEntity<>(pageService, HttpStatus.OK);
     }
+
+
 
 
 }
