@@ -1,14 +1,6 @@
 import { FC, FormEvent } from "react";
 import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import {
-  descriptionSchema,
-  fileUploadSchema,
-  idDbSchema,
-  imageTypeSchema,
-  nameSchema,
-  saleSchema,
-} from "../../../validation/field.schema";
-import {
   ServiceCreateEntity,
   ServiceModel,
   ServiceUpdateEntity,
@@ -18,6 +10,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import {
+  Button,
   Divider,
   Image as MantineImage,
   Modal,
@@ -30,7 +23,7 @@ import {
 import DialogDetailAction from "../../../components/dialog-detail-action";
 import FormErrorMessage from "../../../components/form-error-message";
 import { DatePicker } from "@mantine/dates";
-import { IconPercentage } from "@tabler/icons";
+import { IconPercentage, IconPlus } from "@tabler/icons";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { MAX_PRICE } from "../../../const/_const";
@@ -39,24 +32,12 @@ import {
   parserNumberInput,
 } from "../../../utilities/fn.helper";
 import ProductInServiceRowTable from "./_partial/_product-in-service-row.table";
+import { getServiceModelSchema } from "../../../validation/service-model.schema";
 
 const ServiceDetailDialog: FC<
   DialogProps<ServiceModel, ServiceUpdateEntity, ServiceCreateEntity>
 > = ({ data, opened, onClosed, mode }) => {
-  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
-  const validateSchema = z
-    .object({
-      id: idSchema,
-      nameService: nameSchema,
-      description: descriptionSchema,
-      duration: z.number().min(0),
-      image: fileUploadSchema
-        .and(imageTypeSchema)
-        .or(z.string().url())
-        .nullable(),
-      products: z.any(),
-    })
-    .extend(saleSchema.shape);
+  const validateSchema = getServiceModelSchema(mode);
 
   const {
     control,
@@ -80,6 +61,19 @@ const ServiceDetailDialog: FC<
               ? dayjs(data.discountEnd).toDate()
               : null,
             discountPercent: data.discountPercent ?? null,
+            products: data.products.map((row) => ({
+              usage: row.usage,
+              product: {
+                ...row.product,
+                discountStart: row.product.discountStart
+                  ? dayjs(row.product.discountStart).toDate()
+                  : null,
+                discountEnd: row.product.discountEnd
+                  ? dayjs(row.product.discountEnd).toDate()
+                  : null,
+                discountPercent: row.product.discountPercent ?? null,
+              },
+            })),
           }
         : undefined,
   });
@@ -335,12 +329,12 @@ const ServiceDetailDialog: FC<
               </colgroup>
               <thead>
                 <tr>
-                  <th>No.</th>
-                  <th>Image</th>
+                  <th className="!text-center">No.</th>
+                  <th className="!text-center">Image</th>
                   <th>Name</th>
-                  <th>Dose</th>
-                  <th>Unit</th>
-                  <th>Uses</th>
+                  <th className="!text-center">Dose</th>
+                  <th className="!text-center">Unit</th>
+                  <th className="!text-center">Uses</th>
                   <th></th>
                 </tr>
               </thead>
@@ -356,6 +350,13 @@ const ServiceDetailDialog: FC<
                     register={register}
                   />
                 ))}
+                <tr>
+                  <td colSpan={7}>
+                    <Button leftIcon={<IconPlus />} color={"green"} fullWidth>
+                      Product
+                    </Button>
+                  </td>
+                </tr>
               </tbody>
             </Table>
           </div>

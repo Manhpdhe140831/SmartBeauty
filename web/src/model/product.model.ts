@@ -10,7 +10,7 @@ export interface ProductModel<
   image?: string;
   supplier: supplierModel;
   unit: string;
-  quantity?: number;
+  dose?: number;
 }
 
 /**

@@ -14,7 +14,7 @@ const products: ProductModel[] = [
     discountPercent: 73.3,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const products: ProductModel[] = [
     discountPercent: 93.0,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ const products: ProductModel[] = [
     discountPercent: 6.7,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 4,
@@ -53,7 +53,7 @@ const products: ProductModel[] = [
     discountPercent: null,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 5,
@@ -66,7 +66,7 @@ const products: ProductModel[] = [
     discountPercent: 7.5,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 6,
@@ -79,7 +79,7 @@ const products: ProductModel[] = [
     discountPercent: null,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 7,
@@ -92,7 +92,7 @@ const products: ProductModel[] = [
     discountPercent: 12.9,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 8,
@@ -106,7 +106,7 @@ const products: ProductModel[] = [
     discountPercent: 2.3,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 9,
@@ -119,7 +119,7 @@ const products: ProductModel[] = [
     discountPercent: 43.9,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
   {
     id: 10,
@@ -132,7 +132,7 @@ const products: ProductModel[] = [
     discountPercent: 70.5,
     supplier: providers[0]!.id,
     unit: "gram",
-    quantity: 12,
+    dose: 12,
   },
 ];
 

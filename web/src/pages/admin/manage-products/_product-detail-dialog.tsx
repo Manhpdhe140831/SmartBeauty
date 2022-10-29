@@ -53,7 +53,7 @@ const ProductDetailDialog = ({
       name: nameSchema,
       description: descriptionSchema,
       unit: unitProductSchema,
-      quantity: amountPerUnitSchema,
+      dose: amountPerUnitSchema,
       provider: idDbSchema,
       image: fileUploadSchema.and(imageTypeSchema).or(z.string().url()),
     })
@@ -140,20 +140,20 @@ const ProductDetailDialog = ({
             <div className="flex space-x-1">
               <div className="flex-1">
                 <Controller
-                  name={"quantity"}
+                  name={"dose"}
                   control={control}
                   render={({ field }) => (
                     <NumberInput
                       placeholder={"amount of quantity per unit"}
                       defaultValue={field.value}
-                      label={"Product quantity"}
+                      label={"Product Dose"}
                       onChange={(v) => field.onChange(v)}
                       onBlur={field.onBlur}
                       hideControls
                     />
                   )}
                 ></Controller>
-                <FormErrorMessage errors={errors} name={"quantity"} />
+                <FormErrorMessage errors={errors} name={"dose"} />
               </div>
 
               <div className="w-50">

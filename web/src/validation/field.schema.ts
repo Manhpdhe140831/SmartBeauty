@@ -64,9 +64,9 @@ export const roleSchema = z.nativeEnum(USER_ROLE, {
 export const saleSchema = z
   .object({
     price: priceSchema,
-    discountStart: z.date().nullable(),
-    discountEnd: z.date().nullable(),
-    discountPercent: z.number().nullable(),
+    discountStart: z.date().optional(),
+    discountEnd: z.date().optional(),
+    discountPercent: z.number().optional(),
   })
   .refine(({ discountPercent, discountEnd, discountStart }) => {
     if (discountPercent !== undefined) {
