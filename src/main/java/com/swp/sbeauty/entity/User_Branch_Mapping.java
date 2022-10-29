@@ -12,13 +12,17 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer"})
-public class user_branch_mapping {
+public class User_Branch_Mapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long  id_user;
     private long id_branch;
+
+    public User_Branch_Mapping(){}
+
+    public User_Branch_Mapping(long id_user, long id_branch) {
+        this.id_user = id_user;
+        this.id_branch = id_branch;
+    }
 }

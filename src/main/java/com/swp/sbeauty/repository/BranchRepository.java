@@ -20,4 +20,7 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
     @Query(value = "SELECT b FROM Branch b where  " +
             "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
     public Page<Branch> searchListWithField(String key,String key2,String key3, Pageable pageable);
+
+    @Query(value = "select a.id_branch from user_branch_mapping a where id_user = ?1", nativeQuery = true)
+    Integer getIdBranchByManager(Integer idManager);
 }

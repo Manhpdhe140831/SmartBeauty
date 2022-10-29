@@ -26,7 +26,8 @@ Boolean saveUser(UserDto userDto);
     Page<UserDto> getAllUsers(int offset, int pageSize);
 
     Page<UserDto> getAllUsersByAdmin(int offset, int pageSize);
-    Boolean saveUser(UserDto userDto,String roleAuth);
+    Boolean saveUser(UserDto userDto,String roleAuth, Integer idcheck);
     Page<UserDto> getAllUsersByManager(int offset, int pageSize);
 
+    void saveUserToBranch(UserDto userDto, String roleCheck, Integer idcheck);
 }

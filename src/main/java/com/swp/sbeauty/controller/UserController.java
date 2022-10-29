@@ -47,9 +47,13 @@ public class UserController {
     public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String roleCheck = temp.get("role").toString();
+        Integer idcheck = Integer.parseInt(temp.get("id").toString());
         String check = userService.validateUser(userDto);
         if (check == "") {
-            Boolean result = userService.saveUser(userDto, roleCheck);
+            Boolean result = userService.saveUser(userDto, roleCheck, idcheck);
+//            if(result == true){
+//                userService.saveUserToBranch(userDto, roleCheck, idcheck);
+//            }
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

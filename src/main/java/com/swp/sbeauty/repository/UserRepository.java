@@ -37,4 +37,7 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     @Query(value = "select users.* from users join branch_user on users.id = branch_user.user_id join user_role on  users.id = user_role.user_id\n" +
             "    where  user_role.role_id =3", nativeQuery = true)
     Page<Users>getAllUserByManager(Pageable pageable);
+
+    @Query(value = "select users.id from users where users.email = '?1'", nativeQuery = true)
+    Integer getIdUserByEmail(String email);
 }

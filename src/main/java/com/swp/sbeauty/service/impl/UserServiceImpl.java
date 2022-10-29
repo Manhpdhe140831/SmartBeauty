@@ -6,9 +6,12 @@ import com.swp.sbeauty.dto.UserDto;
 import java.util.*;
 
 import com.swp.sbeauty.entity.Role;
+import com.swp.sbeauty.entity.User_Branch_Mapping;
 import com.swp.sbeauty.entity.Users;
+import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.RoleRepository;
 import com.swp.sbeauty.repository.UserRepository;
+import com.swp.sbeauty.repository.mappingRepo.User_Branch_Mapping_Repo;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +38,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private BranchRepository branchRepository;
+    @Autowired
+    private User_Branch_Mapping_Repo user_branch_mapping_repo;
+    @Autowired
     PasswordEncoder encoder;
     @Autowired
     JwtUtils jwtUtils;
 
     @Override
-    public Boolean saveUser(UserDto userDto,String roleAuth) {
+    public Boolean saveUser(UserDto userDto,String roleAuth, Integer idCheck) {
         if (userDto != null) {
             Users user = new Users();
             user.setName(userDto.getName());
@@ -62,23 +69,38 @@ public class UserServiceImpl implements UserService {
                     roles.add(role);
                 }
                 user.setRoles(roles);
-            } else if (roleAuth.equalsIgnoreCase("manager")) {
-                Role role = null;
-                Optional<Role> optional = roleRepository.findByName("staff");
-                if (optional.isPresent()) {
-                    role = optional.get();
-                }
-                if (role != null) {
-                    roles.add(role);
-                }
-                user.setRoles(roles);
-            }
-            user = userRepository.save(user);
-            if (user != null) {
+                userRepository.save(user);
                 return true;
+            } else if (roleAuth.equalsIgnoreCase("manager")) {
+                Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
+                if(idBranch == null){
+                    return false;
+                } else {
+                    Role role = null;
+                    Optional<Role> optional = roleRepository.findByName("staff");
+                    if (optional.isPresent()) {
+                        role = optional.get();
+                    }
+                    if (role != null) {
+                        roles.add(role);
+                    }
+                    user.setRoles(roles);
+                    userRepository.save(user);
+                    return true;
+                }
             }
         }
-        return null;
+        return false;
+    }
+
+    @Override
+    public void saveUserToBranch(UserDto userDto, String roleAuth, Integer idCheck) {
+        if (roleAuth.equalsIgnoreCase("manager")){
+            Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
+            Integer idStaff = userRepository.getIdUserByEmail(userDto.getEmail());
+            User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(idBranch, idStaff);
+            user_branch_mapping_repo.save(user_branch_mapping);
+        }
     }
 
     @Override
@@ -99,6 +121,8 @@ public class UserServiceImpl implements UserService {
         Page<UserDto> pageResult = new PageImpl<>(dtos);
         return pageResult;
     }
+
+
 
     //    @Override
 //    public Boolean saveUser(UserDto userDto,String roleAuth) {
