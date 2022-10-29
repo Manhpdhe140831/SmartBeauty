@@ -197,7 +197,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findProductPaginationAndSearch(int offset, int pageSize, String productCode, String productName) {
+    public Page<Product> findProductPaginationAndSearch(String productCode, String productName,int offset, int pageSize) {
         Page<Product> products =productRepository.searchListWithField(productCode,productName,PageRequest.of(offset,pageSize));
         return products;
     }

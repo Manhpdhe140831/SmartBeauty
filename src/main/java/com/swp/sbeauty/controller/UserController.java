@@ -100,11 +100,9 @@ public class UserController {
     @GetMapping("/user")
     private APIResponse<Page<UserDto>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId,
-                                                            @RequestHeader("Authorization") String authHeader
-                                                            ){
+            , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId
+            , @RequestHeader("Authorization") String authHeader){
         Page<UserDto> getAllUser;
-
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String role = temp.get("role").toString();
 

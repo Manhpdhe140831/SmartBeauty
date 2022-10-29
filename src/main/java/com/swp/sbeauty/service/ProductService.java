@@ -19,5 +19,5 @@ public interface ProductService {
 
     ProductDto updateProduct(ProductDto productDto, Long id);
     Page<Product> getAllProductPagination(int offset, int pageSize);
-    Page<Product> findProductPaginationAndSearch(int offset,int pageSize,String productCode, String productName);
+    Page<Product> findProductPaginationAndSearch(String productCode, String productName,int offset,int pageSize);
 }

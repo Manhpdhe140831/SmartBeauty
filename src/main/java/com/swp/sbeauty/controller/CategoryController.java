@@ -34,12 +34,12 @@ public class CategoryController {
         CategoryDto result = categoryService.saveCategory(categoryDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/category/update")
+    @PutMapping ("/category/updatecategory")
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @RequestParam(value = "id",required = false) Long id){
         CategoryDto result = categoryService.updateCategory(categoryDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/category")
+    @GetMapping("/category/getallcategory")
     private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false,defaultValue = "") String name){

@@ -155,11 +155,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllUsersPagination(int offset, int pageSize, int roleId) {
         Page<Users> users = userRepository.getUserByRoleId(roleId,PageRequest.of(offset,pageSize));
-        SecurityContext temp =  SecurityContextHolder.getContext();
-
-
         ModelMapper mapper = new ModelMapper();
-        List<UserDto> listUser = new ArrayList<>();
         List<UserDto> dtos = users
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))

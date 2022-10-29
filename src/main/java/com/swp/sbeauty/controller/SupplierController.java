@@ -23,7 +23,7 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
-    @GetMapping("/supplier/getsupplierbyid")
+    @GetMapping("/supplier/getbyid")
     public ResponseEntity<SupplierDto> getSupplierById(@RequestParam(value = "id",required = false) Long id) {
         SupplierDto result = supplierService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
@@ -33,7 +33,7 @@ public class SupplierController {
         SupplierDto result = supplierService.saveSupplier(supplierDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/supplier/update")
+    @PutMapping ("/supplier/updatecategory")
     public ResponseEntity<SupplierDto> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @RequestParam(value = "id",required = false) Long id){
         SupplierDto result = supplierService.updateSupplier(supplierDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
