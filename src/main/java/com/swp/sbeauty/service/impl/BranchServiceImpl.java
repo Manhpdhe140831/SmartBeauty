@@ -2,9 +2,8 @@ package com.swp.sbeauty.service.impl;
 
 
 import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.User;
+import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.service.BranchService;
@@ -72,8 +71,8 @@ public class BranchServiceImpl implements BranchService {
                 branch.setAddress(branchDto.getAddress());
                 branch.setImage(branchDto.getImage());
                 if(branchDto.getUsers()!=null){
-                    User user = null;
-                    Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
+                    Users user = null;
+                    Optional<Users> optional = userRepository.findById(branchDto.getUsers().getId());
                     if (optional.isPresent()) {
                         user = optional.get();
                     }
@@ -107,8 +106,8 @@ public class BranchServiceImpl implements BranchService {
                     branch.setAddress(branchDto.getAddress());
                     branch.setImage(branchDto.getImage());
                     if(branchDto.getUsers()!=null){
-                        User user = null;
-                        Optional<User> optional = userRepository.findById(branchDto.getUsers().getId());
+                        Users user = null;
+                        Optional<Users> optional = userRepository.findById(branchDto.getUsers().getId());
                         if (optional.isPresent()) {
                             user = optional.get();
                         }
@@ -130,27 +129,21 @@ public class BranchServiceImpl implements BranchService {
 
 
 
-    @Override
-    public Page<Branch> findBranchsPaginationAndSearch(int offset, int pageSize,String field,String direction,String value) {
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
-        Page<Branch> branches =branchRepository.searchListWithField(value,PageRequest.of(offset,pageSize,sort));
-        return branches;
-    }
+
 
 
 
     @Override
-    public Page<Branch> findBranchsPaginationAndSort(int offset, int pageSize, String field, String direction) {
-        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(field).ascending() : Sort.by(field).descending();
-        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize,sort));
+    public Page<Branch> findBranchsPaginationAndSort(int offset, int pageSize) {
+        Page<Branch> branches =branchRepository.findAll(PageRequest.of(offset,pageSize));
         return branches;
     }
 
-
-
-
-
-
+    @Override
+    public Page<Branch> findBranchsPaginationAndSearch(String name, String address, String phone, int offset, int pageSize) {
+        Page<Branch> branches =branchRepository.searchListWithField(name,address,phone,PageRequest.of(offset,pageSize));
+        return branches;
+    }
 
 
 //    @Autowired

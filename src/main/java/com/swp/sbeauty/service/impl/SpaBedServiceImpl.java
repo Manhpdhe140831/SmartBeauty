@@ -1,11 +1,8 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.SpaBedDto;
-import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.SpaBed;
-import com.swp.sbeauty.entity.User;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.SpaBedRepository;
 import com.swp.sbeauty.service.SpaBedService;

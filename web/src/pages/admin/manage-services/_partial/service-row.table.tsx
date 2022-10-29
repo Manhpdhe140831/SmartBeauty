@@ -1,40 +1,30 @@
 import { Text, Tooltip } from "@mantine/core";
 import SalePriceTableCell from "../../../../components/cell-sale-price.table";
+import { ServiceModel } from "../../../../model/service.model";
+import { FC } from "react";
+import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
 
-const ServiceRowTable = () => {
+const ServiceRowTable: FC<DataRowProps<ServiceModel>> = ({
+  onClick,
+  data,
+  no,
+}) => {
   return (
     <>
-      <tr className={"cursor-pointer"}>
-        <td className={"text-center"}>1</td>
+      <tr onClick={() => onClick(data)} className={"cursor-pointer"}>
+        <td className={"text-center"}>{no}</td>
         <td className={"font-semibold"}>
-          <Tooltip
-            label={
-              "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis,\n" +
-              "              nesciunt."
-            }
-          >
+          <Tooltip label={data.nameService}>
             <Text size={"md"} className={"line-clamp-2"}>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis,
-              nesciunt.
+              {data.nameService}
             </Text>
           </Tooltip>
         </td>
         <td>
-          <SalePriceTableCell
-            priceModel={{
-              price: 120000,
-              discountPercent: 5,
-              discountStart: null,
-              discountEnd: null,
-            }}
-          />
+          <SalePriceTableCell priceModel={data} />
         </td>
         <td>
-          <Text className={"line-clamp-2"}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta
-            dignissimos dolorum iure labore molestiae nostrum odit officiis
-            placeat praesentium tempore.
-          </Text>
+          <Text className={"line-clamp-2"}>{data.description}</Text>
         </td>
       </tr>
     </>

@@ -1,15 +1,23 @@
-type DialogMode = "view" | "create";
-
-export type DialogProps<dataType, updatedType, createdType> =
+export type DialogTypeMode<dataType> =
   | {
-      mode: Extract<DialogMode, "view">;
-      opened: boolean;
-      onClosed: (updated?: updatedType) => void;
+      mode: "view";
       data: dataType;
     }
   | {
-      mode: Extract<DialogMode, "create">;
-      opened: boolean;
-      onClosed: (newSupplier?: createdType) => void;
+      mode: "create";
       data?: dataType;
     };
+
+export type DialogProps<dataType, updatedType, createdType> = (
+  | {
+      mode: "view";
+      opened: boolean;
+      onClosed: (updated?: updatedType) => void;
+    }
+  | {
+      mode: "create";
+      opened: boolean;
+      onClosed: (newSupplier?: createdType) => void;
+    }
+) &
+  DialogTypeMode<dataType>;

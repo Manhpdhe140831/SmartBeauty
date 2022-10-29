@@ -34,5 +34,5 @@ public class Staff {
     private Branch branch;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users user;
 }

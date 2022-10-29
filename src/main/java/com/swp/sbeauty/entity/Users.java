@@ -12,7 +12,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor@AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-public class User {
+public class Users {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name="name")

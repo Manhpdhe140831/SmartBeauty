@@ -1,26 +1,32 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.RoleDto;
 import com.swp.sbeauty.dto.UserDto;
 
 import java.util.*;
 
 import com.swp.sbeauty.entity.Role;
-import com.swp.sbeauty.entity.User;
+import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.RoleRepository;
 import com.swp.sbeauty.repository.UserRepository;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service @Transactional @Slf4j
 public class UserServiceImpl implements UserService {
@@ -30,11 +36,12 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     PasswordEncoder encoder;
-
+    @Autowired
+    JwtUtils jwtUtils;
     @Override
     public Boolean saveUser(UserDto userDto) {
         if(userDto != null){
-            User user = new User();
+            Users user = new Users();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
             user.setMobile(userDto.getMobile());
@@ -68,9 +75,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
         if(userDto !=null){
-            User user = null;
+            Users user = null;
             if(id !=null){
-                Optional<User> optional =userRepository.findById(id);
+                Optional<Users> optional =userRepository.findById(id);
                 if(optional.isPresent()){
                     user = optional.get();
                 }
@@ -114,7 +121,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getById(Long id) {
         if (id != null) {
-            User entity = userRepository.findById(id).orElse(null);
+            Users entity = userRepository.findById(id).orElse(null);
             if (entity != null) {
                 return new UserDto(entity);
             }
@@ -123,9 +130,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getByRole(Long id) {
+    public List<Users> getByRole(Long id) {
         if(id!=null){
-            List<User> result = userRepository.findUserByRoleId(id);
+            List<Users> result = userRepository.findUserByRoleId(id);
             if(result != null){
                 return result;
             }
@@ -144,6 +151,37 @@ public class UserServiceImpl implements UserService {
         }
         return result;
     }
+
+    @Override
+    public Page<UserDto> getAllUsersPagination(int offset, int pageSize, int roleId) {
+        Page<Users> users = userRepository.getUserByRoleId(roleId,PageRequest.of(offset,pageSize));
+        ModelMapper mapper = new ModelMapper();
+        List<UserDto> dtos = users
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                f.setPassword("");
+                f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        Page<UserDto> pageResult = new PageImpl<>(dtos);
+        return pageResult;
+    }
+
+    @Override
+    public Page<UserDto> getAllUsers(int offset, int pageSize) {
+        Page<Users> users = userRepository.findAll(PageRequest.of(offset,pageSize));
+
+        ModelMapper mapper = new ModelMapper();
+        List<UserDto> listUser = new ArrayList<>();
+        mapper.map(users, listUser);
+        Page<UserDto> pageResult = new PageImpl<>(listUser);
+        return pageResult;
+    }
+
 
     //    @Override
 //    public RoleDto saveRole(RoleDto roleDto) {
@@ -185,9 +223,9 @@ public class UserServiceImpl implements UserService {
 //
     @Override
     public List<UserDto> getUsers() {
-        List<User> list = userRepository.findAll();
+        List<Users> list = userRepository.findAll();
         List<UserDto> result =new ArrayList<>();
-        for(User user : list){
+        for(Users user : list){
             result.add(new UserDto(user));
         }
         return result;

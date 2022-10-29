@@ -15,6 +15,6 @@ public interface SupplierService {
     SupplierDto saveSupplier(SupplierDto supplierDto);
 
     SupplierDto updateSupplier(SupplierDto supplierDto, Long id);
-    Page<Supplier> findSupplierPaginationAndSort(int offset, int pageSize, String field, String direction);
-    Page<Supplier> findSupplierPaginationAndSearch(int offset,int pageSize,String field,String direction, String value);
+    Page<Supplier> getAllSupplierPagination(int offset,int pageSize);
+    Page<Supplier> getSupplierPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
 }

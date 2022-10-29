@@ -17,6 +17,6 @@ public interface BranchService {
 
     BranchDto updateBranch(BranchDto branchDto, Long id);
 
-    Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize, String field,String direction);
-    Page<Branch> findBranchsPaginationAndSearch(int offset,int pageSize,String field,String direction, String value);
+    Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize);
+    Page<Branch> findBranchsPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
 }

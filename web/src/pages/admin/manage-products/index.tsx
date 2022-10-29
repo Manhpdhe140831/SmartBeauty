@@ -1,17 +1,23 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
-import { Divider, Input, Pagination, Table } from "@mantine/core";
-import { IconSearch } from "@tabler/icons";
+import { Button, Divider, Input, Pagination, Table } from "@mantine/core";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import ProductHeaderTable from "./_partial/product-header.table";
 import ProductRowTable from "./_partial/product-row.table";
 import { useQuery } from "@tanstack/react-query";
-import { ProductModel } from "../../../model/product.model";
+import {
+  ProductCreateEntity,
+  ProductModel,
+  ProductUpdateEntity,
+} from "../../../model/product.model";
 import mockProduct from "../../../mock/product";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
-import ProductCreateButton from "./_partial/product-create.button";
+import ProductDetailDialog from "./_product-detail-dialog";
+import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 
 const Index: AppPageInterface = () => {
+  const { modal, openModal, resetModal } = useDialogDetailRow<ProductModel>();
   const {
     pageSize,
     currentPage,
@@ -38,7 +44,9 @@ const Index: AppPageInterface = () => {
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
       <div className="flex justify-end space-x-2">
-        <ProductCreateButton onCreated={refetch} />
+        <Button onClick={() => openModal("create")} leftIcon={<IconPlus />}>
+          Product
+        </Button>
 
         <Input
           icon={<IconSearch />}
@@ -66,7 +74,7 @@ const Index: AppPageInterface = () => {
               products &&
               products.map((p, i) => (
                 <ProductRowTable
-                  rowUpdated={refetch}
+                  onClick={(product) => openModal("view", product)}
                   key={p.id}
                   data={p}
                   no={getItemNo(i, currentPage, pageSize)}
@@ -75,6 +83,20 @@ const Index: AppPageInterface = () => {
             )}
           </tbody>
         </Table>
+        {modal && (
+          <ProductDetailDialog
+            mode={modal.mode as never} // silent the TS-error
+            data={modal.data}
+            opened={!!modal}
+            onClosed={(update?: ProductCreateEntity | ProductUpdateEntity) => {
+              if (update) {
+                // TODO update
+                refetch();
+              }
+              resetModal();
+            }}
+          />
+        )}
       </div>
       <Divider my={8} />
       {/*Total record / 10 (per-page)*/}
