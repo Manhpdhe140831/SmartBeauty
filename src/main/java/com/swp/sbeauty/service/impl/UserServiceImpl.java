@@ -50,24 +50,31 @@ public class UserServiceImpl implements UserService {
             user.setAddress(userDto.getAddress());
             user.setPassword(encoder.encode(userDto.getPassword()));
             user.setUrlImage(userDto.getUrlImage());
-            if(roleAuth.equal("admin")) {
-// if admin then create user with role manager
-            }else if(roleAuth.equal("manager")){
-                //if manager then create user with role staff
-            }
             Set<Role> roles = new HashSet<>();
-            if(userDto.getRole()!=null){
+            if(roleAuth.equalsIgnoreCase("admin")) {
                 Role role = null;
-                Optional<Role> optional =roleRepository.findByName(userDto.getRole());
+                Optional<Role> optional =roleRepository.findByName("manager");
                 if(optional.isPresent()){
                     role = optional.get();
                 }
                 if(role!=null){
                     roles.add(role);
                 }
-            }
-            if(roles!=null){
                 user.setRoles(roles);
+            }else if(roleAuth.equalsIgnoreCase("manager")){
+                if(userDto.getRole()!=null){
+                    Role role = null;
+                    Optional<Role> optional =roleRepository.findByName(userDto.getRole());
+                    if(optional.isPresent()){
+                        role = optional.get();
+                    }
+                    if(role!=null){
+                        roles.add(role);
+                    }
+                }
+                if(roles!=null){
+                    user.setRoles(roles);
+                }
             }
             user = userRepository.save(user);
             if(user != null){
