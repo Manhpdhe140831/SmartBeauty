@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     JwtUtils jwtUtils;
     @Override
-    public Boolean saveUser(UserDto userDto) {
+    public Boolean saveUser(UserDto userDto,String roleAuth) {
         if(userDto != null){
             Users user = new Users();
             user.setName(userDto.getName());
@@ -50,6 +50,11 @@ public class UserServiceImpl implements UserService {
             user.setAddress(userDto.getAddress());
             user.setPassword(encoder.encode(userDto.getPassword()));
             user.setUrlImage(userDto.getUrlImage());
+            if(roleAuth.equal("admin")) {
+// if admin then create user with role manager
+            }else if(roleAuth.equal("manager")){
+                //if manager then create user with role staff
+            }
             Set<Role> roles = new HashSet<>();
             if(userDto.getRole()!=null){
                 Role role = null;

@@ -49,10 +49,13 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto){
+    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader){
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        String roleCheck = temp.get("role").toString();
+
         String check = userService.validateUser(userDto);
         if(check ==""){
-            Boolean result = userService.saveUser(userDto);
+            Boolean result = userService.saveUser(userDto,roleCheck);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

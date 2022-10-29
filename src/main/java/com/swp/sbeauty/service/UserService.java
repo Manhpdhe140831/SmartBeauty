@@ -10,7 +10,7 @@ public interface UserService {
     List<UserDto> getUsers();
 
 
-    Boolean saveUser(UserDto userDto);
+    Boolean saveUser(UserDto userDto,String roleAuth);
 
     UserDto updateUser(UserDto userDto, Long id);
 
