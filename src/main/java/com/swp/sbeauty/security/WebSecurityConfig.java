@@ -86,7 +86,7 @@ public class WebSecurityConfig  {
                 .antMatchers("/api/user/**").permitAll()
 
                 .antMatchers("/api/branch/**").permitAll()
-                .antMatchers("/api/branch1/**").permitAll()
+                .antMatchers("/api/bed/**").permitAll()
                 .antMatchers("/api/product/**").permitAll()
                 .antMatchers("/api/category/**").permitAll()
                 .antMatchers("/api/supplier/**").permitAll()

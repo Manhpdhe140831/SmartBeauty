@@ -39,7 +39,7 @@ public class CategoryController {
         CategoryDto result = categoryService.updateCategory(categoryDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/category/getallCategory")
+    @GetMapping("/category/getAllCategory")
     private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false,defaultValue = "") String name){

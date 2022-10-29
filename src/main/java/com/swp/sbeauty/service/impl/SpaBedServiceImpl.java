@@ -1,13 +1,17 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.CategoryDto;
 import com.swp.sbeauty.dto.SpaBedDto;
 import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.SpaBed;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.SpaBedRepository;
 import com.swp.sbeauty.service.SpaBedService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -54,6 +58,17 @@ public class SpaBedServiceImpl implements SpaBedService {
     }
 
     @Override
+    public SpaBedDto getById(Long id) {
+        if (id != null) {
+            SpaBed entity = spaBedRepository.findById(id).orElse(null);
+            if (entity != null) {
+                return new SpaBedDto(entity);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public SpaBedDto updateBed(SpaBedDto spaBedDto, Long id) {
         if(spaBedDto !=null){
             SpaBed spaBed = null;
@@ -80,5 +95,17 @@ public class SpaBedServiceImpl implements SpaBedService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Page<SpaBed> getAllSpaBedPagination(int offset, int pageSize) {
+        Page<SpaBed> spaBeds =spaBedRepository.findAll(PageRequest.of(offset,pageSize));
+        return spaBeds;
+    }
+
+    @Override
+    public Page<SpaBed> findSpaBedPaginationAndSearch(int offset, int pageSize, String name) {
+        Page<SpaBed> spaBeds =spaBedRepository.searchListWithField(name,PageRequest.of(offset,pageSize));
+        return spaBeds;
     }
 }
