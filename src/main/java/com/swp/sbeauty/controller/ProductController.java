@@ -25,7 +25,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/product/getbyid")
+    @GetMapping("/product/getById")
     public ResponseEntity<ProductDto> getProductById( @RequestParam(value = "id",required = false) Long id) {
         ProductDto result = productService.getProductById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
@@ -36,12 +36,12 @@ public class ProductController {
         ProductDto result = productService.saveProduct(productDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/product/updateproduct")
+    @PutMapping ("/product/updateProduct")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductDto productDto,  @RequestParam(value = "id",required = false) Long id){
         ProductDto result = productService.updateProduct(productDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/product/getallproduct")
+    @GetMapping("/product/getAllProduct")
     private APIResponse<Page<Product>> getProductWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "productCode", required = false) String productCode

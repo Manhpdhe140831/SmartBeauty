@@ -29,8 +29,8 @@ public class SpaBedController {
         SpaBedDto result = spaBedService.saveBed(spaBedDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/bed/update/{id}")
-    public ResponseEntity<SpaBedDto> updateBed(@RequestBody SpaBedDto spaBedDto, @PathVariable Long id) {
+    @PutMapping ("/bed/updateSpaBed")
+    public ResponseEntity<SpaBedDto> updateBed(@RequestBody SpaBedDto spaBedDto, @RequestParam(value = "id",required = false) Long id) {
         SpaBedDto result = spaBedService.updateBed(spaBedDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.swp.sbeauty.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,9 @@ public class Product {
     private String productCode;
     private String productName;
     private double productPrice;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date productBeginDiscount;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date productEndDiscount;
     private double discountPercent;
     private String productImage;

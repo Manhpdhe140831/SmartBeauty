@@ -1,5 +1,6 @@
 package com.swp.sbeauty.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
 import lombok.Getter;
@@ -22,7 +23,9 @@ public class ProductDto {
     @Size(min = 3, message = "product name should have at least 3 characters")
     private String productName;
     private Double productPrice;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date productBeginDiscount;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date productEndDiscount;
     private double discountPercent;
     private String productImage;

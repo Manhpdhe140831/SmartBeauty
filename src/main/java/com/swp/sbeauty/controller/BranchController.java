@@ -26,14 +26,14 @@ public class BranchController {
     private BranchService branchService;
 
     ValidInputDto valid = new ValidInputDto();
-    @GetMapping("/branch/getbyid")
+    @GetMapping("/branch/getById")
     public ResponseEntity<BranchDto> getById(@RequestParam(value = "id",required = false) Long id) {
         BranchDto result = branchService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 
-    @GetMapping("/branch/getallbranch")
+    @GetMapping("/branch/getAllbranch")
     private APIResponse<Page<Branch>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false, defaultValue = "") String name
@@ -59,7 +59,7 @@ public class BranchController {
     }
 
 
-    @PutMapping ("/branch/updatebranch")
+    @PutMapping ("/branch/updateBranch")
     public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
             BranchDto result = branchService.updateBranch(branchDto, id);
             return new ResponseEntity<>(result, HttpStatus.OK);

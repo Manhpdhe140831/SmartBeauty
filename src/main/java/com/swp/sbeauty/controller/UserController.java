@@ -43,11 +43,6 @@ public class UserController {
 
     ValidInputDto valid = new ValidInputDto();
 
-    @GetMapping("/user/list")
-    public ResponseEntity<List<UserDto>> getUsers(){
-        return ResponseEntity.ok().body(userService.getUsers());
-    }
-
     @PostMapping("/user/save")
     public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -65,13 +60,13 @@ public class UserController {
         UserDto result = userService.updateUser(userDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping(value = "user/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable Long id) {
+    @GetMapping(value = "user/getById")
+    public ResponseEntity<UserDto> getById(@RequestParam(value = "id",required = false) Long id) {
         UserDto result = userService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @GetMapping(value = "user/getByRole/{id}")
-    public ResponseEntity<List<Users>> getByRole(@PathVariable Long id) {
+    @GetMapping(value = "user/getByRole")
+    public ResponseEntity<List<Users>> getByRole(@RequestParam(value = "id",required = false) Long id) {
         List<Users> result = userService.getByRole(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
