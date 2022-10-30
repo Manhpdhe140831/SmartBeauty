@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
             Users user = new Users();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
-            user.setMobile(userDto.getMobile());
+            user.setPhone(userDto.getPhone());
             user.setDateOfBirth(userDto.getDateOfBirth());
             user.setGender(userDto.getGender());
             user.setAddress(userDto.getAddress());
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 //            Users user = new Users();
 //            user.setName(userDto.getName());
 //            user.setEmail(userDto.getEmail());
-//            user.setMobile(userDto.getMobile());
+//            user.setphone(userDto.getphone());
 //            user.setDateOfBirth(userDto.getDateOfBirth());
 //            user.setGender(userDto.getGender());
 //            user.setAddress(userDto.getAddress());
@@ -173,7 +173,7 @@ public Boolean saveUser(UserDto userDto) {
         Users user = new Users();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-        user.setMobile(userDto.getMobile());
+        user.setPhone(userDto.getPhone());
         user.setDateOfBirth(userDto.getDateOfBirth());
         user.setGender(userDto.getGender());
         user.setAddress(userDto.getAddress());
@@ -215,7 +215,7 @@ public Boolean saveUser(UserDto userDto) {
             if(user != null){
                 user.setName(userDto.getName());
                 user.setEmail(userDto.getEmail());
-                user.setMobile(userDto.getMobile());
+                user.setPhone(userDto.getPhone());
                 user.setDateOfBirth(userDto.getDateOfBirth());
                 user.setGender(userDto.getGender());
                 user.setAddress(userDto.getAddress());
@@ -277,8 +277,8 @@ public Boolean saveUser(UserDto userDto) {
         if(userRepository.existsByEmail(userDto.getEmail())){
             result += "Email already exists in data, ";
         }
-        if(userRepository.existsByMobile(userDto.getMobile())){
-            result += "Mobile already exists in data";
+        if(userRepository.existsByPhone(userDto.getPhone())){
+            result += "phone already exists in data";
         }
         return result;
     }
@@ -351,7 +351,7 @@ public Boolean saveUser(UserDto userDto) {
         List<UserDto> listDto = new ArrayList<>();
         for (Users itemU: list
              ) {
-            listDto.add(new UserDto(itemU.getId(), itemU.getName(),itemU.getEmail(), itemU.getMobile(), itemU.getDateOfBirth(), itemU.getGender(), itemU.getAddress(), itemU.getUrlImage(), itemU.getRoles()));
+            listDto.add(new UserDto(itemU.getId(), itemU.getName(),itemU.getEmail(), itemU.getPhone(), itemU.getDateOfBirth(), itemU.getGender(), itemU.getAddress(), itemU.getUrlImage(), itemU.getRoles()));
         }
 
         return listDto;

@@ -16,7 +16,7 @@ public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String name;
     private String email;
-    private String mobile;
+    private String phone;
     private Date dateOfBirth;
     private String gender;
     private String address;
@@ -26,12 +26,12 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String name, String email, String mobile, Date dateOfBirth, String gender, String address, String password,
+    public UserDetailsImpl(Long id, String name, String email, String phone, Date dateOfBirth, String gender, String address, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.mobile = mobile;
+        this.phone = phone;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.address = address;
@@ -48,7 +48,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getMobile(),
+                user.getPhone(),
                 user.getDateOfBirth(),
                 user.getGender(),
                 user.getAddress(),
@@ -83,8 +83,8 @@ public class UserDetailsImpl implements UserDetails {
         return email;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getphone() {
+        return phone;
     }
 
     public Date getDateOfBirth() {

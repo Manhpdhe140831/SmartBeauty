@@ -19,8 +19,8 @@ public class Users {
     private String name;
     @Column(name="email")
     private String email;
-    @Column(name="mobile")
-    private String mobile;
+    @Column(name="phone")
+    private String phone;
     @Column(name="dateOfBirth")
     private Date dateOfBirth;
     @Column(name="gender")

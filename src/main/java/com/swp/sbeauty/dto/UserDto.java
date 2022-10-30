@@ -16,7 +16,7 @@ public class UserDto {
     private Long id;
     private String name;
     private String email;
-    private String mobile;
+    private String phone;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBirth;
     private String gender;
@@ -36,18 +36,18 @@ public class UserDto {
             this.setId(user.getId());
             this.setName(user.getName());
             this.setEmail(user.getEmail());
-            this.setMobile(user.getMobile());
+            this.setPhone(user.getPhone());
             this.setDateOfBirth(user.getDateOfBirth());
             this.setGender(user.getGender());
             this.setAddress(user.getAddress());
             this.role = user.getRoles().stream().findFirst().get().getName();
         }
     }
-    public UserDto(Long id, String name, String email, String mobile, Date dateOfBirth,String gender, String address, String urlImage,Set<Role> roles ){
+    public UserDto(Long id, String name, String email, String phone, Date dateOfBirth,String gender, String address, String urlImage,Set<Role> roles ){
         this.id = id;
         this.name = name;
         this.email = email;
-        this.mobile = mobile;
+        this.phone = phone;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.address = address;

@@ -19,10 +19,10 @@ public class ValidInputDto {
             result+= "Email is not empty\n";
         }
         Pattern p1 = Pattern.compile("^[0-9]{10,11}$");
-        if(!p1.matcher(userDto.getMobile()).find()){
+        if(!p1.matcher(userDto.getPhone()).find()){
             result += "Phone is not valid\n";
         }
-        if(userDto.getMobile() == null){
+        if(userDto.getPhone() == null){
             result+= "Phone is not empty\n";
         }
         return result;

@@ -15,7 +15,7 @@ public class UserResponseDto {
     private Long id;
     private String name;
     private String email;
-    private String mobile;
+    private String phone;
     private Date dateOfBirth;
     private String gender;
     private String address;
@@ -30,7 +30,7 @@ public class UserResponseDto {
             this.setId(user.getId());
             this.setName(user.getName());
             this.setEmail(user.getEmail());
-            this.setMobile(user.getMobile());
+            this.setPhone(user.getPhone());
             this.setDateOfBirth(user.getDateOfBirth());
             this.setGender(user.getGender());
             this.setAddress(user.getAddress());

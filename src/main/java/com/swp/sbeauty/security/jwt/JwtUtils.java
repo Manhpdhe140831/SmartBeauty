@@ -31,7 +31,7 @@ public class JwtUtils {
                 .claim("role", userPrincipal.getAuthorities().stream().findFirst().get().toString())
                 .claim("dateOfBirth", userPrincipal.getDateOfBirth())
                 .claim("gender", userPrincipal.getGender())
-                .claim("mobile", userPrincipal.getMobile())
+                .claim("phone", userPrincipal.getphone())
 
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
