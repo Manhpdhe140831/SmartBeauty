@@ -38,4 +38,5 @@ Boolean saveUser(UserDto userDto);
     List<UserDto> getUsersByBranch(String id);
 
 
+    List<UserDto> getAllManager();
 }

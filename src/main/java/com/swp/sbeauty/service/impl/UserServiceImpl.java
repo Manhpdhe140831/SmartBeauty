@@ -357,6 +357,16 @@ public Boolean saveUser(UserDto userDto) {
         return listDto;
     }
 
+    @Override
+    public List<UserDto> getAllManager() {
+        List<Users> list = userRepository.getAllManager();
+        List<UserDto> listDto = new ArrayList<>();
+        for(Users users : list){
+            listDto.add(new UserDto(users));
+        }
+        return listDto;
+    }
+
 
     //    @Override
 //    public RoleDto saveRole(RoleDto roleDto) {

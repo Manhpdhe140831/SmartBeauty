@@ -66,9 +66,9 @@ public class UserController {
         UserDto result = userService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @GetMapping(value = "user/getByRole")
-    public ResponseEntity<List<Users>> getByRole(@RequestParam(value = "id",required = false) Long id) {
-        List<Users> result = userService.getByRole(id);
+    @GetMapping(value = "user/getAllManager")
+    public ResponseEntity<List<UserDto>> getByRole() {
+        List<UserDto> result = userService.getAllManager();
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/auth/signin")

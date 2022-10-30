@@ -51,5 +51,6 @@ public interface UserRepository extends JpaRepository<Users,Long> {
             "inner join sbeauty.branch_user as bu on u.id = bu.user_id where bu.branch_id = ?1", nativeQuery = true)
     List<Users> getListByBranch(Long branchId);
 
-
+    @Query(value = "select a.* from users as a inner join user_role as b on a.id = b.user_id where b.role_id = 2", nativeQuery = true)
+    List<Users> getAllManager();
 }
