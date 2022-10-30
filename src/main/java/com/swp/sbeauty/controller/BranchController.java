@@ -53,8 +53,8 @@ public class BranchController {
 
 
     @PostMapping("/branch/save")
-    public ResponseEntity<BranchDto> saveBranch(@RequestBody BranchDto branchDto){
-            BranchDto result = branchService.saveBranch(branchDto);
+    public ResponseEntity<?> saveBranch(@RequestBody BranchDto branchDto){
+            Boolean result = branchService.saveBranch(branchDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

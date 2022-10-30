@@ -13,7 +13,7 @@ public interface BranchService {
     List<Branch> findBranchsWithSorting(String field);
 
     /*List<RecruiterAdminDto> getRecruiterByName(String name, int pageNo, int pageSize);*/
-    BranchDto saveBranch(BranchDto branchDto);
+    Boolean saveBranch(BranchDto branchDto);
 
     BranchDto updateBranch(BranchDto branchDto, Long id);
 

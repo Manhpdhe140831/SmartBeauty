@@ -2,10 +2,14 @@ package com.swp.sbeauty.service.impl;
 
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Role;
+import com.swp.sbeauty.entity.User_Branch_Mapping;
 import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.UserRepository;
+import com.swp.sbeauty.repository.mappingRepo.User_Branch_Mapping_Repo;
 import com.swp.sbeauty.service.BranchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +26,8 @@ public class BranchServiceImpl implements BranchService {
     private BranchRepository branchRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private User_Branch_Mapping_Repo user_branch_mapping_repo;
 
 
 
@@ -46,8 +51,9 @@ public class BranchServiceImpl implements BranchService {
     public BranchDto getById(Long id) {
         if (id != null) {
             Branch entity = branchRepository.findById(id).orElse(null);
+//            UserDto managerDto = branchRepository.getManagerFromBranch(entity.getId());
             if (entity != null) {
-                return new BranchDto(entity);
+                return new BranchDto(entity.getId(), entity.getName(), entity.getPhone(), entity.getAddress(), entity.getImage());
             }
         }
         return null;
@@ -59,7 +65,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public BranchDto saveBranch(BranchDto branchDto) {
+    public Boolean saveBranch(BranchDto branchDto) {
         try{
             if(branchDto != null){
                 Branch branch = new Branch();
@@ -67,27 +73,19 @@ public class BranchServiceImpl implements BranchService {
                 branch.setPhone(branchDto.getPhone());
                 branch.setAddress(branchDto.getAddress());
                 branch.setImage(branchDto.getImage());
-                Set<Users> usersSet = new HashSet<>();
-                if(branchDto.getUsers()!=null){
-
-                    Users user = null;
-                    Optional<Users> optional = userRepository.findById(branchDto.getId());
-                    if (optional.isPresent()) {
-                        user = optional.get();
-                        usersSet.add(user);
-                    }
-                    branch.setUsers(usersSet);
-
-                }
                 branch = branchRepository.save(branch);
+                if(branchDto.getManager().getId() != null){
+                    User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(branchDto.getManager().getId(), branch.getId());
+                    user_branch_mapping_repo.save(user_branch_mapping);
+                }
                 if(branch != null){
-                    return new BranchDto(branch);
+                    return true;
                 }
             }
         }catch (Exception e){
             throw e;
         }
-        return null;
+        return false;
     }
 
     @Override
@@ -106,19 +104,6 @@ public class BranchServiceImpl implements BranchService {
                     branch.setPhone(branchDto.getPhone());
                     branch.setAddress(branchDto.getAddress());
                     branch.setImage(branchDto.getImage());
-                    Set<Users> users = new HashSet<>();
-                    if(branchDto.getUsers()!=null){
-
-                        Users user = null;
-                        Optional<Users> optional = userRepository.findById(branchDto.getId());
-                        if (optional.isPresent()) {
-                            user = optional.get();
-                            users.add(user);
-                        }
-                        branch.setUsers(users);
-
-
-                    }
                     branch = branchRepository.save(branch);
                     return new BranchDto(branch);
                 } else {

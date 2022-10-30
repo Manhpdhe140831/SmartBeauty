@@ -22,10 +22,28 @@ public class BranchDto {
     private String phone;
     private String address;
     private String image;
-
-    private Set<UserDto> users;
+    private UserDto manager;
 
     public BranchDto(){}
+
+    public BranchDto(Long id, String name, String phone, String address, String image, UserDto manager){
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.image = image;
+        this.manager = manager;
+    }
+
+    public BranchDto(Long id, String name, String phone, String address, String image){
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.image = image;
+    }
+
+
 
     public BranchDto(Branch branch){
         if(branch != null){
@@ -34,21 +52,7 @@ public class BranchDto {
             this.setPhone(branch.getPhone());
             this.setAddress(branch.getAddress());
             this.setImage(branch.getImage());
-            if(branch.getUsers() != null){
 
-                for (Users itemU: branch.getUsers()
-                     ) {
-                    users.add(new UserDto(itemU));
-                }
-
-
-
-                for (Users u: branch.getUsers()
-                     ) {
-                    this.users.add(new UserDto(u));
-                }
-
-            }
         }
 
 
