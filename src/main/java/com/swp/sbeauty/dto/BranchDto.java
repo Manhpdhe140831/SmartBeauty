@@ -1,7 +1,11 @@
 package com.swp.sbeauty.dto;
 
 import com.swp.sbeauty.entity.Branch;
+
 import com.swp.sbeauty.entity.Users;
+
+import com.swp.sbeauty.entity.Users;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,9 +35,17 @@ public class BranchDto {
             this.setAddress(branch.getAddress());
             this.setImage(branch.getImage());
             if(branch.getUsers() != null){
+
                 for (Users itemU: branch.getUsers()
                      ) {
                     users.add(new UserDto(itemU));
+                }
+
+
+
+                for (Users u: branch.getUsers()
+                     ) {
+                    this.users.add(new UserDto(u));
                 }
 
             }

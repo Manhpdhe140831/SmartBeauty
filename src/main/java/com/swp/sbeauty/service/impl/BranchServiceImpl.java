@@ -69,6 +69,7 @@ public class BranchServiceImpl implements BranchService {
                 branch.setImage(branchDto.getImage());
                 Set<Users> usersSet = new HashSet<>();
                 if(branchDto.getUsers()!=null){
+
                     Users user = null;
                     Optional<Users> optional = userRepository.findById(branchDto.getId());
                     if (optional.isPresent()) {
@@ -76,6 +77,7 @@ public class BranchServiceImpl implements BranchService {
                         usersSet.add(user);
                     }
                     branch.setUsers(usersSet);
+
                 }
                 branch = branchRepository.save(branch);
                 if(branch != null){
@@ -106,6 +108,7 @@ public class BranchServiceImpl implements BranchService {
                     branch.setImage(branchDto.getImage());
                     Set<Users> users = new HashSet<>();
                     if(branchDto.getUsers()!=null){
+
                         Users user = null;
                         Optional<Users> optional = userRepository.findById(branchDto.getId());
                         if (optional.isPresent()) {
@@ -113,6 +116,8 @@ public class BranchServiceImpl implements BranchService {
                             users.add(user);
                         }
                         branch.setUsers(users);
+
+
                     }
                     branch = branchRepository.save(branch);
                     return new BranchDto(branch);

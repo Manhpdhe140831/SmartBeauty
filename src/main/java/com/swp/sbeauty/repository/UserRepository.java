@@ -28,6 +28,7 @@ public interface UserRepository extends JpaRepository<Users,Long> {
 
     Boolean existsByEmail(String email);
     Boolean existsByMobile(String mobile);
+
 //select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3
     //select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = 2 or user_role.role_id =3
     @Query(value = "use sbeauty;\n" +
@@ -40,6 +41,16 @@ public interface UserRepository extends JpaRepository<Users,Long> {
             "    where  user_role.role_id =3", nativeQuery = true)
     Page<Users>getAllUserByManager(Pageable pageable);
 
+
     @Query(value = "select users.id from users where users.email = '?1'", nativeQuery = true)
     Integer getIdUserByEmail(String email);
+
+
+//    @Query(value = "select u from User u inner join branch_user  b ON  u.id = b.user_id where u.name = ?1")
+//    List<User> getListByBranch(String branchId);
+    @Query(value = "select * from sbeauty.user as u \n" +
+            "inner join sbeauty.branch_user as bu on u.id = bu.user_id where bu.branch_id = ?1", nativeQuery = true)
+    List<Users> getListByBranch(Long branchId);
+
+
 }

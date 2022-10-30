@@ -23,8 +23,11 @@ public class UserDto {
     private String address;
     private String password;
     private String urlImage;
+
     private String role;
     private Set<RoleDto> roles;
+    private Set<Role> roleSet;
+
 
     public UserDto(){}
 
@@ -39,6 +42,18 @@ public class UserDto {
             this.setAddress(user.getAddress());
             this.role = user.getRoles().stream().findFirst().get().getName();
         }
+    }
+    public UserDto(Long id, String name, String email, String mobile, Date dateOfBirth,String gender, String address, String urlImage,Set<Role> roles ){
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.mobile = mobile;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.address = address;
+        this.urlImage = urlImage;
+        this.roleSet = roles;
+
     }
 }
 

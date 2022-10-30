@@ -22,6 +22,7 @@ Boolean saveUser(UserDto userDto);
     List<Users> getByRole(Long id);
 
     String validateUser(UserDto userDto);
+
     Page<UserDto> getAllUsersPagination(int offset, int pageSize, int roleId);
     Page<UserDto> getAllUsers(int offset, int pageSize);
 
@@ -29,5 +30,12 @@ Boolean saveUser(UserDto userDto);
     Boolean saveUser(UserDto userDto,String roleAuth, Integer idcheck);
     Page<UserDto> getAllUsersByManager(int offset, int pageSize);
 
+
     void saveUserToBranch(UserDto userDto, String roleCheck, Integer idcheck);
+
+
+
+    List<UserDto> getUsersByBranch(String id);
+
+
 }

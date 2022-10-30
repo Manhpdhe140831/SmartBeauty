@@ -19,17 +19,23 @@ import java.util.Set;
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private String phone;
     private String address;
     private String image;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(  name = "branch_user",
             joinColumns = @JoinColumn(name = "branch_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<Users> users = new HashSet<>();
+
+
+
+
+
 
 
 

@@ -280,6 +280,7 @@ public Boolean saveUser(UserDto userDto) {
     }
 
     @Override
+
     public Page<UserDto> getAllUsersPagination(int offset, int pageSize, int roleId) {
         Page<Users> users = userRepository.getUserByRoleId(roleId,PageRequest.of(offset,pageSize));
         ModelMapper mapper = new ModelMapper();
@@ -338,6 +339,19 @@ public Boolean saveUser(UserDto userDto) {
         return pageResult;
     }
 
+
+
+
+    public List<UserDto> getUsersByBranch(String id) {
+        List<Users> list = userRepository.getListByBranch(Long.parseLong(id));
+        List<UserDto> listDto = new ArrayList<>();
+        for (Users itemU: list
+             ) {
+            listDto.add(new UserDto(itemU.getId(), itemU.getName(),itemU.getEmail(), itemU.getMobile(), itemU.getDateOfBirth(), itemU.getGender(), itemU.getAddress(), itemU.getUrlImage(), itemU.getRoles()));
+        }
+
+        return listDto;
+    }
 
 
     //    @Override

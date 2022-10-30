@@ -39,5 +39,12 @@ public class Users {
 
 
 
+
+
+
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    Set<Branch> branches = new HashSet<>();
+
 }
 

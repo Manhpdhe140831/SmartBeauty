@@ -133,6 +133,12 @@ public class UserController {
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }
 
+    @GetMapping(value = "/user/getByBranch")
+    public ResponseEntity<List<UserDto>> getUsersByBranch(@RequestParam("branchId") String branchId){
+        List<UserDto> list = userService.getUsersByBranch(branchId);
+        return new ResponseEntity<>(list, (list != null) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
+
 
 
 }
