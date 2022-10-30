@@ -34,11 +34,7 @@ export const baseUserSchema = z.object({
  * Validation schema for the manager model.
  * It extends from the baseUserSchema with role fixed to be 'manager'
  */
-export const managerModelSchema = baseUserSchema.merge(
-  z.object({
-    role: z.literal(USER_ROLE.manager),
-  })
-);
+export const managerModelSchema = baseUserSchema;
 
 /**
  * Validation schema for the employee model.

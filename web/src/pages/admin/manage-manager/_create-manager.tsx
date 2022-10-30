@@ -26,7 +26,6 @@ import {
   managerModelSchema,
   userRegisterSchemaFn,
 } from "../../../validation/account-model.schema";
-import { USER_ROLE } from "../../../const/user-role.const";
 
 /**
  * Component props
@@ -50,7 +49,6 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
     criteriaMode: "all",
     defaultValues: {
       gender: GENDER.other,
-      role: USER_ROLE.manager,
     },
   });
 

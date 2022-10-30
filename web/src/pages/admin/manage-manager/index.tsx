@@ -1,7 +1,6 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { useQuery } from "@tanstack/react-query";
 import { ManagerModel } from "../../../model/manager.model";
-import mockManager from "../../../mock/manager";
 import BtnCreateManager from "./_partial/_btn-create-manager";
 import { Divider, Group, Pagination, Table } from "@mantine/core";
 import ManagerHeaderTable from "./_partial/manager-header.table";
@@ -11,6 +10,8 @@ import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { USER_ROLE } from "../../../const/user-role.const";
+import { getAllAccount } from "../../../services/user.service";
+import { PaginatedResponse } from "../../../interfaces/api-core.interface";
 
 const ManageManager: AppPageInterface = () => {
   const {
@@ -22,14 +23,17 @@ const ManageManager: AppPageInterface = () => {
 
   // query to get the list of the manager
   const {
-    data: managers,
+    data: allManager,
     isLoading,
     refetch,
-  } = useQuery<ManagerModel[]>(["list-manager", currentPage], async () => {
-    const managers = await mockManager();
-    updatePagination({ total: managers.length });
-    return managers;
-  });
+  } = useQuery<PaginatedResponse<ManagerModel>>(
+    ["list-manager", currentPage],
+    () => getAllAccount<ManagerModel>(currentPage, pageSize),
+    {
+      onSuccess: (data) => updatePagination({ total: data.recordCount }),
+      onError: () => updatePagination({ total: 0, newPage: 1 }),
+    }
+  );
 
   return (
     <div className="flex h-full flex-col space-y-4 p-4">
@@ -62,8 +66,8 @@ const ManageManager: AppPageInterface = () => {
                 }
               />
             ) : (
-              managers &&
-              managers.map((d, i) => (
+              allManager?.response &&
+              allManager.response.content.map((d, i) => (
                 <ManageRowTable
                   key={d.id}
                   no={i + 1}
