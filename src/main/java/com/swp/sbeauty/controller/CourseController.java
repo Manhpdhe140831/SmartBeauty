@@ -22,6 +22,7 @@ public class CourseController {
         Page<CourseDto> pageService = service.getListCourse(offset, pageSize);
         return new ResponseEntity<>(pageService, HttpStatus.OK);
     }
+
     @RequestMapping(value = "/courses/add", method = RequestMethod.POST)
     public ResponseEntity<CourseDto> saveCourse (@RequestBody CourseDto courseDto){
         CourseDto courseDtoResult = service.save(courseDto);

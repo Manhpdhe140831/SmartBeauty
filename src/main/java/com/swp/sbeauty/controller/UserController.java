@@ -74,7 +74,7 @@ public class UserController {
         List<Users> result = userService.getByRole(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-        @PostMapping("/auth/signin")
+    @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -123,17 +123,16 @@ public class UserController {
         Page<UserDto> getAllUser;
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String role = temp.get("role").toString();
-    if (role.equalsIgnoreCase("admin")){
-        getAllUser = userService.getAllUsersByAdmin(page -1,pageSize);
-    }else if(role.equalsIgnoreCase("manager")){
-        getAllUser = userService.getAllUsersByManager( page -1,pageSize);
-    }else{
-        getAllUser = userService.getAllUsers(page -1,pageSize);
-    }
+        if (role.equalsIgnoreCase("admin")){
+            getAllUser = userService.getAllUsersByAdmin(page -1,pageSize);
+        }else if(role.equalsIgnoreCase("manager")){
+            getAllUser = userService.getAllUsersByManager( page -1,pageSize);
+        }else{
+            getAllUser = userService.getAllUsers(page -1,pageSize);
+        }
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }
 
 
 
 }
-

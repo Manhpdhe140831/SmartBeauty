@@ -52,75 +52,75 @@ public class CourseServiceImpl implements CourseService {
 //    private Set<ServiceDto> services;
     @Override
     public CourseDto save(CourseDto courseDto) {
-        if (null != courseDto){
-            Course course = new Course();
-            course.setCourseCode(courseDto.getCourseCode());
-            course.setCourseName(courseDto.getCourseName());
-            course.setCoursePrice(courseDto.getCoursePrice());
-            course.setTimeOfUse(courseDto.getTimeOfUse());
-            course.setEndOfCourse(courseDto.getEndOfCourse());
-            course.setCourseBeginDiscount(courseDto.getCourseBeginDiscount());
-            course.setCourseEndDiscount(courseDto.getCourseEndDiscount());
-            course.setDiscountPercent(courseDto.getDiscountPercent());
-            course.setCourseImage(courseDto.getCourseImage());
-            course.setDescription(courseDto.getDescription());
-            Set<Branch> branchSet = new HashSet<>();
-
-            if (courseDto.getBranches() != null || courseDto.getBranches().isEmpty()){
-                for (BranchDto itemB: courseDto.getBranches()
-                ) {
-                    if (null != itemB){
-                        Branch branch = null;
-                        if (itemB.getId() != null){
-                            Optional<Branch> optionalBranch = branchRepository.findById(itemB.getId());
-                            if (optionalBranch.isPresent()){
-                                branch = optionalBranch.get();
-                            }
-                            if (null != branch){
-                                branchSet.add(branch);
-                            }
-                        }
-                    }
-                }
-                course.setBranches(branchSet);
-            }else {
-                Set<Branch> branchAll =(Set<Branch>) branchRepository.findAll();
-                for (Branch item: branchAll
-                ) {
-                    branchSet.add(item);
-                }
-                course.setBranches(branchSet);
-            }
-            Set<com.swp.sbeauty.entity.Service> serviceSet = new HashSet<>();
-            if (courseDto.getServices() != null || courseDto.getServices().isEmpty()){
-                for (ServiceDto itemS: courseDto.getServices()
-                ) {
-                    if (null != itemS){
-                        com.swp.sbeauty.entity.Service service = null;
-                        if (itemS.getId() != null){
-                            Optional<com.swp.sbeauty.entity.Service> optionalService = serviceRepository.findById(itemS.getId());
-                            if (optionalService.isPresent()){
-                                service = optionalService.get();
-                            }
-                            if (null != service){
-                                serviceSet.add(service);
-                            }
-                        }
-                    }
-                }
-                course.setServices(serviceSet);
-            }else {
-                Set<Service> serviceAll =(Set<Service>) serviceRepository.findAll();
-                for (Service item: serviceAll
-                ) {
-                    serviceSet.add(item);
-                }
-                course.setServices(serviceSet);
-            }
-
-            course = courseRepository.save(course);
-            return new CourseDto(course);
-        }
+//        if (null != courseDto){
+//            Course course = new Course();
+//            course.setCourseCode(courseDto.getCourseCode());
+//            course.setCourseName(courseDto.getCourseName());
+//            course.setCoursePrice(courseDto.getCoursePrice());
+//            course.setTimeOfUse(courseDto.getTimeOfUse());
+//            course.setEndOfCourse(courseDto.getEndOfCourse());
+//            course.setCourseBeginDiscount(courseDto.getCourseBeginDiscount());
+//            course.setCourseEndDiscount(courseDto.getCourseEndDiscount());
+//            course.setDiscountPercent(courseDto.getDiscountPercent());
+//            course.setCourseImage(courseDto.getCourseImage());
+//            course.setDescription(courseDto.getDescription());
+//            Set<Branch> branchSet = new HashSet<>();
+//
+//            if (courseDto.getBranches() != null || courseDto.getBranches().isEmpty()){
+//                for (BranchDto itemB: courseDto.getBranches()
+//                ) {
+//                    if (null != itemB){
+//                        Branch branch = null;
+//                        if (itemB.getId() != null){
+//                            Optional<Branch> optionalBranch = branchRepository.findById(itemB.getId());
+//                            if (optionalBranch.isPresent()){
+//                                branch = optionalBranch.get();
+//                            }
+//                            if (null != branch){
+//                                branchSet.add(branch);
+//                            }
+//                        }
+//                    }
+//                }
+//                course.setBranches(branchSet);
+//            }else {
+//                Set<Branch> branchAll =(Set<Branch>) branchRepository.findAll();
+//                for (Branch item: branchAll
+//                ) {
+//                    branchSet.add(item);
+//                }
+//                course.setBranches(branchSet);
+//            }
+//            Set<com.swp.sbeauty.entity.Service> serviceSet = new HashSet<>();
+//            if (courseDto.getServices() != null || courseDto.getServices().isEmpty()){
+//                for (ServiceDto itemS: courseDto.getServices()
+//                ) {
+//                    if (null != itemS){
+//                        com.swp.sbeauty.entity.Service service = null;
+//                        if (itemS.getId() != null){
+//                            Optional<com.swp.sbeauty.entity.Service> optionalService = serviceRepository.findById(itemS.getId());
+//                            if (optionalService.isPresent()){
+//                                service = optionalService.get();
+//                            }
+//                            if (null != service){
+//                                serviceSet.add(service);
+//                            }
+//                        }
+//                    }
+//                }
+//                course.setServices(serviceSet);
+//            }else {
+//                Set<Service> serviceAll =(Set<Service>) serviceRepository.findAll();
+//                for (Service item: serviceAll
+//                ) {
+//                    serviceSet.add(item);
+//                }
+//                course.setServices(serviceSet);
+//            }
+//
+//            course = courseRepository.save(course);
+//            return new CourseDto(course);
+//        }
         return null;
     }
 

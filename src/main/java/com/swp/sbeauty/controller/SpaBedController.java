@@ -34,6 +34,7 @@ public class SpaBedController {
         SpaBedDto result = spaBedService.updateBed(spaBedDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
     @GetMapping("/bed/getById")
     public ResponseEntity<SpaBedDto> getSpaBedById(@RequestParam(value = "id",required = false) Long id) {
         SpaBedDto result = spaBedService.getById(id);
@@ -52,4 +53,5 @@ public class SpaBedController {
         }
         return new APIResponse<>(spaBedsWithPagination.getSize(),spaBedsWithPagination);
     }
+
 }

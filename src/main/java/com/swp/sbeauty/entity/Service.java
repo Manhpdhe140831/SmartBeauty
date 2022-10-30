@@ -19,27 +19,15 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String codeService;
-    private String nameService;
-    private Date startDiscount;
-    private Date endDiscount;
+    private String code;
+    private String name;
+    private Date discountStart;
+    private Date discountEnd;
     private Double discountPercent;
-    private double priceService;
+    private double price;
     private String description;
-    private long minutesNumber;
-    private String imageService;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "service_branch",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "branch_id"))
-    private Set<Branch> branch = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "service_product",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> product = new HashSet<>();
+    private long duration;
+    private String image;
 
 
 

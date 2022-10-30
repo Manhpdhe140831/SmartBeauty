@@ -18,6 +18,7 @@ public class BranchDto {
     private String phone;
     private String address;
     private String image;
+
     private Set<UserDto> users;
 
     public BranchDto(){}
@@ -37,6 +38,8 @@ public class BranchDto {
 
             }
         }
+
+
 
     }
 }

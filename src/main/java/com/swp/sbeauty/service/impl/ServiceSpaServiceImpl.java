@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.Optional;
+
 @org.springframework.stereotype.Service
 public class ServiceSpaServiceImpl implements ServiceSpaService {
 
@@ -23,10 +25,10 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
 
     @Override
-    public Page<ServiceDto> getListServiceSpa(int offset, int pageSize) {
+    public Page<Service> getListServiceSpaWithPagination(int offset, int pageSize) {
         Page<Service> services = repository.findAll(PageRequest.of(offset, pageSize));
-        Page<ServiceDto> result = services.map(service -> new ServiceDto(service));
-        return result;
+
+        return services;
     }
 
     @Override
@@ -109,6 +111,25 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         return null;
     }
 
+    @Override
+    public ServiceDto getServiceById(Long id) {
+        if (id != null){
+
+            ServiceDto serviceDto = repository.getServiceById(id);
+
+            ServiceDto serviceDto1 = new ServiceDto(serviceDto.getId(), serviceDto.getCode(), serviceDto.getName(), serviceDto.getDiscountStart(), serviceDto.getDiscountEnd(), serviceDto.getDiscountPercent(), serviceDto.getPrice(), serviceDto.getDescription(), serviceDto.getDuration(), serviceDto.getImage(), serviceDto.getProduct(), serviceDto.getUsage());
+
+            return serviceDto1;
+
+        }
+        return null;
+    }
+
+    @Override
+    public Page<Service> getListServicePaginationAndSearch(String name, String code, int offset, int pageSize) {
+        Page<Service> services = repository.getListServiceWithPaginationAndSearch(name, code, PageRequest.of(offset, pageSize));
+        return services;
+    }
 
 
 }

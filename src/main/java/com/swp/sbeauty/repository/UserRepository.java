@@ -30,11 +30,13 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     Boolean existsByMobile(String mobile);
 //select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3
     //select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = 2 or user_role.role_id =3
-    @Query(value = "select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3", nativeQuery = true)
+    @Query(value = "use sbeauty;\n" +
+            "Select u.* from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3 ", nativeQuery = true)
+
 
     Page<Users> getAllUserByAdmin( Pageable pageable);
 
-    @Query(value = "select users.* from users join branch_user on users.id = branch_user.user_id join user_role on  users.id = user_role.user_id\n" +
+    @Query(value = "select * from users join branch_user on users.id = branch_user.user_id join user_role on  users.id = user_role.user_id\n" +
             "    where  user_role.role_id =3", nativeQuery = true)
     Page<Users>getAllUserByManager(Pageable pageable);
 
