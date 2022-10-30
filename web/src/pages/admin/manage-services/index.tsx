@@ -86,6 +86,7 @@ const Index: AppPageInterface = () => {
             opened={!!modal}
             onClosed={(update?: ServiceCreateEntity | ServiceUpdateEntity) => {
               if (update) {
+                console.log(update);
                 // TODO update
                 refetch();
               }

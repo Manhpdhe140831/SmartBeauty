@@ -61,19 +61,6 @@ const ServiceDetailDialog: FC<
               ? dayjs(data.discountEnd).toDate()
               : null,
             discountPercent: data.discountPercent ?? null,
-            products: data.products.map((row) => ({
-              usage: row.usage,
-              product: {
-                ...row.product,
-                discountStart: row.product.discountStart
-                  ? dayjs(row.product.discountStart).toDate()
-                  : null,
-                discountEnd: row.product.discountEnd
-                  ? dayjs(row.product.discountEnd).toDate()
-                  : null,
-                discountPercent: row.product.discountPercent ?? null,
-              },
-            })),
           }
         : undefined,
   });
@@ -94,6 +81,8 @@ const ServiceDetailDialog: FC<
     reset();
     onClosed && onClosed();
   };
+
+  console.log(watch("products"));
 
   return (
     <Modal
@@ -341,10 +330,10 @@ const ServiceDetailDialog: FC<
               <tbody>
                 {productsArray.map((item, index) => (
                   <ProductInServiceRowTable
+                    control={control}
                     key={item.id}
                     field={item}
                     index={index}
-                    parentName={"products"}
                     remove={remove}
                     errors={errors}
                     register={register}
@@ -352,7 +341,17 @@ const ServiceDetailDialog: FC<
                 ))}
                 <tr>
                   <td colSpan={7}>
-                    <Button leftIcon={<IconPlus />} color={"green"} fullWidth>
+                    <Button
+                      onClick={() =>
+                        append({
+                          product: null as unknown as number,
+                          usage: 0,
+                        })
+                      }
+                      leftIcon={<IconPlus />}
+                      color={"green"}
+                      fullWidth
+                    >
                       Product
                     </Button>
                   </td>

@@ -18,10 +18,10 @@ import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { useQuery } from "@tanstack/react-query";
-import { SelectItemGeneric } from "../../../interfaces/select-item-generic.interface";
-import { ManagerModel } from "../../../model/manager.model";
 import mockManager from "../../../mock/manager";
-import AutoCompleteItem from "../../../components/auto-complete-item";
+import AutoCompleteItem, {
+  AutoCompleteItemProp,
+} from "../../../components/auto-complete-item";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import {
   addressSchema,
@@ -71,15 +71,17 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
   });
 
   const { data: availableManager, isLoading: managerLoading } = useQuery<
-    SelectItemGeneric<ManagerModel>[]
+    AutoCompleteItemProp[]
   >(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
-      ...m,
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,
-      description: m.phone,
+      data: {
+        description: m.phone,
+        image: m.avatar,
+      },
     }));
   });
 

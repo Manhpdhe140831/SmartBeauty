@@ -33,26 +33,7 @@ const ProductModelSchema = z
 
 export const ProductInServiceModelSchema = z.object({
   usage: z.number().min(1),
-  product: ProductModelSchema.merge(
-    z.object({ id: idDbSchema, supplier: idDbSchema })
-  ),
+  product: idDbSchema,
 });
 
 export default ProductModelSchema;
-
-type a = z.infer<typeof ProductInServiceModelSchema>;
-const b: a = {
-  usage: 1,
-  product: {
-    id: 1,
-    discountStart: new Date(),
-    unit: "g",
-    dose: 123,
-    description: "",
-    name: "",
-    discountEnd: new Date(),
-    supplier: 1,
-    discountPercent: 2,
-    price: 123,
-  },
-};

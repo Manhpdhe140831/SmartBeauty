@@ -2,7 +2,7 @@ import { BasePriceModel } from "./_price.model";
 import { ProductModel } from "./product.model";
 
 export interface ServiceModel<
-  productType extends number | ProductModel = ProductModel
+  productType extends number | ProductModel = number
 > extends BasePriceModel {
   id: number;
   nameService: string;

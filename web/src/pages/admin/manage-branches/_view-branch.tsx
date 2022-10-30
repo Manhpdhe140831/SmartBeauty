@@ -12,9 +12,10 @@ import { useQuery } from "@tanstack/react-query";
 import mockManager from "../../../mock/manager";
 import { BranchModel, BranchPayload } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
-import AutoCompleteItem from "../../../components/auto-complete-item";
+import AutoCompleteItem, {
+  AutoCompleteItemProp,
+} from "../../../components/auto-complete-item";
 import FormErrorMessage from "../../../components/form-error-message";
-import { SelectItemGeneric } from "../../../interfaces/select-item-generic.interface";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -60,11 +61,10 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
   });
 
   const { data: availableManager, isLoading: managerLoading } = useQuery<
-    SelectItemGeneric<ManagerModel>[]
+    AutoCompleteItemProp[]
   >(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
-      ...m,
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,

@@ -7,22 +7,26 @@ import {
 } from "@mantine/core";
 import { forwardRef } from "react";
 
-export interface CustomSelectItemProps extends SelectItemProps {
-  color?: MantineColor;
-  description?: string;
-  image?: string;
+export interface AutoCompleteItemProp extends SelectItemProps {
+  value: string;
+  label: string;
+  data?: {
+    color?: MantineColor;
+    description?: string;
+    image?: string;
+  };
 }
 
-const AutoCompleteItem = forwardRef<HTMLDivElement, CustomSelectItemProps>(
-  ({ description, label, image, ...others }: CustomSelectItemProps, ref) => (
+const AutoCompleteItem = forwardRef<HTMLDivElement, AutoCompleteItemProp>(
+  ({ data, label, ...others }: AutoCompleteItemProp, ref) => (
     <div ref={ref} {...others}>
       <Group noWrap>
-        <Avatar src={image} />
+        <Avatar src={data?.image} />
 
         <div>
           <Text>{label}</Text>
           <Text size="xs" color="dimmed">
-            {description}
+            {data?.description}
           </Text>
         </div>
       </Group>

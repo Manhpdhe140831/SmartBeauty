@@ -6,10 +6,11 @@ import * as React from "react";
 import { DeepRequired, FieldErrorsImpl, FieldName } from "react-hook-form";
 
 type ErrorProps<T> = {
-  errors: FieldErrorsImpl<DeepRequired<T>>;
+  errors?: FieldErrorsImpl<DeepRequired<T>>;
   name: FieldName<FieldValuesFromFieldErrors<FieldErrorsImpl<DeepRequired<T>>>>;
   render?: React.ReactNode;
   className?: string;
+  noPreHeight?: boolean;
 };
 
 /**
@@ -18,6 +19,7 @@ type ErrorProps<T> = {
  * @param name
  * @param render
  * @param className
+ * @param noPreHeight
  * @constructor
  */
 const FormErrorMessage = <T,>({
@@ -25,9 +27,10 @@ const FormErrorMessage = <T,>({
   name,
   render,
   className,
+  noPreHeight,
 }: ErrorProps<T>) => {
   return (
-    <div className="min-h-6">
+    <div className={noPreHeight ? "" : "min-h-6"}>
       <ErrorMessage
         errors={errors}
         name={name}
