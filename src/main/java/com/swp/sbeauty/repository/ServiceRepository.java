@@ -19,4 +19,5 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     @Query(value = "select s from Service s where s.name like %?1% and s.code like %?2%")
     public Page<Service> getListServiceWithPaginationAndSearch(String name, String code, Pageable pageable);
 
+
 }

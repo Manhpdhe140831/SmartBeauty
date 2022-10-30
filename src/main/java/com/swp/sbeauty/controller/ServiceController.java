@@ -22,11 +22,11 @@ public class ServiceController {
 //        Page<Service> pageService = service.getListServiceSpa(offset, pageSize);
 //        return new ResponseEntity<>(pageService, HttpStatus.OK);
 //    }
-    @GetMapping(value = "/service/getbyid")
-    public ResponseEntity<ServiceDto> getServiceById(@RequestParam("id") Long id){
-        ServiceDto serviceDto = service.getServiceById(id);
-        return new ResponseEntity<>(serviceDto, HttpStatus.OK);
-    }
+//    @GetMapping(value = "/service/getbyid")
+//    public ResponseEntity<ServiceDto> getServiceById(@RequestParam("id") Long id){
+//        ServiceDto serviceDto = service.getServiceById(id);
+//        return new ResponseEntity<>(serviceDto, HttpStatus.OK);
+//    }
 
     @GetMapping(value = "/service/getallservice")
 
@@ -42,6 +42,11 @@ public class ServiceController {
             servicePage = service.getListServicePaginationAndSearch(name, code, page-1, pageSize);
         }
         return new APIResponse<>(servicePage.getSize(), servicePage);
+    }
+    @GetMapping(value = "/service/getservice")
+    public ResponseEntity<ServiceDto> getServiceById(@RequestParam("id") Long id){
+        ServiceDto serviceDto = service.getServiceById(id);
+        return new ResponseEntity<>(serviceDto, HttpStatus.OK);
     }
 
 

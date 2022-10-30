@@ -38,6 +38,8 @@ public class ServiceDto {
     private List<ProductDto> product;
     private Long usage;
 
+
+
     public long getId() {
         return id;
     }
@@ -149,7 +151,7 @@ public class ServiceDto {
         this.usage = usage;
     }
 
-    public ServiceDto(Service service) {
+    public ServiceDto(Service service, Long usage, List<ProductDto> listProduct) {
 
         if (null != service) {
             this.setId(service.getId());
@@ -161,9 +163,11 @@ public class ServiceDto {
             this.setDescription(service.getDescription());
             this.setDuration(service.getDuration());
             this.setImage(service.getImage());
-            this.setProduct(new ArrayList<>());
 
         }
+        this.setProduct(listProduct);
+        this.setUsage(usage);
+
     }
 }
 

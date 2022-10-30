@@ -7,8 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query(value = "SELECT b FROM Product b where  " +
             "b.productCode like %?1% and b.productName like %?2%")
     public Page<Product> searchListWithField(String key,String key2, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Product p join Service_Product_mapping spm ON p.id = spm.product_id where spm.service_id =?1")
+    public List<Product> getAllProductByServiceId(Long id);
+
 }

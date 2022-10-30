@@ -1,15 +1,20 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.ProductDto;
 import com.swp.sbeauty.dto.ServiceDto;
+import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
+import com.swp.sbeauty.repository.mappingRepo.Service_Product_Mapping_Repository;
 import com.swp.sbeauty.service.ServiceSpaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
@@ -22,6 +27,9 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    Service_Product_Mapping_Repository service_product_mapping_repository;
 
 
     @Override
@@ -114,12 +122,27 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     @Override
     public ServiceDto getServiceById(Long id) {
         if (id != null){
+            Long usage = 0l;
+            List<Product> list = productRepository.getAllProductByServiceId(id);
+            List<ProductDto> listProduct = new ArrayList<>();
 
-            ServiceDto serviceDto = repository.getServiceById(id);
+            for (Product itemP: list
+                 ) {
 
-            ServiceDto serviceDto1 = new ServiceDto(serviceDto.getId(), serviceDto.getCode(), serviceDto.getName(), serviceDto.getDiscountStart(), serviceDto.getDiscountEnd(), serviceDto.getDiscountPercent(), serviceDto.getPrice(), serviceDto.getDescription(), serviceDto.getDuration(), serviceDto.getImage(), serviceDto.getProduct(), serviceDto.getUsage());
+                listProduct.add(new ProductDto(itemP));
+               usage = service_product_mapping_repository.getUsageByProductId(itemP.getId());
+            }
+            Service service = null;
+           Optional<Service> optional = repository.findById(id);
+            if (optional.isPresent()){
+                service = optional.get();
+            }
 
-            return serviceDto1;
+            ServiceDto serviceDto = new ServiceDto(service, usage, listProduct);
+
+            return serviceDto;
+
+
 
         }
         return null;

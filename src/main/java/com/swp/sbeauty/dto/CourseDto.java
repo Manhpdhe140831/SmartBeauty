@@ -55,7 +55,7 @@ public class CourseDto {
         if (course.getServices() != null) {
             this.services = new HashSet<>();
             for (Service service : course.getServices()) {
-                this.services.add(new ServiceDto(service));
+              //  this.services.add(new ServiceDto(service));
             }
         }
 
