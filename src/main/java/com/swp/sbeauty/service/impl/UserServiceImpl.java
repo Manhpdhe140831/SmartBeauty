@@ -85,7 +85,10 @@ public class UserServiceImpl implements UserService {
                         roles.add(role);
                     }
                     user.setRoles(roles);
-                    userRepository.save(user);
+                    user = userRepository.save(user);
+                    Integer idStaff = Integer.valueOf(user.getId().intValue());
+                    User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(idStaff, idBranch);
+                    user_branch_mapping_repo.save(user_branch_mapping);
                     return true;
                 }
             }
@@ -104,8 +107,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDto> getAllUsersByManager(int offset, int pageSize) {
-        Page<Users> users = userRepository.getAllUserByManager(PageRequest.of(offset,pageSize));
+    public Page<UserDto> getAllUsersByManager(Integer idCheck, int offset, int pageSize) {
+        Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
+        Page<Users> users = userRepository.getAllUserByManager(idBranch,PageRequest.of(offset,pageSize));
         ModelMapper mapper = new ModelMapper();
         List<UserDto> dtos = users
                 .stream()

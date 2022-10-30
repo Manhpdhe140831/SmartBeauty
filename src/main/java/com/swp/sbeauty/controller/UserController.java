@@ -51,9 +51,6 @@ public class UserController {
         String check = userService.validateUser(userDto);
         if (check == "") {
             Boolean result = userService.saveUser(userDto, roleCheck, idcheck);
-//            if(result == true){
-//                userService.saveUserToBranch(userDto, roleCheck, idcheck);
-//            }
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -123,10 +120,11 @@ public class UserController {
         Page<UserDto> getAllUser;
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String role = temp.get("role").toString();
+        Integer idcheck = Integer.parseInt(temp.get("id").toString());
         if (role.equalsIgnoreCase("admin")){
             getAllUser = userService.getAllUsersByAdmin(page -1,pageSize);
         }else if(role.equalsIgnoreCase("manager")){
-            getAllUser = userService.getAllUsersByManager( page -1,pageSize);
+            getAllUser = userService.getAllUsersByManager(idcheck, page -1,pageSize);
         }else{
             getAllUser = userService.getAllUsers(page -1,pageSize);
         }
