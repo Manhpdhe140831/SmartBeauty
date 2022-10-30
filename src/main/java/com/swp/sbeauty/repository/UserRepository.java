@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     @Query("select new com.swp.sbeauty.dto.UserDto(u) from Users u where u.name = ?1")
     UserDto findByUserName(String username);
 
-
     @Query(value = "select * from sbeauty.users as u \n" +
             "inner join sbeauty.user_role as userRole on u.id = userRole.user_id where userRole.role_id = ?1", nativeQuery = true)
     List<Users> findUserByRoleId(Long id);
@@ -33,18 +32,13 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     //select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = 2 or user_role.role_id =3
     @Query(value = "use sbeauty;\n" +
             "Select u.* from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3 ", nativeQuery = true)
-
-
     Page<Users> getAllUserByAdmin( Pageable pageable);
 
     @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1\n", nativeQuery = true)
     Page<Users>getAllUserByManager(Integer idCheck ,Pageable pageable);
 
-
     @Query(value = "select users.id from users where users.email = '?1'", nativeQuery = true)
     Integer getIdUserByEmail(String email);
-
-
 //    @Query(value = "select u from User u inner join branch_user  b ON  u.id = b.user_id where u.name = ?1")
 //    List<User> getListByBranch(String branchId);
     @Query(value = "select * from sbeauty.user as u \n" +

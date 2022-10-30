@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class APIResponse<T> {
     int recordCount;
-    T reponse;
+    T response;
 }
