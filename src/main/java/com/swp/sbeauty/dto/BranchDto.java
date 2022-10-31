@@ -19,6 +19,7 @@ import java.util.Set;
 public class BranchDto {
     private Long id;
     private String name;
+    private String email;
     private String phone;
     private String address;
     private String logo;
@@ -26,16 +27,18 @@ public class BranchDto {
 
     public BranchDto(){}
 
-    public BranchDto(Long id, String name, String phone, String address, String logo, UserDto manager){
+    public BranchDto(Long id, String name, UserDto manager, String phone, String address , String email, String logo){
         this.id = id;
         this.name = name;
+        this.manager = manager;
         this.phone = phone;
         this.address = address;
+        this.email = email;
         this.logo = logo;
-        this.manager = manager;
+
     }
 
-    public BranchDto(Long id, String name, String phone, String address, String image){
+    public BranchDto(Long id, String name, String phone, String address, String logo){
         this.id = id;
         this.name = name;
         this.phone = phone;

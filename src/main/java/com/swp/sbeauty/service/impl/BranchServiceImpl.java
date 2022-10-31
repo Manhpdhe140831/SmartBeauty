@@ -51,9 +51,9 @@ public class BranchServiceImpl implements BranchService {
     public BranchDto getById(Long id) {
         if (id != null) {
             Branch entity = branchRepository.findById(id).orElse(null);
-//            UserDto managerDto = branchRepository.getManagerFromBranch(entity.getId());
+            Users manager = userRepository.getManagerFromBranch(entity.getId());
             if (entity != null) {
-                return new BranchDto(entity.getId(), entity.getName(), entity.getPhone(), entity.getAddress(), entity.getLogo());
+                return new BranchDto(entity.getId(), entity.getName(), new UserDto(manager) , entity.getPhone(), entity.getAddress(), entity.getEmail(), entity.getLogo());
             }
         }
         return null;
