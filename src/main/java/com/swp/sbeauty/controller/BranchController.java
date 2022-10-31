@@ -53,28 +53,32 @@ public class BranchController {
 
 
 
-    @PostMapping("/branch/save")
-    public ResponseEntity<?> saveBranch(@RequestBody BranchDto branchDto){
-            String check = branchService.validateUser(branchDto);
-            if(check == ""){
-                Boolean result = branchService.saveBranch(branchDto);
-                return new ResponseEntity<>(result, HttpStatus.OK);
-            }
-            else {
-                return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
-            }
-    }
-
-
-    @PutMapping ("/branch/updateBranch")
-    public ResponseEntity<?> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
-        String check = branchService.validateUser(branchDto);
+    @PostMapping(value = "/branch/save", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> saveBranch(@RequestParam(value = "name") String name,
+                                        @RequestParam(value = "email") String email,
+                                        @RequestParam(value = "phone") String phone,
+                                        @RequestParam(value = "address") String address,
+                                        @RequestParam(value = "manager") Long manager){
+        String check = branchService.validateBranch(name, email, phone);
         if(check == ""){
-            BranchDto result = branchService.updateBranch(branchDto, id);
+            Boolean result = branchService.saveBranch(name, email, phone, address, manager);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }else {
+        } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
 
     }
+
+
+//    @PutMapping ("/branch/updateBranch")
+//    public ResponseEntity<?> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
+//        String check = branchService.validateBranch(branchDto);
+//        if(check == ""){
+//            BranchDto result = branchService.updateBranch(branchDto, id);
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        }else {
+//            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+//        }
+//
+//    }
 }

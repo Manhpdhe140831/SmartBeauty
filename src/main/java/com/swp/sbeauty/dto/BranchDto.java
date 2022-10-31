@@ -21,17 +21,17 @@ public class BranchDto {
     private String name;
     private String phone;
     private String address;
-    private String image;
+    private String logo;
     private UserDto manager;
 
     public BranchDto(){}
 
-    public BranchDto(Long id, String name, String phone, String address, String image, UserDto manager){
+    public BranchDto(Long id, String name, String phone, String address, String logo, UserDto manager){
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.image = image;
+        this.logo = logo;
         this.manager = manager;
     }
 
@@ -40,7 +40,7 @@ public class BranchDto {
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.image = image;
+        this.logo = logo;
     }
 
 
@@ -51,7 +51,7 @@ public class BranchDto {
             this.setName(branch.getName());
             this.setPhone(branch.getPhone());
             this.setAddress(branch.getAddress());
-            this.setImage(branch.getImage());
+            this.setLogo(branch.getLogo());
 
         }
 

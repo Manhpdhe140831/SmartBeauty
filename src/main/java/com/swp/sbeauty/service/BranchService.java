@@ -14,12 +14,14 @@ public interface BranchService {
     List<Branch> findBranchsWithSorting(String field);
 
     /*List<RecruiterAdminDto> getRecruiterByName(String name, int pageNo, int pageSize);*/
-    Boolean saveBranch(BranchDto branchDto);
+    Boolean saveBranch(String name, String email, String phone, String address, Long manager);
+
+    String validateBranch(String name, String email, String phone);
 
     BranchDto updateBranch(BranchDto branchDto, Long id);
 
     Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize);
     Page<Branch> findBranchsPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
 
-    String validateUser(BranchDto branchDto);
+
 }

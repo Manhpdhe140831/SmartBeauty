@@ -16,8 +16,6 @@ import java.util.List;
 public interface BranchRepository extends JpaRepository<Branch,Long> {
     Long countByPhone(String phone);
 
-    Boolean existsByAddress(String address);
-    Boolean existsByName(String name);
     @Query(value = "select a.* from `branch` a " , nativeQuery = true)
     Page<Branch> getBranchByFilter(String search, String address, Pageable pageable);
 
@@ -30,4 +28,8 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
 
     @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=2 and b.id_branch = ?1", nativeQuery = true)
     UserDto getManagerFromBranch(Long inBranch);
+
+    Boolean existsByName(String name);
+    Boolean existsByEmail(String email);
+    Boolean existsByPhone(String phone);
 }

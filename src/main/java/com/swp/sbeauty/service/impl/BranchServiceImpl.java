@@ -53,7 +53,7 @@ public class BranchServiceImpl implements BranchService {
             Branch entity = branchRepository.findById(id).orElse(null);
 //            UserDto managerDto = branchRepository.getManagerFromBranch(entity.getId());
             if (entity != null) {
-                return new BranchDto(entity.getId(), entity.getName(), entity.getPhone(), entity.getAddress(), entity.getImage());
+                return new BranchDto(entity.getId(), entity.getName(), entity.getPhone(), entity.getAddress(), entity.getLogo());
             }
         }
         return null;
@@ -65,27 +65,31 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public Boolean saveBranch(BranchDto branchDto) {
-        try{
-            if(branchDto != null){
-                Branch branch = new Branch();
-                branch.setName(branchDto.getName());
-                branch.setPhone(branchDto.getPhone());
-                branch.setAddress(branchDto.getAddress());
-                branch.setImage(branchDto.getImage());
-                branch = branchRepository.save(branch);
-                if(branchDto.getManager().getId() != null){
-                    User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(branchDto.getManager().getId(), branch.getId());
-                    user_branch_mapping_repo.save(user_branch_mapping);
-                }
-                if(branch != null){
-                    return true;
-                }
-            }
-        }catch (Exception e){
-            throw e;
+    public Boolean saveBranch(String name, String email, String phone, String address, Long manager) {
+        Branch branch = new Branch();
+        branch.setName(name);
+        branch.setEmail(email);
+        branch.setPhone(phone);
+        branch.setAddress(address);
+        branch = branchRepository.save(branch);
+        User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(manager, branch.getId());
+        user_branch_mapping_repo.save(user_branch_mapping);
+        return true;
+    }
+
+    @Override
+    public String validateBranch(String name, String email, String phone) {
+        String result = "";
+        if(branchRepository.existsByEmail(email)){
+            result += "Email already exists in data, ";
         }
-        return false;
+        if(branchRepository.existsByPhone(phone)){
+            result += "phone already exists in data, ";
+        }
+        if(branchRepository.existsByName(name)){
+            result += "name already exists in data";
+        }
+        return result;
     }
 
     @Override
@@ -103,7 +107,7 @@ public class BranchServiceImpl implements BranchService {
                     branch.setName(branchDto.getName());
                     branch.setPhone(branchDto.getPhone());
                     branch.setAddress(branchDto.getAddress());
-                    branch.setImage(branchDto.getImage());
+                    branch.setLogo(branchDto.getLogo());
                     branch = branchRepository.save(branch);
                     return new BranchDto(branch);
                 } else {
@@ -132,17 +136,7 @@ public class BranchServiceImpl implements BranchService {
         return branches;
     }
 
-    @Override
-    public String validateUser(BranchDto branchDto) {
-        String result = "";
-        if(branchRepository.existsByAddress(branchDto.getAddress())){
-            result += "Address already exists in data, ";
-        }
-        if(branchRepository.existsByName(branchDto.getName())){
-            result += "Name already exists in data";
-        }
-        return result;
-    }
+
 
 
 //    @Autowired
