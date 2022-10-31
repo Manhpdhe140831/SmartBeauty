@@ -24,9 +24,23 @@ export interface BranchModel<
  * This payload interface will not have id field,
  * and dataType of the logo will be different.
  */
-export interface BranchPayload<
+export interface BranchCreateEntity<
   managerType extends number | ManagerModel = number
 > extends Omit<BranchModel<managerType>, "id" | "logo"> {
+  // if the user does not update the logo,
+  // the datatype will remain the same (as string)
+  // otherwise the logo will be a File.
+  logo: File | string;
+}
+
+/**
+ * Interface for the payload to update branch.
+ * This payload interface will not have id field,
+ * and dataType of the logo will be different.
+ */
+export interface BranchUpdateEntity<
+  managerType extends number | ManagerModel = number
+> extends Omit<BranchModel<managerType>, "logo"> {
   // if the user does not update the logo,
   // the datatype will remain the same (as string)
   // otherwise the logo will be a File.

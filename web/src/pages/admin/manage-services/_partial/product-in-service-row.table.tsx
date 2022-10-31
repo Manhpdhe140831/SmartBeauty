@@ -68,7 +68,6 @@ const ProductInServiceRowTable = ({
 
   useEffect(() => {
     // update selected product
-    console.log(field.product);
     if (field.product === undefined || field.product === null) {
       setSelected(null);
       return;
@@ -85,7 +84,7 @@ const ProductInServiceRowTable = ({
 
   return (
     <tr key={field.id}>
-      <td>{index + 1}</td>
+      <td className={"text-center"}>{index + 1}</td>
       <td>
         <div className="aspect-square w-full overflow-hidden rounded shadow-lg">
           {selected && (

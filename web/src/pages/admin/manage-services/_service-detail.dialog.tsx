@@ -31,8 +31,9 @@ import {
   formatterNumberInput,
   parserNumberInput,
 } from "../../../utilities/fn.helper";
-import ProductInServiceRowTable from "./_partial/_product-in-service-row.table";
+import ProductInServiceRowTable from "./_partial/product-in-service-row.table";
 import { getServiceModelSchema } from "../../../validation/service-model.schema";
+import ProductInServiceHeaderTable from "./_partial/product-in-service-header.table";
 
 const ServiceDetailDialog: FC<
   DialogProps<ServiceModel, ServiceUpdateEntity, ServiceCreateEntity>
@@ -81,8 +82,6 @@ const ServiceDetailDialog: FC<
     reset();
     onClosed && onClosed();
   };
-
-  console.log(watch("products"));
 
   return (
     <Modal
@@ -307,26 +306,7 @@ const ServiceDetailDialog: FC<
               </small>
             </h2>
             <Table className={"table-fixed"}>
-              <colgroup>
-                <col className={"w-14"} />
-                <col className={"w-24"} />
-                <col />
-                <col className={"w-28"} />
-                <col className={"w-28"} />
-                <col className={"w-32"} />
-                <col className={"w-14"} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th className="!text-center">No.</th>
-                  <th className="!text-center">Image</th>
-                  <th>Name</th>
-                  <th className="!text-center">Dose</th>
-                  <th className="!text-center">Unit</th>
-                  <th className="!text-center">Uses</th>
-                  <th></th>
-                </tr>
-              </thead>
+              <ProductInServiceHeaderTable />
               <tbody>
                 {productsArray.map((item, index) => (
                   <ProductInServiceRowTable
@@ -339,7 +319,7 @@ const ServiceDetailDialog: FC<
                     register={register}
                   />
                 ))}
-                <tr>
+                <tr className={'border-b'}>
                   <td colSpan={7}>
                     <Button
                       onClick={() =>

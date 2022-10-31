@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { IErrorResponse, ILoginResponse } from "../interfaces/api.interface";
 import { UserEntity, UserModel } from "../model/user.model";
 import { PaginatedResponse } from "../interfaces/api-core.interface";
+import { jsonToFormData } from "../utilities/form-data.helper";
 
 export async function loginApi(
   email: string,
@@ -54,30 +55,7 @@ export async function createUser<payloadType extends UserEntity, result>(
   payload: payloadType
 ): Promise<result> {
   try {
-    const formData = new FormData();
-    for (const field of Object.keys(payload)) {
-      const formKey = field as unknown as keyof payloadType;
-      if (!Object.hasOwn(payload, formKey)) {
-        continue;
-      }
-
-      if (payload[formKey] === null || payload[formKey] === undefined) {
-        continue;
-      }
-      const valueField = payload[formKey];
-      if (valueField instanceof File) {
-        formData.append(field, valueField);
-      } else if (valueField instanceof Date) {
-        formData.append(field, valueField.toISOString());
-      } else {
-        formData.append(
-          field,
-          typeof valueField === "string"
-            ? valueField
-            : JSON.stringify(valueField)
-        );
-      }
-    }
+    const formData = jsonToFormData(payload);
     const apiResult = await axios.post<result>("/user/save", formData);
     return apiResult.data;
   } catch (e) {

@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import mockManager from "../../../mock/manager";
-import { BranchModel, BranchPayload } from "../../../model/branch.model";
+import { BranchModel, BranchCreateEntity } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
 import AutoCompleteItem, {
   AutoCompleteItemProp,
@@ -34,7 +34,7 @@ import { PhoneNumberMask } from "../../../const/input-masking.const";
 
 type ViewBranchPropsType = {
   branchData: BranchModel<ManagerModel>;
-  onClose: (branchData?: BranchPayload) => void;
+  onClose: (branchData?: BranchCreateEntity) => void;
 };
 
 const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
@@ -54,7 +54,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     handleSubmit,
     reset,
     formState: { errors, isValid, isDirty },
-  } = useForm<BranchPayload>({
+  } = useForm<BranchCreateEntity>({
     resolver: zodResolver(updateSchema),
     mode: "onChange",
     defaultValues: { ...branchData, manager: branchData.manager.id },
@@ -72,7 +72,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     }));
   });
 
-  const onSubmit = (data: BranchPayload) => onClose(data);
+  const onSubmit = (data: BranchCreateEntity) => onClose(data);
 
   return (
     <form
