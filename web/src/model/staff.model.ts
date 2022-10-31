@@ -1,31 +1,13 @@
-import { ManagerModel } from "./manager.model";
+import { UserModel } from "./user.model";
+import { USER_ROLE } from "../const/user-role.const";
 
-/**
- * Raw representation data from the server response.
- *
- * `manager` field is generic for populating data purposes.
- * - By default, it's the id of the associated manager.
- * -
- */
-export interface StaffModel<
-  managerType extends number | ManagerModel = number
-> {
-  id: number;
-  name: string;
-  Role: string;
-  PhoneNumber: string;
+export interface StaffModel extends UserModel {
+  role: USER_ROLE.employee;
+  phone: string;
+  dateOfBirth: string;
+  address: string;
 }
 
-/**
- * Interface for the payload to register branch.
- * This payload interface will not have id field,
- * and dataType of the logo will be different.
- */
-export interface StaffPayload<
-  managerType extends number | ManagerModel = number
-> extends Omit<StaffModel<managerType>,"id"> {
-  // if the user does not update the logo,
-  // the datatype will remain the same (as string)
-  // otherwise the logo will be a File.
+export interface StaffPayload extends Omit<StaffModel, "id"> {
   logo: File | string;
 }

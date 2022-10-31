@@ -13,7 +13,7 @@ import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { StaffModel, StaffPayload } from "../../../model/staff.model";
 
 type ViewStaffPropsType = {
-  staffData: StaffModel<ManagerModel>;
+  staffData: StaffModel;
   onClose: (staffData?: StaffPayload) => void;
 };
 

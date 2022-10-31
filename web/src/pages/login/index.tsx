@@ -17,6 +17,7 @@ import { useAuthUser } from "../../store/auth-user.state";
 import { UserModel } from "../../model/user.model";
 import { emailSchema, passwordSchema } from "../../validation/field.schema";
 import { loginApi } from "../../services/user.service";
+import matchAuth from "../../mock/auth";
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -46,7 +47,7 @@ const Login: AppPageInterface = () => {
     ILoginResponse,
     IErrorResponse,
     z.infer<typeof loginSchema>
-  >((payload) => loginApi(payload.email, payload.password), {
+  >((payload) => matchAuth(payload.email, payload.password), {
     onSuccess: (response) => {
       const userDecoded = authToken.setToken<UserModel>(response.accessToken);
       if (!userDecoded) {
