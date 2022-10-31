@@ -4,29 +4,38 @@ import { IconSearch } from "@tabler/icons";
 import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import BranchCreateModalBtn from "./_partial/_branch-create-modal-btn";
 import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
-import { mockBranchWithManager } from "../../../mock/branch";
 import { BranchModel } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
 import { USER_ROLE } from "../../../const/user-role.const";
+import { getAllBranch } from "../../../services/branch.service";
+import usePaginationHook from "../../../hooks/pagination.hook";
+import { PaginatedResponse } from "../../../interfaces/api-core.interface";
 
 const Index: AppPageInterface = () => {
-  const [page, setPage] = useState(1);
-  const [totalRecords, setTotalRecords] = useState(0);
+  const {
+    pageSize,
+    currentPage: page,
+    totalRecord,
+    update: updatePagination,
+  } = usePaginationHook();
 
   const {
-    data: branches,
+    data: fetchBranches,
     isLoading,
     refetch,
-  } = useQuery<BranchModel<ManagerModel>[]>(["list-branch", page], async () => {
-    const branches = await mockBranchWithManager();
-    setTotalRecords(branches.length);
-    setPage(1);
-    return branches;
-  });
+  } = useQuery<PaginatedResponse<BranchModel<ManagerModel>>>(
+    // dependencies
+    ["list-branch", page],
+    // API caller
+    () => getAllBranch(page),
+    // once API success
+    {
+      onSuccess: (res) => updatePagination({ total: res.recordCount }),
+    }
+  );
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
@@ -71,8 +80,8 @@ const Index: AppPageInterface = () => {
                 }
               />
             ) : (
-              branches &&
-              branches.map((d, i) => (
+              fetchBranches &&
+              fetchBranches.response.content.map((d, i) => (
                 <TableRecord
                   key={d.id}
                   no={i + 1}
@@ -89,8 +98,8 @@ const Index: AppPageInterface = () => {
       <Pagination
         position={"center"}
         page={page}
-        onChange={setPage}
-        total={totalRecords / 10}
+        onChange={(p) => updatePagination({ newPage: p })}
+        total={totalRecord / pageSize}
       ></Pagination>
     </div>
   );

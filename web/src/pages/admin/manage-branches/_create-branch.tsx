@@ -18,7 +18,6 @@ import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { useQuery } from "@tanstack/react-query";
-import mockManager from "../../../mock/manager";
 import AutoCompleteItem, {
   AutoCompleteItemProp,
 } from "../../../components/auto-complete-item";
@@ -31,22 +30,15 @@ import {
   nameSchema,
   phoneSchema,
 } from "../../../validation/field.schema";
-import { BranchModel } from "../../../model/branch.model";
-
-/**
- * Entity model to be sent to server.
- * This type omits the generated fields of the server (id, logo).
- */
-type branchEntity = Omit<BranchModel, "id" | "logo"> & {
-  logo?: File;
-};
+import { BranchCreateEntity } from "../../../model/branch.model";
+import { getAllFreeManager } from "../../../services/manager.service";
 
 /**
  * Component props
  * `onSave()` will trigger with the data from the form.
  */
 type CreateBranchPropsType = {
-  onSave?: (branchData: branchEntity) => void;
+  onSave?: (branchData: BranchCreateEntity) => void;
 };
 
 const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
@@ -57,7 +49,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     phone: phoneSchema,
     manager: z.number().min(1),
     address: addressSchema,
-    logo: fileUploadSchema.and(imageTypeSchema),
+    logo: fileUploadSchema.and(imageTypeSchema).optional(),
   });
 
   const {
@@ -73,7 +65,8 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
   const { data: availableManager, isLoading: managerLoading } = useQuery<
     AutoCompleteItemProp[]
   >(["available-manager"], async () => {
-    const manager = await mockManager();
+    // retrieve free managers - managers which don't associate with any branch.
+    const manager = await getAllFreeManager();
     return manager.map((m) => ({
       // add fields of SelectItemGeneric
       value: String(m.id),

@@ -30,7 +30,7 @@ export interface BranchCreateEntity<
   // if the user does not update the logo,
   // the datatype will remain the same (as string)
   // otherwise the logo will be a File.
-  logo: File | string;
+  logo?: File | string;
 }
 
 /**
@@ -44,5 +44,5 @@ export interface BranchUpdateEntity<
   // if the user does not update the logo,
   // the datatype will remain the same (as string)
   // otherwise the logo will be a File.
-  logo: File | string;
+  logo?: File | string;
 }

@@ -2,6 +2,10 @@ import { Button, Modal } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import { useState } from "react";
 import CreateBranch from "../_create-branch";
+import { BranchCreateEntity } from "../../../../model/branch.model";
+import { useMutation } from "@tanstack/react-query";
+import { createBranchJson } from "../../../../services/branch.service";
+import { IErrorResponse } from "../../../../interfaces/api.interface";
 
 type BranchModalProps = {
   onChanged: (updated?: boolean) => void;
@@ -9,6 +13,21 @@ type BranchModalProps = {
 
 const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
   const [newBranchModal, setNewBranchModal] = useState<boolean>(false);
+
+  const branchMutation = useMutation<
+    boolean,
+    IErrorResponse,
+    BranchCreateEntity
+  >(["branch-mutation"], (entity) => createBranchJson(entity), {
+    onSuccess: () => {
+      onChanged(true);
+      setNewBranchModal(false);
+    },
+    onError: () => {
+      onChanged(false);
+      setNewBranchModal(false);
+    },
+  });
 
   return (
     <>
@@ -31,11 +50,12 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
         }}
       >
         <CreateBranch
-          onSave={async (e) => {
-            //  TODO: handle API call
-            console.log(e);
+          onSave={(e) => {
+            if (e) {
+              return branchMutation.mutate(e);
+            }
             // close dialog and update to the list screen
-            onChanged(true);
+            onChanged(false);
             setNewBranchModal(false);
           }}
         />
