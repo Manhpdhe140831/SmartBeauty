@@ -1,8 +1,6 @@
 package com.swp.sbeauty.controller;
 
-import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.ResponseDto;
-import com.swp.sbeauty.dto.SupplierDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
@@ -10,6 +8,8 @@ import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,5 +65,24 @@ public class SupplierController {
             suppliersWithPagination = supplierService.getSupplierPaginationAndSearch(name,address,phone,page -1,pageSize);
         }
         return new APIResponse<>(suppliersWithPagination.getSize(),suppliersWithPagination);
+    }
+    @GetMapping("/supplier")
+    private ResponseEntity<?> getSupplierPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            , @RequestParam(value = "address", required = false,defaultValue = "") String address
+            , @RequestParam(value = "phone", required = false,defaultValue = "") String phone
+    ){
+        Pageable p = PageRequest.of(page,pageSize);
+        if(name  == "" && address == "" && phone == ""){
+            SupplierResponseDto supplierResponseDto = supplierService.getAllSupplier(page-1,pageSize);
+            return new ResponseEntity<>(supplierResponseDto,HttpStatus.OK);
+
+        }
+        else {
+            SupplierResponseDto supplierResponseDto = supplierService.getSupplierAndSearch(name,address,phone,page-1,pageSize);
+            return new ResponseEntity<>(supplierResponseDto,HttpStatus.OK);
+        }
+
     }
 }

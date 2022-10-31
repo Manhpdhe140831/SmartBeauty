@@ -1,13 +1,19 @@
 package com.swp.sbeauty.service.impl;
 
+import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.BranchResponseDto;
 import com.swp.sbeauty.dto.SupplierDto;
+import com.swp.sbeauty.dto.SupplierResponseDto;
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -115,6 +121,46 @@ public class SupplierServiceImpl implements SupplierService {
             result += "name already exists in data, ";
         }
         return result;
+    }
+
+    @Override
+    public SupplierResponseDto getSupplierAndSearch(String name, String address, String phone, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        SupplierResponseDto supplierResponseDto = new SupplierResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Supplier> page = supplierRepository.searchListWithField(name,address,phone,pageable);
+        List<Supplier> suppliers = page.getContent();
+        List<SupplierDto> supplierDtos = new ArrayList<>();
+        for (Supplier supplier : suppliers){
+            SupplierDto supplierDto = new SupplierDto();
+            supplierDto = mapper.map(supplier,SupplierDto.class);
+            supplierDtos.add(supplierDto);
+        }
+        supplierResponseDto.setSupplierDtoList(supplierDtos);
+        supplierResponseDto.setTotalElement(page.getTotalElements());
+        supplierResponseDto.setTotalPage(page.getTotalPages());
+        supplierResponseDto.setPageIndex(pageNo+1);
+        return supplierResponseDto;
+    }
+
+    @Override
+    public SupplierResponseDto getAllSupplier(int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        SupplierResponseDto supplierResponseDto = new SupplierResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Supplier> page = supplierRepository.findAll(pageable);
+        List<Supplier> suppliers = page.getContent();
+        List<SupplierDto> supplierDtos = new ArrayList<>();
+        for (Supplier supplier : suppliers){
+            SupplierDto supplierDto = new SupplierDto();
+            supplierDto = mapper.map(supplier,SupplierDto.class);
+            supplierDtos.add(supplierDto);
+        }
+        supplierResponseDto.setSupplierDtoList(supplierDtos);
+        supplierResponseDto.setTotalElement(page.getTotalElements());
+        supplierResponseDto.setTotalPage(page.getTotalPages());
+        supplierResponseDto.setPageIndex(pageNo);
+        return supplierResponseDto;
     }
 
 

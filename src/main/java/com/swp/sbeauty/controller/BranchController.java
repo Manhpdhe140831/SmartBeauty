@@ -52,7 +52,7 @@ public class BranchController {
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
     }
     @GetMapping("/branch")
-    private ResponseEntity<?> getBranchPagination(@RequestParam(value = "page",required = false,defaultValue = "0") int page
+    private ResponseEntity<?> getBranchPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false, defaultValue = "") String name
             , @RequestParam(value = "address", required = false,defaultValue = "") String address
