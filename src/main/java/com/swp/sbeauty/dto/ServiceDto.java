@@ -25,7 +25,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class ServiceDto {
     private long id;
-    private String code;
     private String name;
     private Date discountStart;
     private Date discountEnd;
@@ -48,13 +47,7 @@ public class ServiceDto {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getName() {
         return name;
@@ -138,7 +131,6 @@ public class ServiceDto {
 
     public ServiceDto(long id, String code, String name, Date discountStart, Date discountEnd, Double discountPercent, double price, String description, long duration, String image, List<ProductDto> product, Long usage) {
         this.id = id;
-        this.code = code;
         this.name = name;
         this.discountStart = discountStart;
         this.discountEnd = discountEnd;
@@ -155,7 +147,6 @@ public class ServiceDto {
 
         if (null != service) {
             this.setId(service.getId());
-            this.setCode(service.getCode());
             this.setName(service.getName());
             this.setDiscountStart(service.getDiscountStart());
             this.setDiscountEnd(service.getDiscountEnd());

@@ -44,14 +44,13 @@ public class ProductController {
     @GetMapping("/product/getAllProduct")
     private APIResponse<Page<Product>> getProductWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "productCode", required = false) String productCode
-            , @RequestParam(value = "productName", required = false) String productName){
+            , @RequestParam(value = "name", required = false) String name){
         Page<Product> productsWithPagination;
-        if(productCode =="" ||productCode == null && productName =="" ||productName == null){
+        if(name =="" ||name == null){
             productsWithPagination = productService.getAllProductPagination(page-1,pageSize);
         }
         else {
-            productsWithPagination = productService.findProductPaginationAndSearch(productCode,productName,page -1,pageSize);
+            productsWithPagination = productService.findProductPaginationAndSearch(name,page -1,pageSize);
         }
         return new APIResponse<>(productsWithPagination.getSize(),productsWithPagination);
     }

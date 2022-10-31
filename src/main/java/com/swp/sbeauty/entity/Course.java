@@ -21,15 +21,14 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String courseCode;
-    private String courseName;
+    private String name;
     private double coursePrice;
     private int timeOfUse;
     private Date endOfCourse;
-    private Date courseBeginDiscount;
-    private Date courseEndDiscount;
+    private Date discountStart;
+    private Date discountEnd;
     private double discountPercent;
-    private String courseImage;
+    private String image;
     private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)

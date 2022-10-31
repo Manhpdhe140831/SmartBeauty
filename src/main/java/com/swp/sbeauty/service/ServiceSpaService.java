@@ -12,7 +12,7 @@ public interface ServiceSpaService {
 
     ServiceDto createService(ServiceDto serviceDto);
     ServiceDto getServiceById(Long id);
-    Page<Service> getListServicePaginationAndSearch(String name, String code, int offset, int pageSize);
+    Page<Service> getListServicePaginationAndSearch(String name, int offset, int pageSize);
 
 
 

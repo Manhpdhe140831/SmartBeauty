@@ -105,10 +105,10 @@ public class UserController {
         String role = temp.get("role").toString();
 
         if((Integer)roleId == 0){
-            getAllUser = userService.getAllUsers(page -1,pageSize);
+            getAllUser = userService.getAllUsers(page,pageSize);
         }
         else {
-            getAllUser = userService.getAllUsersPagination(page -1,pageSize,roleId);
+            getAllUser = userService.getAllUsersPagination(page,pageSize,roleId);
         }
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }

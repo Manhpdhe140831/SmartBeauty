@@ -21,15 +21,14 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String productCode;
-    private String productName;
-    private double productPrice;
+    private String name;
+    private double price;
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date productBeginDiscount;
+    private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date productEndDiscount;
+    private Date discountEnd;
     private double discountPercent;
-    private String productImage;
+    private String image;
     private int quantity;
     private String unit;
     private String description;

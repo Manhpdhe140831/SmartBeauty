@@ -149,8 +149,8 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     }
 
     @Override
-    public Page<Service> getListServicePaginationAndSearch(String name, String code, int offset, int pageSize) {
-        Page<Service> services = repository.getListServiceWithPaginationAndSearch(name, code, PageRequest.of(offset, pageSize));
+    public Page<Service> getListServicePaginationAndSearch(String name, int offset, int pageSize) {
+        Page<Service> services = repository.getListServiceWithPaginationAndSearch(name, PageRequest.of(offset, pageSize));
         return services;
     }
 

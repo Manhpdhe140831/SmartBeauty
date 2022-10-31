@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier,Long> {
-    Boolean existsBySupplierCode(String supplierCode);
+    Boolean existsByname(String name);
 
     @Query(value = "SELECT b FROM Supplier b where  " +
-            "b.supplierCode like %?1% and b.address like %?2% and b.phone like %?3%")
+            "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
     public Page<Supplier> searchListWithField(String key,String key2,String key3, Pageable pageable);
 }

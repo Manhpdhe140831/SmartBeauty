@@ -20,30 +20,28 @@ import java.util.Set;
 @Setter
 public class CourseDto {
     private long id;
-    private String courseCode;
-    private String courseName;
+    private String name;
     private double coursePrice;
     private int timeOfUse;
     private Date endOfCourse;
-    private Date courseBeginDiscount;
-    private Date courseEndDiscount;
+    private Date discountStart;
+    private Date discountEnd;
     private double discountPercent;
-    private String courseImage;
+    private String image;
     private String description;
     private Set<BranchDto> branches;
     private Set<ServiceDto> services;
 
     public CourseDto(Course course) {
         this.setId(course.getId());
-        this.setCourseCode(course.getCourseCode());
-        this.setCourseName(course.getCourseName());
+        this.setName(course.getName());
         this.setCoursePrice(course.getCoursePrice());
         this.setTimeOfUse(course.getTimeOfUse());
         this.setEndOfCourse(course.getEndOfCourse());
-        this.setCourseBeginDiscount(course.getCourseBeginDiscount());
-        this.setCourseEndDiscount(course.getCourseEndDiscount());
+        this.setDiscountStart(course.getDiscountStart());
+        this.setDiscountEnd(course.getDiscountEnd());
         this.setDiscountPercent(course.getDiscountPercent());
-        this.setCourseImage(course.getCourseImage());
+        this.setImage(course.getImage());
         this.setDescription(course.getDescription());
 
         if (course.getBranches() != null) {

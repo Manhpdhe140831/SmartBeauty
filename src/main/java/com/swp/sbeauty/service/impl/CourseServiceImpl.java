@@ -39,14 +39,14 @@ public class CourseServiceImpl implements CourseService {
 
 //    private long id;
 //    private String courseCode;
-//    private String courseName;
+//    private String name;
 //    private double coursePrice;
 //    private int timeOfUse;
 //    private Date endOfCourse;
-//    private Date courseBeginDiscount;
-//    private Date courseEndDiscount;
+//    private Date discountStart;
+//    private Date discountEnd;
 //    private double discountPercent;
-//    private String courseImage;
+//    private String image;
 //    private String description;
 //    private Set<BranchDto> branches;
 //    private Set<ServiceDto> services;
@@ -55,14 +55,14 @@ public class CourseServiceImpl implements CourseService {
 //        if (null != courseDto){
 //            Course course = new Course();
 //            course.setCourseCode(courseDto.getCourseCode());
-//            course.setCourseName(courseDto.getCourseName());
+//            course.setname(courseDto.getname());
 //            course.setCoursePrice(courseDto.getCoursePrice());
 //            course.setTimeOfUse(courseDto.getTimeOfUse());
 //            course.setEndOfCourse(courseDto.getEndOfCourse());
-//            course.setCourseBeginDiscount(courseDto.getCourseBeginDiscount());
-//            course.setCourseEndDiscount(courseDto.getCourseEndDiscount());
+//            course.setdiscountStart(courseDto.getdiscountStart());
+//            course.setdiscountEnd(courseDto.getdiscountEnd());
 //            course.setDiscountPercent(courseDto.getDiscountPercent());
-//            course.setCourseImage(courseDto.getCourseImage());
+//            course.setimage(courseDto.getimage());
 //            course.setDescription(courseDto.getDescription());
 //            Set<Branch> branchSet = new HashSet<>();
 //

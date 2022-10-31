@@ -19,11 +19,11 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String supplierCode;
+    private String name;
     private String taxCode;
     private String description;
     private String phone;
     private String email;
     private String address;
-    private String supplierImage;
+    private String image;
 }

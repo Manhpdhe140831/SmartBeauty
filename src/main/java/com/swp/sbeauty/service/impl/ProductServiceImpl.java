@@ -60,13 +60,12 @@ public class ProductServiceImpl implements ProductService {
         try{
             if(productDto != null){
                 Product product = new Product();
-                product.setProductCode(productDto.getProductCode());
-                product.setProductName(productDto.getProductName());
-                product.setProductPrice(productDto.getProductPrice());
-                product.setProductBeginDiscount(productDto.getProductBeginDiscount());
-                product.setProductEndDiscount(productDto.getProductEndDiscount());
+                product.setName(productDto.getName());
+                product.setPrice(productDto.getPrice());
+                product.setDiscountStart(productDto.getDiscountStart());
+                product.setDiscountEnd(productDto.getDiscountEnd());
                 product.setDiscountPercent(productDto.getDiscountPercent());
-                product.setProductImage(productDto.getProductImage());
+                product.setImage(productDto.getImage());
                 product.setQuantity(productDto.getQuantity());
                 product.setUnit(productDto.getUnit());
                 product.setDescription(productDto.getDescription());
@@ -130,13 +129,12 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
             if(product != null){
-                product.setProductCode(productDto.getProductCode());
-                product.setProductName(productDto.getProductName());
-                product.setProductPrice(productDto.getProductPrice());
-                product.setProductBeginDiscount(productDto.getProductBeginDiscount());
-                product.setProductEndDiscount(productDto.getProductEndDiscount());
+                product.setName(productDto.getName());
+                product.setPrice(productDto.getPrice());
+                product.setDiscountStart(productDto.getDiscountStart());
+                product.setDiscountEnd(productDto.getDiscountEnd());
                 product.setDiscountPercent(productDto.getDiscountPercent());
-                product.setProductImage(productDto.getProductImage());
+                product.setImage(productDto.getImage());
                 product.setQuantity(productDto.getQuantity());
                 product.setUnit(productDto.getUnit());
                 product.setDescription(productDto.getDescription());
@@ -197,8 +195,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findProductPaginationAndSearch(String productCode, String productName,int offset, int pageSize) {
-        Page<Product> products =productRepository.searchListWithField(productCode,productName,PageRequest.of(offset,pageSize));
+    public Page<Product> findProductPaginationAndSearch(String name,int offset, int pageSize) {
+        Page<Product> products =productRepository.searchListWithField(name,PageRequest.of(offset,pageSize));
         return products;
     }
 

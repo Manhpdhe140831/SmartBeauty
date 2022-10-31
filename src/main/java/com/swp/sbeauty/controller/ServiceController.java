@@ -33,13 +33,12 @@ public class ServiceController {
     private APIResponse<Page<Service>> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false, defaultValue = "") String name
-            , @RequestParam(value = "code", required = false,defaultValue = "") String code
             ){
         Page<Service> servicePage;
-        if (name=="" && code == null){
+        if (name==""){
             servicePage = service.getListServiceSpaWithPagination(page-1, pageSize);
         }else {
-            servicePage = service.getListServicePaginationAndSearch(name, code, page-1, pageSize);
+            servicePage = service.getListServicePaginationAndSearch(name, page-1, pageSize);
         }
         return new APIResponse<>(servicePage.getSize(), servicePage);
     }

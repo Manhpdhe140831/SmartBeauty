@@ -45,13 +45,13 @@ public class SupplierServiceImpl implements SupplierService {
         try{
             if(supplierDto != null){
                 Supplier supplier = new Supplier();
-                supplier.setSupplierCode(supplierDto.getSupplierCode());
+                supplier.setName(supplierDto.getName());
                 supplier.setTaxCode(supplierDto.getTaxCode());
                 supplier.setDescription(supplierDto.getDescription());
                 supplier.setPhone(supplierDto.getPhone());
                 supplier.setEmail(supplierDto.getEmail());
                 supplier.setAddress(supplierDto.getAddress());
-                supplier.setSupplierImage(supplierDto.getSupplierImage());
+                supplier.setImage(supplierDto.getImage());
                 supplier = supplierRepository.save(supplier);
                 if(supplier != null){
                     return new SupplierDto(supplier);
@@ -75,13 +75,13 @@ public class SupplierServiceImpl implements SupplierService {
                     }
                 }
                 if(supplier != null){
-                    supplier.setSupplierCode(supplierDto.getSupplierCode());
+                    supplier.setName(supplierDto.getName());
                     supplier.setTaxCode(supplierDto.getTaxCode());
                     supplier.setDescription(supplierDto.getDescription());
                     supplier.setPhone(supplierDto.getPhone());
                     supplier.setEmail(supplierDto.getEmail());
                     supplier.setAddress(supplierDto.getAddress());
-                    supplier.setSupplierImage(supplierDto.getSupplierImage());
+                    supplier.setImage(supplierDto.getImage());
                     supplier = supplierRepository.save(supplier);
                     return new SupplierDto(supplier);
                 } else {
@@ -111,8 +111,8 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public String validateUser(SupplierDto supplierDto) {
         String result = "";
-        if(supplierRepository.existsBySupplierCode(supplierDto.getSupplierCode())){
-            result += "SupplierCode already exists in data, ";
+        if(supplierRepository.existsByname(supplierDto.getName())){
+            result += "name already exists in data, ";
         }
         return result;
     }

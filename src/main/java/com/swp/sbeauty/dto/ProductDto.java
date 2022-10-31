@@ -16,19 +16,14 @@ import java.util.Set;
 @Setter
 public class ProductDto {
     private Long id;
-    @NotEmpty
-    @Size(min = 5, message = "product code should have at least 5 characters")
-    private String productCode;
-    @NotEmpty
-    @Size(min = 3, message = "product name should have at least 3 characters")
-    private String productName;
-    private Double productPrice;
+    private String name;
+    private Double price;
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date productBeginDiscount;
+    private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date productEndDiscount;
+    private Date discountEnd;
     private double discountPercent;
-    private String productImage;
+    private String image;
     private int quantity;
     @NotEmpty
     private String unit;
@@ -42,12 +37,11 @@ public class ProductDto {
 
         if(product != null){
             this.setId(product.getId());
-            this.setProductCode(product.getProductCode());
-            this.setProductName(product.getProductName());
-            this.setProductPrice(product.getProductPrice());
-            this.setProductBeginDiscount(product.getProductBeginDiscount());
-            this.setProductEndDiscount(product.getProductEndDiscount());
-            this.setProductImage(product.getProductImage());
+            this.setName(product.getName());
+            this.setPrice(product.getPrice());
+            this.setDiscountStart(product.getDiscountStart());
+            this.setDiscountEnd(product.getDiscountEnd());
+            this.setImage(product.getImage());
             this.setQuantity(product.getQuantity());
             this.setUnit(product.getUnit());
             this.setDescription(product.getDescription());
