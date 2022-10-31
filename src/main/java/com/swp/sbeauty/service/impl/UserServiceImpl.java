@@ -1,7 +1,6 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.RoleDto;
-import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.*;
 
 import java.util.*;
 
@@ -20,14 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -365,6 +362,45 @@ public Boolean saveUser(UserDto userDto) {
             listDto.add(new UserDto(users));
         }
         return listDto;
+    }
+
+    @Override
+    public UserResponse getUserByManager(Integer idCheck, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        UserResponse userResponse = new UserResponse();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
+        Page<Users> page = userRepository.getAllUserByManager(idBranch,pageable);
+        List<Users> users = page.getContent();
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+        for (Users users1 : users){
+            UserResponseDto userResponseDto = new UserResponseDto();
+            userResponseDto = mapper.map(users1,UserResponseDto.class);
+            userResponseDtos.add(userResponseDto);
+        }
+        userResponse.setUserResponseDtos(userResponseDtos);
+        userResponse.setTotalPage(page.getTotalPages());
+        userResponse.setPageIndex(pageNo);
+        return userResponse;
+    }
+
+    @Override
+    public UserResponse getAllUser(int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        UserResponse userResponse = new UserResponse();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Users> page = userRepository.getAllUserByAdmin(pageable);
+        List<Users> users = page.getContent();
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+        for (Users users1 : users){
+            UserResponseDto userResponseDto = new UserResponseDto();
+            userResponseDto = mapper.map(users1,UserResponseDto.class);
+            userResponseDtos.add(userResponseDto);
+        }
+        userResponse.setUserResponseDtos(userResponseDtos);
+        userResponse.setTotalPage(page.getTotalPages());
+        userResponse.setPageIndex(pageNo);
+        return userResponse;
     }
 
 

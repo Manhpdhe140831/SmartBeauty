@@ -1,9 +1,9 @@
 package com.swp.sbeauty.service;
 
 import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.UserResponse;
 import com.swp.sbeauty.entity.Users;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -39,4 +39,6 @@ Boolean saveUser(UserDto userDto);
 
 
     List<UserDto> getAllManager();
+    UserResponse getUserByManager(Integer idCheck, int pageNo, int pageSize);
+    UserResponse getAllUser(int pageNo, int pageSize);
 }

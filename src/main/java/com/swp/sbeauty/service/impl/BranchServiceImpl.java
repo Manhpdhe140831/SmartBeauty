@@ -2,6 +2,7 @@ package com.swp.sbeauty.service.impl;
 
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.BranchResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Role;
@@ -12,6 +13,7 @@ import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.repository.mappingRepo.User_Branch_Mapping_Repo;
 import com.swp.sbeauty.service.BranchService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -136,7 +138,45 @@ public class BranchServiceImpl implements BranchService {
         return branches;
     }
 
+    @Override
+    public BranchResponseDto getBranchAndSearch(String name, String address, String phone, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        BranchResponseDto branchResponseDto = new BranchResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Branch> page = branchRepository.searchListWithField(name,address,phone,pageable);
+        List<Branch> branches = page.getContent();
+        List<BranchDto> branchDtos = new ArrayList<>();
+        for (Branch branch : branches){
+            BranchDto branchDto = new BranchDto();
+            branchDto = mapper.map(branch,BranchDto.class);
+            branchDtos.add(branchDto);
+        }
+        branchResponseDto.setBranchDtos(branchDtos);
+        branchResponseDto.setTotalElement(page.getTotalElements());
+        branchResponseDto.setTotalPage(page.getTotalPages());
+        branchResponseDto.setPageIndex(pageNo);
+        return branchResponseDto;
+    }
 
+    @Override
+    public BranchResponseDto getAllBranch(int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        BranchResponseDto branchResponseDto = new BranchResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Branch> page = branchRepository.findAll(pageable);
+        List<Branch> branches = page.getContent();
+        List<BranchDto> branchDtos = new ArrayList<>();
+        for (Branch branch : branches){
+            BranchDto branchDto = new BranchDto();
+            branchDto = mapper.map(branch,BranchDto.class);
+            branchDtos.add(branchDto);
+        }
+        branchResponseDto.setBranchDtos(branchDtos);
+        branchResponseDto.setTotalElement(page.getTotalElements());
+        branchResponseDto.setTotalPage(page.getTotalPages());
+        branchResponseDto.setPageIndex(pageNo);
+        return branchResponseDto;
+    }
 
 
 //    @Autowired

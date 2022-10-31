@@ -3,6 +3,7 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.UserResponse;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.UserRepository;
@@ -95,7 +96,7 @@ public class UserController {
         }
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
     }*/
-    @GetMapping("/user")
+    /*@GetMapping("/user")
     private APIResponse<Page<UserDto>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId
@@ -111,7 +112,7 @@ public class UserController {
             getAllUser = userService.getAllUsersPagination(page,pageSize,roleId);
         }
         return new APIResponse<>(getAllUser.getSize(),getAllUser);
-    }
+    }*/
 
     @GetMapping("/user/getAll")
     private APIResponse<Page<UserDto>> getAllUserByAdmin(@RequestParam(value = "page",required = false,defaultValue = "1") int page
@@ -135,6 +136,26 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getUsersByBranch(@RequestParam("branchId") String branchId){
         List<UserDto> list = userService.getUsersByBranch(branchId);
         return new ResponseEntity<>(list, (list != null) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
+    @GetMapping("/user")
+    private ResponseEntity<?> getAllUserByAuthor(@RequestParam(value = "page",required = false,defaultValue = "0") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestHeader("Authorization") String authHeader){
+        Page<UserDto> getAllUser;
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        String role = temp.get("role").toString();
+        Integer idcheck = Integer.parseInt(temp.get("id").toString());
+        if (role.equalsIgnoreCase("admin")){
+            UserResponse userResponse = userService.getAllUser(page,pageSize);
+            return new ResponseEntity<>(userResponse,HttpStatus.OK);
+        }else if(role.equalsIgnoreCase("manager")){
+            UserResponse userResponse = userService.getUserByManager(idcheck,page,pageSize);
+            return new ResponseEntity<>(userResponse,HttpStatus.OK);
+        }else{
+            getAllUser = userService.getAllUsers(page ,pageSize);
+            return new ResponseEntity<>(userRepository,HttpStatus.OK);
+        }
+
     }
 
 

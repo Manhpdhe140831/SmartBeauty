@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.BranchResponseDto;
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.APIResponse;
@@ -49,6 +50,25 @@ public class BranchController {
             branchesWithPagination = branchService.findBranchsPaginationAndSearch(name,address,phone,page -1,pageSize);
         }
         return new APIResponse<>(branchesWithPagination.getSize(),branchesWithPagination);
+    }
+    @GetMapping("/branch")
+    private ResponseEntity<?> getBranchPagination(@RequestParam(value = "page",required = false,defaultValue = "0") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            , @RequestParam(value = "address", required = false,defaultValue = "") String address
+            , @RequestParam(value = "phone", required = false,defaultValue = "") String phone
+    ){
+        Pageable p = PageRequest.of(page,pageSize);
+        if(name  == "" && address == "" && phone == ""){
+            BranchResponseDto branchResponseDto = branchService.getAllBranch(page,pageSize);
+            return new ResponseEntity<>(branchResponseDto,HttpStatus.OK);
+
+        }
+        else {
+            BranchResponseDto branchResponseDto = branchService.getBranchAndSearch(name,address,phone,page,pageSize);
+            return new ResponseEntity<>(branchResponseDto,HttpStatus.OK);
+        }
+
     }
 
 
