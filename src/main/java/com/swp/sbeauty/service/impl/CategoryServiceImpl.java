@@ -103,29 +103,44 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public SupplierResponseDto getSupplierAndSearch(String name, int pageNo, int pageSize) {
-        /*ModelMapper mapper = new ModelMapper();
+    public CategoryResponseDto getCategoryAndSearch(String name, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
         CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Category> page = categoryRepository.searchListWithField(name,pageable);
-        List<Category> suppliers = page.getContent();
+        List<Category> categories = page.getContent();
         List<CategoryDto> categoryDtos = new ArrayList<>();
-        for (Supplier supplier : suppliers){
-            SupplierDto supplierDto = new SupplierDto();
-            supplierDto = mapper.map(supplier,SupplierDto.class);
-            supplierDtos.add(supplierDto);
+        for (Category category : categories){
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto = mapper.map(category,CategoryDto.class);
+            categoryDtos.add(categoryDto);
         }
-        supplierResponseDto.setSupplierDtoList(supplierDtos);
-        supplierResponseDto.setTotalElement(page.getTotalElements());
-        supplierResponseDto.setTotalPage(page.getTotalPages());
-        supplierResponseDto.setPageIndex(pageNo+1);
-        return supplierResponseDto;*/
-        return null;
+        categoryResponseDto.setCategoryDtoList(categoryDtos);
+        categoryResponseDto.setTotalElement(page.getTotalElements());
+        categoryResponseDto.setTotalPage(page.getTotalPages());
+        categoryResponseDto.setPageIndex(pageNo+1);
+        return categoryResponseDto;
     }
 
     @Override
-    public SupplierResponseDto getAllSupplier(int pageNo, int pageSize) {
-        return null;
+    public CategoryResponseDto getAllCategory(int pageNo, int pageSize) {
+
+        ModelMapper mapper = new ModelMapper();
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Category> page = categoryRepository.findAll(pageable);
+        List<Category> categories = page.getContent();
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+        for (Category category : categories){
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto = mapper.map(category,CategoryDto.class);
+            categoryDtos.add(categoryDto);
+        }
+        categoryResponseDto.setCategoryDtoList(categoryDtos);
+        categoryResponseDto.setTotalElement(page.getTotalElements());
+        categoryResponseDto.setTotalPage(page.getTotalPages());
+        categoryResponseDto.setPageIndex(pageNo+1);
+        return categoryResponseDto;
     }
 
 }

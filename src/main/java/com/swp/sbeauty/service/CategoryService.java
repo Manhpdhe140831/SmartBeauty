@@ -1,6 +1,7 @@
 package com.swp.sbeauty.service;
 
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.dto.CategoryResponseDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.dto.SupplierResponseDto;
 import com.swp.sbeauty.entity.Branch;
@@ -17,6 +18,6 @@ public interface CategoryService {
     CategoryDto updateCategory(CategoryDto categoryDto, Long id);
     Page<Category> getAllCategoryPagination(int offset, int pageSize);
     Page<Category> findCategoryPaginationAndSearch(int offset,int pageSize,String name);
-    SupplierResponseDto getSupplierAndSearch(String name, int pageNo, int pageSize);
-    SupplierResponseDto getAllSupplier(int pageNo,int pageSize);
+    CategoryResponseDto getCategoryAndSearch(String name, int pageNo, int pageSize);
+    CategoryResponseDto getAllCategory(int pageNo,int pageSize);
 }

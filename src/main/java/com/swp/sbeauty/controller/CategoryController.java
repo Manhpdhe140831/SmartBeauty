@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.dto.CategoryResponseDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
@@ -10,6 +11,8 @@ import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +54,19 @@ public class CategoryController {
             categoriesWithPagination = categoryService.findCategoryPaginationAndSearch(page -1,pageSize,name);
         }
         return new APIResponse<>(categoriesWithPagination.getSize(),categoriesWithPagination);
+    }
+    @GetMapping("/category")
+    private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "name", required = false,defaultValue = "") String name){
+        Pageable p = PageRequest.of(page,pageSize);
+        if(name  == "" ||name == null){
+            CategoryResponseDto categoryResponseDto = categoryService.getAllCategory(page -1,pageSize);
+            return new ResponseEntity<>(categoryResponseDto,HttpStatus.OK);
+        }
+        else {
+            CategoryResponseDto categoryResponseDto = categoryService.getCategoryAndSearch(name,page -1,pageSize);
+            return new ResponseEntity<>(categoryResponseDto,HttpStatus.OK);
+        }
     }
 }

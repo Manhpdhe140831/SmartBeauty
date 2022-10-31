@@ -372,15 +372,27 @@ public Boolean saveUser(UserDto userDto) {
         Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
         Page<Users> page = userRepository.getAllUserByManager(idBranch,pageable);
         List<Users> users = page.getContent();
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+        /*List<UserResponseDto> userResponseDtos = new ArrayList<>();
         for (Users users1 : users){
             UserResponseDto userResponseDto = new UserResponseDto();
             userResponseDto = mapper.map(users1,UserResponseDto.class);
             userResponseDtos.add(userResponseDto);
-        }
-        userResponse.setUserResponseDtos(userResponseDtos);
+        }*/
+        List<UserResponseDto> dtos = users
+                .stream()
+                .map(user -> mapper.map(user, UserResponseDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        List<UserResponseDto> pageResult = new ArrayList<>(dtos);
+        userResponse.setUserResponseDtos(pageResult);
+        userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
-        userResponse.setPageIndex(pageNo);
+        userResponse.setPageIndex(pageNo+1);
         return userResponse;
     }
 
