@@ -10,10 +10,11 @@ public interface ServiceSpaService {
 
     boolean deleteServiceSpa(Long id);
 
-    ServiceDto createService(ServiceDto serviceDto);
+    ServiceDto save(ServiceDto serviceDto);
     ServiceDto getServiceById(Long id);
     Page<Service> getListServicePaginationAndSearch(String name, int offset, int pageSize);
 
+    public String validateService(ServiceDto serviceDto);
 
 
 

@@ -14,48 +14,155 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 public class CourseDto {
     private long id;
+
+
+
+    private String code;
     private String name;
-    private double coursePrice;
-    private int timeOfUse;
-    private Date endOfCourse;
+    private double price;
+    private int duration;
+
+    private Long endOfCourse;
     private Date discountStart;
     private Date discountEnd;
     private double discountPercent;
     private String image;
     private String description;
-    private Set<BranchDto> branches;
-    private Set<ServiceDto> services;
+    private List<ServiceDto> service;
+
 
     public CourseDto(Course course) {
         this.setId(course.getId());
         this.setName(course.getName());
-        this.setCoursePrice(course.getCoursePrice());
-        this.setTimeOfUse(course.getTimeOfUse());
+        this.setPrice(course.getPrice());
+        this.setDuration(course.getDuration());
         this.setEndOfCourse(course.getEndOfCourse());
         this.setDiscountStart(course.getDiscountStart());
         this.setDiscountEnd(course.getDiscountEnd());
         this.setDiscountPercent(course.getDiscountPercent());
         this.setImage(course.getImage());
         this.setDescription(course.getDescription());
+    }
 
-        if (course.getBranches() != null) {
-            this.branches = new HashSet<>();
-            for (Branch branch : course.getBranches()) {
-                this.branches.add(new BranchDto(branch));
-            }
+    public long getId() {
+        return id;
+    }
+
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Long getEndOfCourse() {
+        return endOfCourse;
+    }
+
+    public void setEndOfCourse(Long endOfCourse) {
+        this.endOfCourse = endOfCourse;
+    }
+
+    public Date getDiscountStart() {
+        return discountStart;
+    }
+
+    public void setDiscountStart(Date discountBegin) {
+        this.discountStart = discountBegin;
+    }
+
+    public Date getDiscountEnd() {
+        return discountEnd;
+    }
+
+    public void setDiscountEnd(Date discountEnd) {
+        this.discountEnd = discountEnd;
+    }
+
+    public double getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(double discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<ServiceDto> getService() {
+        return service;
+    }
+
+    public void setService(List<ServiceDto> service) {
+        this.service = service;
+    }
+
+    public CourseDto(Course course, List<ServiceDto> listService){
+        if (null != course) {
+            this.setId(course.getId());
+            this.setCode(course.getCode());
+            this.setName(course.getName());
+            this.setPrice(course.getPrice());
+            this.setDuration(course.getDuration());
+            this.setEndOfCourse(course.getEndOfCourse());
+            this.setDiscountStart(course.getDiscountStart());
+            this.setDiscountEnd(course.getDiscountEnd());
+            this.setDiscountPercent(course.getDiscountPercent());
+            this.setImage(course.getImage());
+            this.setDescription(course.getDescription());
         }
-        if (course.getServices() != null) {
-            this.services = new HashSet<>();
-            for (Service service : course.getServices()) {
-              //  this.services.add(new ServiceDto(service));
-            }
-        }
+        this.setService(listService);
 
     }
 }

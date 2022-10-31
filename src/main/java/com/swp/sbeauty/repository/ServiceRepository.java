@@ -20,4 +20,5 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     public Page<Service> getListServiceWithPaginationAndSearch(String name, Pageable pageable);
 
 
+
 }

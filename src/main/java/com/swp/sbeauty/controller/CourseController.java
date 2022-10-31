@@ -2,6 +2,9 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.CourseDto;
 import com.swp.sbeauty.dto.ServiceDto;
+import com.swp.sbeauty.entity.APIResponse;
+import com.swp.sbeauty.entity.Course;
+import com.swp.sbeauty.entity.Service;
 import com.swp.sbeauty.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +20,20 @@ public class CourseController {
     @Autowired
     private CourseService service;
 
-    @GetMapping("/courses/{offset}/{pageSize}")
-    public ResponseEntity<Page<CourseDto>> getAllService(@PathVariable int offset, @PathVariable int pageSize){
-        Page<CourseDto> pageService = service.getListCourse(offset, pageSize);
-        return new ResponseEntity<>(pageService, HttpStatus.OK);
+    @GetMapping(value = "/course/getallcourse")
+
+    private APIResponse<Page<Course>> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            , @RequestParam(value = "code", required = false,defaultValue = "") String code
+    ){
+        Page<Course> coursePage;
+        if (name=="" && code == null){
+            coursePage = service.getListCourse(page-1, pageSize);
+        }else {
+            coursePage = service.getListCoursePaginationAndSearch(name, code, page-1, pageSize);
+        }
+        return new APIResponse<>(coursePage.getSize(), coursePage);
     }
 
     @RequestMapping(value = "/courses/add", method = RequestMethod.POST)
