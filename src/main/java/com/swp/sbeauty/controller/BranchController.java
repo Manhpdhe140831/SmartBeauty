@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
@@ -54,14 +55,26 @@ public class BranchController {
 
     @PostMapping("/branch/save")
     public ResponseEntity<?> saveBranch(@RequestBody BranchDto branchDto){
-            Boolean result = branchService.saveBranch(branchDto);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            String check = branchService.validateUser(branchDto);
+            if(check == ""){
+                Boolean result = branchService.saveBranch(branchDto);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+            }
     }
 
 
     @PutMapping ("/branch/updateBranch")
-    public ResponseEntity<BranchDto> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
+    public ResponseEntity<?> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
+        String check = branchService.validateUser(branchDto);
+        if(check == ""){
             BranchDto result = branchService.updateBranch(branchDto, id);
             return new ResponseEntity<>(result, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

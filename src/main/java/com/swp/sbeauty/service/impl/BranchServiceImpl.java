@@ -132,6 +132,18 @@ public class BranchServiceImpl implements BranchService {
         return branches;
     }
 
+    @Override
+    public String validateUser(BranchDto branchDto) {
+        String result = "";
+        if(branchRepository.existsByAddress(branchDto.getAddress())){
+            result += "Address already exists in data, ";
+        }
+        if(branchRepository.existsByName(branchDto.getName())){
+            result += "Name already exists in data";
+        }
+        return result;
+    }
+
 
 //    @Autowired
 //    private BranchRepository branchRepository;

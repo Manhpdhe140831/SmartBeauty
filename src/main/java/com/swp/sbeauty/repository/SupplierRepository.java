@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier,Long> {
+    Boolean existsBySupplierCode(String supplierCode);
 
     @Query(value = "SELECT b FROM Supplier b where  " +
             "b.supplierCode like %?1% and b.address like %?2% and b.phone like %?3%")

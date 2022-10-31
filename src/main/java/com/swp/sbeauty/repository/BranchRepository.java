@@ -15,6 +15,9 @@ import java.util.List;
 @Repository
 public interface BranchRepository extends JpaRepository<Branch,Long> {
     Long countByPhone(String phone);
+
+    Boolean existsByAddress(String address);
+    Boolean existsByName(String name);
     @Query(value = "select a.* from `branch` a " , nativeQuery = true)
     Page<Branch> getBranchByFilter(String search, String address, Pageable pageable);
 

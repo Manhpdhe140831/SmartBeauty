@@ -108,5 +108,14 @@ public class SupplierServiceImpl implements SupplierService {
         return suppliers;
     }
 
+    @Override
+    public String validateUser(SupplierDto supplierDto) {
+        String result = "";
+        if(supplierRepository.existsBySupplierCode(supplierDto.getSupplierCode())){
+            result += "SupplierCode already exists in data, ";
+        }
+        return result;
+    }
+
 
 }

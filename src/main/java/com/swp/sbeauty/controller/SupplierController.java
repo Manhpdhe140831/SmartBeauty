@@ -1,6 +1,7 @@
 package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.BranchDto;
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
@@ -29,14 +30,25 @@ public class SupplierController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/supplier/save")
-    public ResponseEntity<SupplierDto> saveSupplier(@Valid @RequestBody SupplierDto supplierDto){
-        SupplierDto result = supplierService.saveSupplier(supplierDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> saveSupplier(@Valid @RequestBody SupplierDto supplierDto){
+        String check = supplierService.validateUser(supplierDto);
+        if(check == ""){
+            SupplierDto result = supplierService.saveSupplier(supplierDto);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
-    @PutMapping ("/supplier/updateCategory")
-    public ResponseEntity<SupplierDto> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @RequestParam(value = "id",required = false) Long id){
-        SupplierDto result = supplierService.updateSupplier(supplierDto, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    @PutMapping ("/supplier/updateSupplier")
+    public ResponseEntity<?> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @RequestParam(value = "id",required = false) Long id){
+        String check = supplierService.validateUser(supplierDto);
+        if(check == "") {
+            SupplierDto result = supplierService.updateSupplier(supplierDto, id);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
     }
     @GetMapping("/supplier/getAllSupplier")
     private APIResponse<Page<Supplier>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
