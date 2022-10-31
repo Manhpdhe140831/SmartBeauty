@@ -1,16 +1,17 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.repository.CategoryRepository;
 import com.swp.sbeauty.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,32 @@ public class CategoryServiceImpl implements CategoryService {
 
         Page<Category> categories =categoryRepository.searchListWithField(name,PageRequest.of(offset,pageSize));
         return categories;
+    }
+
+    @Override
+    public SupplierResponseDto getSupplierAndSearch(String name, int pageNo, int pageSize) {
+        /*ModelMapper mapper = new ModelMapper();
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Category> page = categoryRepository.searchListWithField(name,pageable);
+        List<Category> suppliers = page.getContent();
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+        for (Supplier supplier : suppliers){
+            SupplierDto supplierDto = new SupplierDto();
+            supplierDto = mapper.map(supplier,SupplierDto.class);
+            supplierDtos.add(supplierDto);
+        }
+        supplierResponseDto.setSupplierDtoList(supplierDtos);
+        supplierResponseDto.setTotalElement(page.getTotalElements());
+        supplierResponseDto.setTotalPage(page.getTotalPages());
+        supplierResponseDto.setPageIndex(pageNo+1);
+        return supplierResponseDto;*/
+        return null;
+    }
+
+    @Override
+    public SupplierResponseDto getAllSupplier(int pageNo, int pageSize) {
+        return null;
     }
 
 }

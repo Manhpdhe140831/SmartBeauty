@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service @Transactional @Slf4j
 public class BranchServiceImpl implements BranchService {
@@ -31,6 +32,8 @@ public class BranchServiceImpl implements BranchService {
     @Autowired
     private User_Branch_Mapping_Repo user_branch_mapping_repo;
 
+    @Autowired
+    private ModelMapper mapper;
 
 
     @Override
@@ -140,18 +143,28 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchResponseDto getBranchAndSearch(String name, String address, String phone, int pageNo, int pageSize) {
-        ModelMapper mapper = new ModelMapper();
         BranchResponseDto branchResponseDto = new BranchResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Branch> page = branchRepository.searchListWithField(name,address,phone,pageable);
         List<Branch> branches = page.getContent();
-        List<BranchDto> branchDtos = new ArrayList<>();
-        for (Branch branch : branches){
+        //List<BranchDto> branchDtos = new ArrayList<>();
+        /*for (Branch branch : branches){
             BranchDto branchDto = new BranchDto();
             branchDto = mapper.map(branch,BranchDto.class);
             branchDtos.add(branchDto);
-        }
-        branchResponseDto.setBranchDtos(branchDtos);
+        }*/
+        List<BranchDto> dtos = page
+                .stream()
+                .map(branch -> mapper.map(branch, BranchDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    Users users = userRepository.getManagerFromBranch(f.getId());
+                    f.setManager(new UserDto(users));
+                }
+        );
+        List<BranchDto> pageResult = new ArrayList<>(dtos);
+        branchResponseDto.setBranchDtos(pageResult);
         branchResponseDto.setTotalElement(page.getTotalElements());
         branchResponseDto.setTotalPage(page.getTotalPages());
         branchResponseDto.setPageIndex(pageNo+1);
@@ -160,7 +173,6 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchResponseDto getAllBranch(int pageNo, int pageSize) {
-        ModelMapper mapper = new ModelMapper();
         BranchResponseDto branchResponseDto = new BranchResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Branch> page = branchRepository.findAll(pageable);
