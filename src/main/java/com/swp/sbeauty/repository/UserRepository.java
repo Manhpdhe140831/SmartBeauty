@@ -30,11 +30,14 @@ public interface UserRepository extends JpaRepository<Users,Long> {
 
 //select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3
     //select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = 2 or user_role.role_id =3
-    @Query(value = "use sbeauty;\n" +
-            "select u.* from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3", nativeQuery = true)
+    @Query(value = "select u.* from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3 ORDER BY ?#{#pageable}",
+            countQuery = "select count(*) from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3"
+            ,nativeQuery = true)
     Page<Users> getAllUserByAdmin( Pageable pageable);
 
-    @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1\n", nativeQuery = true)
+    @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1 ORDER BY ?#{#pageable}",
+            countQuery = "select count(*) from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1"
+            ,nativeQuery = true)
     Page<Users>getAllUserByManager(Integer idCheck ,Pageable pageable);
 
     @Query(value = "select users.id from users where users.email = '?1'", nativeQuery = true)
