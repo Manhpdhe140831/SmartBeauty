@@ -60,12 +60,12 @@ public class BranchController {
     ){
         Pageable p = PageRequest.of(page,pageSize);
         if(name  == "" && address == "" && phone == ""){
-            BranchResponseDto branchResponseDto = branchService.getAllBranch(page,pageSize);
+            BranchResponseDto branchResponseDto = branchService.getAllBranch(page-1,pageSize);
             return new ResponseEntity<>(branchResponseDto,HttpStatus.OK);
 
         }
         else {
-            BranchResponseDto branchResponseDto = branchService.getBranchAndSearch(name,address,phone,page,pageSize);
+            BranchResponseDto branchResponseDto = branchService.getBranchAndSearch(name,address,phone,page-1,pageSize);
             return new ResponseEntity<>(branchResponseDto,HttpStatus.OK);
         }
 

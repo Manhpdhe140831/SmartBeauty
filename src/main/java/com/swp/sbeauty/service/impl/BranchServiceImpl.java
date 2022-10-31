@@ -154,7 +154,7 @@ public class BranchServiceImpl implements BranchService {
         branchResponseDto.setBranchDtos(branchDtos);
         branchResponseDto.setTotalElement(page.getTotalElements());
         branchResponseDto.setTotalPage(page.getTotalPages());
-        branchResponseDto.setPageIndex(pageNo);
+        branchResponseDto.setPageIndex(pageNo+1);
         return branchResponseDto;
     }
 
