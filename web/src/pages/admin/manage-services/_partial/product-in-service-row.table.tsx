@@ -37,7 +37,6 @@ const ProductInServiceRowTable = ({
   control,
   field,
   index,
-  register,
   errors,
   remove,
 }: NestedArrayRowProps) => {

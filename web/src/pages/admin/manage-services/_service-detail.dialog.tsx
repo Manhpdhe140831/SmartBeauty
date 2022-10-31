@@ -124,7 +124,7 @@ const ServiceDetailDialog: FC<
               label={"Service Name"}
               {...register("nameService")}
             />
-            <FormErrorMessage errors={errors} name={"name"} />
+            <FormErrorMessage errors={errors} name={"nameService"} />
 
             <Textarea
               required
