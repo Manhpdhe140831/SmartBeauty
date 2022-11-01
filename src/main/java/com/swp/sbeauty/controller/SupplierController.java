@@ -46,15 +46,15 @@ public class SupplierController {
         }
 
     }
-    @PostMapping(value = "/supplier/update", headers="Content-Type=multipart/form-data")
+    @PutMapping(value = "/supplier/update", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> updateSupplier(@RequestParam(value = "id") Long id,
-                                            @RequestParam(value = "name") String name,
-                                        @RequestParam(value = "taxCode") String taxCode,
-                                        @RequestParam(value = "description") String description,
-                                        @RequestParam(value = "phone") String phone,
-                                        @RequestParam(value = "email") String email,
-                                        @RequestParam(value = "address") String address,
-                                        @RequestParam(value = "image") String image) {
+                                            @RequestParam(value = "name", required = false) String name,
+                                        @RequestParam(value = "taxCode",required = false) String taxCode,
+                                        @RequestParam(value = "description",required = false) String description,
+                                        @RequestParam(value = "phone",required = false) String phone,
+                                        @RequestParam(value = "email",required = false) String email,
+                                        @RequestParam(value = "address",required = false) String address,
+                                        @RequestParam(value = "image",required = false) String image) {
         String check = supplierService.validateSupplier(name, email, phone);
         if (check == "") {
             Boolean result = supplierService.updateSupplier(id,name, taxCode, description, phone, email, address, image);
