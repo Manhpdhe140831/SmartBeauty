@@ -11,10 +11,11 @@ export interface AutoCompleteItemProp<T extends object>
   extends SelectItemProps {
   value: string;
   label: string;
-  data?: T & {
+  data: T & {
     color?: MantineColor;
     description?: string;
     image?: string;
+    disabled?: boolean;
   };
 }
 

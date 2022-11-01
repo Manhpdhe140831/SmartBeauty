@@ -1,4 +1,11 @@
 /* Randomize an array using Durstenfeld shuffle algorithm */
+import dayjs from "dayjs";
+import duration, { DurationUnitType } from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
 export function shuffleArray<T>(originalArr: T[]) {
   // shallow clone the array since we only need to shuffle its position.
   const array = [...originalArr];
@@ -14,6 +21,10 @@ export function shuffleArray<T>(originalArr: T[]) {
 export function formatPrice(price: number) {
   // 123456 -> 123.456
   return new Intl.NumberFormat("vi-VN").format(price);
+}
+
+export function formatTime(time: number, unit: DurationUnitType) {
+  return dayjs.duration(time, unit).humanize();
 }
 
 export const formatterNumberInput = (value: string | undefined): string => {

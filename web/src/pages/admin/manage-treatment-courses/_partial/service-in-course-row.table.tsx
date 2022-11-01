@@ -1,17 +1,16 @@
-import { ActionIcon, Select } from "@mantine/core";
+import { ActionIcon, Image, Select } from "@mantine/core";
 import AutoCompleteItem, {
   AutoCompleteItemProp,
 } from "../../../../components/auto-complete-item";
 import { IconX } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
+import { formatPrice, formatTime } from "../../../../utilities/fn.helper";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { formatPrice } from "../../../../utilities/fn.helper";
 
 type rowProps = {
   no: number;
   serviceId: number | null;
-  data: ServiceModel[];
+  data: AutoCompleteItemProp<ServiceModel>[];
   onSelected: (id: number | null) => void;
   onRemoved: (index: number) => void;
 };
@@ -23,47 +22,41 @@ const ServiceInCourseRowTable = ({
   data: listServices,
   onRemoved,
 }: rowProps) => {
-  const [services, setServices] = useState<
-    AutoCompleteItemProp<ServiceModel>[]
-  >([]);
-
-  const { data: viewingService } = useQuery<ServiceModel>(
-    ["viewing-service", serviceId],
-    () => {
-      const inList = listServices.find((s) => s.id === serviceId);
-      if (!inList) {
-        throw new Error(`Unable to find service with ID: ${serviceId}`);
-      }
-      return inList;
-    },
-    {
-      onError: (err) => alert(err),
-    }
-  );
+  const [viewingService, setViewingService] = useState<ServiceModel | null>();
 
   useEffect(() => {
-    setServices(toAutoCompleteItems(listServices));
-  }, [listServices]);
-
-  function toAutoCompleteItems(
-    original: ServiceModel[]
-  ): AutoCompleteItemProp<ServiceModel>[] {
-    return original.map((s) => ({
-      value: String(s.id),
-      label: s.name,
-      data: {
-        ...s,
-        description: `${formatPrice(s.price)} VND`,
-      },
-    }));
-  }
+    if (!serviceId || !listServices || listServices.length === 0) {
+      setViewingService(null);
+      return;
+    }
+    const inList = listServices.find((s) => s.data.id === serviceId);
+    if (!inList) {
+      setViewingService(null);
+      console.error(`Unable to find service with ID: ${serviceId}`);
+      return;
+    }
+    setViewingService(inList.data);
+  }, [serviceId, listServices]);
 
   return (
     <tr key={serviceId}>
       <td>{no + 1}</td>
       <td>
+        <div className="aspect-square w-full overflow-hidden rounded shadow-lg">
+          {viewingService && (
+            <Image
+              width={"44px"}
+              height={"44px"}
+              fit={"cover"}
+              src={viewingService.image}
+              alt={viewingService.name}
+            />
+          )}
+        </div>
+      </td>
+      <td>
         <Select
-          data={services}
+          data={listServices}
           placeholder={"service's name..."}
           searchable
           itemComponent={AutoCompleteItem}
@@ -74,7 +67,10 @@ const ServiceInCourseRowTable = ({
           defaultValue={serviceId !== null ? String(serviceId) : null}
         />
       </td>
-      <td>{viewingService?.price}</td>
+      <td>
+        {viewingService && formatTime(viewingService.duration, "minutes")}
+      </td>
+      <td>{viewingService?.price && formatPrice(viewingService.price)}</td>
       <td>
         <ActionIcon onClick={() => onRemoved(no)} color={"red"}>
           <IconX size={18} />

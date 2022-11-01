@@ -1,23 +1,30 @@
 import { FC, useEffect, useState } from "react";
-import { Button, Table } from "@mantine/core";
+import { Button, Table, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
 import { useQuery } from "@tanstack/react-query";
 import mockService from "../../../../mock/service";
 import RowPlaceholderTable from "../../../../components/row-placeholder.table";
 import ServiceInCourseRowTable from "./service-in-course-row.table";
+import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
+import { formatPrice } from "../../../../utilities/fn.helper";
 
 type TableProps = {
-  services: number[];
+  services?: number[];
   onChange: (serviceId: (number | null)[]) => void;
 };
 
 const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
-  const [serviceIds, setServiceIds] = useState<(number | null)[]>(services);
+  const [serviceIds, setServiceIds] = useState<(number | null)[]>(
+    services ?? []
+  );
+  const [listServices, setListServices] = useState<
+    AutoCompleteItemProp<ServiceModel>[]
+  >([]);
 
-  const { data: availableServices, isLoading: serviceDbLoading } = useQuery<
+  const { data: servicesDb, isLoading: serviceDbLoading } = useQuery<
     ServiceModel[]
-  >(["available-services"], async () => mockService(), {
+  >(["available-services"], () => mockService(), {
     refetchOnWindowFocus: false,
   });
 
@@ -37,6 +44,29 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
     setServiceIds(arr);
   }
 
+  function toAutoCompleteItems(
+    original: ServiceModel[],
+    selected: number[]
+  ): AutoCompleteItemProp<ServiceModel>[] {
+    return original.map((s) => ({
+      value: String(s.id),
+      label: s.name,
+      data: {
+        ...s,
+        description: `${formatPrice(s.price)} VND`,
+        disabled: selected.includes(s.id),
+      },
+    }));
+  }
+
+  useEffect(() => {
+    if (!servicesDb) {
+      setListServices([]);
+      return;
+    }
+    setListServices(toAutoCompleteItems(servicesDb, services ?? []));
+  }, [services, servicesDb]);
+
   useEffect(() => {
     onChange(serviceIds);
   }, [serviceIds]);
@@ -45,20 +75,34 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
     <Table className={"table-fixed"}>
       <colgroup>
         <col className={"w-14"} />
+        <col className={"w-16"} />
         <col />
-        <col className={"w-20"} />
+        <col className={"w-32"} />
+        <col className={"w-32"} />
         <col className={"w-14"} />
       </colgroup>
       <thead>
         <tr>
           <th>No.</th>
-          <th>Service Name</th>
-          <th>Price</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>
+            Duration{" "}
+            <Text size={"xs"} color={"dimmed"}>
+              (minutes)
+            </Text>
+          </th>
+          <th>
+            Price{" "}
+            <Text size={"xs"} color={"dimmed"}>
+              (VND)
+            </Text>
+          </th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        {serviceDbLoading || !availableServices ? (
+        {serviceDbLoading ? (
           <RowPlaceholderTable
             colSpan={4}
             className={"min-h-12"}
@@ -77,12 +121,12 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
               onRemoved={removeService}
               onSelected={(i) => onServiceChanged(index, i)}
               serviceId={item}
-              data={availableServices}
+              data={listServices}
             />
           ))
         )}
         <tr className={"border-b"}>
-          <td colSpan={4}>
+          <td colSpan={6}>
             <Button
               onClick={() => addingService()}
               leftIcon={<IconPlus />}

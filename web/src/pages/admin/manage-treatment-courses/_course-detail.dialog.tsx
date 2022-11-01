@@ -291,7 +291,10 @@ const CourseDetailDialog: FC<
               render={({ field }) => (
                 <ServiceInCourseTable
                   services={field.value}
-                  onChange={field.onChange}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    field.onBlur();
+                  }}
                 />
               )}
               name={"services"}
