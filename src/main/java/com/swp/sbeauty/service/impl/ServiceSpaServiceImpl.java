@@ -112,7 +112,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 .collect(Collectors.toList());
 
         List<ServiceDto> result = new ArrayList<>(serviceDto);
-        serviceResponseDto.setServiceDto(result);
+        serviceResponseDto.setData(result);
         serviceResponseDto.setTotalElement(page.getTotalElements());
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setPageIndex(pageNo + 1);
@@ -140,7 +140,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             serviceDtos.add(serviceDto);
         }
 
-        serviceResponseDto.setServiceDto(serviceDtos);
+        serviceResponseDto.setData(serviceDtos);
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setTotalElement(page.getTotalElements());
         serviceResponseDto.setPageIndex(pageNo);

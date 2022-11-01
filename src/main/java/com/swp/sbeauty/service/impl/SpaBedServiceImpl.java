@@ -126,7 +126,7 @@ public class SpaBedServiceImpl implements SpaBedService {
             spaBedDto = mapper.map(spaBed,SpaBedDto.class);
             spaBedDtos.add(spaBedDto);
         }
-        spaBedResponseDto.setSpaBedDtoList(spaBedDtos);
+        spaBedResponseDto.setData(spaBedDtos);
         spaBedResponseDto.setTotalElement(page.getTotalElements());
         spaBedResponseDto.setTotalPage(page.getTotalPages());
         spaBedResponseDto.setPageIndex(pageNo+1);
@@ -146,7 +146,7 @@ public class SpaBedServiceImpl implements SpaBedService {
             spaBedDto = mapper.map(spaBed,SpaBedDto.class);
             spaBedDtos.add(spaBedDto);
         }
-        spaBedResponseDto.setSpaBedDtoList(spaBedDtos);
+        spaBedResponseDto.setData(spaBedDtos);
         spaBedResponseDto.setTotalElement(page.getTotalElements());
         spaBedResponseDto.setTotalPage(page.getTotalPages());
         spaBedResponseDto.setPageIndex(pageNo+1);

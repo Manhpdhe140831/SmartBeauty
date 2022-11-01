@@ -212,7 +212,7 @@ public class ProductServiceImpl implements ProductService {
             productDto = mapper.map(product,ProductDto.class);
             productDtos.add(productDto);
         }
-        productResponseDto.setProductDtoList(productDtos);
+        productResponseDto.setData(productDtos);
         productResponseDto.setTotalElement(page.getTotalElements());
         productResponseDto.setTotalPage(page.getTotalPages());
         productResponseDto.setPageIndex(pageNo+1);
@@ -232,7 +232,7 @@ public class ProductServiceImpl implements ProductService {
             productDto = mapper.map(product,ProductDto.class);
             productDtos.add(productDto);
         }
-        productResponseDto.setProductDtoList(productDtos);
+        productResponseDto.setData(productDtos);
         productResponseDto.setTotalElement(page.getTotalElements());
         productResponseDto.setTotalPage(page.getTotalPages());
         productResponseDto.setPageIndex(pageNo+1);

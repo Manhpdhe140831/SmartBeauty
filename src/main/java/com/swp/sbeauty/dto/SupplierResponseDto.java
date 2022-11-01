@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class SupplierResponseDto {
-    List<SupplierDto> supplierDtoList;
+    List<SupplierDto> data;
     int totalPage;
     int pageIndex;
     long totalElement;

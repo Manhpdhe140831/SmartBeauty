@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class CourseResponseDto {
-    List<CourseDto> courseDto;
+    List<CourseDto> data;
     int totalPage;
     int pageIndex;
     Long totalElement;

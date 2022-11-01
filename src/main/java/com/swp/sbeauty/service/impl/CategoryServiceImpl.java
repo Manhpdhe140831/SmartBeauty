@@ -115,7 +115,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryDto = mapper.map(category,CategoryDto.class);
             categoryDtos.add(categoryDto);
         }
-        categoryResponseDto.setCategoryDtoList(categoryDtos);
+        categoryResponseDto.setData(categoryDtos);
         categoryResponseDto.setTotalElement(page.getTotalElements());
         categoryResponseDto.setTotalPage(page.getTotalPages());
         categoryResponseDto.setPageIndex(pageNo+1);
@@ -136,7 +136,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryDto = mapper.map(category,CategoryDto.class);
             categoryDtos.add(categoryDto);
         }
-        categoryResponseDto.setCategoryDtoList(categoryDtos);
+        categoryResponseDto.setData(categoryDtos);
         categoryResponseDto.setTotalElement(page.getTotalElements());
         categoryResponseDto.setTotalPage(page.getTotalPages());
         categoryResponseDto.setPageIndex(pageNo+1);

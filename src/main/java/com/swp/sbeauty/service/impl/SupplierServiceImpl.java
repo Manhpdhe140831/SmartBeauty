@@ -133,7 +133,7 @@ public class SupplierServiceImpl implements SupplierService {
             supplierDto = mapper.map(supplier,SupplierDto.class);
             supplierDtos.add(supplierDto);
         }
-        supplierResponseDto.setSupplierDtoList(supplierDtos);
+        supplierResponseDto.setData(supplierDtos);
         supplierResponseDto.setTotalElement(page.getTotalElements());
         supplierResponseDto.setTotalPage(page.getTotalPages());
         supplierResponseDto.setPageIndex(pageNo+1);
@@ -153,11 +153,44 @@ public class SupplierServiceImpl implements SupplierService {
             supplierDto = mapper.map(supplier,SupplierDto.class);
             supplierDtos.add(supplierDto);
         }
-        supplierResponseDto.setSupplierDtoList(supplierDtos);
+        supplierResponseDto.setData(supplierDtos);
         supplierResponseDto.setTotalElement(page.getTotalElements());
         supplierResponseDto.setTotalPage(page.getTotalPages());
         supplierResponseDto.setPageIndex(pageNo);
         return supplierResponseDto;
+    }
+
+    @Override
+    public Boolean updateSupplier(Long id, String name, String taxCode, String description, String phone, String email, String address, String image) {
+        Supplier supplier = supplierRepository.getSupplierById(id);
+        if(supplier != null){
+            if(name != null){
+                supplier.setName(name);
+            }
+            if(taxCode != null){
+                supplier.setTaxCode(taxCode);
+            }
+            if(description != null){
+                supplier.setDescription(description);
+            }
+            if(phone != null){
+                supplier.setPhone(phone);
+            }
+            if(email != null){
+                supplier.setEmail(email);
+            }
+            if(address != null){
+                supplier.setAddress(address);
+            }
+            if(image != null){
+                supplier.setImage(image);
+            }
+            supplierRepository.save(supplier);
+            return true;
+        }else {
+            return false;
+        }
+
     }
 
 

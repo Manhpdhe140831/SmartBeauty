@@ -70,7 +70,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(course -> mapper.map(course, CourseDto.class))
                 .collect(Collectors.toList());
         List<CourseDto> result = new ArrayList<>(courseDtos);
-        courseResponseDto.setCourseDto(result);
+        courseResponseDto.setData(result);
         courseResponseDto.setTotalPage(page.getTotalPages());
         courseResponseDto.setTotalElement(page.getTotalElements());
         courseResponseDto.setPageIndex(pageNo + 1);
@@ -91,7 +91,7 @@ public class CourseServiceImpl implements CourseService {
             courseDtos.add(courseDto);
         }
 
-        courseResponseDto.setCourseDto(courseDtos);
+        courseResponseDto.setData(courseDtos);
         courseResponseDto.setTotalPage(page.getTotalPages());
         courseResponseDto.setTotalElement(page.getTotalElements());
         courseResponseDto.setPageIndex(pageNo + 1);

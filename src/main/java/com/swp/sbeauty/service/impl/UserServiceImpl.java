@@ -391,7 +391,7 @@ public Boolean saveUser(UserDto userDto) {
                 }
         );
         List<UserDto> pageResult = new ArrayList<>(dtos);
-        userResponse.setUserResponseDtos(pageResult);
+        userResponse.setData(pageResult);
         userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
         userResponse.setPageIndex(pageNo+1);
@@ -423,7 +423,7 @@ public Boolean saveUser(UserDto userDto) {
                 }
         );
         List<UserDto> pageResult = new ArrayList<>(dtos);
-        userResponse.setUserResponseDtos(pageResult);
+        userResponse.setData(pageResult);
         userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
         userResponse.setPageIndex(pageNo+1);

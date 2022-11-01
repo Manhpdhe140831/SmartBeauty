@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 @Data
 public class CategoryResponseDto {
-    List<CategoryDto> categoryDtoList;
+    List<CategoryDto> data;
     int totalPage;
     int pageIndex;
     long totalElement;

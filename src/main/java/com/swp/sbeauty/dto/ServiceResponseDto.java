@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class ServiceResponseDto {
-    List<ServiceDto> serviceDto;
+    List<ServiceDto> data;
     int totalPage;
     int pageIndex;
     Long totalElement;

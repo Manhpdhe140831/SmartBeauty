@@ -30,7 +30,7 @@ public class SupplierController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
     @PostMapping(value = "/supplier/save", headers="Content-Type=multipart/form-data")
-    public ResponseEntity<?> saveBranch(@RequestParam(value = "name") String name,
+    public ResponseEntity<?> saveSupplier(@RequestParam(value = "name") String name,
                                         @RequestParam(value = "taxCode") String taxCode,
                                         @RequestParam(value = "description") String description,
                                         @RequestParam(value = "phone") String phone,
@@ -46,23 +46,24 @@ public class SupplierController {
         }
 
     }
+    @PostMapping(value = "/supplier/update", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> updateSupplier(@RequestParam(value = "id") Long id,
+                                            @RequestParam(value = "name") String name,
+                                        @RequestParam(value = "taxCode") String taxCode,
+                                        @RequestParam(value = "description") String description,
+                                        @RequestParam(value = "phone") String phone,
+                                        @RequestParam(value = "email") String email,
+                                        @RequestParam(value = "address") String address,
+                                        @RequestParam(value = "image") String image) {
+        String check = supplierService.validateSupplier(name, email, phone);
+        if (check == "") {
+            Boolean result = supplierService.updateSupplier(id,name, taxCode, description, phone, email, address, image);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+    }
 
-    /*@GetMapping("/supplier/getAllSupplier")
-    private APIResponse<Page<Supplier>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false, defaultValue = "") String name
-            , @RequestParam(value = "address", required = false,defaultValue = "") String address
-            , @RequestParam(value = "phone", required = false,defaultValue = "") String phone
-    ){
-        Page<Supplier> suppliersWithPagination;
-        if(name  == "" && address == "" && phone == ""){
-            suppliersWithPagination = supplierService.getAllSupplierPagination(page -1,pageSize);
-        }
-        else {
-            suppliersWithPagination = supplierService.getSupplierPaginationAndSearch(name,address,phone,page -1,pageSize);
-        }
-        return new APIResponse<>(suppliersWithPagination.getSize(),suppliersWithPagination);
-    }*/
     @GetMapping("/supplier")
     private ResponseEntity<?> getSupplierPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize

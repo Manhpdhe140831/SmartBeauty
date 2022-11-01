@@ -14,6 +14,7 @@ public interface SupplierRepository extends JpaRepository<Supplier,Long> {
     Boolean existsByname(String name);
     Boolean existsByEmail(String email);
     Boolean existsByPhone(String phone);
+    Supplier getSupplierById(Long id);
 
     @Query(value = "SELECT b FROM Supplier b where  " +
             "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
