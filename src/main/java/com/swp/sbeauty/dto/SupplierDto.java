@@ -23,7 +23,6 @@ public class SupplierDto {
     @Email
     private String email;
     private String address;
-    private String image;
 
     public SupplierDto() {
     }
@@ -37,7 +36,6 @@ public class SupplierDto {
             this.setPhone(supplier.getPhone());
             this.setEmail(supplier.getEmail());
             this.setAddress(supplier.getAddress());
-            this.setImage(supplier.getImage());
 
         }
 

@@ -47,7 +47,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Boolean saveSupplier(String name, String taxCode, String description, String phone, String email, String address, String image) {
+    public Boolean saveSupplier(String name, String taxCode, String description, String phone, String email, String address) {
         Supplier supplier = new Supplier();
         supplier.setName(name);
         supplier.setTaxCode(taxCode);
@@ -55,7 +55,6 @@ public class SupplierServiceImpl implements SupplierService {
         supplier.setPhone(phone);
         supplier.setEmail(email);
         supplier.setAddress(address);
-        supplier.setImage(image);
         supplierRepository.save(supplier);
         return true;
     }
@@ -92,7 +91,6 @@ public class SupplierServiceImpl implements SupplierService {
                     supplier.setPhone(supplierDto.getPhone());
                     supplier.setEmail(supplierDto.getEmail());
                     supplier.setAddress(supplierDto.getAddress());
-                    supplier.setImage(supplierDto.getImage());
                     supplier = supplierRepository.save(supplier);
                     return new SupplierDto(supplier);
                 } else {
@@ -161,7 +159,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Boolean updateSupplier(Long id, String name, String taxCode, String description, String phone, String email, String address, String image) {
+    public Boolean updateSupplier(Long id, String name, String taxCode, String description, String phone, String email, String address) {
         Supplier supplier = supplierRepository.getSupplierById(id);
         if(supplier != null){
             if(name != null){
@@ -181,9 +179,6 @@ public class SupplierServiceImpl implements SupplierService {
             }
             if(address != null){
                 supplier.setAddress(address);
-            }
-            if(image != null){
-                supplier.setImage(image);
             }
             supplierRepository.save(supplier);
             return true;

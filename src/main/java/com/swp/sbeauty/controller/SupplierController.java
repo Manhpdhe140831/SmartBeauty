@@ -29,17 +29,16 @@ public class SupplierController {
         SupplierDto result = supplierService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @PostMapping(value = "/supplier/save", headers="Content-Type=multipart/form-data")
+    @PostMapping(value = "/supplier/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveSupplier(@RequestParam(value = "name") String name,
                                         @RequestParam(value = "taxCode") String taxCode,
                                         @RequestParam(value = "description") String description,
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "email") String email,
-                                        @RequestParam(value = "address") String address,
-                                        @RequestParam(value = "image") String image){
+                                        @RequestParam(value = "address") String address){
         String check = supplierService.validateSupplier(name, email, phone);
         if(check == ""){
-            Boolean result = supplierService.saveSupplier(name, taxCode, description, phone, email,address,image);
+            Boolean result = supplierService.saveSupplier(name, taxCode, description, phone, email,address);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -53,11 +52,10 @@ public class SupplierController {
                                         @RequestParam(value = "description",required = false) String description,
                                         @RequestParam(value = "phone",required = false) String phone,
                                         @RequestParam(value = "email",required = false) String email,
-                                        @RequestParam(value = "address",required = false) String address,
-                                        @RequestParam(value = "image",required = false) String image) {
+                                        @RequestParam(value = "address",required = false) String address) {
         String check = supplierService.validateSupplier(name, email, phone);
         if (check == "") {
-            Boolean result = supplierService.updateSupplier(id,name, taxCode, description, phone, email, address, image);
+            Boolean result = supplierService.updateSupplier(id,name, taxCode, description, phone, email, address);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

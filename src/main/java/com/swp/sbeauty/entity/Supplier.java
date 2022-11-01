@@ -25,5 +25,4 @@ public class Supplier {
     private String phone;
     private String email;
     private String address;
-    private String image;
 }

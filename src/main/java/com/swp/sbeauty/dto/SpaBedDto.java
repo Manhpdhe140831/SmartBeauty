@@ -18,9 +18,18 @@ public class SpaBedDto {
         if(spaBed != null){
             this.setId(spaBed.getId());
             this.setName(spaBed.getName());
-            if(spaBed.getBranch() != null){
-                branch = new BranchDto(spaBed.getBranch());
-            }
         }
     }
+
+    public SpaBedDto(Long id, String name, BranchDto branch) {
+        this.id = id;
+        this.name = name;
+        this.branch = branch;
+    }
+
+    public SpaBedDto(String name, BranchDto branch) {
+        this.name = name;
+        this.branch = branch;
+    }
+
 }

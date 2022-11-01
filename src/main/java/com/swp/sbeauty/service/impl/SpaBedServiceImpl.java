@@ -1,14 +1,15 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.CategoryDto;
-import com.swp.sbeauty.dto.CategoryResponseDto;
-import com.swp.sbeauty.dto.SpaBedDto;
-import com.swp.sbeauty.dto.SpaBedResponseDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.SpaBed;
+import com.swp.sbeauty.entity.Users;
+import com.swp.sbeauty.entity.mapping.Bed_Branch_Mapping;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.SpaBedRepository;
+import com.swp.sbeauty.repository.UserRepository;
+import com.swp.sbeauty.repository.mappingRepo.SpaBed_Branch_Repository;
 import com.swp.sbeauty.service.SpaBedService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service @Transactional @Slf4j
 public class SpaBedServiceImpl implements SpaBedService {
@@ -29,6 +31,11 @@ public class SpaBedServiceImpl implements SpaBedService {
     private SpaBedRepository spaBedRepository;
     @Autowired
     private BranchRepository branchRepository;
+    @Autowired
+    private SpaBed_Branch_Repository spaBed_branch_repository;
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Override
     public List<SpaBedDto> getBeds() {
@@ -40,78 +47,27 @@ public class SpaBedServiceImpl implements SpaBedService {
         return result;
     }
 
-    @Override
-    public SpaBedDto saveBed(SpaBedDto spaBedDto) {
-        if(spaBedDto != null){
-            SpaBed spaBed = new SpaBed();
-            spaBed.setName(spaBedDto.getName());
-            if(spaBedDto.getBranch()!=null){
-                Branch branch = null;
-                Optional<Branch> optional = branchRepository.findById(spaBedDto.getBranch().getId());
-                if (optional.isPresent()) {
-                    branch = optional.get();
-                }
-                spaBed.setBranch(branch);
-            }
-            spaBed = spaBedRepository.save(spaBed);
-            if(spaBed != null){
-                return new SpaBedDto(spaBed);
-            }
-        }
-        return null;
-    }
+
 
     @Override
     public SpaBedDto getById(Long id) {
         if (id != null) {
             SpaBed entity = spaBedRepository.findById(id).orElse(null);
+            Long idBranch = spaBed_branch_repository.getBranchId(id);
+            Branch branch = branchRepository.getBranchById(idBranch);
+            Users users = userRepository.getManagerFromBranch(idBranch);
             if (entity != null) {
-                return new SpaBedDto(entity);
+                return new SpaBedDto(id, entity.getName()
+                        , new BranchDto(branch.getId(),branch.getName()
+                        , new UserDto(users),branch.getPhone(),branch.getAddress(),branch.getEmail(),branch.getLogo()));
             }
         }
         return null;
     }
 
-    @Override
-    public SpaBedDto updateBed(SpaBedDto spaBedDto, Long id) {
-        if(spaBedDto !=null){
-            SpaBed spaBed = null;
-            if(id !=null){
-                Optional<SpaBed> optional =spaBedRepository.findById(id);
-                if(optional.isPresent()){
-                    spaBed = optional.get();
-                }
-            }
-            if(spaBed != null){
-                spaBed.setName(spaBedDto.getName());
-                if(spaBedDto.getBranch()!=null){
-                    Branch branch = null;
-                    Optional<Branch> optional = branchRepository.findById(spaBedDto.getBranch().getId());
-                    if (optional.isPresent()) {
-                        branch = optional.get();
-                    }
-                    spaBed.setBranch(branch);
-                }
-                spaBed = spaBedRepository.save(spaBed);
-                return new SpaBedDto(spaBed);
-            } else {
-                return null;
-            }
-        }
-        return null;
-    }
 
-    @Override
-    public Page<SpaBed> getAllSpaBedPagination(int offset, int pageSize) {
-        Page<SpaBed> spaBeds =spaBedRepository.findAll(PageRequest.of(offset,pageSize));
-        return spaBeds;
-    }
 
-    @Override
-    public Page<SpaBed> findSpaBedPaginationAndSearch(int offset, int pageSize, String name) {
-        Page<SpaBed> spaBeds =spaBedRepository.searchListWithField(name,PageRequest.of(offset,pageSize));
-        return spaBeds;
-    }
+
 
     @Override
     public SpaBedResponseDto getSpaBedAndSearch(String name, int pageNo, int pageSize) {
@@ -120,13 +76,24 @@ public class SpaBedServiceImpl implements SpaBedService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<SpaBed> page = spaBedRepository.searchListWithField(name,pageable);
         List<SpaBed> spaBeds = page.getContent();
-        List<SpaBedDto> spaBedDtos = new ArrayList<>();
+        /*List<SpaBedDto> spaBedDtos = new ArrayList<>();
         for (SpaBed spaBed : spaBeds){
             SpaBedDto spaBedDto = new SpaBedDto();
             spaBedDto = mapper.map(spaBed,SpaBedDto.class);
             spaBedDtos.add(spaBedDto);
-        }
-        spaBedResponseDto.setData(spaBedDtos);
+        }*/
+        List<SpaBedDto> dtos = page
+                .stream()
+                .map(spaBed -> mapper.map(spaBed, SpaBedDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    Branch branch = branchRepository.getBranchFromSpaBed(f.getId());
+                    f.setBranch(new BranchDto(branch));
+                }
+        );
+        List<SpaBedDto> pageResult = new ArrayList<>(dtos);
+        spaBedResponseDto.setData(pageResult);
         spaBedResponseDto.setTotalElement(page.getTotalElements());
         spaBedResponseDto.setTotalPage(page.getTotalPages());
         spaBedResponseDto.setPageIndex(pageNo+1);
@@ -151,5 +118,43 @@ public class SpaBedServiceImpl implements SpaBedService {
         spaBedResponseDto.setTotalPage(page.getTotalPages());
         spaBedResponseDto.setPageIndex(pageNo+1);
         return spaBedResponseDto;
+    }
+
+    @Override
+    public String validateSpaBed(String name) {
+        String result = "";
+        if(spaBedRepository.existsByName(name)){
+            result += "Name already exists in data, ";
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean saveSpaBed(String name, Long branch) {
+        SpaBed spaBed = new SpaBed();
+        spaBed.setName(name);
+        spaBed = spaBedRepository.save(spaBed);
+        Bed_Branch_Mapping bed_branch_mapping = new Bed_Branch_Mapping(spaBed.getId(), branch);
+        spaBed_branch_repository.save(bed_branch_mapping);
+        return true;
+    }
+
+    @Override
+    public Boolean updateSpaBed(Long id, String name, Long branch) {
+        SpaBed spaBed = new SpaBed();
+        if(spaBed != null){
+            if(name != null){
+                spaBed.setName(name);
+            }
+            if(branch !=null){
+                Bed_Branch_Mapping bed_branch_old = spaBed_branch_repository.getSpaBedByBranch(id);
+                spaBed_branch_repository.delete(bed_branch_old);
+                Bed_Branch_Mapping bed_branch_mapping = new Bed_Branch_Mapping(id,branch);
+                spaBed_branch_repository.save(bed_branch_mapping);
+            }
+            return true;
+        }else {
+            return false;
+        }
     }
 }

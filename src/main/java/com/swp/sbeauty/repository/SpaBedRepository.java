@@ -11,4 +11,6 @@ public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
     @Query(value = "SELECT b FROM SpaBed b where  " +
             "b.name like %?1%")
     public Page<SpaBed> searchListWithField(String key, Pageable pageable);
+
+    Boolean existsByName(String name);
 }

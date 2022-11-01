@@ -24,35 +24,12 @@ public class SpaBedController {
     @Autowired
     private SpaBedService spaBedService;
 
-    @PostMapping("/bed/save")
-    public ResponseEntity<SpaBedDto> saveBed(@RequestBody SpaBedDto spaBedDto){
-        SpaBedDto result = spaBedService.saveBed(spaBedDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-    @PutMapping ("/bed/updateSpaBed")
-    public ResponseEntity<SpaBedDto> updateBed(@RequestBody SpaBedDto spaBedDto, @RequestParam(value = "id",required = false) Long id) {
-        SpaBedDto result = spaBedService.updateBed(spaBedDto, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @GetMapping("/bed/getById")
     public ResponseEntity<SpaBedDto> getSpaBedById(@RequestParam(value = "id",required = false) Long id) {
         SpaBedDto result = spaBedService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/bed/getAllBed")
-    private APIResponse<Page<SpaBed>> getSpaBedWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false,defaultValue = "") String name){
-        Page<SpaBed> spaBedsWithPagination;
-        if(name  == "" ||name == null){
-            spaBedsWithPagination = spaBedService.getAllSpaBedPagination(page -1,pageSize);
-        }
-        else {
-            spaBedsWithPagination = spaBedService.findSpaBedPaginationAndSearch(page -1,pageSize,name);
-        }
-        return new APIResponse<>(spaBedsWithPagination.getSize(),spaBedsWithPagination);
-    }
+
 
     @GetMapping("/bed")
     private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
@@ -67,6 +44,31 @@ public class SpaBedController {
             SpaBedResponseDto spaBedResponseDto = spaBedService.getSpaBedAndSearch(name,page -1,pageSize);
             return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
         }
+    }
+    @PostMapping(value = "/bed/save", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> saveBed(@RequestParam(value = "name") String name,
+                                        @RequestParam(value = "branch") Long branch){
+        String check = spaBedService.validateSpaBed(name);
+        if(check == ""){
+            Boolean result = spaBedService.saveSpaBed(name, branch);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+    @PutMapping ("/bed/update")
+    public ResponseEntity<?> updateBed(@RequestParam(value = "id") Long id,
+                                          @RequestParam(value = "name", required = false) String name,
+                                          @RequestParam(value = "branch", required = false) Long branch){
+        String check = spaBedService.validateSpaBed(name);
+        if(check == ""){
+            Boolean result = spaBedService.updateSpaBed(id, name, branch);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }

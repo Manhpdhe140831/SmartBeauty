@@ -11,7 +11,7 @@ import java.util.List;
 public interface SupplierService {
     List<SupplierDto> getSupplier();
     SupplierDto getById(Long id);
-    Boolean saveSupplier(String name, String taxCode,String description,String phone,String email, String address, String image);
+    Boolean saveSupplier(String name, String taxCode,String description,String phone,String email, String address);
 
     SupplierDto updateSupplier(SupplierDto supplierDto, Long id);
     Page<Supplier> getAllSupplierPagination(int offset,int pageSize);
@@ -19,5 +19,5 @@ public interface SupplierService {
     String validateSupplier(String name, String email, String address);
     SupplierResponseDto getSupplierAndSearch(String name, String address, String phone, int pageNo, int pageSize);
     SupplierResponseDto getAllSupplier(int pageNo,int pageSize);
-    Boolean updateSupplier(Long id, String name, String taxCode,String description,String phone,String email, String address, String image);
+    Boolean updateSupplier(Long id, String name, String taxCode,String description,String phone,String email, String address);
 }
