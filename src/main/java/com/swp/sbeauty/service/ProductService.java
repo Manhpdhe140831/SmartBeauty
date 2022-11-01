@@ -1,8 +1,6 @@
 package com.swp.sbeauty.service;
 
-import com.swp.sbeauty.dto.ProductDto;
-import com.swp.sbeauty.dto.SupplierDto;
-import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.Product;
@@ -20,4 +18,6 @@ public interface ProductService {
     ProductDto updateProduct(ProductDto productDto, Long id);
     Page<Product> getAllProductPagination(int offset, int pageSize);
     Page<Product> findProductPaginationAndSearch(String name,int offset,int pageSize);
+    ProductResponseDto getProductAndSearchByName(String name, int pageNo, int pageSize);
+    ProductResponseDto getAllProduct(int pageNo,int pageSize);
 }

@@ -4,6 +4,7 @@ import com.swp.sbeauty.dto.*;
 
 import java.util.*;
 
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User_Branch_Mapping;
 import com.swp.sbeauty.entity.Users;
@@ -378,17 +379,18 @@ public Boolean saveUser(UserDto userDto) {
             userResponseDto = mapper.map(users1,UserResponseDto.class);
             userResponseDtos.add(userResponseDto);
         }*/
-        List<UserResponseDto> dtos = users
+        List<UserDto> dtos = page
                 .stream()
-                .map(user -> mapper.map(user, UserResponseDto.class))
+                .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
         dtos.stream().forEach(f->
                 {
+                    f.setPassword("");
                     f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
                     f.setRoles(null);
                 }
         );
-        List<UserResponseDto> pageResult = new ArrayList<>(dtos);
+        List<UserDto> pageResult = new ArrayList<>(dtos);
         userResponse.setUserResponseDtos(pageResult);
         userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
@@ -403,15 +405,28 @@ public Boolean saveUser(UserDto userDto) {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Users> page = userRepository.getAllUserByAdmin(pageable);
         List<Users> users = page.getContent();
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+        /*List<UserDto> userDtos = new ArrayList<>();
         for (Users users1 : users){
-            UserResponseDto userResponseDto = new UserResponseDto();
-            userResponseDto = mapper.map(users1,UserResponseDto.class);
-            userResponseDtos.add(userResponseDto);
-        }
-        userResponse.setUserResponseDtos(userResponseDtos);
+            UserDto userDto = new UserDto();
+            userDto = mapper.map(users1,UserDto.class);
+            userDtos.add(userDto);
+        }*/
+        List<UserDto> dtos = page
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    f.setPassword("");
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        List<UserDto> pageResult = new ArrayList<>(dtos);
+        userResponse.setUserResponseDtos(pageResult);
+        userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
-        userResponse.setPageIndex(pageNo);
+        userResponse.setPageIndex(pageNo+1);
         return userResponse;
     }
 

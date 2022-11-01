@@ -30,9 +30,11 @@ public interface UserRepository extends JpaRepository<Users,Long> {
 
 //select * from users join user_role on users.id = user_role.user_id  where user_role.role_id = 2 or user_role.role_id =3
     //select * from users  , user_role  where users.id = user_role.user_id and user_role.role_id = 2 or user_role.role_id =3
-    @Query(value = "select u.* from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3 ORDER BY ?#{#pageable}",
+    /*@Query(value = "select u.* from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3 ORDER BY ?#{#pageable}",
             countQuery = "select count(*) from users as u join user_role as ur on u.id = ur.user_id where ur.role_id = 2 or ur.role_id = 3"
             ,nativeQuery = true)
+    Page<Users> getAllUserByAdmin( Pageable pageable);*/
+    @Query(value = "select u.* from `users` as u , `user_role` as ur where ur.role_id != 1 and u.id = ur.user_id",nativeQuery = true)
     Page<Users> getAllUserByAdmin( Pageable pageable);
 
     @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1 ORDER BY ?#{#pageable}",
@@ -44,8 +46,11 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     Integer getIdUserByEmail(String email);
 //    @Query(value = "select u from User u inner join branch_user  b ON  u.id = b.user_id where u.name = ?1")
 //    List<User> getListByBranch(String branchId);
-    @Query(value = "select * from sbeauty.user as u \n" +
+    /*@Query(value = "select * from sbeauty.user as u \n" +
             "inner join sbeauty.branch_user as bu on u.id = bu.user_id where bu.branch_id = ?1", nativeQuery = true)
+    List<Users> getListByBranch(Long branchId);*/
+
+    @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1", nativeQuery = true)
     List<Users> getListByBranch(Long branchId);
 
     @Query(value = "select a.* from users a, user_role c where a.id = c.user_id and c.role_id=2 and not exists \n" +

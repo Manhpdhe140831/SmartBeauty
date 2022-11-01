@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query(value = "SELECT b FROM Product b where  " +
-            "b.name like %?2%")
+            "b.name like %?1%")
     public Page<Product> searchListWithField(String key, Pageable pageable);
 
     @Query(value = "SELECT p FROM Product p join Service_Product_mapping spm ON p.id = spm.product_id where spm.service_id =?1")

@@ -37,12 +37,12 @@ public class CategoryController {
         CategoryDto result = categoryService.saveCategory(categoryDto);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @PutMapping ("/category/updateCategory")
+    @PutMapping ("/category/update")
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @RequestParam(value = "id",required = false) Long id){
         CategoryDto result = categoryService.updateCategory(categoryDto, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/category/getAllCategory")
+    /*@GetMapping("/category/getAllCategory")
     private APIResponse<Page<Category>> getCategoryWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false,defaultValue = "") String name){
@@ -54,7 +54,7 @@ public class CategoryController {
             categoriesWithPagination = categoryService.findCategoryPaginationAndSearch(page -1,pageSize,name);
         }
         return new APIResponse<>(categoriesWithPagination.getSize(),categoriesWithPagination);
-    }
+    }*/
     @GetMapping("/category")
     private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize

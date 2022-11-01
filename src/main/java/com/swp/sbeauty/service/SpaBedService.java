@@ -1,7 +1,9 @@
 package com.swp.sbeauty.service;
 
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.dto.CategoryResponseDto;
 import com.swp.sbeauty.dto.SpaBedDto;
+import com.swp.sbeauty.dto.SpaBedResponseDto;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.SpaBed;
 import org.springframework.data.domain.Page;
@@ -15,4 +17,6 @@ public interface SpaBedService {
     SpaBedDto updateBed(SpaBedDto spaBedDto, Long id);
     Page<SpaBed> getAllSpaBedPagination(int offset, int pageSize);
     Page<SpaBed> findSpaBedPaginationAndSearch(int offset,int pageSize,String name);
+    SpaBedResponseDto getSpaBedAndSearch(String name, int pageNo, int pageSize);
+    SpaBedResponseDto getAllSpaBed(int pageNo,int pageSize);
 }

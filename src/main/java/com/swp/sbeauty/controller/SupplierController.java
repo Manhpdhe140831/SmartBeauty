@@ -50,7 +50,7 @@ public class SupplierController {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/supplier/getAllSupplier")
+    /*@GetMapping("/supplier/getAllSupplier")
     private APIResponse<Page<Supplier>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false, defaultValue = "") String name
@@ -65,7 +65,7 @@ public class SupplierController {
             suppliersWithPagination = supplierService.getSupplierPaginationAndSearch(name,address,phone,page -1,pageSize);
         }
         return new APIResponse<>(suppliersWithPagination.getSize(),suppliersWithPagination);
-    }
+    }*/
     @GetMapping("/supplier")
     private ResponseEntity<?> getSupplierPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize

@@ -138,7 +138,7 @@ public class UserController {
         return new ResponseEntity<>(list, (list != null) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
     @GetMapping("/user")
-    private ResponseEntity<?> getAllUserByAuthor(@RequestParam(value = "page",required = false,defaultValue = "0") int page
+    private ResponseEntity<?> getAllUserByAuthor(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestHeader("Authorization") String authHeader){
         Page<UserDto> getAllUser;
@@ -146,10 +146,10 @@ public class UserController {
         String role = temp.get("role").toString();
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
         if (role.equalsIgnoreCase("admin")){
-            UserResponse userResponse = userService.getAllUser(page,pageSize);
+            UserResponse userResponse = userService.getAllUser(page-1,pageSize);
             return new ResponseEntity<>(userResponse,HttpStatus.OK);
         }else if(role.equalsIgnoreCase("manager")){
-            UserResponse userResponse = userService.getUserByManager(idcheck,page,pageSize);
+            UserResponse userResponse = userService.getUserByManager(idcheck,page-1,pageSize);
             return new ResponseEntity<>(userResponse,HttpStatus.OK);
         }else{
             getAllUser = userService.getAllUsers(page ,pageSize);

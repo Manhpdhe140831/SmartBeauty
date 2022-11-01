@@ -1,7 +1,9 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.CategoryDto;
+import com.swp.sbeauty.dto.CategoryResponseDto;
 import com.swp.sbeauty.dto.SpaBedDto;
+import com.swp.sbeauty.dto.SpaBedResponseDto;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.SpaBed;
@@ -9,9 +11,11 @@ import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.SpaBedRepository;
 import com.swp.sbeauty.service.SpaBedService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -107,5 +111,45 @@ public class SpaBedServiceImpl implements SpaBedService {
     public Page<SpaBed> findSpaBedPaginationAndSearch(int offset, int pageSize, String name) {
         Page<SpaBed> spaBeds =spaBedRepository.searchListWithField(name,PageRequest.of(offset,pageSize));
         return spaBeds;
+    }
+
+    @Override
+    public SpaBedResponseDto getSpaBedAndSearch(String name, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        SpaBedResponseDto spaBedResponseDto = new SpaBedResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<SpaBed> page = spaBedRepository.searchListWithField(name,pageable);
+        List<SpaBed> spaBeds = page.getContent();
+        List<SpaBedDto> spaBedDtos = new ArrayList<>();
+        for (SpaBed spaBed : spaBeds){
+            SpaBedDto spaBedDto = new SpaBedDto();
+            spaBedDto = mapper.map(spaBed,SpaBedDto.class);
+            spaBedDtos.add(spaBedDto);
+        }
+        spaBedResponseDto.setSpaBedDtoList(spaBedDtos);
+        spaBedResponseDto.setTotalElement(page.getTotalElements());
+        spaBedResponseDto.setTotalPage(page.getTotalPages());
+        spaBedResponseDto.setPageIndex(pageNo+1);
+        return spaBedResponseDto;
+    }
+
+    @Override
+    public SpaBedResponseDto getAllSpaBed(int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        SpaBedResponseDto spaBedResponseDto = new SpaBedResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<SpaBed> page = spaBedRepository.findAll(pageable);
+        List<SpaBed> spaBeds = page.getContent();
+        List<SpaBedDto> spaBedDtos = new ArrayList<>();
+        for (SpaBed spaBed : spaBeds){
+            SpaBedDto spaBedDto = new SpaBedDto();
+            spaBedDto = mapper.map(spaBed,SpaBedDto.class);
+            spaBedDtos.add(spaBedDto);
+        }
+        spaBedResponseDto.setSpaBedDtoList(spaBedDtos);
+        spaBedResponseDto.setTotalElement(page.getTotalElements());
+        spaBedResponseDto.setTotalPage(page.getTotalPages());
+        spaBedResponseDto.setPageIndex(pageNo+1);
+        return spaBedResponseDto;
     }
 }

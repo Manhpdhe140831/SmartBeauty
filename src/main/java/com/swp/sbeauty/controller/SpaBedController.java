@@ -1,9 +1,7 @@
 package com.swp.sbeauty.controller;
 
 
-import com.swp.sbeauty.dto.CategoryDto;
-import com.swp.sbeauty.dto.SpaBedDto;
-import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.SpaBed;
@@ -11,6 +9,8 @@ import com.swp.sbeauty.service.SpaBedService;
 import com.swp.sbeauty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +52,21 @@ public class SpaBedController {
             spaBedsWithPagination = spaBedService.findSpaBedPaginationAndSearch(page -1,pageSize,name);
         }
         return new APIResponse<>(spaBedsWithPagination.getSize(),spaBedsWithPagination);
+    }
+
+    @GetMapping("/bed")
+    private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam(value = "name", required = false,defaultValue = "") String name){
+        Pageable p = PageRequest.of(page,pageSize);
+        if(name  == "" ||name == null){
+            SpaBedResponseDto spaBedResponseDto = spaBedService.getAllSpaBed(page -1,pageSize);
+            return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
+        }
+        else {
+            SpaBedResponseDto spaBedResponseDto = spaBedService.getSpaBedAndSearch(name,page -1,pageSize);
+            return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
+        }
     }
 
 }

@@ -1,9 +1,6 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.ProductDto;
-import com.swp.sbeauty.dto.SupplierDto;
-import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.CategoryRepository;
@@ -11,9 +8,11 @@ import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -198,6 +197,46 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> findProductPaginationAndSearch(String name,int offset, int pageSize) {
         Page<Product> products =productRepository.searchListWithField(name,PageRequest.of(offset,pageSize));
         return products;
+    }
+
+    @Override
+    public ProductResponseDto getProductAndSearchByName(String name, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        ProductResponseDto productResponseDto = new ProductResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Product> page = productRepository.searchListWithField(name,pageable);
+        List<Product> products = page.getContent();
+        List<ProductDto> productDtos = new ArrayList<>();
+        for (Product product : products){
+            ProductDto productDto = new ProductDto();
+            productDto = mapper.map(product,ProductDto.class);
+            productDtos.add(productDto);
+        }
+        productResponseDto.setProductDtoList(productDtos);
+        productResponseDto.setTotalElement(page.getTotalElements());
+        productResponseDto.setTotalPage(page.getTotalPages());
+        productResponseDto.setPageIndex(pageNo+1);
+        return productResponseDto;
+    }
+
+    @Override
+    public ProductResponseDto getAllProduct(int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        ProductResponseDto productResponseDto = new ProductResponseDto();
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Product> page = productRepository.findAll(pageable);
+        List<Product> products = page.getContent();
+        List<ProductDto> productDtos = new ArrayList<>();
+        for (Product product : products){
+            ProductDto productDto = new ProductDto();
+            productDto = mapper.map(product,ProductDto.class);
+            productDtos.add(productDto);
+        }
+        productResponseDto.setProductDtoList(productDtos);
+        productResponseDto.setTotalElement(page.getTotalElements());
+        productResponseDto.setTotalPage(page.getTotalPages());
+        productResponseDto.setPageIndex(pageNo+1);
+        return productResponseDto;
     }
 
 
