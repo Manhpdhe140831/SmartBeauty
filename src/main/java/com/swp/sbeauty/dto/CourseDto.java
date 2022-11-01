@@ -37,6 +37,8 @@ public class CourseDto {
     private String description;
     private List<ServiceDto> service;
 
+    private boolean deleted;
+
 
     public CourseDto(Course course) {
         this.setId(course.getId());
@@ -49,6 +51,8 @@ public class CourseDto {
         this.setDiscountPercent(course.getDiscountPercent());
         this.setImage(course.getImage());
         this.setDescription(course.getDescription());
+        this.setDeleted(course.isDeleted());
+
     }
 
     public long getId() {
@@ -70,6 +74,14 @@ public class CourseDto {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void setName(String name) {
@@ -161,6 +173,7 @@ public class CourseDto {
             this.setDiscountPercent(course.getDiscountPercent());
             this.setImage(course.getImage());
             this.setDescription(course.getDescription());
+            this.setDeleted(course.isDeleted());
         }
         this.setService(listService);
 

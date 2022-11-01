@@ -33,6 +33,7 @@ public class Course {
     private double discountPercent;
     private String image;
     private String description;
+    private boolean deleted;
 
 
 
