@@ -4,7 +4,7 @@ import { shuffleArray } from "../utilities/fn.helper";
 const services: ServiceModel[] = [
   {
     id: 1,
-    nameService: "SENNOSIDES",
+    name: "SENNOSIDES",
     description: "Indeterminate stage glaucoma",
     duration: 42,
     image: "http://dummyimage.com/129x149.png/5fa2dd/ffffff",
@@ -16,7 +16,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 2,
-    nameService: "DIPHENHYDRAMINE HYDROCHLORIDE",
+    name: "DIPHENHYDRAMINE HYDROCHLORIDE",
     description:
       "Abdominal or pelvic swelling, mass, or lump, right upper quadrant",
     duration: 68,
@@ -29,7 +29,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 3,
-    nameService: "Triclosan",
+    name: "Triclosan",
     description: "Deep vascularization of cornea",
     duration: 78,
     image: "http://dummyimage.com/197x207.png/5fa2dd/ffffff",
@@ -41,7 +41,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 4,
-    nameService: "SIMETHICONE",
+    name: "SIMETHICONE",
     description: "Hereditary optic atrophy",
     duration: 51,
     image: "http://dummyimage.com/243x106.png/dddddd/000000",
@@ -53,7 +53,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 5,
-    nameService: "Losartan Potassium and Hydrochlorothiazide",
+    name: "Losartan Potassium and Hydrochlorothiazide",
     description: "Dizziness and giddiness",
     duration: 4,
     image: "http://dummyimage.com/159x205.png/5fa2dd/ffffff",
@@ -65,7 +65,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 6,
-    nameService: "CELECOXIB",
+    name: "CELECOXIB",
     description: "Other specified acquired deformity of head",
     duration: 57,
     image: "http://dummyimage.com/234x188.png/ff4444/ffffff",
@@ -77,7 +77,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 7,
-    nameService: "Calcium Acetate",
+    name: "Calcium Acetate",
     description:
       "Late effect of injury to nerve root(s), spinal plexus(es), and other nerves of trunk",
     duration: 32,
@@ -95,7 +95,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 8,
-    nameService: "methylphenidate hydrochloride",
+    name: "methylphenidate hydrochloride",
     description: "Toxic effect of unspecified noxious substance eaten as food",
     duration: 100,
     image: "http://dummyimage.com/115x200.png/cc0000/ffffff",
@@ -107,7 +107,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 9,
-    nameService: "omeprazole",
+    name: "omeprazole",
     description:
       "Other disorders of lactation, postpartum condition or complication",
     duration: 2,
@@ -120,7 +120,7 @@ const services: ServiceModel[] = [
   },
   {
     id: 10,
-    nameService: "SODIUM MONOFLUOROPHOSPHATE",
+    name: "SODIUM MONOFLUOROPHOSPHATE",
     description: "Complications of reattached forearm",
     duration: 19,
     image: "http://dummyimage.com/228x182.png/5fa2dd/ffffff",

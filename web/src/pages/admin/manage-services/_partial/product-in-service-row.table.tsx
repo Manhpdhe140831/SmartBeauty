@@ -44,7 +44,7 @@ const ProductInServiceRowTable = ({
   const [products, setProducts] = useState<ProductModel[]>([]);
 
   const { data: availableProducts, isLoading: productLoading } = useQuery<
-    AutoCompleteItemProp[]
+    AutoCompleteItemProp<ProductModel>[]
   >(
     ["available-product"],
     async () => {
@@ -55,8 +55,8 @@ const ProductInServiceRowTable = ({
         value: String(p.id),
         label: p.name,
         data: {
+          ...p,
           description: `${formatPrice(p.price)} VND`,
-          image: p.image,
         },
       }));
     },
@@ -103,7 +103,7 @@ const ProductInServiceRowTable = ({
               data={
                 !availableProducts || productLoading ? [] : availableProducts
               }
-              placeholder={"product's manager name..."}
+              placeholder={"product's name..."}
               searchable
               itemComponent={AutoCompleteItem}
               nothingFound="No options"

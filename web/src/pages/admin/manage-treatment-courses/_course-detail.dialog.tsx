@@ -3,12 +3,14 @@ import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import { CourseModel, CourseUpdateEntity } from "../../../model/course.model";
 import {
   Divider,
+  Image as MantineImage,
   Modal,
   NumberInput,
+  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import DialogDetailAction from "../../../components/dialog-detail-action";
 import FormErrorMessage from "../../../components/form-error-message";
 import { DatePicker } from "@mantine/dates";
@@ -17,6 +19,14 @@ import { IconPercentage } from "@tabler/icons";
 import { getCourseModelSchema } from "../../../validation/course.schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import BtnSingleUploader from "../../../components/btn-single-uploader";
+import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
+import { MAX_PRICE } from "../../../const/_const";
+import {
+  formatterNumberInput,
+  parserNumberInput,
+} from "../../../utilities/fn.helper";
+import ServiceInCourseTable from "./_partial/service-in-course.table";
 
 const CourseDetailDialog: FC<
   DialogProps<CourseModel, CourseUpdateEntity, CourseUpdateEntity>
@@ -47,21 +57,6 @@ const CourseDetailDialog: FC<
             discountPercent: data.discountPercent ?? null,
           }
         : undefined,
-  });
-
-  const {
-    fields: servicesArray,
-    append,
-    update,
-    remove,
-  } = useFieldArray<
-    z.infer<typeof validateSchema> & {
-      services: z.ZodArray<z.ZodNumber, "atleastone">;
-    },
-    "services"
-  >({
-    control,
-    name: "services",
   });
 
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
@@ -194,6 +189,114 @@ const CourseDetailDialog: FC<
               )}
             ></Controller>
             <FormErrorMessage errors={errors} name={"discountPercent"} />
+          </div>
+
+          <Divider mx={16} orientation={"vertical"} />
+
+          <div className="flex w-48 flex-col">
+            <label
+              htmlFor="file"
+              className="text-[14px] font-[500] text-gray-900"
+            >
+              Course Image <span className="text-red-500">*</span>
+            </label>
+            <small className="mb-1 text-[12px] leading-tight text-gray-400">
+              The image must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP
+              format.
+            </small>
+            <Controller
+              name={"image"}
+              control={control}
+              render={({ field }) => (
+                <BtnSingleUploader
+                  accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                  onChange={(f) => {
+                    field.onChange(f);
+                    field.onBlur();
+                  }}
+                  btnPosition={"after"}
+                  btnTitle={"Upload Image"}
+                  render={(f) => (
+                    <>
+                      {f && (
+                        <Text size="xs" align="left">
+                          Picked file: {f.name}
+                        </Text>
+                      )}
+                      <MantineImage
+                        width={128}
+                        height={128}
+                        radius="md"
+                        src={
+                          f ? URL.createObjectURL(f) : (field.value as string)
+                        }
+                        alt="Course image"
+                        className="mb-2 select-none rounded-lg border object-cover shadow-xl"
+                      />
+                    </>
+                  )}
+                />
+              )}
+            />
+            <FormErrorMessage
+              className={"text-sm"}
+              errors={errors}
+              name={"image"}
+            />
+
+            <Controller
+              name={"price"}
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  placeholder={"price of the course..."}
+                  hideControls
+                  min={0}
+                  max={MAX_PRICE}
+                  label={
+                    <label
+                      htmlFor="file"
+                      className="text-[14px] font-[500] text-gray-900"
+                    >
+                      Course Price <span className="text-red-500">*</span>
+                    </label>
+                  }
+                  defaultValue={field.value}
+                  onChange={(v) => field.onChange(v)}
+                  onBlur={field.onBlur}
+                  size={"lg"}
+                  parser={parserNumberInput}
+                  formatter={formatterNumberInput}
+                  rightSection={<span className={"text-xs"}>VND</span>}
+                />
+              )}
+            ></Controller>
+            <FormErrorMessage errors={errors} name={"price"} />
+          </div>
+
+          <div className="mt-4 flex w-full flex-col">
+            <Divider my={8} />
+            <h2
+              className={
+                "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
+              }
+            >
+              Products
+              <small className={"block w-full text-xs text-gray-400"}>
+                Product included in the service
+              </small>
+            </h2>
+
+            <Controller
+              render={({ field }) => (
+                <ServiceInCourseTable
+                  services={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+              name={"services"}
+              control={control}
+            />
           </div>
 
           <div className="mt-4 flex w-full justify-end">

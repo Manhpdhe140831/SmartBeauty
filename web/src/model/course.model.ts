@@ -4,7 +4,6 @@ import { ServiceModel } from "./service.model";
 export interface CourseModel<serviceType extends number | ServiceModel = number>
   extends BasePriceModel {
   id: number;
-  courseCode?: string;
   name: string;
   // the amount of time to use the course per purchase.
   timeOfUse: number;

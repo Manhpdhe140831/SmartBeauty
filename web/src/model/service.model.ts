@@ -5,7 +5,7 @@ export interface ServiceModel<
   productType extends number | ProductModel = number
 > extends BasePriceModel {
   id: number;
-  nameService: string;
+  name: string;
   description: string;
   duration: number;
   image?: string;

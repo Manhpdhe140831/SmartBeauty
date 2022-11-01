@@ -69,7 +69,6 @@ const ServiceDetailDialog: FC<
   const {
     fields: productsArray,
     append,
-    update,
     remove,
   } = useFieldArray({
     control,
@@ -119,12 +118,8 @@ const ServiceDetailDialog: FC<
             >
               Information
             </h2>
-            <TextInput
-              required
-              label={"Service Name"}
-              {...register("nameService")}
-            />
-            <FormErrorMessage errors={errors} name={"nameService"} />
+            <TextInput required label={"Service Name"} {...register("name")} />
+            <FormErrorMessage errors={errors} name={"name"} />
 
             <Textarea
               required
@@ -319,7 +314,7 @@ const ServiceDetailDialog: FC<
                     register={register}
                   />
                 ))}
-                <tr className={'border-b'}>
+                <tr className={"border-b"}>
                   <td colSpan={7}>
                     <Button
                       onClick={() =>

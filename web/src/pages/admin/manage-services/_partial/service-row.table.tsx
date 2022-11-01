@@ -14,9 +14,9 @@ const ServiceRowTable: FC<DataRowProps<ServiceModel>> = ({
       <tr onClick={() => onClick(data)} className={"cursor-pointer"}>
         <td className={"text-center"}>{no}</td>
         <td className={"font-semibold"}>
-          <Tooltip label={data.nameService}>
+          <Tooltip label={data.name}>
             <Text size={"md"} className={"line-clamp-2"}>
-              {data.nameService}
+              {data.name}
             </Text>
           </Tooltip>
         </td>
