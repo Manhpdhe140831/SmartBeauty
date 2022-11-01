@@ -1,14 +1,11 @@
 import { FC, useEffect, useState } from "react";
-import { ActionIcon, Button, Select, Table } from "@mantine/core";
-import { IconPlus, IconX } from "@tabler/icons";
+import { Button, Table } from "@mantine/core";
+import { IconPlus } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
 import { useQuery } from "@tanstack/react-query";
 import mockService from "../../../../mock/service";
 import RowPlaceholderTable from "../../../../components/row-placeholder.table";
-import { formatPrice } from "../../../../utilities/fn.helper";
-import AutoCompleteItem, {
-  AutoCompleteItemProp,
-} from "../../../../components/auto-complete-item";
+import ServiceInCourseRowTable from "./service-in-course-row.table";
 
 type TableProps = {
   services: number[];
@@ -16,68 +13,33 @@ type TableProps = {
 };
 
 const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
-  const [displayServices, setDisplayServices] = useState<
-    (ServiceModel | null)[]
-  >([]);
-  const [serviceId, setServiceId] = useState<(number | null)[]>(services);
+  const [serviceIds, setServiceIds] = useState<(number | null)[]>(services);
 
   const { data: availableServices, isLoading: serviceDbLoading } = useQuery<
-    AutoCompleteItemProp<ServiceModel>[]
-  >(
-    ["available-services"],
-    async () => {
-      const p = await mockService();
-      return p.map((p) => ({
-        // add fields of SelectItemGeneric
-        value: String(p.id),
-        label: p.name,
-        data: {
-          ...p,
-          description: `${formatPrice(p.price)} VND`,
-        },
-      }));
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
-
-  const { data, isLoading } = useQuery(
-    ["course-services", services],
-    () => getServices(services),
-    {
-      onSuccess: (data) => setDisplayServices(data),
-      refetchOnWindowFocus: false,
-    }
-  );
-
-  async function getServices(idList: number[]) {
-    const fromServer = await mockService();
-    return fromServer.filter((s) => idList.includes(s.id));
-  }
-
-  async function getServiceById(id: number | null, fromList: ServiceModel[]) {
-    if (id === null) {
-      return undefined;
-    }
-    return fromList.find((p) => p.id === id);
-  }
+    ServiceModel[]
+  >(["available-services"], async () => mockService(), {
+    refetchOnWindowFocus: false,
+  });
 
   function addingService() {
-    setDisplayServices((existing) => [...existing, null]);
+    setServiceIds((existing) => [...existing, null]);
   }
 
   function removeService(atIndex: number) {
-    const arr = [...displayServices];
+    const arr = [...serviceIds];
     arr.splice(atIndex, 1);
-    setDisplayServices(arr);
+    setServiceIds(arr);
   }
 
-  function onAddedService() {}
+  function onServiceChanged(rowIndex: number, id: number | null) {
+    const arr = [...serviceIds];
+    arr.splice(rowIndex, 1, id);
+    setServiceIds(arr);
+  }
 
   useEffect(() => {
-    onChange(serviceId);
-  }, [serviceId]);
+    onChange(serviceIds);
+  }, [serviceIds]);
 
   return (
     <Table className={"table-fixed"}>
@@ -96,7 +58,7 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
         </tr>
       </thead>
       <tbody>
-        {isLoading ? (
+        {serviceDbLoading || !availableServices ? (
           <RowPlaceholderTable
             colSpan={4}
             className={"min-h-12"}
@@ -107,44 +69,16 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
             }
           />
         ) : (
-          displayServices &&
-          displayServices.map((item, index) => (
-            <tr key={item?.id}>
-              <td>{index + 1}</td>
-              <td>
-                <Select
-                  data={
-                    !availableServices || serviceDbLoading
-                      ? []
-                      : availableServices
-                  }
-                  placeholder={"service's name..."}
-                  searchable
-                  itemComponent={AutoCompleteItem}
-                  nothingFound="No options"
-                  maxDropdownHeight={200}
-                  onChange={(id) => {
-                    // debugger;
-                    onAddedService(
-                      getServiceById(
-                        Number(id),
-                        availableServices.map((s) => s.data)
-                      )
-                    );
-                    ControlledField.onChange(id ? Number(id) : null);
-                  }}
-                  onBlur={ControlledField.onBlur}
-                  required
-                  defaultValue={field.product ? String(field.product) : null}
-                />
-              </td>
-              <td>{item?.price}</td>
-              <td>
-                <ActionIcon onClick={() => removeService(index)} color={"red"}>
-                  <IconX size={18} />
-                </ActionIcon>
-              </td>
-            </tr>
+          serviceIds &&
+          serviceIds.map((item, index) => (
+            <ServiceInCourseRowTable
+              key={index}
+              no={index}
+              onRemoved={removeService}
+              onSelected={(i) => onServiceChanged(index, i)}
+              serviceId={item}
+              data={availableServices}
+            />
           ))
         )}
         <tr className={"border-b"}>
