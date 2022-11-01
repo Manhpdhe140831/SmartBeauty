@@ -90,15 +90,20 @@ public class BranchController {
     }
 
 
-//    @PutMapping ("/branch/updateBranch")
-//    public ResponseEntity<?> updateBranch(@RequestBody BranchDto branchDto, @RequestParam(value = "id",required = false) Long id){
-//        String check = branchService.validateBranch(branchDto);
-//        if(check == ""){
-//            BranchDto result = branchService.updateBranch(branchDto, id);
-//            return new ResponseEntity<>(result, HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
-//        }
-//
-//    }
+    @PutMapping ("/branch/update")
+    public ResponseEntity<?> updateBranch(@RequestParam(value = "id") Long id,
+                                          @RequestParam(value = "name", required = false) String name,
+                                          @RequestParam(value = "email", required = false) String email,
+                                          @RequestParam(value = "phone", required = false) String phone,
+                                          @RequestParam(value = "address", required = false) String address,
+                                          @RequestParam(value = "manager", required = false) Long manager){
+        String check = branchService.validateBranch(name, email, phone);
+        if(check == ""){
+            Boolean result = branchService.updateBranch(id, name, email, phone, address, manager);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }

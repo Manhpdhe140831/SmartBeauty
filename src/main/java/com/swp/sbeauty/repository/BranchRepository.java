@@ -26,6 +26,7 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
     @Query(value = "select a.id_branch from user_branch_mapping a where id_user = ?1", nativeQuery = true)
     Integer getIdBranchByManager(Integer idManager);
 
+    Branch getBranchById(Long id);
 
     Boolean existsByName(String name);
     Boolean existsByEmail(String email);

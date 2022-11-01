@@ -19,7 +19,7 @@ public interface BranchService {
 
     String validateBranch(String name, String email, String phone);
 
-    BranchDto updateBranch(BranchDto branchDto, Long id);
+    
 
     Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize);
     Page<Branch> findBranchsPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
@@ -27,4 +27,5 @@ public interface BranchService {
     BranchResponseDto getBranchAndSearch(String name,String address,String phone,int pageNo,int pageSize);
     BranchResponseDto getAllBranch(int pageNo,int pageSize);
 
+    Boolean updateBranch(Long id, String name, String email, String phone, String address, Long manager);
 }
