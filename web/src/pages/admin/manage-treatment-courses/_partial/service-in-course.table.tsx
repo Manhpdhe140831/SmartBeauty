@@ -51,10 +51,10 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
     return original.map((s) => ({
       value: String(s.id),
       label: s.name,
+      disabled: selected.includes(s.id),
       data: {
         ...s,
         description: `${formatPrice(s.price)} VND`,
-        disabled: selected.includes(s.id),
       },
     }));
   }
