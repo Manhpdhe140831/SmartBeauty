@@ -1,7 +1,6 @@
-import { FC } from "react";
+import { FC, FormEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
   Divider,
   Image as MantineImage,
   Input,
@@ -25,6 +24,7 @@ import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { GENDER } from "../../../const/gender.const";
 import { managerModelSchema } from "../../../validation/account-model.schema";
+import DialogDetailAction from "../../../components/dialog-detail-action";
 
 type DialogProps = {
   manager: ManagerModel;
@@ -57,8 +57,16 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
   });
   const onSubmit = (data: ManagerUpdateEntity) => onClosed && onClosed(data);
 
+  const handleReset = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    reset();
+    onClosed && onClosed();
+  };
+
   return (
     <form
+      onReset={handleReset}
       onSubmit={handleSubmit(onSubmit)}
       className={"flex w-[500px] space-x-2"}
     >
@@ -200,25 +208,11 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
 
         <Divider my={8} />
         <div className="flex justify-end space-x-2">
-          {isDirty ? (
-            <>
-              <Button onClick={() => reset()} color={"red"} variant={"subtle"}>
-                Cancel
-              </Button>
-              <Button
-                disabled={!isValid}
-                type={"submit"}
-                color={"green"}
-                variant={"filled"}
-              >
-                Save
-              </Button>
-            </>
-          ) : (
-            <Button type={"submit"} onClick={() => onClosed && onClosed()}>
-              Close
-            </Button>
-          )}
+          <DialogDetailAction
+            mode={"view"}
+            isDirty={isDirty}
+            isValid={isValid}
+          />
         </div>
       </div>
     </form>

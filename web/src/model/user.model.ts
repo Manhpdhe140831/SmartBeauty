@@ -19,7 +19,8 @@ export interface UserModel {
   address: string;
 }
 
-export interface UserEntity {
+export interface UserEntity
+  extends Omit<UserModel, "id" | "role" | "avatar" | "dateOfBirth"> {
   name: string;
   email: string;
   password?: string;
@@ -29,4 +30,5 @@ export interface UserEntity {
   // otherwise the avatar will be a File.
   avatar?: File | string;
   dateOfBirth: Date;
+  address: string;
 }

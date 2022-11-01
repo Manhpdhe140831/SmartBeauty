@@ -1,5 +1,4 @@
 import {
-  Button,
   Divider,
   Image as MantineImage,
   Input,
@@ -9,8 +8,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import mockManager from "../../../mock/manager";
-import { BranchModel, BranchCreateEntity } from "../../../model/branch.model";
+import { BranchCreateEntity, BranchModel } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
 import AutoCompleteItem, {
   AutoCompleteItemProp,
@@ -31,6 +29,9 @@ import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
+import { FormEvent } from "react";
+import DialogDetailAction from "../../../components/dialog-detail-action";
+import { getAllFreeManager } from "../../../services/manager.service";
 
 type ViewBranchPropsType = {
   branchData: BranchModel<ManagerModel>;
@@ -45,7 +46,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     phone: phoneSchema,
     manager: z.number().min(1),
     address: addressSchema,
-    logo: fileUploadSchema.and(imageTypeSchema).or(z.string().url()),
+    logo: fileUploadSchema.and(imageTypeSchema).or(z.string().url()).optional(),
   });
 
   const {
@@ -61,21 +62,45 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
   });
 
   const { data: availableManager, isLoading: managerLoading } = useQuery<
-    AutoCompleteItemProp[]
-  >(["available-manager"], async () => {
-    const manager = await mockManager();
-    return manager.map((m) => ({
+    AutoCompleteItemProp<ManagerModel>[]
+  >(["available-manager", branchData], async () => {
+    const manager = await getAllFreeManager();
+    const parser = manager.map((m) => ({
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,
-      description: m.phone,
+      data: {
+        ...m,
+        description: m.phone,
+      },
     }));
+    // since the API does not return the current manager,
+    // we simply add it to the beginning of the array and disable it.
+    parser.unshift({
+      value: String(branchData.manager.id),
+      label: branchData.manager.name,
+      disabled: true,
+      data: {
+        ...branchData.manager,
+        description: branchData.manager.phone,
+        image: branchData.manager.avatar,
+      },
+    } as AutoCompleteItemProp<ManagerModel>);
+    return parser;
   });
 
   const onSubmit = (data: BranchCreateEntity) => onClose(data);
 
+  const handleReset = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    reset();
+    onClose && onClose();
+  };
+
   return (
     <form
+      onReset={handleReset}
       onSubmit={handleSubmit(onSubmit)}
       className="flex w-[600px] space-x-4"
     >
@@ -181,26 +206,12 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
         <FormErrorMessage errors={errors} name={"email"} />
 
         <Divider my={8} />
-        <div className="flex justify-end space-x-2">
-          {isDirty ? (
-            <>
-              <Button onClick={() => reset()} color={"red"} variant={"subtle"}>
-                Cancel
-              </Button>
-              <Button
-                disabled={!isValid}
-                type={"submit"}
-                color={"green"}
-                variant={"filled"}
-              >
-                Save
-              </Button>
-            </>
-          ) : (
-            <Button type={"submit"} onClick={() => onClose()}>
-              Close
-            </Button>
-          )}
+        <div className="flex w-full justify-end">
+          <DialogDetailAction
+            mode={"view"}
+            isDirty={isDirty}
+            isValid={isValid}
+          />
         </div>
       </div>
     </form>

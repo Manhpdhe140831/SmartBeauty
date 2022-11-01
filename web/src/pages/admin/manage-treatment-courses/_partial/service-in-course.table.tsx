@@ -24,9 +24,7 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
 
   const { data: servicesDb, isLoading: serviceDbLoading } = useQuery<
     ServiceModel[]
-  >(["available-services"], () => mockService(), {
-    refetchOnWindowFocus: false,
-  });
+  >(["available-services"], () => mockService());
 
   function addingService() {
     setServiceIds((existing) => [...existing, null]);

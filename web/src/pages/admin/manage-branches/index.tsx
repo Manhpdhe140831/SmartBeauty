@@ -33,7 +33,7 @@ const Index: AppPageInterface = () => {
     () => getAllBranch(page),
     // once API success
     {
-      onSuccess: (res) => updatePagination({ total: res.recordCount }),
+      onSuccess: (res) => updatePagination({ total: res.totalElement }),
     }
   );
 
@@ -81,7 +81,7 @@ const Index: AppPageInterface = () => {
               />
             ) : (
               fetchBranches &&
-              fetchBranches.response.content.map((d, i) => (
+              fetchBranches.data.map((d, i) => (
                 <TableRecord
                   key={d.id}
                   no={i + 1}

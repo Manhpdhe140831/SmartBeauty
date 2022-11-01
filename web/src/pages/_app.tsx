@@ -16,7 +16,13 @@ import { ApiHostRequestInterceptor } from "../utilities/axios.helper";
 import { URL_ENDPOINT } from "../const/_const";
 
 // Create a react-query client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 /**
  * Add hostname to every api request with axios.

@@ -59,15 +59,15 @@ const BtnCreateManager: FC<BtnCreateManagerProps> = ({ onChanged }) => {
         closeOnClickOutside={false}
       >
         <CreateManager
-          onSave={async (manager) => {
+          onClosed={async (manager) => {
             if (manager) {
               // action and event will be handled by mutation process.
               await createMutation.mutate(manager);
-            } else {
-              // when user press cancel.
-              onChanged(false);
-              setDialogOpen(false);
+              return;
             }
+            // when user press cancel.
+            onChanged(false);
+            setDialogOpen(false);
           }}
         />
       </Modal>

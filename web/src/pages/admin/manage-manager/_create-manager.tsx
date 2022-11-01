@@ -1,11 +1,10 @@
 import { ManagerCreateEntity } from "../../../model/manager.model";
-import { FC } from "react";
+import { FC, FormEvent } from "react";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Avatar,
-  Button,
   Divider,
   Input,
   Radio,
@@ -20,29 +19,30 @@ import { DatePicker } from "@mantine/dates";
 import { GENDER } from "../../../const/gender.const";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
-import { IconPlus } from "@tabler/icons";
 import dayjs from "dayjs";
 import {
   managerModelSchema,
   userRegisterSchemaFn,
 } from "../../../validation/account-model.schema";
+import DialogDetailAction from "../../../components/dialog-detail-action";
 
 /**
  * Component props
  * `onSave()` will trigger with the data from the form.
  */
 type CreateManagerProp = {
-  onSave: (managerData: ManagerCreateEntity) => void;
+  onClosed: (managerData?: ManagerCreateEntity) => void;
 };
 
-const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
+const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
   const createManagerSchema = userRegisterSchemaFn(managerModelSchema);
 
   const {
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    reset,
+    formState: { errors, isValid, isDirty },
   } = useForm<z.infer<typeof createManagerSchema>>({
     resolver: zodResolver(createManagerSchema),
     mode: "onBlur",
@@ -52,8 +52,19 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
     },
   });
 
+  const handleReset = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    reset();
+    onClosed && onClosed();
+  };
+
   return (
-    <form onSubmit={onSave && handleSubmit(onSave)} className={"flex flex-col"}>
+    <form
+      onReset={handleReset}
+      onSubmit={onClosed && handleSubmit(onClosed)}
+      className={"flex flex-col"}
+    >
       <h3 className="my-2 mt-4 select-none border-l-2 pl-4 text-lg uppercase text-gray-500">
         Personal Information
       </h3>
@@ -222,14 +233,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onSave }) => {
 
       <Divider my={8} />
 
-      <Button
-        disabled={!isValid}
-        type={"submit"}
-        variant={"filled"}
-        leftIcon={<IconPlus />}
-      >
-        Tạo mới
-      </Button>
+      <DialogDetailAction mode={"create"} isDirty={isDirty} isValid={isValid} />
     </form>
   );
 };

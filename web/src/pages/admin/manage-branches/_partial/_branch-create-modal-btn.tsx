@@ -4,7 +4,7 @@ import { useState } from "react";
 import CreateBranch from "../_create-branch";
 import { BranchCreateEntity } from "../../../../model/branch.model";
 import { useMutation } from "@tanstack/react-query";
-import { createBranchJson } from "../../../../services/branch.service";
+import { createBranch } from "../../../../services/branch.service";
 import { IErrorResponse } from "../../../../interfaces/api.interface";
 
 type BranchModalProps = {
@@ -18,7 +18,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
     boolean,
     IErrorResponse,
     BranchCreateEntity
-  >(["branch-mutation"], (entity) => createBranchJson(entity), {
+  >(["branch-mutation"], (entity) => createBranch(entity), {
     onSuccess: () => {
       onChanged(true);
       setNewBranchModal(false);

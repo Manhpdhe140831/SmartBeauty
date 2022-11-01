@@ -29,17 +29,11 @@ const Index: AppPageInterface = () => {
     data: products,
     isLoading,
     refetch,
-  } = useQuery<ProductModel[]>(
-    ["list-product", currentPage],
-    async () => {
-      const productList = await mockProduct();
-      updatePagination({ total: productList.length });
-      return productList;
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = useQuery<ProductModel[]>(["list-product", currentPage], async () => {
+    const productList = await mockProduct();
+    updatePagination({ total: productList.length });
+    return productList;
+  });
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">

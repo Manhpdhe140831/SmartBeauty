@@ -30,7 +30,7 @@ const ManageManager: AppPageInterface = () => {
     ["list-manager", currentPage],
     () => getAllAccount<ManagerModel>(currentPage, pageSize),
     {
-      onSuccess: (data) => updatePagination({ total: data.recordCount }),
+      onSuccess: (data) => updatePagination({ total: data.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
     }
   );
@@ -66,8 +66,8 @@ const ManageManager: AppPageInterface = () => {
                 }
               />
             ) : (
-              allManager?.response &&
-              allManager.response.content.map((d, i) => (
+              allManager?.data &&
+              allManager.data.map((d, i) => (
                 <ManageRowTable
                   key={d.id}
                   no={i + 1}

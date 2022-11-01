@@ -29,17 +29,11 @@ const Index: AppPageInterface = () => {
     data: services,
     isLoading,
     refetch,
-  } = useQuery<ServiceModel[]>(
-    ["list-service", currentPage],
-    async () => {
-      const serviceList = await mockService();
-      updatePagination({ total: serviceList.length });
-      return serviceList;
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = useQuery<ServiceModel[]>(["list-service", currentPage], async () => {
+    const serviceList = await mockService();
+    updatePagination({ total: serviceList.length });
+    return serviceList;
+  });
 
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>

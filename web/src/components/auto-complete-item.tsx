@@ -14,7 +14,7 @@ export interface AutoCompleteItemProp<T extends object>
   disabled?: boolean;
   data: T & {
     color?: MantineColor;
-    description?: string;
+    description: string;
     image?: string;
   };
 }

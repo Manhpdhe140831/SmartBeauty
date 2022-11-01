@@ -1,5 +1,4 @@
 import {
-  Button,
   Divider,
   Image,
   Input,
@@ -13,7 +12,6 @@ import MaskedInput from "react-text-mask";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconPlus } from "@tabler/icons";
 import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
@@ -32,6 +30,8 @@ import {
 } from "../../../validation/field.schema";
 import { BranchCreateEntity } from "../../../model/branch.model";
 import { getAllFreeManager } from "../../../services/manager.service";
+import { ManagerModel } from "../../../model/manager.model";
+import DialogDetailAction from "../../../components/dialog-detail-action";
 
 /**
  * Component props
@@ -56,14 +56,14 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
     mode: "onBlur",
   });
 
   const { data: availableManager, isLoading: managerLoading } = useQuery<
-    AutoCompleteItemProp[]
+    AutoCompleteItemProp<ManagerModel>[]
   >(["available-manager"], async () => {
     // retrieve free managers - managers which don't associate with any branch.
     const manager = await getAllFreeManager();
@@ -72,6 +72,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
       value: String(m.id),
       label: m.name,
       data: {
+        ...m,
         description: m.phone,
         image: m.avatar,
       },
@@ -197,15 +198,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
 
       <Divider my={16} />
 
-      <Button
-        disabled={!isValid}
-        type={"submit"}
-        variant={"filled"}
-        color={"green"}
-        leftIcon={<IconPlus />}
-      >
-        Create
-      </Button>
+      <DialogDetailAction mode={"create"} isDirty={isDirty} isValid={isValid} />
     </form>
   );
 };

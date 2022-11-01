@@ -45,25 +45,19 @@ const ProductInServiceRowTable = ({
 
   const { data: availableProducts, isLoading: productLoading } = useQuery<
     AutoCompleteItemProp<ProductModel>[]
-  >(
-    ["available-product"],
-    async () => {
-      const p = await mockProduct();
-      setProducts(p);
-      return p.map((p) => ({
-        // add fields of SelectItemGeneric
-        value: String(p.id),
-        label: p.name,
-        data: {
-          ...p,
-          description: `${formatPrice(p.price)} VND`,
-        },
-      }));
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  >(["available-product"], async () => {
+    const p = await mockProduct();
+    setProducts(p);
+    return p.map((p) => ({
+      // add fields of SelectItemGeneric
+      value: String(p.id),
+      label: p.name,
+      data: {
+        ...p,
+        description: `${formatPrice(p.price)} VND`,
+      },
+    }));
+  });
 
   useEffect(() => {
     // update selected product

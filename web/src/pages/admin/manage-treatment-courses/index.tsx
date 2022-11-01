@@ -33,7 +33,6 @@ const Index: AppPageInterface = () => {
     () => mockCourse(),
     {
       onSuccess: (d) => updatePagination({ total: d.length }),
-      refetchOnWindowFocus: false,
     }
   );
 

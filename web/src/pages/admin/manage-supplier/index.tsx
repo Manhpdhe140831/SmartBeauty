@@ -23,17 +23,11 @@ const Index: AppPageInterface = () => {
     data: suppliers,
     isLoading,
     refetch,
-  } = useQuery<SupplierModel[]>(
-    ["list-supplier", currentPage],
-    async () => {
-      const suppliers = await mockProviders();
-      updatePagination({ total: suppliers.length });
-      return suppliers;
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = useQuery<SupplierModel[]>(["list-supplier", currentPage], async () => {
+    const suppliers = await mockProviders();
+    updatePagination({ total: suppliers.length });
+    return suppliers;
+  });
 
   return (
     <div className="flex h-full flex-col space-y-4 p-4">

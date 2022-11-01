@@ -14,7 +14,7 @@ export async function getAllBranch(page: number, pageSize = 10) {
   try {
     const apiResult = await axios.get<
       PaginatedResponse<BranchModel<ManagerModel>>
-    >("/branch/getAllbranch", {
+    >("/branch", {
       params: {
         page,
         pageSize,
