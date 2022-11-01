@@ -1,9 +1,6 @@
 package com.swp.sbeauty.controller;
 
-import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.CategoryDto;
-import com.swp.sbeauty.dto.CategoryResponseDto;
-import com.swp.sbeauty.dto.SupplierDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
@@ -32,10 +29,16 @@ public class CategoryController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/category/save")
-    public ResponseEntity<CategoryDto> saveCategory(@RequestBody CategoryDto categoryDto){
-        CategoryDto result = categoryService.saveCategory(categoryDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    @PostMapping(value = "/category/save", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> saveCategory(@RequestParam(value = "name") String name){
+        String check = categoryService.validateCategory(name);
+        if(check == ""){
+            Boolean result = categoryService.saveCategory(name);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
     @PutMapping ("/category/update")
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @RequestParam(value = "id",required = false) Long id){

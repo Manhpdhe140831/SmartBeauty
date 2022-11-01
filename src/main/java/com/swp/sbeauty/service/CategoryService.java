@@ -20,4 +20,6 @@ public interface CategoryService {
     Page<Category> findCategoryPaginationAndSearch(int offset,int pageSize,String name);
     CategoryResponseDto getCategoryAndSearch(String name, int pageNo, int pageSize);
     CategoryResponseDto getAllCategory(int pageNo,int pageSize);
+    Boolean saveCategory(String name);
+    String validateCategory(String name);
 }

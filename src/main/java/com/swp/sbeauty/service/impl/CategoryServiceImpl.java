@@ -142,5 +142,21 @@ public class CategoryServiceImpl implements CategoryService {
         categoryResponseDto.setPageIndex(pageNo+1);
         return categoryResponseDto;
     }
+    @Override
+    public String validateCategory(String name) {
+        String result = "";
+        if(categoryRepository.existsByName(name)){
+            result += "Name already exists in data, ";
+        }
+        return result;
+    }
+
+    @Override
+    public Boolean saveCategory(String name) {
+        Category category = new Category();
+        category.setName(name);
+        categoryRepository.save(category);
+        return true;
+    }
 
 }

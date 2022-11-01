@@ -11,12 +11,12 @@ import java.util.List;
 public interface SupplierService {
     List<SupplierDto> getSupplier();
     SupplierDto getById(Long id);
-    SupplierDto saveSupplier(SupplierDto supplierDto);
+    Boolean saveSupplier(String name, String taxCode,String description,String phone,String email, String address, String image);
 
     SupplierDto updateSupplier(SupplierDto supplierDto, Long id);
     Page<Supplier> getAllSupplierPagination(int offset,int pageSize);
     Page<Supplier> getSupplierPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
-    String validateUser(SupplierDto supplierDto);
+    String validateSupplier(String name, String email, String address);
     SupplierResponseDto getSupplierAndSearch(String name, String address, String phone, int pageNo, int pageSize);
     SupplierResponseDto getAllSupplier(int pageNo,int pageSize);
 }

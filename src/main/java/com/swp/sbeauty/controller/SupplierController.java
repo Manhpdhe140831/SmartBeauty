@@ -29,27 +29,24 @@ public class SupplierController {
         SupplierDto result = supplierService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/supplier/save")
-    public ResponseEntity<?> saveSupplier(@Valid @RequestBody SupplierDto supplierDto){
-        String check = supplierService.validateUser(supplierDto);
+    @PostMapping(value = "/supplier/save", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> saveBranch(@RequestParam(value = "name") String name,
+                                        @RequestParam(value = "taxCode") String taxCode,
+                                        @RequestParam(value = "description") String description,
+                                        @RequestParam(value = "phone") String phone,
+                                        @RequestParam(value = "email") String email,
+                                        @RequestParam(value = "address") String address,
+                                        @RequestParam(value = "image") String image){
+        String check = supplierService.validateSupplier(name, email, phone);
         if(check == ""){
-            SupplierDto result = supplierService.saveSupplier(supplierDto);
+            Boolean result = supplierService.saveSupplier(name, taxCode, description, phone, email,address,image);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }else {
+        } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
 
     }
-    @PutMapping ("/supplier/updateSupplier")
-    public ResponseEntity<?> updateSupplier(@Valid @RequestBody SupplierDto supplierDto, @RequestParam(value = "id",required = false) Long id){
-        String check = supplierService.validateUser(supplierDto);
-        if(check == "") {
-            SupplierDto result = supplierService.updateSupplier(supplierDto, id);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
-        }
-    }
+
     /*@GetMapping("/supplier/getAllSupplier")
     private APIResponse<Page<Supplier>> getBranchWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize

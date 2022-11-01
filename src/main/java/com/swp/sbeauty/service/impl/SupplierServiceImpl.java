@@ -47,26 +47,31 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDto saveSupplier(SupplierDto supplierDto) {
-        try{
-            if(supplierDto != null){
-                Supplier supplier = new Supplier();
-                supplier.setName(supplierDto.getName());
-                supplier.setTaxCode(supplierDto.getTaxCode());
-                supplier.setDescription(supplierDto.getDescription());
-                supplier.setPhone(supplierDto.getPhone());
-                supplier.setEmail(supplierDto.getEmail());
-                supplier.setAddress(supplierDto.getAddress());
-                supplier.setImage(supplierDto.getImage());
-                supplier = supplierRepository.save(supplier);
-                if(supplier != null){
-                    return new SupplierDto(supplier);
-                }
-            }
-        }catch (Exception e){
-            throw e;
+    public Boolean saveSupplier(String name, String taxCode, String description, String phone, String email, String address, String image) {
+        Supplier supplier = new Supplier();
+        supplier.setName(name);
+        supplier.setTaxCode(taxCode);
+        supplier.setDescription(description);
+        supplier.setPhone(phone);
+        supplier.setEmail(email);
+        supplier.setAddress(address);
+        supplier.setImage(image);
+        supplierRepository.save(supplier);
+        return true;
+    }
+    @Override
+    public String validateSupplier(String name, String email,String phone) {
+        String result = "";
+        if(supplierRepository.existsByname(name)){
+            result += "Name already exists in data, ";
         }
-        return null;
+        if(supplierRepository.existsByPhone(phone)){
+            result += "Phone already exists in data, ";
+        }
+        if(supplierRepository.existsByEmail(email)){
+            result += "Email already exists in data, ";
+        }
+        return result;
     }
 
     @Override
@@ -114,14 +119,6 @@ public class SupplierServiceImpl implements SupplierService {
         return suppliers;
     }
 
-    @Override
-    public String validateUser(SupplierDto supplierDto) {
-        String result = "";
-        if(supplierRepository.existsByname(supplierDto.getName())){
-            result += "name already exists in data, ";
-        }
-        return result;
-    }
 
     @Override
     public SupplierResponseDto getSupplierAndSearch(String name, String address, String phone, int pageNo, int pageSize) {
