@@ -163,7 +163,7 @@ public class BranchServiceImpl implements BranchService {
                 }
         );
         List<BranchDto> pageResult = new ArrayList<>(dtos);
-        branchResponseDto.setBranchDtos(pageResult);
+        branchResponseDto.setData(pageResult);
         branchResponseDto.setTotalElement(page.getTotalElements());
         branchResponseDto.setTotalPage(page.getTotalPages());
         branchResponseDto.setPageIndex(pageNo+1);
@@ -182,7 +182,7 @@ public class BranchServiceImpl implements BranchService {
             branchDto = mapper.map(branch,BranchDto.class);
             branchDtos.add(branchDto);
         }
-        branchResponseDto.setBranchDtos(branchDtos);
+        branchResponseDto.setData(branchDtos);
         branchResponseDto.setTotalElement(page.getTotalElements());
         branchResponseDto.setTotalPage(page.getTotalPages());
         branchResponseDto.setPageIndex(pageNo+1);

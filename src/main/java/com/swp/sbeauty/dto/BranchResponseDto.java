@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class BranchResponseDto {
-    List<BranchDto> branchDtos;
+    List<BranchDto> data;
     int totalPage;
     int pageIndex;
     long totalElement;
