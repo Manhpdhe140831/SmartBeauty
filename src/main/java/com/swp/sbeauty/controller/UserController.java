@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -45,22 +46,41 @@ public class UserController {
     ValidInputDto valid = new ValidInputDto();
 
     @PostMapping("/user/save")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> saveUser(@RequestParam(value = "name") String name,
+                                      @RequestParam(value = "email") String email,
+                                      @RequestParam(value = "phone") String phone,
+                                      @RequestParam(value = "dateOfBirth") String dateOfBirth,
+                                      @RequestParam(value = "gender") String gender,
+                                      @RequestParam(value = "address") String address,
+                                      @RequestParam(value = "password") String password,
+                                      @RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String roleCheck = temp.get("role").toString();
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
-        String check = userService.validateUser(userDto);
+        String check = userService.validateUser(email, phone);
         if (check == "") {
-            Boolean result = userService.saveUser(userDto, roleCheck, idcheck);
+            Boolean result = userService.saveUser(name, email, phone, dateOfBirth, gender, address, password, roleCheck, idcheck);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
     }
     @PutMapping ("/user/update")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long id){
-        UserDto result = userService.updateUser(userDto, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> updateUser(@RequestParam(value = "id") Long id,
+                                              @RequestParam(value = "name", required = false) String name,
+                                              @RequestParam(value = "email", required = false) String email,
+                                              @RequestParam(value = "phone", required = false) String phone,
+                                              @RequestParam(value = "dateOfBirth", required = false) String dateOfBirth,
+                                              @RequestParam(value = "gender", required = false) String gender,
+                                              @RequestParam(value = "address", required = false) String address){
+        String check = userService.validateUser(email, phone);
+        if(check == ""){
+            Boolean result = userService.updateUser(id, name, email, phone, dateOfBirth, gender, address);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
     @GetMapping(value = "user/getById")
     public ResponseEntity<UserDto> getById(@RequestParam(value = "id",required = false) Long id) {

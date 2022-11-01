@@ -2,6 +2,8 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.swp.sbeauty.entity.Branch;
@@ -45,17 +47,18 @@ public class UserServiceImpl implements UserService {
     JwtUtils jwtUtils;
 
     @Override
-    public Boolean saveUser(UserDto userDto,String roleAuth, Integer idCheck) {
-        if (userDto != null) {
+    public Boolean saveUser(String name, String email, String phone, String dateOfBirth, String gender, String address, String password, String roleAuth, Integer idCheck) {
+        try {
             Users user = new Users();
-            user.setName(userDto.getName());
-            user.setEmail(userDto.getEmail());
-            user.setPhone(userDto.getPhone());
-            user.setDateOfBirth(userDto.getDateOfBirth());
-            user.setGender(userDto.getGender());
-            user.setAddress(userDto.getAddress());
-            user.setPassword(encoder.encode(userDto.getPassword()));
-            user.setUrlImage(userDto.getUrlImage());
+            user.setName(name);
+            user.setEmail(email);
+            user.setPhone(phone);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            Date dob = df.parse(dateOfBirth);
+            user.setDateOfBirth(dob);
+            user.setGender(gender);
+            user.setAddress(address);
+            user.setPassword(encoder.encode(password));
             Set<Role> roles = new HashSet<>();
             if (roleAuth.equalsIgnoreCase("admin")) {
                 Role role = null;
@@ -90,6 +93,8 @@ public class UserServiceImpl implements UserService {
                     return true;
                 }
             }
+        } catch (Exception e){
+            return false;
         }
         return false;
     }
@@ -124,85 +129,9 @@ public class UserServiceImpl implements UserService {
         return pageResult;
     }
 
-
-
-    //    @Override
-//    public Boolean saveUser(UserDto userDto,String roleAuth) {
-//        if(userDto != null){
-//            Users user = new Users();
-//            user.setName(userDto.getName());
-//            user.setEmail(userDto.getEmail());
-//            user.setphone(userDto.getphone());
-//            user.setDateOfBirth(userDto.getDateOfBirth());
-//            user.setGender(userDto.getGender());
-//            user.setAddress(userDto.getAddress());
-//            user.setPassword(encoder.encode(userDto.getPassword()));
-//            user.setUrlImage(userDto.getUrlImage());
-//            if(roleAuth.equalsIgnoreCase("admin")) {
-//// if admin then create user with role manager
-//
-//            }else if(roleAuth.equalsIgnoreCase("manager")){
-//                //if manager then create user with role staff
-//            }
-//            Set<Role> roles = new HashSet<>();
-//            if(userDto.getRole()!=null){
-//                Role role = null;
-//                Optional<Role> optional =roleRepository.findByName(userDto.getRole());
-//                if(optional.isPresent()){
-//                    role = optional.get();
-//                }
-//                if(role!=null){
-//                    roles.add(role);
-//                }
-//            }
-//            if(roles!=null){
-//                user.setRoles(roles);
-//            }
-//            user = userRepository.save(user);
-//            if(user != null){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-@Override
-public Boolean saveUser(UserDto userDto) {
-    if(userDto != null){
-        Users user = new Users();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPhone(userDto.getPhone());
-        user.setDateOfBirth(userDto.getDateOfBirth());
-        user.setGender(userDto.getGender());
-        user.setAddress(userDto.getAddress());
-        user.setPassword(encoder.encode(userDto.getPassword()));
-        user.setUrlImage(userDto.getUrlImage());
-        Set<Role> roles = new HashSet<>();
-        if(userDto.getRole()!=null){
-            Role role = null;
-            Optional<Role> optional =roleRepository.findByName(userDto.getRole());
-            if(optional.isPresent()){
-                role = optional.get();
-            }
-            if(role!=null){
-                roles.add(role);
-
-            }
-        }
-        if(roles!=null){
-            user.setRoles(roles);
-        }
-        user = userRepository.save(user);
-        if(user != null){
-            return true;
-        }
-    }
-    return false;
-}
-
     @Override
-    public UserDto updateUser(UserDto userDto, Long id) {
-        if(userDto !=null){
+    public Boolean updateUser(Long id, String name, String email, String phone, String dateOfBirth, String gender, String address) {
+        try{
             Users user = null;
             if(id !=null){
                 Optional<Users> optional =userRepository.findById(id);
@@ -211,39 +140,34 @@ public Boolean saveUser(UserDto userDto) {
                 }
             }
             if(user != null){
-                user.setName(userDto.getName());
-                user.setEmail(userDto.getEmail());
-                user.setPhone(userDto.getPhone());
-                user.setDateOfBirth(userDto.getDateOfBirth());
-                user.setGender(userDto.getGender());
-                user.setAddress(userDto.getAddress());
-                user.setPassword(encoder.encode(userDto.getPassword()));
-                user.setUrlImage(user.getUrlImage());
-                Set<Role> roles = new HashSet<>();
-                if(user.getRoles()!=null && user.getRoles().size()>0){
-                    for (RoleDto roleDto : userDto.getRoles()){
-                        if(roleDto!=null){
-                            Role role = null;
-                            if(roleDto.getId()!=null){
-                                Optional<Role> optional =roleRepository.findById(roleDto.getId());
-                                if(optional.isPresent()){
-                                    role = optional.get();
-                                }
-                                if(role!=null){
-                                    roles.add(role);
-                                }
-                            }
-                        }
-                    }
-                    user.setRoles(roles);
+                if(name!=null){
+                    user.setName(name);
                 }
-                user = userRepository.save(user);
-                return new UserDto(user);
+                if(email!=null){
+                    user.setEmail(email);
+                }
+                if(phone!=null){
+                    user.setPhone(phone);
+                }
+                if(dateOfBirth!=null){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date dob = df.parse(dateOfBirth);
+                    user.setDateOfBirth(dob);
+                }
+                if(gender!=null){
+                    user.setGender(gender);
+                }
+                if(address!=null){
+                    user.setAddress(address);
+                }
+                userRepository.save(user);
+                return true;
             } else {
-                return null;
+                return false;
             }
+        } catch (Exception e){
+            return false;
         }
-        return null;
     }
 
 
@@ -270,12 +194,12 @@ public Boolean saveUser(UserDto userDto) {
     }
 
     @Override
-    public String validateUser(UserDto userDto) {
+    public String validateUser(String email, String phone) {
         String result = "";
-        if(userRepository.existsByEmail(userDto.getEmail())){
+        if(userRepository.existsByEmail(email)){
             result += "Email already exists in data, ";
         }
-        if(userRepository.existsByPhone(userDto.getPhone())){
+        if(userRepository.existsByPhone(phone)){
             result += "phone already exists in data";
         }
         return result;
