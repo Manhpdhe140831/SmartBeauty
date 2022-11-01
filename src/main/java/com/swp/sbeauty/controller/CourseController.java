@@ -5,6 +5,7 @@ import com.swp.sbeauty.dto.CourseResponseDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Course;
+import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
 import com.swp.sbeauty.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -43,10 +45,27 @@ public class CourseController {
         }
     }
 
-    @RequestMapping(value = "/courses/add", method = RequestMethod.POST)
-    public ResponseEntity<CourseDto> saveCourse (@RequestBody CourseDto courseDto){
-        CourseDto courseDtoResult = service.save(courseDto);
-        return new ResponseEntity<>(courseDtoResult, HttpStatus.OK);
+    @RequestMapping(value = "/courses/save", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
+    public ResponseEntity<?> saveCourse (
+            @RequestParam("name") String name,
+            @RequestParam(value = "price", defaultValue = "1") double price,
+            @RequestParam("duration") int duration,
+            @RequestParam("endOfCourse") String endOfCourse,
+            @RequestParam("discountStart") String discountStart,
+            @RequestParam("discountEnd") String discountEnd,
+            @RequestParam("discountPercent") double discountPercent ,
+            @RequestParam(value = "image", defaultValue = "") String image,
+            @RequestParam("description") String description,
+            @RequestParam(value = "deleted", required = false) boolean deleted,
+            @RequestParam (value = "listProduct", required = false) List<Long> listProduct
+    ){
+
+        Date startDate = service.parseDate(discountStart);
+        Date endDate = service.parseDate(discountEnd);
+        Date endCourse = service.parseDate(endOfCourse);
+        Boolean result = service.save(name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, listProduct);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 
     @RequestMapping(value = "/courses/{id}", method = RequestMethod.DELETE)

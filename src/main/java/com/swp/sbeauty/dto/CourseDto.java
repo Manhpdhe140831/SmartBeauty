@@ -1,5 +1,6 @@
 package com.swp.sbeauty.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Course;
 import com.swp.sbeauty.entity.Role;
@@ -12,7 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,8 +30,10 @@ public class CourseDto {
     private double price;
     private int duration;
 
-    private Long endOfCourse;
+    private Date endOfCourse;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountStart;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountEnd;
     private double discountPercent;
     private String image;
@@ -104,11 +107,11 @@ public class CourseDto {
         this.duration = duration;
     }
 
-    public Long getEndOfCourse() {
+    public Date getEndOfCourse() {
         return endOfCourse;
     }
 
-    public void setEndOfCourse(Long endOfCourse) {
+    public void setEndOfCourse(Date endOfCourse) {
         this.endOfCourse = endOfCourse;
     }
 

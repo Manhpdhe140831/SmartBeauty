@@ -133,6 +133,8 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
          Page<Service> page = repository.findAll(pageable);
          List<Service> services = page.getContent();
          List<ServiceDto> serviceDtos = new ArrayList<>();
+         List<ProductDto> productDtos = new ArrayList<>();
+         List<Product> listProduct = new ArrayList<>();
         for (Service itemS: services
              ) {
             ServiceDto serviceDto= new ServiceDto();

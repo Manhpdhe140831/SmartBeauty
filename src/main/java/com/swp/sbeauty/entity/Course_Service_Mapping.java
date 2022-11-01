@@ -25,7 +25,10 @@ public class Course_Service_Mapping {
     private long course_id;
     private long service_id;
 
-
+    public Course_Service_Mapping(long course_id, long service_id) {
+        this.course_id = course_id;
+        this.service_id = service_id;
+    }
 }
 
 
