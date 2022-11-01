@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -46,7 +47,8 @@ public class UserController {
     ValidInputDto valid = new ValidInputDto();
 
     @PostMapping("/user/save")
-    public ResponseEntity<?> saveUser(@RequestParam(value = "name") String name,
+    public ResponseEntity<?> saveUser(@RequestParam(value = "image", required = false) MultipartFile image,
+                                      @RequestParam(value = "name") String name,
                                       @RequestParam(value = "email") String email,
                                       @RequestParam(value = "phone") String phone,
                                       @RequestParam(value = "dateOfBirth") String dateOfBirth,
@@ -59,7 +61,7 @@ public class UserController {
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
         String check = userService.validateUser(email, phone);
         if (check == "") {
-            Boolean result = userService.saveUser(name, email, phone, dateOfBirth, gender, address, password, roleCheck, idcheck);
+            Boolean result = userService.saveUser(image, name, email, phone, dateOfBirth, gender, address, password, roleCheck, idcheck);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

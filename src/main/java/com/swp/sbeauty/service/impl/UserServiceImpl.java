@@ -1,7 +1,13 @@
 package com.swp.sbeauty.service.impl;
 
+
 import com.swp.sbeauty.dto.*;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,8 +32,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +54,13 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
     @Autowired
     JwtUtils jwtUtils;
+    @Autowired
+    ServletContext application;
+
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     @Override
-    public Boolean saveUser(String name, String email, String phone, String dateOfBirth, String gender, String address, String password, String roleAuth, Integer idCheck) {
+    public Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password, String roleAuth, Integer idCheck) {
         try {
             Users user = new Users();
             user.setName(name);
@@ -59,6 +72,21 @@ public class UserServiceImpl implements UserService {
             user.setGender(gender);
             user.setAddress(address);
             user.setPassword(encoder.encode(password));
+
+            if(image != null){
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                user.setUrlImage(imagePath.resolve(image.getOriginalFilename()).toString());
+            }
+
             Set<Role> roles = new HashSet<>();
             if (roleAuth.equalsIgnoreCase("admin")) {
                 Role role = null;
