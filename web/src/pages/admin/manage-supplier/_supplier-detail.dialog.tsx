@@ -29,12 +29,12 @@ const SupplierDetailDialog = ({
   onClosed,
   mode,
 }: DialogProps<SupplierModel, SupplierUpdateEntity, SupplierCreateEntity>) => {
-  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
+  const idSchema = mode === "create" ? idDbSchema.optional() : idDbSchema;
   const validateSchema = z.object({
     id: idSchema,
     name: nameSchema,
     taxCode: taxCodeSchema,
-    description: descriptionSchema.nullable().optional(),
+    description: descriptionSchema.optional(),
     phone: phoneSchema,
     email: emailSchema,
     address: addressSchema,
