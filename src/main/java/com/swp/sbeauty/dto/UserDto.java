@@ -40,6 +40,7 @@ public class UserDto {
             this.setDateOfBirth(user.getDateOfBirth());
             this.setGender(user.getGender());
             this.setAddress(user.getAddress());
+            this.setUrlImage(user.getUrlImage());
             this.role = user.getRoles().stream().findFirst().get().getName();
         }
     }
