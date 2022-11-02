@@ -71,7 +71,6 @@ const ManagerViewModal: FC<ModalProps> = ({ onChanged, managerData }) => {
           onClosed={async (newData) => {
             if (newData) {
               // update the user.
-              debugger;
               await updateMutation.mutateAsync(newData);
               return;
             }

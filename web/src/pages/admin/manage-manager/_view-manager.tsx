@@ -121,8 +121,16 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
       </div>
 
       <div className="flex flex-1 flex-col">
-        <small className={"leading-none text-gray-500"}>Manager</small>
-        <h1 className={"mb-2 text-2xl font-semibold"}>{manager.name}</h1>
+        <small className={"text-gray-500"}>Manager name</small>
+        {/*<h1 className={"mb-2 text-2xl font-semibold"}>{manager.name}</h1>*/}
+        <TextInput
+          required
+          variant={"unstyled"}
+          size={"xl"}
+          sx={{ input: { fontSize: 28 } }}
+          className={"mb-2 rounded border px-2 font-semibold !leading-normal"}
+          {...register("name")}
+        />
 
         {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
         <Controller
@@ -147,7 +155,6 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
           required
           type="email"
           label={"Email"}
-          id={"email"}
           {...register("email")}
         />
         <FormErrorMessage errors={errors} name={"email"} />

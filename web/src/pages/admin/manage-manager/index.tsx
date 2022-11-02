@@ -74,7 +74,10 @@ const ManageManager: AppPageInterface = () => {
                   data={d}
                   action={
                     <Group position={"center"} spacing={"xs"}>
-                      <ManagerViewModal managerData={d} />
+                      <ManagerViewModal
+                        managerData={d}
+                        onChanged={(updated) => updated && refetch()}
+                      />
                       <Divider orientation={"vertical"} />
                       <BtnPasswordManager manager={d} />
                     </Group>
