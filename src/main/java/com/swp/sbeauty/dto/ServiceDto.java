@@ -1,5 +1,6 @@
 package com.swp.sbeauty.dto;
 
+import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
@@ -34,102 +35,10 @@ public class ServiceDto {
     private long duration;
     private String image;
 
-    private List<ProductDto> product;
-    private Long usage;
+    private List<Service_Product_MappingDto> products;
 
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getDiscountStart() {
-        return discountStart;
-    }
-
-    public void setDiscountStart(Date discountStart) {
-        this.discountStart = discountStart;
-    }
-
-    public Date getDiscountEnd() {
-        return discountEnd;
-    }
-
-    public void setDiscountEnd(Date discountEnd) {
-        this.discountEnd = discountEnd;
-    }
-
-    public Double getDiscountPercent() {
-        return discountPercent;
-    }
-
-    public void setDiscountPercent(Double discountPercent) {
-        this.discountPercent = discountPercent;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public List<ProductDto> getProduct() {
-        return product;
-    }
-
-    public void setProduct(List<ProductDto> product) {
-        this.product = product;
-    }
-
-    public Long getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Long usage) {
-        this.usage = usage;
-    }
-
-    public ServiceDto(long id, String code, String name, Date discountStart, Date discountEnd, Double discountPercent, double price, String description, long duration, String image, List<ProductDto> product, Long usage) {
+    public ServiceDto(long id, String code, String name, Date discountStart, Date discountEnd, Double discountPercent, double price, String description, long duration, String image, List<Service_Product_MappingDto> products) {
         this.id = id;
         this.name = name;
         this.discountStart = discountStart;
@@ -139,11 +48,10 @@ public class ServiceDto {
         this.description = description;
         this.duration = duration;
         this.image = image;
-        this.product = product;
-        this.usage = usage;
+        this.products = products;
     }
 
-    public ServiceDto(Service service, Long usage, List<ProductDto> listProduct) {
+    public ServiceDto(Service service,List<Service_Product_MappingDto> products) {
 
         if (null != service) {
             this.setId(service.getId());
@@ -156,8 +64,7 @@ public class ServiceDto {
             this.setImage(service.getImage());
 
         }
-        this.setProduct(listProduct);
-        this.setUsage(usage);
+        this.setProducts(products);
 
     }
 }

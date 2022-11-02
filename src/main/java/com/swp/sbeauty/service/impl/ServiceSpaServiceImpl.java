@@ -4,8 +4,10 @@ import com.swp.sbeauty.dto.BranchDto;
 import com.swp.sbeauty.dto.ProductDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.dto.ServiceResponseDto;
+import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.entity.Service_Product_mapping;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
@@ -73,23 +75,19 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     @Override
     public ServiceDto getServiceById(Long id) {
         if (id != null){
-            Long usage = 0l;
-            List<Product> list = productRepository.getAllProductByServiceId(id);
-            List<ProductDto> listProduct = new ArrayList<>();
-
-            for (Product itemP: list
-                 ) {
-
-                listProduct.add(new ProductDto(itemP));
-               usage = service_product_mapping_repository.getUsageByProductId(itemP.getId());
-            }
             Service service = null;
            Optional<Service> optional = repository.findById(id);
             if (optional.isPresent()){
                 service = optional.get();
             }
 
-            ServiceDto serviceDto = new ServiceDto(service, usage, listProduct);
+            List<Service_Product_mapping> productsRaw = service_product_mapping_repository.listProducts(id);
+            List<Service_Product_MappingDto> products = new ArrayList<>();
+            for(Service_Product_mapping a : productsRaw){
+
+            }
+
+            ServiceDto serviceDto = new ServiceDto(service, products);
 
             return serviceDto;
 

@@ -16,13 +16,17 @@ public interface CourseService {
     Page<Course> getListCourse(int offset, int page);
     Boolean save(String name, double price, int duration, Date endOfCourse, Date discountStart, Date discountEnd, double discountPercent, String image, String description, boolean deleted, List<Long> listProductId
     );
-    Boolean remove(Long id);
+//    Boolean remove(Long id);
 
     CourseResponseDto getListCoursePaginationAndSearch(String name, String code, int pageNo, int pageSize);
 
     CourseResponseDto getAll(int pageNo, int pageSize);
 
     public Date parseDate(String strDate);
+
+    public Boolean update(Long id, String name, Double price, Integer duration, Date endOfCourse, Date discountStart, Date discountEnd, Double discountPercent, String image, String description, boolean deleted, List<Long> listServiceId);
+
+
     
 
 

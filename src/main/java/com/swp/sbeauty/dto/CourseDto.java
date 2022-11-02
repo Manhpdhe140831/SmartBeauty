@@ -6,6 +6,7 @@ import com.swp.sbeauty.entity.Course;
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.Service;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CourseDto {
     private long id;
 
