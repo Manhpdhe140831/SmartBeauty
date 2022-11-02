@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { IconSettings } from "@tabler/icons";
+import { IconTrash } from "@tabler/icons";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
 import StaffInfo from "../_view-staff";
-import { BranchModel } from "../../../../model/branch.model";
-import { ManagerModel } from "../../../../model/manager.model";
 import { StaffModel } from "../../../../model/staff.model";
 
 type ModalProps = {
@@ -17,14 +15,14 @@ const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
   return (
     <>
       {/* Button view branch -> trigger modal*/}
-      <Tooltip onClick={() => setViewBranch(true)} label={"View / Edit"}>
-        <ActionIcon className="!inline-flex" color="orange" variant="filled">
-          <IconSettings size={12} />
+      <Tooltip onClick={() => setViewBranch(true)} label={"Delete"}>
+        <ActionIcon className="!inline-flex" color="red" variant="filled">
+          <IconTrash size={12} />
         </ActionIcon>
       </Tooltip>
       <Modal
         title={
-          <h1 className="text-center font-thin capitalize">Staff Detail</h1>
+          <h1 className="text-center font-thin capitalize">Staff Delete</h1>
         }
         opened={viewBranch}
         size={"auto"}

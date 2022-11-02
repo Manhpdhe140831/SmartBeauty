@@ -1,5 +1,6 @@
 import { USER_ROLE } from "../const/user-role.const";
 import { StaffModel } from "../model/staff.model";
+import { GENDER } from "../const/gender.const";
 
 const staff: StaffModel[] = [{
   "id": 1,
@@ -10,7 +11,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/233x100.png/cc0000/ffffff",
   "phone": "3778400979",
   "dateOfBirth": "2022-06-22T22:06:46Z",
-  "gender": "Male",
+  "gender": GENDER.male,
   "address": "12165 Vernon Parkway"
 }, {
   "id": 2,
@@ -21,7 +22,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/123x100.png/5fa2dd/ffffff",
   "phone": "6842025711",
   "dateOfBirth": "2022-09-27T09:30:27Z",
-  "gender": "Male",
+  "gender": GENDER.male,
   "address": "38144 Bellgrove Terrace"
 }, {
   "id": 3,
@@ -32,7 +33,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/143x100.png/dddddd/000000",
   "phone": "6269767140",
   "dateOfBirth": "2022-06-06T06:56:02Z",
-  "gender": "Female",
+  "gender": GENDER.female,
   "address": "29 Ridgeview Park"
 }, {
   "id": 4,
@@ -43,7 +44,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/142x100.png/5fa2dd/ffffff",
   "phone": "7922713428",
   "dateOfBirth": "2022-08-27T19:39:32Z",
-  "gender": "Male",
+  "gender": GENDER.male,
   "address": "47324 Oxford Pass"
 }, {
   "id": 5,
@@ -54,7 +55,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/148x100.png/5fa2dd/ffffff",
   "phone": "5775262203",
   "dateOfBirth": "2022-07-04T12:12:58Z",
-  "gender": "Polygender",
+  "gender": GENDER.other,
   "address": "89 Clemons Park"
 }, {
   "id": 6,
@@ -65,7 +66,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/230x100.png/ff4444/ffffff",
   "phone": "4818576221",
   "dateOfBirth": "2022-05-21T21:54:27Z",
-  "gender": "Male",
+  "gender": GENDER.male,
   "address": "4697 Service Center"
 }, {
   "id": 7,
@@ -76,7 +77,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/195x100.png/ff4444/ffffff",
   "phone": "1789905975",
   "dateOfBirth": "2022-05-19T21:41:20Z",
-  "gender": "Male",
+  "gender": GENDER.male,
   "address": "9 Bultman Park"
 }, {
   "id": 8,
@@ -87,7 +88,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/150x100.png/5fa2dd/ffffff",
   "phone": "8666095829",
   "dateOfBirth": "2022-05-04T13:55:59Z",
-  "gender": "Female",
+  "gender": GENDER.female,
   "address": "376 Clove Trail"
 }, {
   "id": 9,
@@ -98,7 +99,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/217x100.png/dddddd/000000",
   "phone": "1994645078",
   "dateOfBirth": "2022-09-19T05:38:45Z",
-  "gender": "Male",
+  "gender": GENDER.male,
   "address": "04 Petterle Point"
 }, {
   "id": 10,
@@ -109,7 +110,7 @@ const staff: StaffModel[] = [{
   "avatar": "http://dummyimage.com/202x100.png/dddddd/000000",
   "phone": "6086552729",
   "dateOfBirth": "2022-08-26T01:31:19Z",
-  "gender": "Female",
+  "gender": GENDER.female,
   "address": "5 Swallow Road"
 }];
 

@@ -1,6 +1,5 @@
 import { Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { ManagerModel } from "../../../../model/manager.model";
 import { StaffModel } from "../../../../model/staff.model";
 
 type RecordProps = {
@@ -25,7 +24,7 @@ export default function TableRecord(props: RecordProps) {
       </td>
 
       <td
-        className="overflow-hidden text-ellipsis"
+        className="text-center overflow-hidden text-ellipsis"
         onClick={() => clipboard.copy(props.data.role)}
       >
         <Tooltip label={props.data.role}>
