@@ -63,20 +63,18 @@ export const roleSchema = z.nativeEnum(USER_ROLE, {
 });
 
 export const refineSaleSchema = <
-  T extends {
+  T extends ZodObject<{
+    discountPercent: z.ZodOptional<z.ZodNumber>;
     price: z.ZodNumber;
     discountStart: z.ZodOptional<z.ZodDate>;
     discountEnd: z.ZodOptional<z.ZodDate>;
-    discountPercent: z.ZodOptional<z.ZodNumber>;
-  }
+  }>
 >(
-  schema: ZodObject<T>
-) => {
+  schema: T
+): T => {
   return (
     schema
       .refine(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         ({ discountPercent, discountEnd, discountStart }) => {
           if (discountPercent !== undefined) {
             return discountEnd !== undefined || discountStart !== undefined;
@@ -88,8 +86,6 @@ export const refineSaleSchema = <
       )
       // Refine time end sale
       .refine(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         ({ discountEnd, discountStart }) => {
           if (discountEnd && dayjs(discountEnd).isBefore(new Date())) {
             // sale end date cannot start before today.
@@ -109,14 +105,12 @@ export const refineSaleSchema = <
         }
       )
       .refine(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         ({ discountStart }) =>
           !discountStart || dayjs(discountStart).isAfter(new Date()),
         {
           path: ["discountStart"],
         }
-      )
+      ) as unknown as T
   );
 };
 

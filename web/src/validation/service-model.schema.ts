@@ -5,18 +5,21 @@ import {
   idDbSchema,
   imageTypeSchema,
   nameSchema,
+  refineSaleSchema,
   saleSchema,
 } from "./field.schema";
 import { ProductInServiceModelSchema } from "./product-model.schema";
 
-const BaseServiceModelSchema = z
-  .object({
-    name: nameSchema,
-    description: descriptionSchema,
-    duration: z.number().min(0),
-    products: ProductInServiceModelSchema.array().min(1),
-  })
-  .extend(saleSchema.shape);
+const BaseServiceModelSchema = refineSaleSchema(
+  z
+    .object({
+      name: nameSchema,
+      description: descriptionSchema,
+      duration: z.number().min(0),
+      products: ProductInServiceModelSchema.array().min(1),
+    })
+    .extend(saleSchema.shape)
+);
 
 export default BaseServiceModelSchema;
 

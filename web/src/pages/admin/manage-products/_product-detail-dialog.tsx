@@ -61,19 +61,18 @@ const ProductDetailDialog = ({
     mode === "create"
       ? fileUploadSchema.and(imageTypeSchema).or(z.string().url()).optional()
       : fileUploadSchema.and(imageTypeSchema).or(z.string().url());
-  const validateSchema = refineSaleSchema(
-    z
-      .object({
-        id: idSchema,
-        name: nameSchema,
-        description: descriptionSchema,
-        unit: unitProductSchema,
-        dose: amountPerUnitSchema,
-        supplier: idDbSchema,
-        image: imageSchema,
-      })
-      .extend(saleSchema.shape)
-  );
+  const schema = z
+    .object({
+      id: idSchema,
+      name: nameSchema,
+      description: descriptionSchema,
+      unit: unitProductSchema,
+      dose: amountPerUnitSchema,
+      supplier: idDbSchema,
+      image: imageSchema,
+    })
+    .extend(saleSchema.shape);
+  const validateSchema = refineSaleSchema(schema);
 
   const {
     control,
