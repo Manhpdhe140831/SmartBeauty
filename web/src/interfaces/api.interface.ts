@@ -19,3 +19,7 @@ export interface PaginatedResponse<T> {
   totalElement: number;
   totalPage: number;
 }
+
+export interface SearchParamUrl {
+  [key: string]: string | number;
+}

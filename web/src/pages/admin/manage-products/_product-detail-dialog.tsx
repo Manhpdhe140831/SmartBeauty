@@ -43,9 +43,13 @@ import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import DialogDetailAction from "../../../components/dialog-detail-action";
 import { useQuery } from "@tanstack/react-query";
 import { SupplierModel } from "../../../model/supplier.model";
-import mockSupplier from "../../../mock/provider";
 import DatabaseSearchSelect from "../../../components/database-search.select";
 import { AutoCompleteItemProp } from "../../../components/auto-complete-item";
+import {
+  getListSupplier,
+  getSupplierById,
+} from "../../../services/supplier.service";
+import { DialogSubmit } from "../../../utilities/form-data.helper";
 
 const ProductDetailDialog = ({
   data,
@@ -80,8 +84,7 @@ const ProductDetailDialog = ({
     handleSubmit,
     watch,
     reset,
-    getValues,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
     mode: "onBlur",
@@ -117,22 +120,19 @@ const ProductDetailDialog = ({
   const { data: viewingSupplier, isLoading: viewLoading } =
     useQuery<SupplierModel | null>(
       ["available-supplier", selectedSupplier],
-      async () => {
+      () => {
         if (selectedSupplier === undefined || selectedSupplier === null) {
           return null;
         }
-        const p = await mockSupplier();
-        const f = p.find((p) => p.id === selectedSupplier);
-        return f ?? null;
+        return getSupplierById(selectedSupplier);
       }
     );
 
-  // TODO transfer to service.
   async function searchSupplier(
     supplierName: string
   ): Promise<AutoCompleteItemProp<SupplierModel>[]> {
-    const listSupplier = await mockSupplier();
-    return listSupplier
+    const response = await getListSupplier(1, 50, { name: supplierName });
+    return response.data
       .filter((p) => p.name.includes(supplierName))
       .map((i) => rawToAutoItem(i, fnHelper));
   }
@@ -158,7 +158,9 @@ const ProductDetailDialog = ({
         </h2>
         <form
           onReset={handleReset}
-          onSubmit={onClosed && handleSubmit(onClosed as never)}
+          onSubmit={handleSubmit(
+            DialogSubmit(mode, dirtyFields, onClosed, data)
+          )}
           className={`flex w-[800px] flex-wrap space-x-4 p-4`}
         >
           <div className="flex flex-1 flex-col">
@@ -405,9 +407,6 @@ const ProductDetailDialog = ({
           </div>
 
           <div className="mt-4 flex w-full justify-end">
-            <button type={"button"} onClick={() => console.log(getValues())}>
-              check
-            </button>
             <DialogDetailAction
               mode={mode}
               isDirty={isDirty}

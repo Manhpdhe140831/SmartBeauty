@@ -88,7 +88,7 @@ const services: ServiceModel[] = [
     discountEnd: "2022-02-02T01:13:03Z",
     products: [
       {
-        product: 1,
+        product: 1, // id product
         usage: 200,
       },
     ],

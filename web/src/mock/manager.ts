@@ -12,7 +12,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 3,
@@ -34,7 +34,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 5,
@@ -56,7 +56,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 6,
@@ -67,7 +67,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 7,
@@ -78,7 +78,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 8,
@@ -89,7 +89,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 9,
@@ -100,7 +100,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
   {
     id: 10,
@@ -111,7 +111,7 @@ export const Manager: ManagerModel[] = [
     gender: GENDER.male,
     address: "sample",
     role: USER_ROLE.manager,
-    avatar: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
+    image: "http://dummyimage.com/230x100.png/5fa2dd/ffffff",
   },
 ];
 

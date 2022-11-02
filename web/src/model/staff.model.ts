@@ -2,7 +2,7 @@ import { UserModel } from "./user.model";
 import { USER_ROLE } from "../const/user-role.const";
 
 export interface StaffModel extends UserModel {
-  role: USER_ROLE.employee;
+  role: USER_ROLE.employee_sale;
   phone: string;
   dateOfBirth: string;
   address: string;

@@ -22,6 +22,7 @@ import {
 } from "../../../validation/field.schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogSubmit } from "../../../utilities/form-data.helper";
 
 const SupplierDetailDialog = ({
   data,
@@ -45,7 +46,7 @@ const SupplierDetailDialog = ({
     register,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
     mode: "onBlur",
@@ -89,14 +90,22 @@ const SupplierDetailDialog = ({
         </h2>
         <form
           onReset={handleReset}
-          onSubmit={onClosed && handleSubmit(onClosed as never)}
+          onSubmit={
+            onClosed &&
+            handleSubmit(DialogSubmit(mode, dirtyFields, onClosed, data))
+          }
           className={`flex w-[800px] flex-wrap space-x-4 p-4`}
         >
           <div className="flex flex-1 flex-col">
             <TextInput required label={"Supplier Name"} {...register("name")} />
             <FormErrorMessage errors={errors} name={"name"} />
 
-            <TextInput required label={"Tax Code"} {...register("taxCode")} />
+            <TextInput
+              maxLength={10}
+              required
+              label={"Tax Code"}
+              {...register("taxCode")}
+            />
             <FormErrorMessage errors={errors} name={"taxCode"} />
 
             <Textarea

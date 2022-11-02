@@ -16,5 +16,6 @@ export enum USER_ROLE {
   authenticated = "authenticated",
   admin = "admin",
   manager = "manager",
-  employee = "employee",
+  employee_sale = "employee_sale",
+  employee_tech = "employee_tech",
 }

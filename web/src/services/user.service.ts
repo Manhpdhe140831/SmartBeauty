@@ -4,7 +4,11 @@ import {
   ILoginResponse,
   PaginatedResponse,
 } from "../interfaces/api.interface";
-import { UserEntity, UserModel } from "../model/user.model";
+import {
+  UserCreateEntity,
+  UserModel,
+  UserUpdateEntity,
+} from "../model/user.model";
 import { jsonToFormData } from "../utilities/form-data.helper";
 
 export async function loginApi(
@@ -54,12 +58,14 @@ export async function getAllAccount<modelType extends UserModel>(
  * TODO: pending server support Multipart content-type.
  * @param payload
  */
-export async function createUser<payloadType extends UserEntity, result>(
+export async function createUser<payloadType extends UserCreateEntity, result>(
   payload: payloadType
 ): Promise<result> {
   try {
-    const formData = jsonToFormData(payload);
-    const apiResult = await axios.post<result>("/user/save", formData);
+    const apiResult = await axios.post<result>(
+      "/user/save",
+      jsonToFormData(payload)
+    );
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;
@@ -68,25 +74,14 @@ export async function createUser<payloadType extends UserEntity, result>(
   }
 }
 
-/**
- * @deprecated this is a sample API until the server support FormData with Multipart
- * content-type.
- * @param payload
- */
-export async function createUserJson<payloadType extends UserEntity, result>(
+export async function updateUser<payloadType extends UserUpdateEntity>(
   payload: payloadType
-): Promise<result> {
+): Promise<boolean> {
   try {
-    const jsonified = structuredClone(payload);
-    for (const field of Object.keys(payload)) {
-      const formKey = field as unknown as keyof payloadType;
-      const valueField = payload[formKey];
-      if (valueField instanceof Date) {
-        // the field date will be converted to a string with ISO format.
-        jsonified[formKey] = valueField.toISOString() as never;
-      }
-    }
-    const apiResult = await axios.post<result>("/user/save", jsonified);
+    const apiResult = await axios.put<boolean>(
+      "/user/update",
+      jsonToFormData(payload)
+    );
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

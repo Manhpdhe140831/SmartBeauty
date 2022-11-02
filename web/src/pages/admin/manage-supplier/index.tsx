@@ -5,16 +5,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Divider, Pagination, Table } from "@mantine/core";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import { SupplierModel } from "../../../model/supplier.model";
-import mockProviders from "../../../mock/provider";
 import SupplierHeaderTable from "./_partial/supplier-header.table";
 import SupplierRowTable from "./_partial/supplier-row.table";
 import SupplierCreateButton from "./_partial/supplier-create.button";
+import { getListSupplier } from "../../../services/supplier.service";
 
 const Index: AppPageInterface = () => {
   const {
     pageSize,
     currentPage,
-    totalRecord,
+    totalPage,
     update: updatePagination,
   } = usePaginationHook();
 
@@ -24,9 +24,9 @@ const Index: AppPageInterface = () => {
     isLoading,
     refetch,
   } = useQuery<SupplierModel[]>(["list-supplier", currentPage], async () => {
-    const suppliers = await mockProviders();
-    updatePagination({ total: suppliers.length });
-    return suppliers;
+    const response = await getListSupplier(currentPage, pageSize);
+    updatePagination({ total: response.totalElement });
+    return response.data;
   });
 
   return (
@@ -52,7 +52,7 @@ const Index: AppPageInterface = () => {
           <tbody>
             {isLoading ? (
               <RowPlaceholderTable
-                colSpan={6}
+                colSpan={5}
                 className={"min-h-12"}
                 message={
                   <div className="text-center font-semibold text-gray-500">
@@ -82,7 +82,7 @@ const Index: AppPageInterface = () => {
         position={"center"}
         page={currentPage}
         onChange={(page) => updatePagination({ newPage: page })}
-        total={totalRecord / pageSize}
+        total={totalPage}
       />
     </div>
   );

@@ -25,6 +25,7 @@ import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { GENDER } from "../../../const/gender.const";
 import { managerModelSchema } from "../../../validation/account-model.schema";
 import DialogDetailAction from "../../../components/dialog-detail-action";
+import { DialogSubmit } from "../../../utilities/form-data.helper";
 
 type DialogProps = {
   manager: ManagerModel;
@@ -43,7 +44,7 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid, isDirty, dirtyFields },
   } = useForm<ManagerUpdateEntity>({
     resolver: zodResolver(updateManagerSchema),
     mode: "onBlur",
@@ -55,7 +56,6 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
         : undefined,
     },
   });
-  const onSubmit = (data: ManagerUpdateEntity) => onClosed && onClosed(data);
 
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,12 +67,14 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
   return (
     <form
       onReset={handleReset}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(
+        DialogSubmit("view", dirtyFields, onClosed, manager)
+      )}
       className={"flex w-[500px] space-x-2"}
     >
       <div className="flex flex-col">
         <Controller
-          name={"avatar"}
+          name={"image"}
           control={control}
           render={({ field }) => (
             <BtnSingleUploader
@@ -114,7 +116,7 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
         <FormErrorMessage
           className={"text-sm"}
           errors={errors}
-          name={"avatar"}
+          name={"image"}
         />
       </div>
 

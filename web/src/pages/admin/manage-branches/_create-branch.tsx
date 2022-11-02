@@ -74,7 +74,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
       data: {
         ...m,
         description: m.phone,
-        image: m.avatar,
+        image: m.image,
       },
     }));
   });

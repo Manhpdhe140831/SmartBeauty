@@ -43,19 +43,3 @@ export async function createBranch(payload: BranchCreateEntity) {
     throw error.response?.data;
   }
 }
-
-/**
- * @deprecated this is a sample API until the server support FormData with Multipart
- * @param payload
- */
-export async function createBranchJson(payload: BranchCreateEntity) {
-  try {
-    const jsonified = structuredClone(payload);
-    const apiResult = await axios.post<boolean>("/branch/save", jsonified);
-    return apiResult.data;
-  } catch (e) {
-    const error = e as AxiosError<IErrorResponse>;
-    console.error(error);
-    throw error.response?.data;
-  }
-}

@@ -22,7 +22,7 @@ export const baseUserSchema = z.object({
   dateOfBirth: ageSchemaFn(),
   gender: genderSchema,
   address: addressSchema,
-  avatar: fileUploadSchema
+  image: fileUploadSchema
     .and(imageTypeSchema)
     // or the avatar field can be url src of the image.
     .or(z.string().url())
@@ -42,7 +42,7 @@ export const managerModelSchema = baseUserSchema;
  */
 export const employeeModelSchema = baseUserSchema.merge(
   z.object({
-    role: z.literal(USER_ROLE.employee),
+    role: z.literal(USER_ROLE.employee_sale),
   })
 );
 

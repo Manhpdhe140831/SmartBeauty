@@ -83,7 +83,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
       data: {
         ...branchData.manager,
         description: branchData.manager.phone,
-        image: branchData.manager.avatar,
+        image: branchData.manager.image,
       },
     } as AutoCompleteItemProp<ManagerModel>);
     return parser;

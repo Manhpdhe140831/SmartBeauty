@@ -20,7 +20,7 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
   const updateSchema = z.object({
     name: nameSchema,
     Role: nameSchema,
-    PhoneNumber: nameSchema
+    PhoneNumber: nameSchema,
   });
 
   console.log(staffData);
@@ -30,25 +30,24 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty }
+    formState: { errors, isValid, isDirty },
   } = useForm<StaffPayload>({
     resolver: zodResolver(updateSchema),
     mode: "onChange",
-    defaultValues: { ...staffData }
+    defaultValues: { ...staffData },
   });
 
-  const {
-    data: availableManager,
-    isLoading: managerLoading
-  } = useQuery<AutoCompleteItemProp[]>(["available-manager"], async () => {
+  const { data: availableManager, isLoading: managerLoading } = useQuery<
+    AutoCompleteItemProp[]
+  >(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,
       data: {
-        description: m.phone
-      }
+        description: m.phone,
+      },
     }));
   });
 
@@ -58,9 +57,7 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     return dayjs(dateString).toDate();
   };
 
-  const setCancel = () => {
-
-  };
+  const setCancel = () => {};
 
   const saveInfo = () => {
     //Lưu thông tin
@@ -71,16 +68,18 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}
-            className="flex w-[600px] space-x-4">
-        <div className={"flex flex-col w-full"}>
-          <div className={"flex justify-between w-full gap-5"}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex w-[600px] space-x-4"
+      >
+        <div className={"flex w-full flex-col"}>
+          <div className={"flex w-full justify-between gap-5"}>
             <div style={{ width: 220 }} className={"h-full"}>
               <Image
                 height={180}
                 fit={"cover"}
                 radius="sm"
-                src={staffData.avatar}
+                src={staffData.image}
                 alt=""
               />
             </div>
@@ -99,26 +98,35 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
               </Input.Wrapper>
             </div>
           </div>
-          <div className="flex justify-between w-full gap-5">
-            <div className={"flex flex-col gap-3 w-full"}>
-              <DatePicker placeholder="Date of birth"
-                          label="Date of Birth"
-                          defaultValue={dateParse(staffData.dateOfBirth)}
-                          inputFormat="DD/MM/YYYY" />
+          <div className="flex w-full justify-between gap-5">
+            <div className={"flex w-full flex-col gap-3"}>
+              <DatePicker
+                placeholder="Date of birth"
+                label="Date of Birth"
+                defaultValue={dateParse(staffData.dateOfBirth)}
+                inputFormat="DD/MM/YYYY"
+              />
               <Input.Wrapper label={"Phone number"}>
-                <Input placeholder="Phone number" defaultValue={staffData.phone} />
+                <Input
+                  placeholder="Phone number"
+                  defaultValue={staffData.phone}
+                />
               </Input.Wrapper>
               <Input.Wrapper label={"Email"}>
                 <Input placeholder="Email" defaultValue={staffData.email} />
               </Input.Wrapper>
             </div>
-            <div className={"flex flex-col gap-3 w-full"}>
+            <div className={"flex w-full flex-col gap-3"}>
               <Input.Wrapper label={"Address"}>
                 <Input placeholder="City" disabled />
               </Input.Wrapper>
               <Input placeholder="District" disabled />
               <Input placeholder="Ward" disabled />
-              <Input placeholder="Full address" disabled defaultValue={staffData.address} />
+              <Input
+                placeholder="Full address"
+                disabled
+                defaultValue={staffData.address}
+              />
             </div>
           </div>
         </div>
@@ -126,8 +134,17 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
 
       <div className={"mt-3"}>
         <Group position="center">
-          <Button variant={"outline"} color="gray" size="md" onClick={() => setCancel()}>Cancel</Button>
-          <Button variant={"outline"} size="md" onClick={() => saveInfo()}>Save</Button>
+          <Button
+            variant={"outline"}
+            color="gray"
+            size="md"
+            onClick={() => setCancel()}
+          >
+            Cancel
+          </Button>
+          <Button variant={"outline"} size="md" onClick={() => saveInfo()}>
+            Save
+          </Button>
         </Group>
       </div>
     </div>

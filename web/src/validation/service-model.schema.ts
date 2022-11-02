@@ -10,16 +10,14 @@ import {
 } from "./field.schema";
 import { ProductInServiceModelSchema } from "./product-model.schema";
 
-const BaseServiceModelSchema = refineSaleSchema(
-  z
-    .object({
-      name: nameSchema,
-      description: descriptionSchema,
-      duration: z.number().min(0),
-      products: ProductInServiceModelSchema.array().min(1),
-    })
-    .extend(saleSchema.shape)
-);
+const BaseServiceModelSchema = z
+  .object({
+    name: nameSchema,
+    description: descriptionSchema,
+    duration: z.number().min(0),
+    products: ProductInServiceModelSchema.array().min(1),
+  })
+  .extend(saleSchema.shape);
 
 export default BaseServiceModelSchema;
 
@@ -29,7 +27,7 @@ export function getServiceModelSchema(mode: "view" | "create") {
     mode === "create"
       ? fileUploadSchema.and(imageTypeSchema).nullable()
       : fileUploadSchema.and(imageTypeSchema).or(z.string().url()).nullable();
-  return BaseServiceModelSchema.merge(
-    z.object({ id: idSchema, image: imageSchema })
+  return refineSaleSchema(
+    BaseServiceModelSchema.merge(z.object({ id: idSchema, image: imageSchema }))
   );
 }

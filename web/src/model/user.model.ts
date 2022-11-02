@@ -11,24 +11,28 @@ export interface UserModel {
   name: string;
   email: string;
   password?: string;
-  role?: USER_ROLE;
-  avatar?: string;
+  role: USER_ROLE;
+  image?: string;
   dateOfBirth: string;
   phone: string;
   gender: GENDER;
   address: string;
 }
 
-export interface UserEntity
-  extends Omit<UserModel, "id" | "role" | "avatar" | "dateOfBirth"> {
-  name: string;
-  email: string;
-  password?: string;
-  role?: USER_ROLE;
+export interface UserCreateEntity
+  extends Omit<UserModel, "id" | "role" | "image" | "dateOfBirth"> {
+  // must have in payload
+  password: string;
+  image?: File;
+  dateOfBirth?: Date;
+}
+
+export interface UserUpdateEntity
+  extends Omit<Partial<UserModel>, "id" | "role" | "image" | "dateOfBirth"> {
+  id: number;
   // if the user does not update the avatar,
   // the datatype will remain the same (as string)
   // otherwise the avatar will be a File.
-  avatar?: File | string;
-  dateOfBirth: Date;
-  address: string;
+  image?: File | string;
+  dateOfBirth?: Date;
 }

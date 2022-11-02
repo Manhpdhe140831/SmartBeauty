@@ -26,3 +26,49 @@ export function jsonToFormData<T extends object>(
 
   return formData;
 }
+
+// Map RHF's dirtyFields over the `data` received by `handleSubmit` and return the changed subset of that data.
+function dirtyValues(dirtyFields: object | boolean, allValues: object): object {
+  // If *any* item in an array was modified, the entire array must be submitted, because there's no way to indicate
+  // "placeholders" for unchanged elements. `dirtyFields` is `true` for leaves.
+  if (dirtyFields === true || Array.isArray(dirtyFields)) return allValues;
+  // Here, we have an object
+  return Object.fromEntries(
+    Object.keys(dirtyFields).map((key) => [
+      key,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      dirtyValues(dirtyFields[key], allValues[key]),
+    ])
+  );
+}
+
+/**
+ * Fn returns a function used in handling submit data depending on the view mode.
+ * @param mode
+ * @param dirtyFields
+ * @param onClosed
+ * @param data must have `id` field if the `mode` === `view`
+ * @constructor
+ */
+export function DialogSubmit<
+  T extends { id?: number },
+  submitType extends object
+>(
+  mode: "view" | "create",
+  dirtyFields: object | boolean,
+  onClosed?: (arg0: never) => void,
+  data?: T
+) {
+  return (d: submitType) => {
+    if (mode === "view") {
+      onClosed &&
+        onClosed({
+          ...dirtyValues(dirtyFields, d),
+          id: data?.id,
+        } as never);
+    } else {
+      onClosed && onClosed(d as never);
+    }
+  };
+}

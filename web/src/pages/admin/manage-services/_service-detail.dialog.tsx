@@ -57,11 +57,11 @@ const ServiceDetailDialog: FC<
             ...data,
             discountStart: data.discountStart
               ? dayjs(data.discountStart).toDate()
-              : null,
+              : undefined,
             discountEnd: data.discountEnd
               ? dayjs(data.discountEnd).toDate()
-              : null,
-            discountPercent: data.discountPercent ?? null,
+              : undefined,
+            discountPercent: data.discountPercent ?? undefined,
           }
         : undefined,
   });

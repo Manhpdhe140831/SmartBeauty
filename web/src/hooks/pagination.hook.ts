@@ -8,22 +8,33 @@ import { useState } from "react";
 const usePaginationHook = (_pageSize = 10, pageNo = 1) => {
   const [size, setPageSize] = useState(_pageSize);
   const [page, setPage] = useState(pageNo);
-  const [total, setTotal] = useState(0);
+  const [totalRecord, setTotalRecord] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
 
-  function _updatePagination(props: Partial<{ total: number, newSize: number, newPage: number }>) {
-    if (props.newSize)
+  function _updatePagination(
+    props: Partial<{ total: number; newSize: number; newPage: number }>
+  ) {
+    let _totalRecord = totalRecord;
+    let _pageSize = size;
+    if (props.newSize) {
       setPageSize(props.newSize);
-    if (props.newPage)
-      setPage(props.newPage);
-    if (props.total)
-      setTotal(props.total);
+      _pageSize = props.newSize;
+    }
+    if (props.newPage) setPage(props.newPage);
+    if (props.total) {
+      setTotalRecord(props.total);
+      _totalRecord = props.total;
+    }
+
+    setTotalPage(Math.ceil(_totalRecord / _pageSize));
   }
 
   return {
     currentPage: page,
-    totalRecord: total,
+    totalRecord,
+    totalPage,
     pageSize: size,
-    update: _updatePagination
+    update: _updatePagination,
   };
 };
 
@@ -33,7 +44,11 @@ const usePaginationHook = (_pageSize = 10, pageNo = 1) => {
  * @param currentPage
  * @param pageSize
  */
-export function getItemNo(indexArray: number, currentPage: number, pageSize: number) {
+export function getItemNo(
+  indexArray: number,
+  currentPage: number,
+  pageSize: number
+) {
   /**
    * example: at page 2, item at index 3 in a pageSize 10 will be:
    *
@@ -41,7 +56,7 @@ export function getItemNo(indexArray: number, currentPage: number, pageSize: num
    * -> (pageSize * (currentPage - 1)) + (indexArray + 1)
    * -> 14
    */
-  return (pageSize * (currentPage - 1)) + (indexArray + 1);
+  return pageSize * (currentPage - 1) + (indexArray + 1);
 }
 
 export default usePaginationHook;

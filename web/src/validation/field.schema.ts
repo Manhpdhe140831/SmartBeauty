@@ -109,6 +109,7 @@ export const refineSaleSchema = <
           !discountStart || dayjs(discountStart).isAfter(new Date()),
         {
           path: ["discountStart"],
+          message: "Start date must be after today date!",
         }
       ) as unknown as T
   );

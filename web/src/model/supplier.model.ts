@@ -7,26 +7,25 @@ export interface SupplierModel {
   // 10 characters
   taxCode: string;
   description?: string;
-  // auto gen on server.
-  supplierCode?: string;
   phone: string;
   email: string;
   address: string;
-  supplierImage?: string;
+  image?: string;
 }
 
 /**
  * Interface corresponds to the API create payload.
  */
 export interface SupplierCreateEntity
-  extends Omit<SupplierModel, "id" | "supplierCode" | "supplierImage"> {
-  supplierImage?: File;
+  extends Omit<SupplierModel, "id" | "image"> {
+  image?: File;
 }
 
 /**
  * Interface corresponds to the API update payload.
  */
 export interface SupplierUpdateEntity
-  extends Omit<SupplierModel, "supplierCode" | "supplierImage"> {
-  supplierImage?: string | File;
+  extends Omit<Partial<SupplierModel>, "image"> {
+  id: number;
+  image?: string | File;
 }

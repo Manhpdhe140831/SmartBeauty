@@ -201,7 +201,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
       </small>
       {/* Manual handle Form binding because btn does not expose `ref` for hook*/}
       <Controller
-        name={"avatar"}
+        name={"image"}
         control={control}
         render={({ field }) => (
           <BtnSingleUploader
@@ -229,7 +229,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
           />
         )}
       />
-      <FormErrorMessage errors={errors} name={"avatar"} />
+      <FormErrorMessage errors={errors} name={"image"} />
 
       <Divider my={8} />
 

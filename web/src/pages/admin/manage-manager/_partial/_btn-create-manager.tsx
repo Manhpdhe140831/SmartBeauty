@@ -5,7 +5,7 @@ import CreateManager from "../_create-manager";
 import { useMutation } from "@tanstack/react-query";
 import { ManagerCreateEntity } from "../../../../model/manager.model";
 import { IErrorResponse } from "../../../../interfaces/api.interface";
-import { createUserJson } from "../../../../services/user.service";
+import { createUser } from "../../../../services/user.service";
 
 type BtnCreateManagerProps = {
   onChanged: (updated?: boolean) => void;
@@ -18,24 +18,21 @@ const BtnCreateManager: FC<BtnCreateManagerProps> = ({ onChanged }) => {
     boolean,
     IErrorResponse,
     ManagerCreateEntity
-  >(
-    (v: ManagerCreateEntity) => createUserJson<ManagerCreateEntity, boolean>(v),
-    {
-      onSuccess: (result) => {
-        if (result) {
-          setDialogOpen(false);
-          return onChanged(true);
-        }
-        onChanged(false);
-      },
-      onError: (error) => {
-        console.warn(error);
-        // TODO better error system
-        alert(error.message);
-        debugger;
-      },
-    }
-  );
+  >((v: ManagerCreateEntity) => createUser(v), {
+    onSuccess: (result) => {
+      if (result) {
+        setDialogOpen(false);
+        return onChanged(true);
+      }
+      onChanged(false);
+    },
+    onError: (error) => {
+      console.warn(error);
+      // TODO better error system
+      alert(error.message);
+      debugger;
+    },
+  });
 
   return (
     <>

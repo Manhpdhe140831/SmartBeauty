@@ -1,8 +1,16 @@
-import { SupplierModel } from "../../../../model/supplier.model";
+import {
+  SupplierModel,
+  SupplierUpdateEntity,
+} from "../../../../model/supplier.model";
 import { Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
 import SupplierDetailDialog from "../_supplier-detail.dialog";
+import { useMutation } from "@tanstack/react-query";
+import { IErrorResponse } from "../../../../interfaces/api.interface";
+import { updateSupplier } from "../../../../services/supplier.service";
+import { showNotification } from "@mantine/notifications";
+import { IconCheck, IconX } from "@tabler/icons";
 
 type RowProps = {
   no: number;
@@ -13,6 +21,32 @@ type RowProps = {
 const SupplierRowTable = ({ data, no, rowUpdated }: RowProps) => {
   const clipboard = useClipboard({ timeout: 500 });
   const [view, setView] = useState(false);
+
+  const updateMutation = useMutation<
+    boolean,
+    IErrorResponse,
+    SupplierUpdateEntity
+  >(["update-supplier"], (data: SupplierUpdateEntity) => updateSupplier(data), {
+    onSuccess: () => {
+      showNotification({
+        title: "Success!",
+        message: "You have updated the supplier!",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+      setView(false);
+      rowUpdated && rowUpdated();
+    },
+    onError: (e) => {
+      console.error(e);
+      showNotification({
+        title: "Failed!",
+        message: "Cannot update the supplier. Please try again!",
+        color: "red",
+        icon: <IconX />,
+      });
+    },
+  });
 
   return (
     <>
@@ -48,10 +82,10 @@ const SupplierRowTable = ({ data, no, rowUpdated }: RowProps) => {
         key={data.id}
         data={data}
         opened={view}
-        onClosed={(u) => {
+        onClosed={async (u) => {
           if (u) {
-            console.log(u);
-            rowUpdated && rowUpdated();
+            await updateMutation.mutateAsync(u);
+            return;
           }
           setView(false);
         }}

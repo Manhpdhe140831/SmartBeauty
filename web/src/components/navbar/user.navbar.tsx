@@ -18,7 +18,7 @@ const UserNavbar = () => {
       <NavLink
         component={"a"}
         active={router.pathname.startsWith("/profile")}
-        icon={<Avatar src={user.avatar} radius="xl" />}
+        icon={<Avatar src={user.image} radius="xl" />}
         label={
           <Tooltip label={user.email}>
             <Text size="sm" weight={500}>
