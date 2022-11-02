@@ -45,7 +45,7 @@ public class SpaBedController {
             return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
         }
     }
-    @PostMapping(value = "/bed/save", headers="Content-Type=multipart/form-data")
+    @PostMapping(value = "/bed/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveBed(@RequestParam(value = "name") String name,
                                         @RequestParam(value = "branch") Long branch){
         String check = spaBedService.validateSpaBed(name);

@@ -45,20 +45,6 @@ public class CourseServiceImpl implements CourseService {
 
         return courses;
     }
-//    private long id;
-//    private String code;
-//    private String name;
-//    private double price;
-//    private int duration;
-//    private Long endOfCourse;
-//    private Date discountStart;
-//    private Date discountEnd;
-//    private double discountPercent;
-//    private String image;
-//    private String description;
-//    private boolean deleted;
-
-
 
     @Override
     public Boolean save(String name, double price, int duration, Date endOfCourse, Date discountStart, Date discountEnd, double discountPercent, String image, String description, boolean deleted, List<Long> listProductId) {
@@ -73,7 +59,7 @@ public class CourseServiceImpl implements CourseService {
             course.setDiscountPercent(discountPercent);
             course.setImage(image);
             course.setDescription(description);
-            course.setDeleted(true);
+            course.setDeleted(false);
 
             if (null == listProductId){
                 course = courseRepository.save(course);
@@ -90,10 +76,16 @@ public class CourseServiceImpl implements CourseService {
             }
     }
 
-    @Override
-    public Boolean remove(Long id) {
-        return null;
-    }
+//    @Override
+//    public Boolean remove(Long id) {
+//
+//        Boolean checkRemove = courseRepository.remove(id);
+//        if (checkRemove == true){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
 
     @Override
     public CourseResponseDto getListCoursePaginationAndSearch(String name, String code, int pageNo, int pageSize) {
@@ -149,6 +141,69 @@ public class CourseServiceImpl implements CourseService {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    @Override
+    public Boolean update(Long id, String name, Double price, Integer duration, Date endOfCourse, Date discountStart, Date discountEnd, Double discountPercent, String image, String description, boolean deleted, List<Long> listServiceId) {
+
+
+            Course course = null;
+            Optional<Course> optional = courseRepository.findById(id);
+            if (optional.isPresent()){
+                course = optional.get();
+                if (name != null){
+                    course.setName(name);
+                }
+                if (price != null){
+                    course.setPrice(price);
+                }
+                if (duration != null){
+                    course.setDuration(duration);
+                }
+                if (endOfCourse != null){
+                    course.setEndOfCourse(endOfCourse);
+                }
+                if (discountStart != null){
+                    course.setDiscountStart(discountStart);
+                }
+                if (discountEnd != null){
+                    course.setDiscountEnd(discountEnd);
+                }
+                if (discountPercent != null){
+                    course.setDiscountPercent(discountPercent);
+                }
+                if (image != null){
+                    course.setImage(image);
+                }
+                if (description != null){
+                    course.setDescription(description);
+                }
+                course.setDeleted(true);
+                Course_Service_Mapping course_service_mapping = course_service_mapping_repository.getServiceById(course.getId());
+                if (null !=course_service_mapping) {
+                    course_service_mapping_repository.delete(course_service_mapping);
+                    if (null == listServiceId) {
+                        courseRepository.save(course);
+                        return true;
+                    } else {
+                        for (Long item : listServiceId
+                        ) {
+                            course = courseRepository.save(course);
+                            Course_Service_Mapping course_service_mapping1 = new Course_Service_Mapping(course.getId(), item);
+                            course_service_mapping_repository.save(course_service_mapping1);
+
+                        }
+                        return true;
+                    }
+                }else{
+                    courseRepository.save(course);
+                    return true;
+                }
+
+            }else{
+                return false;
+            }
+
     }
 
 

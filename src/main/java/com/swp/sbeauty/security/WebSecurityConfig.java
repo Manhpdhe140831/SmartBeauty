@@ -90,7 +90,7 @@ public class WebSecurityConfig  {
                 .antMatchers("/api/product/**").permitAll()
                 .antMatchers("/api/category/**").permitAll()
                 .antMatchers("/api/supplier/**").permitAll()
-                .antMatchers("/api/courses/**").permitAll()
+                .antMatchers("/api/course/**").permitAll()
                 .antMatchers("/api/service/**").permitAll()
 
                 .anyRequest().authenticated();

@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Setter
 public class SupplierDto {
 
-    private Long id;
+    private long id;
     private String name;
 
     private String taxCode;

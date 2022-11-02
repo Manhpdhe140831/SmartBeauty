@@ -7,17 +7,19 @@ import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Supplier;
 import org.springframework.data.domain.Page;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ProductService {
     List<ProductDto> getProducts();
 
     ProductDto getProductById(Long id);
-    ProductDto saveProduct(ProductDto productDto);
 
-    ProductDto updateProduct(ProductDto productDto, Long id);
-    Page<Product> getAllProductPagination(int offset, int pageSize);
-    Page<Product> findProductPaginationAndSearch(String name,int offset,int pageSize);
+
     ProductResponseDto getProductAndSearchByName(String name, int pageNo, int pageSize);
     ProductResponseDto getAllProduct(int pageNo,int pageSize);
+    String validateProduct(String name);
+    Boolean saveProduct(String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
+    Boolean updateProduct(Long id,String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
+    Date parseDate(String strDate);
 }

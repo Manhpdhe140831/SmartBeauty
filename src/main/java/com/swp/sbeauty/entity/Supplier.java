@@ -18,7 +18,7 @@ import javax.persistence.*;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private String taxCode;
     private String description;

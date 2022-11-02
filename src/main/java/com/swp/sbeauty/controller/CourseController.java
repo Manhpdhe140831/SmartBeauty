@@ -25,7 +25,7 @@ public class CourseController {
     @Autowired
     private CourseService service;
 
-    @GetMapping(value = "/course/getallcourse")
+    @GetMapping(value = "/course/getall")
 
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
@@ -45,10 +45,10 @@ public class CourseController {
         }
     }
 
-    @RequestMapping(value = "/courses/save", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
+    @RequestMapping(value = "/course/save", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
     public ResponseEntity<?> saveCourse (
             @RequestParam("name") String name,
-            @RequestParam(value = "price", defaultValue = "1") double price,
+            @RequestParam(value = "price", defaultValue = "0") double price,
             @RequestParam("duration") int duration,
             @RequestParam("endOfCourse") String endOfCourse,
             @RequestParam("discountStart") String discountStart,
@@ -68,11 +68,36 @@ public class CourseController {
 
     }
 
-    @RequestMapping(value = "/courses/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Boolean> removeCourse(@PathVariable Long id){
-        Boolean resultRemove = service.remove(id);
-        return new ResponseEntity<>(resultRemove, HttpStatus.OK);
+    @RequestMapping(value = "/course/update", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
+    public ResponseEntity<?> updateCourse (
+            @RequestParam("id") Long id,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "price",required = false ,defaultValue = "0") Double price,
+            @RequestParam(value = "duration", required = false) Integer duration,
+            @RequestParam(value = "endOfCourse", required = false) String endOfCourse,
+            @RequestParam(value = "discountStart", required = false) String discountStart,
+            @RequestParam(value = "discountEnd", required = false) String discountEnd,
+            @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
+            @RequestParam(value = "image", required = false,defaultValue = "") String image,
+            @RequestParam(value = "description",required = false) String description,
+            @RequestParam(value = "deleted", required = false) boolean deleted,
+            @RequestParam (value = "listProduct", required = false) List<Long> listProduct
+    ){
+
+        Date startDate = service.parseDate(discountStart);
+        Date endDate = service.parseDate(discountEnd);
+        Date endCourse = service.parseDate(endOfCourse);
+        Boolean result = service.update(id, name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, listProduct);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
+
+//    @RequestMapping(value = "/course/remove", method = RequestMethod.POST)
+//    public ResponseEntity<?> removeCourse(@RequestParam("id") Long id){
+//
+//        Boolean checkRemove = service.remove(id);
+//        return new ResponseEntity<>(checkRemove, HttpStatus.OK);
+//    }
 
 
 }

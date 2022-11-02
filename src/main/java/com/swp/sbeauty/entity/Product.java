@@ -20,30 +20,18 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private double price;
+    private String description;
+    private String image;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountEnd;
     private double discountPercent;
-    private String image;
-    private int quantity;
     private String unit;
-    private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(  name = "product_branch",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "branch_id"))
-    private Set<Branch> branches = new HashSet<>();
+    private int dose;
 
 }
 

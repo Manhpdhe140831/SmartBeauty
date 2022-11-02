@@ -1,5 +1,6 @@
 package com.swp.sbeauty.repository;
 
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Category;
 import com.swp.sbeauty.entity.SpaBed;
 import org.springframework.data.domain.Page;
@@ -13,4 +14,5 @@ public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
     public Page<SpaBed> searchListWithField(String key, Pageable pageable);
 
     Boolean existsByName(String name);
+    SpaBed getSpaBedById(Long id);
 }
