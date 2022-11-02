@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,29 +32,7 @@ public class ProductController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/product/save")
-    public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto){
-        ProductDto result = productService.saveProduct(productDto);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-    @PutMapping ("/product/updateProduct")
-    public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductDto productDto,  @RequestParam(value = "id",required = false) Long id){
-        ProductDto result = productService.updateProduct(productDto, id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-    /*@GetMapping("/product/getAllProduct")
-    private APIResponse<Page<Product>> getProductWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false) String name){
-        Page<Product> productsWithPagination;
-        if(name =="" ||name == null){
-            productsWithPagination = productService.getAllProductPagination(page-1,pageSize);
-        }
-        else {
-            productsWithPagination = productService.findProductPaginationAndSearch(name,page -1,pageSize);
-        }
-        return new APIResponse<>(productsWithPagination.getSize(),productsWithPagination);
-    }*/
+
 
     @GetMapping("/product")
     private ResponseEntity<?> getAllProductAndSearchByName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
@@ -68,5 +47,50 @@ public class ProductController {
             ProductResponseDto productResponseDto = productService.getProductAndSearchByName(name,page -1,pageSize);
             return new ResponseEntity<>(productResponseDto,HttpStatus.OK);
         }
+    }
+    @PostMapping(value = "/product/create", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> saveProduct(@RequestParam(value = "name") String name,
+                                     @RequestParam(value = "price", defaultValue = "0") double price,
+                                     @RequestParam(value = "description") String description,
+                                     @RequestParam(value = "image") String image,
+                                     @RequestParam(value = "discountStart") String discountStart,
+                                     @RequestParam(value = "discountEnd") String discountEnd,
+                                     @RequestParam(value = "discountPercent",defaultValue = "0") double discountPercent,
+                                     @RequestParam(value = "supplier") long supplier,
+                                     @RequestParam(value = "unit") String unit,
+                                     @RequestParam(value = "dose") int dose){
+        String check = productService.validateProduct(name);
+        if(check == ""){
+            Date startDate = productService.parseDate(discountStart);
+            Date endDate = productService.parseDate(discountEnd);
+            Boolean result = productService.saveProduct(name,price,description,image,startDate,endDate,discountPercent,supplier,unit,dose );
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+    @PutMapping ("/product/update")
+    public ResponseEntity<?> updateProduct(@RequestParam(value = "id") Long id,
+                                       @RequestParam(value = "name", required = false) String name,
+                                       @RequestParam(value = "price",required = false) double price,
+                                       @RequestParam(value = "description",required = false) String description,
+                                       @RequestParam(value = "image",required = false) String image,
+                                       @RequestParam(value = "discountStart",required = false) String discountStart,
+                                       @RequestParam(value = "discountEnd",required = false) String discountEnd,
+                                       @RequestParam(value = "discountPercent",required = false) double discountPercent,
+                                       @RequestParam(value = "supplier",required = false) long supplier,
+                                       @RequestParam(value = "unit",required = false) String unit,
+                                       @RequestParam(value = "dose",required = false) int dose){
+        String check = productService.validateProduct(name);
+        if(check == ""){
+            Date startDate = productService.parseDate(discountStart);
+            Date endDate = productService.parseDate(discountEnd);
+            Boolean result = productService.updateProduct(id, name, price,description,image,startDate,endDate,discountPercent,supplier,unit,dose);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

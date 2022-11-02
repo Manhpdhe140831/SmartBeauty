@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query(value = "SELECT p FROM Product p join Service_Product_mapping spm ON p.id = spm.product_id where spm.service_id =?1")
     public List<Product> getAllProductByServiceId(Long id);
 
+    Boolean existsByName(String name);
+
 }

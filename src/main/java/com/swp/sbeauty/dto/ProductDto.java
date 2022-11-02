@@ -17,20 +17,21 @@ import java.util.Set;
 public class ProductDto {
     private Long id;
     private String name;
-    private Double price;
+    private double price;
+    private String description;
+    private String image;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountEnd;
     private double discountPercent;
-    private String image;
-    private int quantity;
-    @NotEmpty
+    private long supplier;
     private String unit;
-    private String description;
-    private SupplierDto supplier;
-    private CategoryDto category;
-    private Set<BranchDto> branch;
+    private int dose;
+
+
+
+
     public ProductDto(){}
 
     public ProductDto(Product product){
@@ -39,43 +40,31 @@ public class ProductDto {
             this.setId(product.getId());
             this.setName(product.getName());
             this.setPrice(product.getPrice());
+            this.setDescription(product.getDescription());
+            this.setImage(product.getImage());
             this.setDiscountStart(product.getDiscountStart());
             this.setDiscountEnd(product.getDiscountEnd());
-            this.setImage(product.getImage());
-            this.setQuantity(product.getQuantity());
+            this.setDiscountPercent(product.getDiscountPercent());
             this.setUnit(product.getUnit());
-            this.setDescription(product.getDescription());
-            if(product.getSupplier() != null){
-                supplier = new SupplierDto(product.getSupplier());
-            }
-            if(product.getCategory() != null){
-                category = new CategoryDto(product.getCategory());
-            }
-            if(product.getBranches()!=null){
-                this.branch = new HashSet<>();
-                for(Branch branch1 : product.getBranches()){
-                    this.branch.add(new BranchDto(branch1));
-                }
-            }
+            this.setDose(product.getDose());
+
         }
 
-//        if(product != null){
-//            this.setId(product.getId());
-//            this.setName(product.getName());
-//            this.setImportPrice(product.getImportPrice());
-//            this.setSalePrice(product.getSalePrice());
-//            this.setEXP(product.getEXP());
-//            this.setMFG(product.getMFG());
-//            this.setDescription(product.getDescription());
-//            if(product.getSupplier() != null){
-//                supplier = new SupplierDto(product.getSupplier());
-//            }
-//            if(product.getCategory() != null){
-//                category = new CategoryDto(product.getCategory());
-//            }
-//        }
 
     }
 
+    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, double discountPercent, String unit, int dose, long supplier) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.unit = unit;
+        this.dose = dose;
+        this.supplier = supplier;
+    }
 }
 
