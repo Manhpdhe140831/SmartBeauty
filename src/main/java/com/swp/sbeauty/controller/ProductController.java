@@ -50,15 +50,15 @@ public class ProductController {
     }
     @PostMapping(value = "/product/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveProduct(@RequestParam(value = "name") String name,
-                                     @RequestParam(value = "price", defaultValue = "0") double price,
+                                     @RequestParam(value = "price") Double price,
                                      @RequestParam(value = "description") String description,
                                      @RequestParam(value = "image") String image,
                                      @RequestParam(value = "discountStart") String discountStart,
                                      @RequestParam(value = "discountEnd") String discountEnd,
-                                     @RequestParam(value = "discountPercent",defaultValue = "0") double discountPercent,
-                                     @RequestParam(value = "supplier") long supplier,
+                                     @RequestParam(value = "discountPercent") Double discountPercent,
+                                     @RequestParam(value = "supplier") Long supplier,
                                      @RequestParam(value = "unit") String unit,
-                                     @RequestParam(value = "dose") int dose){
+                                     @RequestParam(value = "dose") Integer dose){
         String check = productService.validateProduct(name);
         if(check == ""){
             Date startDate = productService.parseDate(discountStart);
@@ -73,20 +73,18 @@ public class ProductController {
     @PutMapping ("/product/update")
     public ResponseEntity<?> updateProduct(@RequestParam(value = "id") Long id,
                                        @RequestParam(value = "name", required = false) String name,
-                                       @RequestParam(value = "price",required = false) double price,
+                                       @RequestParam(value = "price",required = false) Double price,
                                        @RequestParam(value = "description",required = false) String description,
                                        @RequestParam(value = "image",required = false) String image,
                                        @RequestParam(value = "discountStart",required = false) String discountStart,
                                        @RequestParam(value = "discountEnd",required = false) String discountEnd,
-                                       @RequestParam(value = "discountPercent",required = false) double discountPercent,
-                                       @RequestParam(value = "supplier",required = false) long supplier,
+                                       @RequestParam(value = "discountPercent",required = false) Double discountPercent,
+                                       @RequestParam(value = "supplier",required = false) Long supplier,
                                        @RequestParam(value = "unit",required = false) String unit,
-                                       @RequestParam(value = "dose",required = false) int dose){
+                                       @RequestParam(value = "dose",required = false) Integer dose){
         String check = productService.validateProduct(name);
         if(check == ""){
-            Date startDate = productService.parseDate(discountStart);
-            Date endDate = productService.parseDate(discountEnd);
-            Boolean result = productService.updateProduct(id, name, price,description,image,startDate,endDate,discountPercent,supplier,unit,dose);
+            Boolean result = productService.updateProduct(id, name, price,description,image,discountStart,discountEnd,discountPercent,supplier,unit,dose);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

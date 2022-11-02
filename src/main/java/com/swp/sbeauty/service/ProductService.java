@@ -19,7 +19,7 @@ public interface ProductService {
     ProductResponseDto getProductAndSearchByName(String name, int pageNo, int pageSize);
     ProductResponseDto getAllProduct(int pageNo,int pageSize);
     String validateProduct(String name);
-    Boolean saveProduct(String name, double price, String description, String image, Date discountStart, Date discountEnd, double discountPercent , Long supplier, String unit, int dose);
-    Boolean updateProduct(Long id,String name, double price, String description, String image, Date discountStart, Date discountEnd, double discountPercent , Long supplier, String unit, int dose);
+    Boolean saveProduct(String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
+    Boolean updateProduct(Long id,String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
     Date parseDate(String strDate);
 }

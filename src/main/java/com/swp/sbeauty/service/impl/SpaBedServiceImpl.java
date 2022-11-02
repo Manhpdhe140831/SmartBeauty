@@ -141,7 +141,7 @@ public class SpaBedServiceImpl implements SpaBedService {
 
     @Override
     public Boolean updateSpaBed(Long id, String name, Long branch) {
-        SpaBed spaBed = new SpaBed();
+        SpaBed spaBed = spaBedRepository.getSpaBedById(id);
         if(spaBed != null){
             if(name != null){
                 spaBed.setName(name);

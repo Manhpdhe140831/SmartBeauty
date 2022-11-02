@@ -17,17 +17,18 @@ import java.util.Set;
 public class ProductDto {
     private Long id;
     private String name;
-    private double price;
+    private Double price;
     private String description;
     private String image;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountEnd;
-    private double discountPercent;
-    private long supplier;
+    private Double discountPercent;
+    private Long supplier;
     private String unit;
-    private int dose;
+    private Integer dose;
+    private SupplierDto suppliers;
 
 
 
@@ -53,7 +54,7 @@ public class ProductDto {
 
     }
 
-    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, double discountPercent, String unit, int dose, long supplier) {
+    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, Long supplier) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -65,6 +66,20 @@ public class ProductDto {
         this.unit = unit;
         this.dose = dose;
         this.supplier = supplier;
+    }
+
+    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, SupplierDto suppliers) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.unit = unit;
+        this.dose = dose;
+        this.suppliers = suppliers;
     }
 }
 

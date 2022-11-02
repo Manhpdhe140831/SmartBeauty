@@ -20,6 +20,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,7 +35,6 @@ public class ProductServiceImpl implements ProductService {
     private SupplierRepository supplierRepository;
     @Autowired
     private Product_Supplier_Repository product_supplier_repository;
-
 
     @Override
     public List<ProductDto> getProducts() {
@@ -83,6 +83,7 @@ public class ProductServiceImpl implements ProductService {
         dtos.stream().forEach(f->
                 {
                     Supplier supplier = supplierRepository.getSupplierFromProduct(f.getId());
+                    //f.setSuppliers(new SupplierDto(supplier));
                     f.setSupplier(supplier.getId());
                 }
         );
@@ -115,6 +116,7 @@ public class ProductServiceImpl implements ProductService {
                 {
                     Supplier supplier = supplierRepository.getSupplierFromProduct(f.getId());
                     f.setSupplier(supplier.getId());
+                    //f.setSuppliers(new SupplierDto(supplier));
                 }
         );
         List<ProductDto> pageResult = new ArrayList<>(dtos);
@@ -135,7 +137,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Boolean saveProduct(String name, double price, String description, String image, Date discountStart, Date discountEnd, double discountPercent, Long supplier, String unit, int dose) {
+    public Boolean saveProduct(String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
         try {
             Product product = new Product();
             product.setName(name);
@@ -157,15 +159,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Boolean updateProduct(Long id, String name, double price, String description, String image, Date discountStart, Date discountEnd, double discountPercent, Long supplier, String unit, int dose) {
+    public Boolean updateProduct(Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
         try {
 
-            Product product = new Product();
+            Product product = productRepository.getProductById(id);
             if (product != null) {
                 if (name != null) {
                     product.setName(name);
                 }
-                if (price != 0) {
+                if (price != null) {
                     product.setPrice(price);
                 }
                 if (description != null) {
@@ -175,18 +177,25 @@ public class ProductServiceImpl implements ProductService {
                     product.setImage(image);
                 }
                 if (discountStart != null) {
-                    product.setDiscountStart(discountStart);
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date startDate = df.parse(discountStart);
+                    product.setDiscountStart(startDate);
                 }
                 if (discountEnd != null) {
-                    product.setDiscountEnd(discountEnd);
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date endDate = df.parse(discountEnd);
+                    product.setDiscountEnd(endDate);
                 }
                 if (unit != null) {
                     product.setUnit(unit);
                 }
-                if (dose != 0) {
+                if (dose != null) {
                     product.setDose(dose);
                 }
-                product.setDiscountPercent(discountPercent);
+                if(discountPercent !=null){
+                    product.setDiscountPercent(discountPercent);
+                }
+
                 if (supplier != null) {
                     Product_Supplier_Mapping product_supplier_old = product_supplier_repository.getProductBySupplier(id);
                     product_supplier_repository.delete(product_supplier_old);
@@ -197,9 +206,10 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 return false;
             }
-        }catch (Exception e){
-            throw e;
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     @Override

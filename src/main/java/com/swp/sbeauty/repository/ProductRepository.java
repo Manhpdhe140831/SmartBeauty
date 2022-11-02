@@ -2,6 +2,7 @@ package com.swp.sbeauty.repository;
 
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
+import com.swp.sbeauty.entity.SpaBed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     @Query(value = "SELECT p FROM Product p join Service_Product_mapping spm ON p.id = spm.product_id where spm.service_id =?1")
     public List<Product> getAllProductByServiceId(Long id);
-
+    Product getProductById(Long id);
     Boolean existsByName(String name);
 
 }
