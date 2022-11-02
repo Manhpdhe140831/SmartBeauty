@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { IconTrash } from "@tabler/icons";
-import { ActionIcon, Modal, Tooltip } from "@mantine/core";
-import StaffInfo from "../_view-staff";
+import { ActionIcon, Button, Group, Modal, Tooltip } from "@mantine/core";
 import { StaffModel } from "../../../../model/staff.model";
 
 type ModalProps = {
@@ -11,6 +10,15 @@ type ModalProps = {
 
 const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
   const [viewBranch, setViewBranch] = useState<boolean>(false);
+
+  const onClose = () => {
+    setViewBranch(false)
+  }
+
+  const onSubmit = () => {
+    // Xác nhận xóa Staff
+    onClose()
+  }
 
   return (
     <>
@@ -33,16 +41,13 @@ const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
           setViewBranch(false);
         }}
       >
-        <StaffInfo
-          onClose={(e) => {
-            //  TODO: handle API call
-            console.log(e);
-            // close dialog and update to the list screen
-            onChanged && onChanged(true);
-            setViewBranch(false);
-          }}
-          staffData={staffData}
-        />
+        Are you sure you want to delete staff <span className={'font-bold'}>{staffData.name}</span> from system ?
+        <div className={"mt-3"}>
+          <Group position="center">
+            <Button onClick={() => {onClose()}}>Cancel</Button>
+            <Button onClick={() => {onSubmit()}}>Submit</Button>
+          </Group>
+        </div>
       </Modal>
     </>
   );
