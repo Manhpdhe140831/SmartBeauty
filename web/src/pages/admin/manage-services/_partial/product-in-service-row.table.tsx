@@ -9,17 +9,16 @@ import {
 } from "react-hook-form";
 import { getServiceModelSchema } from "../../../../validation/service-model.schema";
 import { z } from "zod";
-import { ActionIcon, Image, NumberInput, Select } from "@mantine/core";
+import { ActionIcon, Image, NumberInput } from "@mantine/core";
 import { IconX } from "@tabler/icons";
-import { useEffect, useState } from "react";
-import AutoCompleteItem, {
-  AutoCompleteItemProp,
-} from "../../../../components/auto-complete-item";
+import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { useQuery } from "@tanstack/react-query";
 import mockProduct from "../../../../mock/product";
-import { formatPrice } from "../../../../utilities/fn.helper";
+import { formatPrice, rawToAutoItem } from "../../../../utilities/fn.helper";
 import { ProductModel } from "../../../../model/product.model";
 import FormErrorMessage from "../../../../components/form-error-message";
+import DatabaseSearchSelect from "../../../../components/database-search.select";
+import { useState } from "react";
 
 type ParentSchema = ReturnType<typeof getServiceModelSchema>;
 type inferParentSchema = z.infer<ParentSchema>;
@@ -40,39 +39,35 @@ const ProductInServiceRowTable = ({
   errors,
   remove,
 }: NestedArrayRowProps) => {
-  const [selected, setSelected] = useState<ProductModel | null>();
-  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(field.product);
 
-  const { data: availableProducts, isLoading: productLoading } = useQuery<
-    AutoCompleteItemProp<ProductModel>[]
-  >(["available-product"], async () => {
-    const p = await mockProduct();
-    setProducts(p);
-    return p.map((p) => ({
-      // add fields of SelectItemGeneric
-      value: String(p.id),
-      label: p.name,
-      data: {
-        ...p,
-        description: `${formatPrice(p.price)} VND`,
-      },
-    }));
+  const { data: viewingProduct, isLoading: viewLoading } =
+    useQuery<ProductModel | null>(
+      ["available-product", selectedId],
+      async () => {
+        if (selectedId === undefined || selectedId === null) {
+          return null;
+        }
+        const p = await mockProduct();
+        const f = p.find((p) => p.id === selectedId);
+        return f ?? null;
+      }
+    );
+
+  const fnHelper = (s: ProductModel) => ({
+    id: s.id,
+    name: s.name,
+    description: `${formatPrice(s.price)} VND`,
   });
 
-  useEffect(() => {
-    // update selected product
-    if (field.product === undefined || field.product === null) {
-      setSelected(null);
-      return;
-    }
-    setSelected(getProductById(field.product, products));
-  }, [products, field.product]);
-
-  function getProductById(id: number | null, fromList: ProductModel[]) {
-    if (id === null) {
-      return undefined;
-    }
-    return fromList.find((p) => p.id === id);
+  // TODO transfer to service.
+  async function searchProduct(
+    productName: string
+  ): Promise<AutoCompleteItemProp<ProductModel>[]> {
+    const listProduct = await mockProduct();
+    return listProduct
+      .filter((p) => p.name.includes(productName))
+      .map((i) => rawToAutoItem(i, fnHelper));
   }
 
   return (
@@ -80,54 +75,58 @@ const ProductInServiceRowTable = ({
       <td className={"text-center"}>{index + 1}</td>
       <td>
         <div className="aspect-square w-full overflow-hidden rounded shadow-lg">
-          {selected && (
+          {viewingProduct && (
             <Image
               width={"100%"}
               fit={"cover"}
-              src={selected.image}
-              alt={selected.name}
+              src={viewingProduct.image}
+              alt={viewingProduct.name}
             />
           )}
         </div>
       </td>
       <td className={"overflow-hidden text-ellipsis whitespace-nowrap"}>
-        <Controller
-          render={({ field: ControlledField }) => (
-            <Select
-              data={
-                !availableProducts || productLoading ? [] : availableProducts
-              }
-              placeholder={"product's name..."}
-              searchable
-              itemComponent={AutoCompleteItem}
-              nothingFound="No options"
-              maxDropdownHeight={200}
-              onChange={(id) => {
-                // debugger;
-                setSelected(getProductById(Number(id), products));
-                ControlledField.onChange(id ? Number(id) : null);
-              }}
-              onBlur={ControlledField.onBlur}
-              required
-              defaultValue={field.product ? String(field.product) : null}
-            />
-          )}
-          control={control}
-          name={`products.${index}.product` as Path<inferParentSchema>}
-        />
+        {viewLoading ? (
+          <>loading...</>
+        ) : (
+          <Controller
+            render={({ field: ControlledField }) => (
+              <DatabaseSearchSelect
+                value={selectedId ? String(selectedId) : null}
+                displayValue={
+                  viewingProduct
+                    ? {
+                        ...rawToAutoItem(viewingProduct, fnHelper),
+                        disabled: true,
+                      }
+                    : null
+                }
+                onSearching={searchProduct}
+                onSelected={(_id) => {
+                  const id = _id ? Number(_id) : null;
+                  ControlledField.onChange(id);
+                  setSelectedId(id);
+                }}
+              />
+            )}
+            control={control}
+            name={`products.${index}.product` as Path<inferParentSchema>}
+          />
+        )}
+
         <FormErrorMessage
           noPreHeight={true}
           errors={errors}
           name={`products.${index}.product`}
         />
       </td>
-      <td className={"text-center"}>{selected?.dose}</td>
+      <td className={"text-center"}>{viewingProduct?.dose}</td>
       <td
         className={
           "overflow-hidden text-ellipsis whitespace-nowrap text-center"
         }
       >
-        {selected?.unit}
+        {viewingProduct?.unit}
       </td>
       <td>
         <Controller

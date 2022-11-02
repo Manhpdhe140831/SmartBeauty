@@ -11,7 +11,7 @@ import BtnPasswordManager from "./_partial/_btn-password-manager";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { USER_ROLE } from "../../../const/user-role.const";
 import { getAllAccount } from "../../../services/user.service";
-import { PaginatedResponse } from "../../../interfaces/api-core.interface";
+import { PaginatedResponse } from "../../../interfaces/api.interface";
 
 const ManageManager: AppPageInterface = () => {
   const {

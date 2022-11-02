@@ -1,7 +1,10 @@
 import axios, { AxiosError } from "axios";
-import { IErrorResponse, ILoginResponse } from "../interfaces/api.interface";
+import {
+  IErrorResponse,
+  ILoginResponse,
+  PaginatedResponse,
+} from "../interfaces/api.interface";
 import { UserEntity, UserModel } from "../model/user.model";
-import { PaginatedResponse } from "../interfaces/api-core.interface";
 import { jsonToFormData } from "../utilities/form-data.helper";
 
 export async function loginApi(

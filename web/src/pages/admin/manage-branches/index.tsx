@@ -12,7 +12,7 @@ import { ManagerModel } from "../../../model/manager.model";
 import { USER_ROLE } from "../../../const/user-role.const";
 import { getAllBranch } from "../../../services/branch.service";
 import usePaginationHook from "../../../hooks/pagination.hook";
-import { PaginatedResponse } from "../../../interfaces/api-core.interface";
+import { PaginatedResponse } from "../../../interfaces/api.interface";
 
 const Index: AppPageInterface = () => {
   const {

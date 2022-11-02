@@ -1,13 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Button, Table, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
-import { ServiceModel } from "../../../../model/service.model";
-import { useQuery } from "@tanstack/react-query";
-import mockService from "../../../../mock/service";
-import RowPlaceholderTable from "../../../../components/row-placeholder.table";
 import ServiceInCourseRowTable from "./service-in-course-row.table";
-import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
-import { formatPrice } from "../../../../utilities/fn.helper";
 
 type TableProps = {
   services?: number[];
@@ -18,13 +12,6 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
   const [serviceIds, setServiceIds] = useState<(number | null)[]>(
     services ?? []
   );
-  const [listServices, setListServices] = useState<
-    AutoCompleteItemProp<ServiceModel>[]
-  >([]);
-
-  const { data: servicesDb, isLoading: serviceDbLoading } = useQuery<
-    ServiceModel[]
-  >(["available-services"], () => mockService());
 
   function addingService() {
     setServiceIds((existing) => [...existing, null]);
@@ -41,29 +28,6 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
     arr.splice(rowIndex, 1, id);
     setServiceIds(arr);
   }
-
-  function toAutoCompleteItems(
-    original: ServiceModel[],
-    selected: number[]
-  ): AutoCompleteItemProp<ServiceModel>[] {
-    return original.map((s) => ({
-      value: String(s.id),
-      label: s.name,
-      disabled: selected.includes(s.id),
-      data: {
-        ...s,
-        description: `${formatPrice(s.price)} VND`,
-      },
-    }));
-  }
-
-  useEffect(() => {
-    if (!servicesDb) {
-      setListServices([]);
-      return;
-    }
-    setListServices(toAutoCompleteItems(servicesDb, services ?? []));
-  }, [services, servicesDb]);
 
   useEffect(() => {
     onChange(serviceIds);
@@ -100,29 +64,16 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
         </tr>
       </thead>
       <tbody>
-        {serviceDbLoading ? (
-          <RowPlaceholderTable
-            colSpan={4}
-            className={"min-h-12"}
-            message={
-              <div className="text-center font-semibold text-gray-500">
-                Loading...
-              </div>
-            }
+        {serviceIds.map((item, index) => (
+          <ServiceInCourseRowTable
+            key={index}
+            no={index}
+            onRemoved={removeService}
+            onSelected={(i) => onServiceChanged(index, i)}
+            serviceId={item}
+            disableServices={services}
           />
-        ) : (
-          serviceIds &&
-          serviceIds.map((item, index) => (
-            <ServiceInCourseRowTable
-              key={index}
-              no={index}
-              onRemoved={removeService}
-              onSelected={(i) => onServiceChanged(index, i)}
-              serviceId={item}
-              data={listServices}
-            />
-          ))
-        )}
+        ))}
         <tr className={"border-b"}>
           <td colSpan={6}>
             <Button

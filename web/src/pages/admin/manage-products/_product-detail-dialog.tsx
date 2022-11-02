@@ -3,7 +3,7 @@ import {
   ProductModel,
   ProductUpdateEntity,
 } from "../../../model/product.model";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import {
   Divider,
   Image as MantineImage,
@@ -35,10 +35,16 @@ import { IconPercentage } from "@tabler/icons";
 import {
   formatterNumberInput,
   parserNumberInput,
+  rawToAutoItem,
 } from "../../../utilities/fn.helper";
 import { MAX_PRICE } from "../../../const/_const";
 import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import DialogDetailAction from "../../../components/dialog-detail-action";
+import { useQuery } from "@tanstack/react-query";
+import { SupplierModel } from "../../../model/supplier.model";
+import mockSupplier from "../../../mock/provider";
+import DatabaseSearchSelect from "../../../components/database-search.select";
+import { AutoCompleteItemProp } from "../../../components/auto-complete-item";
 
 const ProductDetailDialog = ({
   data,
@@ -46,7 +52,14 @@ const ProductDetailDialog = ({
   onClosed,
   mode,
 }: DialogProps<ProductModel, ProductUpdateEntity, ProductCreateEntity>) => {
-  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
+  const [selectedSupplier, setSelectedSupplier] = useState<number | null>(
+    data?.supplier ?? null
+  );
+  const idSchema = mode === "create" ? idDbSchema.optional() : idDbSchema;
+  const imageSchema =
+    mode === "create"
+      ? fileUploadSchema.and(imageTypeSchema).or(z.string().url()).optional()
+      : fileUploadSchema.and(imageTypeSchema).or(z.string().url());
   const validateSchema = z
     .object({
       id: idSchema,
@@ -54,8 +67,8 @@ const ProductDetailDialog = ({
       description: descriptionSchema,
       unit: unitProductSchema,
       dose: amountPerUnitSchema,
-      provider: idDbSchema,
-      image: fileUploadSchema.and(imageTypeSchema).or(z.string().url()),
+      supplier: idDbSchema,
+      image: imageSchema,
     })
     .extend(saleSchema.shape);
 
@@ -91,6 +104,35 @@ const ProductDetailDialog = ({
     reset();
     onClosed && onClosed();
   };
+
+  const fnHelper = (s: SupplierModel) => ({
+    id: s.id,
+    name: s.name,
+    description: s.address,
+  });
+
+  const { data: viewingSupplier, isLoading: viewLoading } =
+    useQuery<SupplierModel | null>(
+      ["available-supplier", selectedSupplier],
+      async () => {
+        if (selectedSupplier === undefined || selectedSupplier === null) {
+          return null;
+        }
+        const p = await mockSupplier();
+        const f = p.find((p) => p.id === selectedSupplier);
+        return f ?? null;
+      }
+    );
+
+  // TODO transfer to service.
+  async function searchSupplier(
+    supplierName: string
+  ): Promise<AutoCompleteItemProp<SupplierModel>[]> {
+    const listSupplier = await mockSupplier();
+    return listSupplier
+      .filter((p) => p.name.includes(supplierName))
+      .map((i) => rawToAutoItem(i, fnHelper));
+  }
 
   return (
     <Modal
@@ -166,6 +208,41 @@ const ProductDetailDialog = ({
                 <FormErrorMessage errors={errors} name={"unit"} />
               </div>
             </div>
+
+            <label
+              htmlFor="supplier"
+              className="text-[14px] font-[500] text-gray-900"
+            >
+              Product Supplier <span className="text-red-500">*</span>
+            </label>
+            {viewLoading ? (
+              <>loading...</>
+            ) : (
+              <Controller
+                render={({ field: ControlledField }) => (
+                  <DatabaseSearchSelect
+                    value={selectedSupplier ? String(selectedSupplier) : null}
+                    displayValue={
+                      viewingSupplier
+                        ? {
+                            ...rawToAutoItem(viewingSupplier, fnHelper),
+                            disabled: true,
+                          }
+                        : null
+                    }
+                    onSearching={searchSupplier}
+                    onSelected={(_id) => {
+                      const id = _id ? Number(_id) : null;
+                      ControlledField.onChange(id);
+                      setSelectedSupplier(id);
+                    }}
+                  />
+                )}
+                control={control}
+                name={"supplier"}
+              />
+            )}
+            <FormErrorMessage errors={errors} name={"supplier"} />
 
             <Divider my={8} />
 

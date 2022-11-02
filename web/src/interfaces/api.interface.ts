@@ -12,3 +12,10 @@ export interface IErrorResponse {
 export interface ILoginResponse {
   accessToken: string;
 }
+
+export interface PaginatedResponse<T> {
+  data: Array<T>;
+  pageIndex: number;
+  totalElement: number;
+  totalPage: number;
+}

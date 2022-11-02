@@ -1,16 +1,20 @@
-import { ActionIcon, Image, Select } from "@mantine/core";
-import AutoCompleteItem, {
-  AutoCompleteItemProp,
-} from "../../../../components/auto-complete-item";
+import { ActionIcon, Image } from "@mantine/core";
+import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { IconX } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
-import { formatPrice, formatTime } from "../../../../utilities/fn.helper";
-import { useEffect, useState } from "react";
+import {
+  formatPrice,
+  formatTime,
+  rawToAutoItem,
+} from "../../../../utilities/fn.helper";
+import DatabaseSearchSelect from "../../../../components/database-search.select";
+import { useQuery } from "@tanstack/react-query";
+import mockService from "../../../../mock/service";
 
 type rowProps = {
   no: number;
+  disableServices?: number[];
   serviceId: number | null;
-  data: AutoCompleteItemProp<ServiceModel>[];
   onSelected: (id: number | null) => void;
   onRemoved: (index: number) => void;
 };
@@ -19,24 +23,41 @@ const ServiceInCourseRowTable = ({
   no,
   serviceId,
   onSelected,
-  data: listServices,
   onRemoved,
+  disableServices,
 }: rowProps) => {
-  const [viewingService, setViewingService] = useState<ServiceModel | null>();
+  const fnHelper = (s: ServiceModel) => ({
+    id: s.id,
+    name: s.name,
+    description: `${formatPrice(s.price)} VND`,
+  });
 
-  useEffect(() => {
-    if (!serviceId || !listServices || listServices.length === 0) {
-      setViewingService(null);
-      return;
-    }
-    const inList = listServices.find((s) => s.data.id === serviceId);
-    if (!inList) {
-      setViewingService(null);
-      console.error(`Unable to find service with ID: ${serviceId}`);
-      return;
-    }
-    setViewingService(inList.data);
-  }, [serviceId, listServices]);
+  const { data: viewingService, isLoading: viewLoading } =
+    useQuery<ServiceModel | null>(
+      ["available-service", serviceId],
+      async () => {
+        if (serviceId === undefined || serviceId === null) {
+          return null;
+        }
+        const p = await mockService();
+        const f = p.find((p) => p.id === serviceId);
+        return f ?? null;
+      }
+    );
+
+  // TODO transfer to service.
+  async function searchService(
+    serviceName: string,
+    disableList: number[]
+  ): Promise<AutoCompleteItemProp<ServiceModel>[]> {
+    const listProduct = await mockService();
+    return listProduct
+      .filter((p) => p.name.includes(serviceName))
+      .map((i) => ({
+        ...rawToAutoItem(i, fnHelper),
+        disabled: disableList.includes(i.id),
+      }));
+  }
 
   return (
     <tr key={serviceId}>
@@ -55,17 +76,26 @@ const ServiceInCourseRowTable = ({
         </div>
       </td>
       <td>
-        <Select
-          data={listServices}
-          placeholder={"service's name..."}
-          searchable
-          itemComponent={AutoCompleteItem}
-          nothingFound="No options"
-          maxDropdownHeight={200}
-          onChange={(id) => onSelected(id !== null ? Number(id) : null)}
-          required
-          defaultValue={serviceId !== null ? String(serviceId) : null}
-        />
+        {viewLoading ? (
+          <>loading...</>
+        ) : (
+          <DatabaseSearchSelect
+            value={serviceId ? String(serviceId) : null}
+            displayValue={
+              viewingService
+                ? {
+                    ...rawToAutoItem(viewingService, fnHelper),
+                    disabled: true,
+                  }
+                : null
+            }
+            onSearching={(k) => searchService(k, disableServices ?? [])}
+            onSelected={(_id) => {
+              const id = _id ? Number(_id) : null;
+              onSelected(id);
+            }}
+          />
+        )}
       </td>
       <td>
         {viewingService && formatTime(viewingService.duration, "minutes")}

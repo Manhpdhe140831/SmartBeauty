@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { PaginatedResponse } from "../interfaces/api-core.interface";
 import { BranchModel, BranchCreateEntity } from "../model/branch.model";
-import { IErrorResponse } from "../interfaces/api.interface";
+import { IErrorResponse, PaginatedResponse } from "../interfaces/api.interface";
 import { jsonToFormData } from "../utilities/form-data.helper";
 import { ManagerModel } from "../model/manager.model";
 

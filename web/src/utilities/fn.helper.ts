@@ -2,6 +2,8 @@
 import dayjs from "dayjs";
 import duration, { DurationUnitType } from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { DefaultMantineColor } from "@mantine/styles";
+import { AutoCompleteItemProp } from "../components/auto-complete-item";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -41,3 +43,29 @@ export const formatterNumberInput = (value: string | undefined): string => {
 export const parserNumberInput = (
   value: string | undefined
 ): string | undefined => value?.replace(/[.,]*/g, "");
+
+type autoItemGeneric = object & {
+  id: number;
+  name: string;
+  description: string;
+  color?: DefaultMantineColor;
+  image?: string;
+};
+
+export function rawToAutoItem<T extends object>(
+  p: T,
+  fn: (d: T) => autoItemGeneric
+): AutoCompleteItemProp<T> {
+  const fnParser = fn(p);
+  return {
+    value: String(fnParser.id),
+    key: fnParser.id,
+    label: fnParser.name,
+    data: {
+      ...p,
+      description: fnParser.description,
+      color: fnParser.color,
+      image: fnParser.image,
+    },
+  };
+}

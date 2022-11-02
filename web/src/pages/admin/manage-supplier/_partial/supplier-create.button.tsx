@@ -13,13 +13,14 @@ const SupplierCreateButton: FC<BtnProps> = ({ onCreated }) => {
   return (
     <>
       <Button onClick={() => setOpenDialog(true)} leftIcon={<IconPlus />}>
-        Product
+        Supplier
       </Button>
       <SupplierDetailDialog
         mode={"create"}
         opened={openDialog}
         onClosed={(update) => {
           if (update) {
+            console.log(update);
             onCreated && onCreated();
           }
           setOpenDialog(false);
