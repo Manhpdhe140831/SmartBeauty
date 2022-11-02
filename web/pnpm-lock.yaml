@@ -31,7 +31,7 @@ specifiers:
   prettier-plugin-tailwindcss: ^0.1.13
   react: 18.2.0
   react-dom: 18.2.0
-  react-hook-form: 7.38.0
+  react-hook-form: 7.39.0
   react-text-mask: ^5.5.0
   sass: ^1.55.0
   tailwindcss: ^3.1.6
@@ -42,8 +42,8 @@ specifiers:
 
 dependencies:
   '@emotion/react': 11.10.4_abnvjfq342vwlqufvbyuj6662i
-  '@hookform/error-message': 2.0.0_dzekpqzszvy7xf4sex3hsdhnba
-  '@hookform/resolvers': 2.9.10_react-hook-form@7.38.0
+  '@hookform/error-message': 2.0.0_w42eaaljubqmg5bg3c4c3r5qyq
+  '@hookform/resolvers': 2.9.10_react-hook-form@7.39.0
   '@mantine/core': 5.6.2_6p3hydjfxt4egtbgp255nyrvau
   '@mantine/dates': 5.6.2_lf2w5iv6c6cth6nfsfssc45sdy
   '@mantine/hooks': 5.6.2_react@18.2.0
@@ -58,7 +58,7 @@ dependencies:
   next: 12.3.1_mk5yftg2men2cn3ayx4t7ddtvy
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
-  react-hook-form: 7.38.0_react@18.2.0
+  react-hook-form: 7.39.0_react@18.2.0
   react-text-mask: 5.5.0_react@18.2.0
   sass: 1.55.0
   use-debounce: 8.0.4_react@18.2.0
@@ -463,7 +463,7 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@hookform/error-message/2.0.0_dzekpqzszvy7xf4sex3hsdhnba:
+  /@hookform/error-message/2.0.0_w42eaaljubqmg5bg3c4c3r5qyq:
     resolution: {integrity: sha512-Y90nHzjgL2MP7GFy75kscdvxrCTjtyxGmOLLxX14nd08OXRIh9lMH/y9Kpdo0p1IPowJBiZMHyueg7p+yrqynQ==}
     peerDependencies:
       react: '>=16.8.0'
@@ -472,15 +472,15 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-hook-form: 7.38.0_react@18.2.0
+      react-hook-form: 7.39.0_react@18.2.0
     dev: false
 
-  /@hookform/resolvers/2.9.10_react-hook-form@7.38.0:
+  /@hookform/resolvers/2.9.10_react-hook-form@7.39.0:
     resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.38.0_react@18.2.0
+      react-hook-form: 7.39.0_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
@@ -2867,8 +2867,8 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-hook-form/7.38.0_react@18.2.0:
-    resolution: {integrity: sha512-gxWW1kMeru9xR1GoR+Iw4hA+JBOM3SHfr4DWCUKY0xc7Vv1MLsF109oHtBeWl9shcyPFx67KHru44DheN0XY5A==}
+  /react-hook-form/7.39.0_react@18.2.0:
+    resolution: {integrity: sha512-rekW5NMBVG0nslE2choOKThy0zxLWQeoew87yTLwb3C9F91LaXwu/dhfFL/D3hdnSMnrTG60gVN/v6rvCrSOTw==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18

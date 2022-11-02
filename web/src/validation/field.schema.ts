@@ -4,11 +4,12 @@ import { GENDER } from "../const/gender.const";
 import dayjs from "dayjs";
 import { USER_ROLE } from "../const/user-role.const";
 import { ZodObject } from "zod/lib/types";
+import { MAX_PRICE } from "../const/_const";
 
 export const idDbSchema = z.number().min(1);
 export const unitProductSchema = z.string().min(1);
 export const amountPerUnitSchema = z.number().min(0);
-export const priceSchema = z.number().min(0);
+export const priceSchema = z.number().min(1).max(MAX_PRICE);
 export const nameSchema = z.string().min(3).max(120);
 export const taxCodeSchema = z.string().length(10);
 export const descriptionSchema = z.string().max(200);
@@ -61,45 +62,102 @@ export const roleSchema = z.nativeEnum(USER_ROLE, {
   invalid_type_error: "The role type is invalid",
 });
 
-export const saleSchema = z
-  .object({
-    price: priceSchema,
-    discountStart: z.date().optional(),
-    discountEnd: z.date().optional(),
-    discountPercent: z.number().optional(),
-  })
-  .refine(({ discountPercent, discountEnd, discountStart }) => {
-    if (discountPercent !== undefined) {
-      return discountEnd !== undefined || discountStart !== undefined;
-    }
+export const refineSaleSchema = <
+  T extends {
+    price: z.ZodNumber;
+    discountStart: z.ZodOptional<z.ZodDate>;
+    discountEnd: z.ZodOptional<z.ZodDate>;
+    discountPercent: z.ZodOptional<z.ZodNumber>;
+  }
+>(
+  schema: ZodObject<T>
+) => {
+  return (
+    schema
+      .refine(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        ({ discountPercent, discountEnd, discountStart }) => {
+          if (discountPercent !== undefined) {
+            return discountEnd !== undefined || discountStart !== undefined;
+          }
 
-    return true;
-  })
-  // Refine time end sale
-  .refine(
-    ({ discountEnd, discountStart }) => {
-      if (discountEnd && dayjs(discountEnd).isBefore(new Date())) {
-        // sale end date cannot start before today.
-        return false;
-      }
-      if (discountEnd && discountStart) {
-        // if both dates are available, discountEnd must after discountStart.
-        return dayjs(discountEnd).isAfter(discountStart);
-      }
+          return true;
+        },
+        { path: ["discountPercent"] }
+      )
+      // Refine time end sale
+      .refine(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        ({ discountEnd, discountStart }) => {
+          if (discountEnd && dayjs(discountEnd).isBefore(new Date())) {
+            // sale end date cannot start before today.
+            return false;
+          }
+          if (discountEnd && discountStart) {
+            // if both dates are available, discountEnd must after discountStart.
+            return dayjs(discountEnd).isAfter(discountStart);
+          }
 
-      return true;
-    },
-    {
-      message:
-        "Invalid sale ending time. It must after the current date, and after the sale start date.",
-    }
-  )
-  .refine(
-    ({ discountStart }) =>
-      !discountStart || dayjs(discountStart).isAfter(new Date())
-  ) as unknown as ZodObject<{
-  price: z.ZodNumber;
-  discountStart: z.ZodNullable<z.ZodDate>;
-  discountEnd: z.ZodNullable<z.ZodDate>;
-  discountPercent: z.ZodNullable<z.ZodNumber>;
-}>;
+          return true;
+        },
+        {
+          message:
+            "Invalid sale ending time. It must after the current date, and after the sale start date.",
+          path: ["discountEnd"],
+        }
+      )
+      .refine(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        ({ discountStart }) =>
+          !discountStart || dayjs(discountStart).isAfter(new Date()),
+        {
+          path: ["discountStart"],
+        }
+      )
+  );
+};
+
+export const saleSchema = z.object({
+  price: priceSchema,
+  discountStart: z.date().optional(),
+  discountEnd: z.date().optional(),
+  discountPercent: z.number().optional(),
+});
+//   .refine(({ discountPercent, discountEnd, discountStart }) => {
+//     if (discountPercent !== undefined) {
+//       return discountEnd !== undefined || discountStart !== undefined;
+//     }
+//
+//     return true;
+//   })
+//   // Refine time end sale
+//   .refine(
+//     ({ discountEnd, discountStart }) => {
+//       if (discountEnd && dayjs(discountEnd).isBefore(new Date())) {
+//         // sale end date cannot start before today.
+//         return false;
+//       }
+//       if (discountEnd && discountStart) {
+//         // if both dates are available, discountEnd must after discountStart.
+//         return dayjs(discountEnd).isAfter(discountStart);
+//       }
+//
+//       return true;
+//     },
+//     {
+//       message:
+//         "Invalid sale ending time. It must after the current date, and after the sale start date.",
+//     }
+//   )
+//   .refine(
+//     ({ discountStart }) =>
+//       !discountStart || dayjs(discountStart).isAfter(new Date())
+//   ) as unknown as ZodObject<{
+//   price: z.ZodNumber;
+//   discountStart: z.ZodNullable<z.ZodDate>;
+//   discountEnd: z.ZodNullable<z.ZodDate>;
+//   discountPercent: z.ZodNullable<z.ZodNumber>;
+// }>;

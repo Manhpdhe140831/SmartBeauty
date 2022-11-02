@@ -19,16 +19,13 @@ export interface ProductModel<
  * and dataType of image, importedDate and expiredDate will be different.
  */
 export interface ProductCreateEntity
-  extends Omit<ProductModel, "id" | "image" | "importedDate" | "expiredDate"> {
+  extends Omit<ProductModel, "id" | "image"> {
   image?: File;
-  importedDate: Date;
-  expiredDate?: Date;
 }
 
 /**
  * Interface for the payload to update product.
  */
-export interface ProductUpdateEntity
-  extends Omit<ProductModel, "image" | "importedDate" | "expiredDate"> {
+export interface ProductUpdateEntity extends Omit<ProductModel, "image"> {
   image?: File | string;
 }

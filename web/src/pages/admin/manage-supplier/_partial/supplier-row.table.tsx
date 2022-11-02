@@ -1,5 +1,5 @@
 import { SupplierModel } from "../../../../model/supplier.model";
-import { Image, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
 import SupplierDetailDialog from "../_supplier-detail.dialog";
@@ -18,11 +18,6 @@ const SupplierRowTable = ({ data, no, rowUpdated }: RowProps) => {
     <>
       <tr onClick={() => setView(true)} className={"cursor-pointer"}>
         <td className="text-center">{no}</td>
-        <td>
-          <div className={"aspect-square w-full"}>
-            <Image src={data.supplierImage} />
-          </div>
-        </td>
         <td
           onClick={() => clipboard.copy(data.name)}
           className="overflow-hidden text-ellipsis"
@@ -55,6 +50,7 @@ const SupplierRowTable = ({ data, no, rowUpdated }: RowProps) => {
         opened={view}
         onClosed={(u) => {
           if (u) {
+            console.log(u);
             rowUpdated && rowUpdated();
           }
           setView(false);

@@ -3,7 +3,6 @@ const SupplierHeaderTable = () => {
     <>
       <colgroup>
         <col className="w-14" />
-        <col className="w-32" />
         <col className="w-44" />
         <col className="w-32" />
         <col className="w-44" />
@@ -12,7 +11,6 @@ const SupplierHeaderTable = () => {
       <thead className="bg-blue-600 text-sm">
         <tr>
           <th className="!py-2 !text-center !text-white">No.</th>
-          <th className="!py-2 !text-center !text-white">Image</th>
           <th className="!py-2 !text-center !text-white">Name</th>
           <th className="!py-2 !text-center !text-white">Phone Number</th>
           <th className="!py-2 !text-center !text-white">Email</th>

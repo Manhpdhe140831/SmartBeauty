@@ -84,6 +84,7 @@ const Index: AppPageInterface = () => {
             opened={!!modal}
             onClosed={(update?: ProductCreateEntity | ProductUpdateEntity) => {
               if (update) {
+                console.log(update);
                 // TODO update
                 refetch();
               }

@@ -23,6 +23,7 @@ import {
   idDbSchema,
   imageTypeSchema,
   nameSchema,
+  refineSaleSchema,
   saleSchema,
   unitProductSchema,
 } from "../../../validation/field.schema";
@@ -60,17 +61,19 @@ const ProductDetailDialog = ({
     mode === "create"
       ? fileUploadSchema.and(imageTypeSchema).or(z.string().url()).optional()
       : fileUploadSchema.and(imageTypeSchema).or(z.string().url());
-  const validateSchema = z
-    .object({
-      id: idSchema,
-      name: nameSchema,
-      description: descriptionSchema,
-      unit: unitProductSchema,
-      dose: amountPerUnitSchema,
-      supplier: idDbSchema,
-      image: imageSchema,
-    })
-    .extend(saleSchema.shape);
+  const validateSchema = refineSaleSchema(
+    z
+      .object({
+        id: idSchema,
+        name: nameSchema,
+        description: descriptionSchema,
+        unit: unitProductSchema,
+        dose: amountPerUnitSchema,
+        supplier: idDbSchema,
+        image: imageSchema,
+      })
+      .extend(saleSchema.shape)
+  );
 
   const {
     control,
@@ -78,6 +81,7 @@ const ProductDetailDialog = ({
     handleSubmit,
     watch,
     reset,
+    getValues,
     formState: { errors, isDirty, isValid },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
@@ -89,11 +93,11 @@ const ProductDetailDialog = ({
             ...data,
             discountStart: data.discountStart
               ? dayjs(data.discountStart).toDate()
-              : null,
+              : undefined,
             discountEnd: data.discountEnd
               ? dayjs(data.discountEnd).toDate()
-              : null,
-            discountPercent: data.discountPercent ?? null,
+              : undefined,
+            discountPercent: data.discountPercent ?? undefined,
           }
         : undefined,
   });
@@ -136,10 +140,7 @@ const ProductDetailDialog = ({
 
   return (
     <Modal
-      onClose={() => {
-        onClosed && onClosed();
-        reset();
-      }}
+      onClose={() => reset()}
       opened={opened}
       closeOnClickOutside={false}
       withCloseButton={false}
@@ -405,6 +406,9 @@ const ProductDetailDialog = ({
           </div>
 
           <div className="mt-4 flex w-full justify-end">
+            <button type={"button"} onClick={() => console.log(getValues())}>
+              check
+            </button>
             <DialogDetailAction
               mode={mode}
               isDirty={isDirty}
