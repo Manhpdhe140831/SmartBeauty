@@ -51,6 +51,7 @@ public class CourseController {
             @RequestParam(value = "name") String name,
             @RequestParam(value = "price") Double price,
             @RequestParam(value = "duration") Integer duration,
+            @RequestParam(value = "timeOfUse") Integer timeOfUse,
             @RequestParam(value = "discountStart", required = false) String discountStart,
             @RequestParam(value = "discountEnd", required = false) String discountEnd,
             @RequestParam(value = "discountPercent") Double discountPercent ,
@@ -58,7 +59,7 @@ public class CourseController {
             @RequestParam(value = "description", required = false) String description,
             @RequestParam (value = "services", required = false) String[] services
     ){
-        Boolean result = service.saveCourse(name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
+        Boolean result = service.saveCourse(name, price, duration,timeOfUse, discountStart, discountEnd, discountPercent, image, description, services);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

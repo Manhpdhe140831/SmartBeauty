@@ -46,12 +46,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Boolean saveCourse(String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
+    public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
         try{
             Course course = new Course();
             course.setName(name);
             course.setPrice(price);
             course.setDuration(duration);
+            course.setTimeOfUse(timeOfUse);
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             Date startDate = df.parse(discountStart);
             course.setDiscountStart(startDate);
