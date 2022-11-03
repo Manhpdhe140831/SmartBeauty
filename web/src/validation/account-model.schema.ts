@@ -27,6 +27,7 @@ export const baseUserSchema = z.object({
     // or the avatar field can be url src of the image.
     .or(z.string().url())
     // this field is not required.
+    .nullable()
     .optional(),
 });
 

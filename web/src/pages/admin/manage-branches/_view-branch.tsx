@@ -1,18 +1,8 @@
-import {
-  Divider,
-  Image as MantineImage,
-  Input,
-  Select,
-  Text,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { Divider, Image as MantineImage, Input, Select, Text, Textarea, TextInput, } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { BranchCreateEntity, BranchModel } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
-import AutoCompleteItem, {
-  AutoCompleteItemProp,
-} from "../../../components/auto-complete-item";
+import AutoCompleteItem, { AutoCompleteItemProp, } from "../../../components/auto-complete-item";
 import FormErrorMessage from "../../../components/form-error-message";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -38,7 +28,7 @@ type ViewBranchPropsType = {
   onClose: (branchData?: BranchCreateEntity) => void;
 };
 
-const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
+const BranchInfo = ({branchData, onClose}: ViewBranchPropsType) => {
   // schema validation
   const updateSchema = z.object({
     name: nameSchema,
@@ -46,7 +36,11 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     phone: phoneSchema,
     manager: z.number().min(1),
     address: addressSchema,
-    logo: fileUploadSchema.and(imageTypeSchema).or(z.string().url()).optional(),
+    logo: fileUploadSchema
+      .and(imageTypeSchema)
+      .or(z.string().url())
+      .nullable()
+      .optional(),
   });
 
   const {
@@ -54,16 +48,18 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty },
+    getValues,
+    formState: {errors, isValid, isDirty},
   } = useForm<BranchCreateEntity>({
     resolver: zodResolver(updateSchema),
     mode: "onChange",
-    defaultValues: { ...branchData, manager: branchData.manager.id },
+    defaultValues: {...branchData, manager: branchData.manager.id},
   });
 
-  const { data: availableManager, isLoading: managerLoading } = useQuery<
-    AutoCompleteItemProp<ManagerModel>[]
-  >(["available-manager", branchData], async () => {
+  const {
+    data: availableManager,
+    isLoading: managerLoading
+  } = useQuery<AutoCompleteItemProp<ManagerModel>[]>(["available-manager", branchData], async () => {
     const manager = await getAllFreeManager();
     const parser = manager.map((m) => ({
       // add fields of SelectItemGeneric
@@ -108,7 +104,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
         <Controller
           name={"logo"}
           control={control}
-          render={({ field }) => (
+          render={({field}) => (
             <BtnSingleUploader
               accept={ACCEPTED_IMAGE_TYPES.join(",")}
               onChange={(f) => {
@@ -137,7 +133,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
             />
           )}
         />
-        <FormErrorMessage className={"text-sm"} errors={errors} name={"logo"} />
+        <FormErrorMessage className={"text-sm"} errors={errors} name={"logo"}/>
       </div>
 
       <div className={"flex flex-1 flex-col"}>
@@ -145,7 +141,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
         <h1 className={"mb-2 text-2xl font-semibold"}>{branchData.name}</h1>
 
         <Controller
-          render={({ field }) => (
+          render={({field}) => (
             <Select
               data={!availableManager || managerLoading ? [] : availableManager}
               placeholder={"branch manager..."}
@@ -163,7 +159,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           name={"manager"}
           control={control}
         />
-        <FormErrorMessage errors={errors} name={"manager"} />
+        <FormErrorMessage errors={errors} name={"manager"}/>
 
         <Textarea
           label={"Address"}
@@ -175,13 +171,13 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           {...register("address")}
           className={"!text-black"}
         ></Textarea>
-        <FormErrorMessage errors={errors} name={"address"} />
+        <FormErrorMessage errors={errors} name={"address"}/>
 
         {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
         <Controller
           name={"phone"}
           control={control}
-          render={({ field }) => (
+          render={({field}) => (
             <Input.Wrapper required id={"phone"} label={"Phone Number"}>
               <Input
                 component={MaskedInput}
@@ -194,7 +190,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
             </Input.Wrapper>
           )}
         />
-        <FormErrorMessage errors={errors} name={"phone"} />
+        <FormErrorMessage errors={errors} name={"phone"}/>
 
         <TextInput
           required
@@ -203,10 +199,16 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           id={"email"}
           {...register("email")}
         />
-        <FormErrorMessage errors={errors} name={"email"} />
+        <FormErrorMessage errors={errors} name={"email"}/>
 
-        <Divider my={8} />
+        <Divider my={8}/>
         <div className="flex w-full justify-end">
+          <button
+            type={"button"}
+            onClick={() => console.log(updateSchema.safeParse(getValues()))}
+          >
+            check
+          </button>
           <DialogDetailAction
             mode={"view"}
             isDirty={isDirty}

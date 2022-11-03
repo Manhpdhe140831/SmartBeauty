@@ -49,7 +49,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     phone: phoneSchema,
     manager: z.number().min(1),
     address: addressSchema,
-    logo: fileUploadSchema.and(imageTypeSchema).optional(),
+    logo: fileUploadSchema.and(imageTypeSchema).nullable().optional(),
   });
 
   const {

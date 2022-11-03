@@ -1,6 +1,9 @@
 import { AppPageInterface } from "../../../../interfaces/app-page.interface";
-import { Button, Divider } from "@mantine/core";
+import { Button, Divider, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
+import CalendarController from "./_partial/calendar-controller";
+import AppointmentTimeline from "./_partial/appointment.timeline";
+import AppointmentHeaderTimeline from "./_partial/appointment-header.timeline";
 
 const ManageAppointmentSchedule: AppPageInterface = () => {
   return (
@@ -15,19 +18,36 @@ const ManageAppointmentSchedule: AppPageInterface = () => {
 
       <div className="flex-1">
         <div className="flex h-full w-full">
-          <div className={"flex flex-col bg-gray-200 px-4"}>
-            <div className="h-40"></div>
-            <div className="flex flex-1 flex-col">
-              <div className="flex-1">Slot 1</div>
-              <div className="flex-1">Slot 2</div>
-              <div className="flex-1">Slot 3</div>
-              <div className="flex-1">Slot 4</div>
+          <div className={"flex w-48 flex-col px-4"}>
+            <div className="h-24 border-b"></div>
+            <div className="flex flex-1 flex-col divide-y">
+              <div className="flex h-16 items-center justify-end font-semibold">
+                <Text className={"uppercase"}>Bed Number</Text>
+              </div>
+              <AppointmentHeaderTimeline
+                title={"Slot 1"}
+                timeFrame={"09:00 - 10:30"}
+              />
+              <AppointmentHeaderTimeline
+                title={"Slot 2"}
+                timeFrame={"10:30 - 12:00"}
+              />
+              <AppointmentHeaderTimeline
+                title={"Slot 3"}
+                timeFrame={"13:30 - 15:00"}
+              />
+              <AppointmentHeaderTimeline
+                title={"Slot 4"}
+                timeFrame={"15:00 - 16:30"}
+              />
             </div>
           </div>
           <div className={"flex flex-1 flex-col"}>
-            <div className="h-40">controller</div>
+            <div className="flex h-24 flex-col border-b">
+              <CalendarController />
+            </div>
 
-            <div className="overflow-x flex flex-1">context</div>
+            <AppointmentTimeline />
           </div>
         </div>
       </div>

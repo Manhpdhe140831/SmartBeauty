@@ -63,8 +63,15 @@ const ProductDetailDialog = ({
   const idSchema = mode === "create" ? idDbSchema.optional() : idDbSchema;
   const imageSchema =
     mode === "create"
-      ? fileUploadSchema.and(imageTypeSchema).or(z.string().url()).optional()
-      : fileUploadSchema.and(imageTypeSchema).or(z.string().url());
+      ? fileUploadSchema
+          .and(imageTypeSchema)
+          .nullable()
+          .optional()
+      : fileUploadSchema
+          .and(imageTypeSchema)
+          .or(z.string().url())
+          .nullable()
+          .optional();
   const schema = z
     .object({
       id: idSchema,

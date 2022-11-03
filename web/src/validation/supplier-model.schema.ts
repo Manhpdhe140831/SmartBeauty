@@ -3,8 +3,6 @@ import {
   addressSchema,
   descriptionSchema,
   emailSchema,
-  fileUploadSchema,
-  imageTypeSchema,
   nameSchema,
   phoneSchema,
   taxCodeSchema,
@@ -17,10 +15,6 @@ const SupplierModelSchema = z.object({
   phone: phoneSchema,
   email: emailSchema,
   address: addressSchema,
-  supplierImage: fileUploadSchema
-    .and(imageTypeSchema)
-    .or(z.string().url())
-    .optional(),
 });
 
 export default SupplierModelSchema;

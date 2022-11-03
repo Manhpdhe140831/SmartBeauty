@@ -2,8 +2,8 @@
 import dayjs from "dayjs";
 import duration, { DurationUnitType } from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { DefaultMantineColor } from "@mantine/styles";
 import { AutoCompleteItemProp } from "../components/auto-complete-item";
+import { DefaultMantineColor } from "@mantine/core";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);

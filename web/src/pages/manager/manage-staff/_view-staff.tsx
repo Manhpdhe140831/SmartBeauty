@@ -6,13 +6,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { nameSchema } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StaffModel, StaffPayload } from "../../../model/staff.model";
+import { StaffModel, StaffCreateEntity } from "../../../model/staff.model";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 
 type ViewStaffPropsType = {
   staffData: StaffModel;
-  onClose: (staffData?: StaffPayload) => void;
+  onClose: (staffData?: StaffCreateEntity) => void;
 };
 
 const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
@@ -31,7 +31,7 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     handleSubmit,
     reset,
     formState: { errors, isValid, isDirty },
-  } = useForm<StaffPayload>({
+  } = useForm<StaffCreateEntity>({
     resolver: zodResolver(updateSchema),
     mode: "onChange",
     defaultValues: { ...staffData },
@@ -64,7 +64,7 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     setCancel();
   };
 
-  const onSubmit = (data: StaffPayload) => onClose();
+  const onSubmit = (data: StaffCreateEntity) => onClose();
 
   return (
     <div>
