@@ -15,8 +15,7 @@ import java.util.List;
 public interface CourseService {
 
     Page<Course> getListCourse(int offset, int page);
-    Boolean save(String name, double price, int duration, Date endOfCourse, Date discountStart, Date discountEnd, double discountPercent, String image, String description, boolean deleted, String[] services
-    );
+    Boolean saveCourse(String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services);
 //    Boolean remove(Long id);
 
     CourseResponseDto getListCoursePaginationAndSearch(String name, String code, int pageNo, int pageSize);
@@ -25,7 +24,7 @@ public interface CourseService {
 
     public Date parseDate(String strDate);
 
-    public Boolean update(Long id, String name, Double price, Integer duration, Date endOfCourse, Date discountStart, Date discountEnd, Double discountPercent, String image, String description, boolean deleted, List<Long> listServiceId);
+    public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services);
 
     CourseDto getCourseById(Long id);
 

@@ -31,8 +31,6 @@ public class CourseDto {
     private String name;
     private double price;
     private int duration;
-
-    private Date endOfCourse;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -42,21 +40,17 @@ public class CourseDto {
     private String description;
     private List<ServiceDto> service;
 
-    private boolean deleted;
-
 
     public CourseDto(Course course) {
         this.setId(course.getId());
         this.setName(course.getName());
         this.setPrice(course.getPrice());
         this.setDuration(course.getDuration());
-        this.setEndOfCourse(course.getEndOfCourse());
         this.setDiscountStart(course.getDiscountStart());
         this.setDiscountEnd(course.getDiscountEnd());
         this.setDiscountPercent(course.getDiscountPercent());
         this.setImage(course.getImage());
         this.setDescription(course.getDescription());
-        this.setDeleted(course.isDeleted());
 
     }
 
@@ -81,14 +75,6 @@ public class CourseDto {
         return name;
     }
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -107,14 +93,6 @@ public class CourseDto {
 
     public void setDuration(int duration) {
         this.duration = duration;
-    }
-
-    public Date getEndOfCourse() {
-        return endOfCourse;
-    }
-
-    public void setEndOfCourse(Date endOfCourse) {
-        this.endOfCourse = endOfCourse;
     }
 
     public Date getDiscountStart() {
@@ -172,13 +150,11 @@ public class CourseDto {
             this.setName(course.getName());
             this.setPrice(course.getPrice());
             this.setDuration(course.getDuration());
-            this.setEndOfCourse(course.getEndOfCourse());
             this.setDiscountStart(course.getDiscountStart());
             this.setDiscountEnd(course.getDiscountEnd());
             this.setDiscountPercent(course.getDiscountPercent());
             this.setImage(course.getImage());
             this.setDescription(course.getDescription());
-            this.setDeleted(course.isDeleted());
         }
         this.setService(listService);
 

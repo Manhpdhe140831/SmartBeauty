@@ -1,6 +1,7 @@
 package com.swp.sbeauty.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +27,9 @@ public class Course {
     private String name;
     private double price;
     private int duration;
-    private Date endOfCourse;
-
     private Date discountStart;
-
     private Date discountEnd;
     private double discountPercent;
     private String image;
     private String description;
-    private boolean deleted;
 }

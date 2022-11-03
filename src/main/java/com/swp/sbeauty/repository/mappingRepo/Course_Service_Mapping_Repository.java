@@ -15,6 +15,8 @@ public interface Course_Service_Mapping_Repository extends JpaRepository<Course_
     @Query(value = "SELECT csm From Course_Service_Mapping csm where csm.course_id = ?1")
         Course_Service_Mapping getServiceById(Long id);
 
+    @Query(value = "SELECT a.service_id FROM Course_Service_Mapping as a where a.course_id = ?1")
+    public List<Long> getMappingByIdCourse(Long id);
 
 
 

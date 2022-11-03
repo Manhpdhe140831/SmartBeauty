@@ -26,17 +26,17 @@ public class CourseController {
     @Autowired
     private CourseService service;
 
-    @GetMapping(value = "/course/getall")
+    @GetMapping(value = "/course")
 
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false, defaultValue = "") String name
-            , @RequestParam(value = "code", required = false,defaultValue = "") String code
+            , @RequestParam(value = "name", required = false) String name
+            , @RequestParam(value = "code", required = false) String code
     ){
         Pageable pageable = PageRequest.of(page, pageSize);
         CourseResponseDto courseResponseDto = null;
 
-        if (name=="" && code == ""){
+        if (name==null && code == null){
             courseResponseDto = service.getAll(page-1, pageSize);
             return new ResponseEntity<>(courseResponseDto, HttpStatus.OK);
         }else {
@@ -48,25 +48,18 @@ public class CourseController {
 
     @RequestMapping(value = "/course/save", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
     public ResponseEntity<?> saveCourse (
-            @RequestParam("name") String name,
-            @RequestParam(value = "price", defaultValue = "0") double price,
-            @RequestParam("duration") int duration,
-            @RequestParam("endOfCourse") String endOfCourse,
-            @RequestParam("discountStart") String discountStart,
-            @RequestParam("discountEnd") String discountEnd,
-            @RequestParam("discountPercent") double discountPercent ,
-            @RequestParam(value = "image", defaultValue = "") String image,
-            @RequestParam("description") String description,
-            @RequestParam(value = "deleted", required = false) boolean deleted,
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "price") Double price,
+            @RequestParam(value = "duration") Integer duration,
+            @RequestParam(value = "discountStart", required = false) String discountStart,
+            @RequestParam(value = "discountEnd", required = false) String discountEnd,
+            @RequestParam(value = "discountPercent") Double discountPercent ,
+            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "description", required = false) String description,
             @RequestParam (value = "services", required = false) String[] services
     ){
-
-        Date startDate = service.parseDate(discountStart);
-        Date endDate = service.parseDate(discountEnd);
-        Date endCourse = service.parseDate(endOfCourse);
-        Boolean result = service.save(name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, services);
+        Boolean result = service.saveCourse(name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
         return new ResponseEntity<>(result, HttpStatus.OK);
-
     }
 
 
@@ -76,20 +69,14 @@ public class CourseController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "price",required = false ,defaultValue = "0") Double price,
             @RequestParam(value = "duration", required = false) Integer duration,
-            @RequestParam(value = "endOfCourse", required = false) String endOfCourse,
             @RequestParam(value = "discountStart", required = false) String discountStart,
             @RequestParam(value = "discountEnd", required = false) String discountEnd,
             @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
-            @RequestParam(value = "image", required = false,defaultValue = "") String image,
+            @RequestParam(value = "image", required = false) String image,
             @RequestParam(value = "description",required = false) String description,
-            @RequestParam(value = "deleted", required = false) boolean deleted,
-            @RequestParam (value = "listProduct", required = false) List<Long> listProduct
+            @RequestParam (value = "services", required = false) String[] services
     ){
-
-        Date startDate = service.parseDate(discountStart);
-        Date endDate = service.parseDate(discountEnd);
-        Date endCourse = service.parseDate(endOfCourse);
-        Boolean result = service.update(id, name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, listProduct);
+        Boolean result = service.update(id, name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
