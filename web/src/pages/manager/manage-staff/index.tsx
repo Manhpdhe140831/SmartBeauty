@@ -59,19 +59,17 @@ const Index: AppPageInterface = () => {
           highlightOnHover
         >
           <colgroup>
-            <col className="w-14" />
+            <col className="w-4" />
             <col className="w-40" />
-            <col className="w-36" />
-            <col className="w-32" />
-            <col className="w-28" />
-            {/* <col /> */}
-            {/* <col className="w-14" /> */}
+            <col className="w-8" />
+            <col className="w-8" />
+            <col className="w-16" />
           </colgroup>
           <TableHeader />
           <tbody>
           {isLoading ? (
             <RowPlaceholderTable
-              colSpan={7}
+              colSpan={5}
               className={"min-h-12"}
               message={
                 <div className="text-center font-semibold text-gray-500">
