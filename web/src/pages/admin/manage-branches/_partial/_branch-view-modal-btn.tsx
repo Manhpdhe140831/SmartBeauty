@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { IconSettings } from "@tabler/icons";
+import { IconCheck, IconSettings, IconX } from "@tabler/icons";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
 import BranchInfo from "../_view-branch";
-import { BranchModel } from "../../../../model/branch.model";
+import {
+  BranchModel,
+  BranchUpdateEntity,
+} from "../../../../model/branch.model";
 import { ManagerModel } from "../../../../model/manager.model";
+import { useMutation } from "@tanstack/react-query";
+import { updateBranch } from "../../../../services/branch.service";
+import { showNotification } from "@mantine/notifications";
 
 type ModalProps = {
   onChanged?: (updated?: boolean) => void;
@@ -12,6 +18,30 @@ type ModalProps = {
 
 const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
   const [viewBranch, setViewBranch] = useState<boolean>(false);
+  const updateMutation = useMutation(
+    ["update-branch"],
+    (branchData: BranchUpdateEntity) => updateBranch(branchData),
+    {
+      onSuccess: () => {
+        showNotification({
+          title: "Success!",
+          message: "You have updated the branch!",
+          color: "teal",
+          icon: <IconCheck />,
+        });
+        onChanged && onChanged(true);
+        setViewBranch(false);
+      },
+      onError: () => {
+        showNotification({
+          title: "Failed!",
+          message: "Cannot update the branch. Please try again!",
+          color: "red",
+          icon: <IconX />,
+        });
+      },
+    }
+  );
 
   return (
     <>
@@ -35,11 +65,13 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
         }}
       >
         <BranchInfo
-          onClose={(e) => {
-            //  TODO: handle API call
-            console.log(e);
+          onClose={async (e) => {
+            if (e) {
+              await updateMutation.mutateAsync(e);
+              return;
+            }
             // close dialog and update to the list screen
-            onChanged && onChanged(true);
+            onChanged && onChanged(false);
             setViewBranch(false);
           }}
           branchData={branchData}

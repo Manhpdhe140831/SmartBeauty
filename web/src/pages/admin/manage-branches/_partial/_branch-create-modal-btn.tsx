@@ -1,11 +1,12 @@
 import { Button, Modal } from "@mantine/core";
-import { IconPlus } from "@tabler/icons";
+import { IconCheck, IconPlus, IconX } from "@tabler/icons";
 import { useState } from "react";
 import CreateBranch from "../_create-branch";
 import { BranchCreateEntity } from "../../../../model/branch.model";
 import { useMutation } from "@tanstack/react-query";
 import { createBranch } from "../../../../services/branch.service";
 import { IErrorResponse } from "../../../../interfaces/api.interface";
+import { showNotification } from "@mantine/notifications";
 
 type BranchModalProps = {
   onChanged: (updated?: boolean) => void;
@@ -20,12 +21,22 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
     BranchCreateEntity
   >(["branch-mutation"], (entity) => createBranch(entity), {
     onSuccess: () => {
-      onChanged(true);
+      showNotification({
+        title: "Success!",
+        message: "You have updated the branch!",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+      onChanged && onChanged(true);
       setNewBranchModal(false);
     },
     onError: () => {
-      onChanged(false);
-      setNewBranchModal(false);
+      showNotification({
+        title: "Failed!",
+        message: "Cannot update the branch. Please try again!",
+        color: "red",
+        icon: <IconX />,
+      });
     },
   });
 

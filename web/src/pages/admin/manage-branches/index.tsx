@@ -86,7 +86,12 @@ const Index: AppPageInterface = () => {
                   key={d.id}
                   no={i + 1}
                   data={d}
-                  action={<BranchViewModalBtn branchData={d} />}
+                  action={
+                    <BranchViewModalBtn
+                      branchData={d}
+                      onChanged={(isUpdate) => isUpdate && refetch()}
+                    />
+                  }
                 />
               ))
             )}

@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { BranchCreateEntity, BranchModel } from "../../../model/branch.model";
+import { BranchModel, BranchUpdateEntity } from "../../../model/branch.model";
 import { ManagerModel } from "../../../model/manager.model";
 import AutoCompleteItem, {
   AutoCompleteItemProp,
@@ -32,10 +32,11 @@ import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { FormEvent } from "react";
 import DialogDetailAction from "../../../components/dialog-detail-action";
 import { getAllFreeManager } from "../../../services/manager.service";
+import { DialogSubmit } from "../../../utilities/form-data.helper";
 
 type ViewBranchPropsType = {
   branchData: BranchModel<ManagerModel>;
-  onClose: (branchData?: BranchCreateEntity) => void;
+  onClose: (branchData?: BranchUpdateEntity) => void;
 };
 
 const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
@@ -58,8 +59,8 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty },
-  } = useForm<BranchCreateEntity>({
+    formState: { errors, isValid, isDirty, dirtyFields },
+  } = useForm<BranchUpdateEntity>({
     resolver: zodResolver(updateSchema),
     mode: "onChange",
     defaultValues: { ...branchData, manager: branchData.manager.id },
@@ -93,7 +94,8 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     return parser;
   });
 
-  const onSubmit = (data: BranchCreateEntity) => onClose(data);
+  const onSubmit = (data: BranchUpdateEntity) =>
+    DialogSubmit("view", dirtyFields, onClose, branchData)(data);
 
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
