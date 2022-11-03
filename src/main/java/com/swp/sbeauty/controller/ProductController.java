@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -52,7 +53,7 @@ public class ProductController {
     public ResponseEntity<?> saveProduct(@RequestParam(value = "name") String name,
                                      @RequestParam(value = "price") Double price,
                                      @RequestParam(value = "description") String description,
-                                     @RequestParam(value = "image", required = false) String image,
+                                     @RequestParam(value = "image") MultipartFile image,
                                      @RequestParam(value = "discountStart") String discountStart,
                                      @RequestParam(value = "discountEnd") String discountEnd,
                                      @RequestParam(value = "discountPercent") Double discountPercent,
@@ -75,7 +76,7 @@ public class ProductController {
                                        @RequestParam(value = "name", required = false) String name,
                                        @RequestParam(value = "price",required = false) Double price,
                                        @RequestParam(value = "description",required = false) String description,
-                                       @RequestParam(value = "image",required = false) String image,
+                                       @RequestParam(value = "image",required = false) MultipartFile image,
                                        @RequestParam(value = "discountStart",required = false) String discountStart,
                                        @RequestParam(value = "discountEnd",required = false) String discountEnd,
                                        @RequestParam(value = "discountPercent",required = false) Double discountPercent,

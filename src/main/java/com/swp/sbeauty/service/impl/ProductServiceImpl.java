@@ -18,8 +18,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +40,8 @@ public class ProductServiceImpl implements ProductService {
     private SupplierRepository supplierRepository;
     @Autowired
     private Product_Supplier_Repository product_supplier_repository;
+
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     @Override
     public List<ProductDto> getProducts() {
@@ -137,14 +144,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Boolean saveProduct(String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
+    public Boolean saveProduct(String name, Double price, String description, MultipartFile image, Date discountStart, Date discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
         try {
             Product product = new Product();
             product.setName(name);
             product.setPrice(price);
             product.setDescription(description);
             if(image != null){
-                product.setImage(image);
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                product.setImage(imagePath.resolve(image.getOriginalFilename()).toString());
+
             }
             product.setDiscountStart(discountStart);
             product.setDiscountEnd(discountEnd);
@@ -156,12 +174,12 @@ public class ProductServiceImpl implements ProductService {
             product_supplier_repository.save(product_supplier_mapping);
             return true;
         }catch (Exception e){
-            throw e;
+            return false;
         }
     }
 
     @Override
-    public Boolean updateProduct(Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
+    public Boolean updateProduct(Long id, String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
         try {
 
             Product product = productRepository.getProductById(id);
@@ -176,7 +194,18 @@ public class ProductServiceImpl implements ProductService {
                     product.setDescription(description);
                 }
                 if (image != null) {
-                    product.setImage(image);
+                    Path staticPath = Paths.get("static");
+                    Path imagePath = Paths.get("images");
+                    if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                        Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                    }
+                    Path file = CURRENT_FOLDER.resolve(staticPath)
+                            .resolve(imagePath).resolve(image.getOriginalFilename());
+                    try (OutputStream os = Files.newOutputStream(file)) {
+                        os.write(image.getBytes());
+                    }
+                    product.setImage(imagePath.resolve(image.getOriginalFilename()).toString());
+
                 }
                 if (discountStart != null) {
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
