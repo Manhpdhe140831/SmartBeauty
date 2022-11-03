@@ -17,8 +17,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +40,7 @@ public class BranchServiceImpl implements BranchService {
     @Autowired
     private ModelMapper mapper;
 
-
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     @Override
     public List<BranchDto> getBranch() {
 
@@ -70,16 +75,35 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public Boolean saveBranch(String name, String email, String phone, String address, Long manager) {
-        Branch branch = new Branch();
-        branch.setName(name);
-        branch.setEmail(email);
-        branch.setPhone(phone);
-        branch.setAddress(address);
-        branch = branchRepository.save(branch);
-        User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(manager, branch.getId());
-        user_branch_mapping_repo.save(user_branch_mapping);
-        return true;
+    public Boolean saveBranch(String name, String email, String phone, String address, Long manager,MultipartFile image) {
+       try {
+
+           Branch branch = new Branch();
+           branch.setName(name);
+           branch.setEmail(email);
+           branch.setPhone(phone);
+           branch.setAddress(address);
+           if (image != null) {
+               Path staticPath = Paths.get("static");
+               Path imagePath = Paths.get("images");
+               if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                   Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+               }
+               Path file = CURRENT_FOLDER.resolve(staticPath)
+                       .resolve(imagePath).resolve(image.getOriginalFilename());
+               try (OutputStream os = Files.newOutputStream(file)) {
+                   os.write(image.getBytes());
+               }
+               branch.setLogo(imagePath.resolve(image.getOriginalFilename()).toString());
+           }
+           branch = branchRepository.save(branch);
+           User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(manager, branch.getId());
+           user_branch_mapping_repo.save(user_branch_mapping);
+           return true;
+       }catch (Exception e){
+           return false;
+       }
+
     }
 
     @Override
@@ -98,7 +122,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public Boolean updateBranch(Long id, String name, String email, String phone, String address, Long manager) {
+    public Boolean updateBranch(Long id, String name, String email, String phone, String address, Long manager, MultipartFile image) {
         Branch branch = branchRepository.getBranchById(id);
         if(branch != null){
             if(name!=null){
@@ -112,6 +136,9 @@ public class BranchServiceImpl implements BranchService {
             }
             if(address!=null){
                 branch.setAddress(address);
+            }
+            if(image != null){
+                branch.setLogo(branch.getLogo());
             }
             if(manager!=null){
                 Users managerOld = userRepository.getManagerFromBranch(id);

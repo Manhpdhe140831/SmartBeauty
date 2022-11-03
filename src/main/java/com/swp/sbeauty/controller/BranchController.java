@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -78,10 +79,11 @@ public class BranchController {
                                         @RequestParam(value = "email") String email,
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "address") String address,
-                                        @RequestParam(value = "manager") Long manager){
+                                        @RequestParam(value = "manager") Long manager,
+                                        @RequestParam(value = "image") MultipartFile imgae){
         String check = branchService.validateBranch(name, email, phone);
         if(check == ""){
-            Boolean result = branchService.saveBranch(name, email, phone, address, manager);
+            Boolean result = branchService.saveBranch(name, email, phone, address, manager,imgae);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -96,10 +98,11 @@ public class BranchController {
                                           @RequestParam(value = "email", required = false) String email,
                                           @RequestParam(value = "phone", required = false) String phone,
                                           @RequestParam(value = "address", required = false) String address,
-                                          @RequestParam(value = "manager", required = false) Long manager){
+                                          @RequestParam(value = "manager", required = false) Long manager,
+                                          @RequestParam(value = "image",required = false) MultipartFile imgae){
         String check = branchService.validateBranch(name, email, phone);
         if(check == ""){
-            Boolean result = branchService.updateBranch(id, name, email, phone, address, manager);
+            Boolean result = branchService.updateBranch(id, name, email, phone, address, manager,imgae);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
