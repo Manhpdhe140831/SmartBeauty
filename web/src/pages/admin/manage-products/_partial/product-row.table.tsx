@@ -6,12 +6,19 @@ import { FC } from "react";
 import SalePriceTableCell from "../../../../components/cell-sale-price.table";
 import dayjs from "dayjs";
 import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
+import { useQuery } from "@tanstack/react-query";
+import { getSupplierById } from "../../../../services/supplier.service";
 
 const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
   data,
   no,
   onClick,
 }) => {
+  const { isLoading: supplierLoading, data: supplierData } = useQuery(
+    ["detail-supplier", data.supplier],
+    () => getSupplierById(data.supplier)
+  );
+
   const firstRow = (
     <tr onClick={() => onClick(data)} className={styleRow.custom_table_row}>
       <td className={"text-center"} rowSpan={2}>
@@ -22,16 +29,28 @@ const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
           className={"aspect-video w-24 overflow-hidden rounded-lg shadow-lg"}
         >
           <Image
+            width={96}
+            height={54}
             src={data.image}
             withPlaceholder
             alt={"product name"}
-            fit="contain"
+            fit="cover"
           />
         </div>
       </td>
       <td className="overflow-hidden text-ellipsis whitespace-nowrap !pl-0 !pr-1 !pt-2 !pb-1">
         <Tooltip label={data.name}>
           <span className={"text-lg font-semibold"}>{data.name}</span>
+        </Tooltip>
+      </td>
+      <td
+        rowSpan={2}
+        className={"overflow-hidden text-ellipsis whitespace-nowrap"}
+      >
+        <Tooltip label={data.name}>
+          <span>
+            {data.dose}/{data.unit}
+          </span>
         </Tooltip>
       </td>
 
@@ -43,10 +62,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
       </td>
 
       <td className={"text-center"} rowSpan={2}>
-        {data.supplier}
-      </td>
-      <td>
-        <div className="flex flex-col">TBD</div>
+        {supplierLoading ? "loading..." : supplierData?.name}
       </td>
     </tr>
   );
@@ -63,6 +79,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
           </small>
         </div>
       </td>
+      {/*Dose col*/}
 
       {data.discountPercent !== null && (
         <td className="text-center">
@@ -95,9 +112,6 @@ const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
         </td>
       )}
       {/*  origin col*/}
-      <td>
-        <div className="flex flex-col">TBD</div>
-      </td>
     </tr>
   );
 

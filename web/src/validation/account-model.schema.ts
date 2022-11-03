@@ -42,7 +42,7 @@ export const managerModelSchema = baseUserSchema;
  */
 export const employeeModelSchema = baseUserSchema.merge(
   z.object({
-    role: z.literal(USER_ROLE.employee_sale),
+    role: z.literal(USER_ROLE.sale_staff),
   })
 );
 
