@@ -52,7 +52,7 @@ public class ProductController {
     public ResponseEntity<?> saveProduct(@RequestParam(value = "name") String name,
                                      @RequestParam(value = "price") Double price,
                                      @RequestParam(value = "description") String description,
-                                     @RequestParam(value = "image") String image,
+                                     @RequestParam(value = "image", required = false) String image,
                                      @RequestParam(value = "discountStart") String discountStart,
                                      @RequestParam(value = "discountEnd") String discountEnd,
                                      @RequestParam(value = "discountPercent") Double discountPercent,

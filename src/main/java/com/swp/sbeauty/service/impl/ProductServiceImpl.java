@@ -143,7 +143,9 @@ public class ProductServiceImpl implements ProductService {
             product.setName(name);
             product.setPrice(price);
             product.setDescription(description);
-            product.setImage(image);
+            if(image != null){
+                product.setImage(image);
+            }
             product.setDiscountStart(discountStart);
             product.setDiscountEnd(discountEnd);
             product.setDiscountPercent(discountPercent);
