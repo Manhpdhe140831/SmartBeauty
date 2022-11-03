@@ -23,7 +23,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
     onSuccess: () => {
       showNotification({
         title: "Success!",
-        message: "You have updated the branch!",
+        message: "You have create a new branch!",
         color: "teal",
         icon: <IconCheck />,
       });
@@ -33,7 +33,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
     onError: () => {
       showNotification({
         title: "Failed!",
-        message: "Cannot update the branch. Please try again!",
+        message: "Cannot create the branch. Please try again!",
         color: "red",
         icon: <IconX />,
       });
