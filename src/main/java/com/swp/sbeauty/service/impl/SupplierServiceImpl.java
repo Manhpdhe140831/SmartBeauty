@@ -154,7 +154,7 @@ public class SupplierServiceImpl implements SupplierService {
         supplierResponseDto.setData(supplierDtos);
         supplierResponseDto.setTotalElement(page.getTotalElements());
         supplierResponseDto.setTotalPage(page.getTotalPages());
-        supplierResponseDto.setPageIndex(pageNo);
+        supplierResponseDto.setPageIndex(pageNo+1);
         return supplierResponseDto;
     }
 

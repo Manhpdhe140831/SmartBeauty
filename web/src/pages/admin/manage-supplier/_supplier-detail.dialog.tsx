@@ -66,12 +66,14 @@ const SupplierDetailDialog = ({
     onClosed && onClosed();
   };
 
+  const submit = (formData: object) => {
+    DialogSubmit(mode, dirtyFields, onClosed, data)(formData);
+    reset();
+  };
+
   return (
     <Modal
-      onClose={() => {
-        onClosed && onClosed();
-        reset();
-      }}
+      onClose={() => reset()}
       opened={opened}
       closeOnClickOutside={false}
       withCloseButton={false}
@@ -90,10 +92,7 @@ const SupplierDetailDialog = ({
         </h2>
         <form
           onReset={handleReset}
-          onSubmit={
-            onClosed &&
-            handleSubmit(DialogSubmit(mode, dirtyFields, onClosed, data))
-          }
+          onSubmit={handleSubmit(submit)}
           className={`flex w-[800px] flex-wrap space-x-4 p-4`}
         >
           <div className="flex flex-1 flex-col">

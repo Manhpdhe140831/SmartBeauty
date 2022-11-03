@@ -19,9 +19,9 @@ function decidingConfigByRole(userRole: USER_ROLE) {
       return branchAdminConfig;
     case USER_ROLE.manager:
       return branchManagerConfig;
-    case USER_ROLE.employee_sale:
+    case USER_ROLE.sale_staff:
     // TODO create new menu for employee_tech
-    case USER_ROLE.employee_tech:
+    case USER_ROLE.technical_staff:
       return branchEmployeeConfig;
   }
   console.warn(
