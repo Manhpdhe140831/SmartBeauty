@@ -24,6 +24,7 @@ import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { MAX_PRICE } from "../../../const/_const";
 import {
   formatterNumberInput,
+  formatTime,
   parserNumberInput,
 } from "../../../utilities/fn.helper";
 import ServiceInCourseTable from "./_partial/service-in-course.table";
@@ -113,6 +114,82 @@ const CourseDetailDialog: FC<
               {...register("description")}
             />
             <FormErrorMessage errors={errors} name={"description"} />
+
+            <div className="flex space-x-2">
+              <div className="flex w-64 flex-col">
+                <label
+                  htmlFor="timeOfUse"
+                  className="text-[14px] font-[500] text-gray-900"
+                >
+                  Time of use <span className="text-red-500">*</span>
+                </label>
+                <small className="mb-1 text-[12px] leading-[1.2] text-gray-400">
+                  amount of treatment in the course
+                </small>
+                <Controller
+                  name={"timeOfUse"}
+                  control={control}
+                  render={({ field }) => (
+                    <NumberInput
+                      placeholder={"2,3 times..."}
+                      hideControls
+                      min={0}
+                      max={99}
+                      required
+                      defaultValue={field.value}
+                      onChange={(v) => field.onChange(v)}
+                      onBlur={field.onBlur}
+                      step={1}
+                    />
+                  )}
+                ></Controller>
+                <FormErrorMessage errors={errors} name={"timeOfUse"} />
+              </div>
+
+              <div className="flex flex-1 flex-col">
+                <label
+                  htmlFor="expireIn"
+                  className="text-[14px] font-[500] text-gray-900"
+                >
+                  Course Duration <span className="text-red-500">*</span>
+                </label>
+                <small className="mb-1 text-[12px] leading-[1.2] text-gray-400">
+                  treatment process in days
+                </small>
+                <Controller
+                  name={"expireIn"}
+                  control={control}
+                  render={({ field }) => (
+                    <div
+                      className={
+                        "flex items-center space-x-2 rounded border border-solid border-[#ced4da] px-2"
+                      }
+                    >
+                      <NumberInput
+                        placeholder={"31, 60 days..."}
+                        hideControls
+                        min={0}
+                        max={9999}
+                        required
+                        defaultValue={field.value}
+                        onChange={(v) => field.onChange(v)}
+                        onBlur={field.onBlur}
+                        step={1}
+                        variant={"unstyled"}
+                        className={"flex-1"}
+                        sx={{ input: { height: 34 } }}
+                      />
+                      {field.value && (
+                        <Text size={"xs"} color={"dimmed"}>
+                          ~ {formatTime(field.value, "day")}
+                        </Text>
+                      )}
+                    </div>
+                  )}
+                ></Controller>
+                <FormErrorMessage errors={errors} name={"expireIn"} />
+              </div>
+            </div>
 
             <Divider my={8} />
 
