@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     @Override
-    public Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password, String roleAuth, Integer idCheck) {
+    public Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password, Long role, String roleAuth, Integer idCheck) {
         try {
             Users user = new Users();
             user.setName(name);
@@ -89,13 +89,13 @@ public class UserServiceImpl implements UserService {
 
             Set<Role> roles = new HashSet<>();
             if (roleAuth.equalsIgnoreCase("admin")) {
-                Role role = null;
+                Role roleRaw = null;
                 Optional<Role> optional = roleRepository.findByName("manager");
                 if (optional.isPresent()) {
-                    role = optional.get();
+                    roleRaw = optional.get();
                 }
-                if (role != null) {
-                    roles.add(role);
+                if (roleRaw != null) {
+                    roles.add(roleRaw);
                 }
                 user.setRoles(roles);
                 userRepository.save(user);
@@ -105,13 +105,13 @@ public class UserServiceImpl implements UserService {
                 if(idBranch == null){
                     return false;
                 } else {
-                    Role role = null;
-                    Optional<Role> optional = roleRepository.findByName("staff");
+                    Role roleRaw = null;
+                    Optional<Role> optional = roleRepository.findById(role);
                     if (optional.isPresent()) {
-                        role = optional.get();
+                        roleRaw = optional.get();
                     }
-                    if (role != null) {
-                        roles.add(role);
+                    if (roleRaw != null) {
+                        roles.add(roleRaw);
                     }
                     user.setRoles(roles);
                     user = userRepository.save(user);
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean updateUser(Long id, String name, String email, String phone, String dateOfBirth, String gender, String address) {
+    public Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address) {
         try{
             Users user = null;
             if(id !=null){
@@ -168,6 +168,9 @@ public class UserServiceImpl implements UserService {
                 }
             }
             if(user != null){
+                if(image != null){
+                    user.setUrlImage(user.getUrlImage());
+                }
                 if(name!=null){
                     user.setName(name);
                 }

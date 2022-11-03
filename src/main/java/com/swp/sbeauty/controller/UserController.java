@@ -55,13 +55,14 @@ public class UserController {
                                       @RequestParam(value = "gender") String gender,
                                       @RequestParam(value = "address") String address,
                                       @RequestParam(value = "password") String password,
+                                      @RequestParam(value = "role", required = false) Long role,
                                       @RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String roleCheck = temp.get("role").toString();
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
         String check = userService.validateUser(email, phone);
         if (check == "") {
-            Boolean result = userService.saveUser(image, name, email, phone, dateOfBirth, gender, address, password, roleCheck, idcheck);
+            Boolean result = userService.saveUser(image, name, email, phone, dateOfBirth, gender, address, password, role, roleCheck, idcheck);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -69,15 +70,16 @@ public class UserController {
     }
     @PutMapping ("/user/update")
     public ResponseEntity<?> updateUser(@RequestParam(value = "id") Long id,
-                                              @RequestParam(value = "name", required = false) String name,
-                                              @RequestParam(value = "email", required = false) String email,
-                                              @RequestParam(value = "phone", required = false) String phone,
-                                              @RequestParam(value = "dateOfBirth", required = false) String dateOfBirth,
-                                              @RequestParam(value = "gender", required = false) String gender,
-                                              @RequestParam(value = "address", required = false) String address){
+                                        @RequestParam(value = "image", required = false) MultipartFile image,
+                                        @RequestParam(value = "name", required = false) String name,
+                                        @RequestParam(value = "email", required = false) String email,
+                                        @RequestParam(value = "phone", required = false) String phone,
+                                        @RequestParam(value = "dateOfBirth", required = false) String dateOfBirth,
+                                        @RequestParam(value = "gender", required = false) String gender,
+                                        @RequestParam(value = "address", required = false) String address){
         String check = userService.validateUser(email, phone);
         if(check == ""){
-            Boolean result = userService.updateUser(id, name, email, phone, dateOfBirth, gender, address);
+            Boolean result = userService.updateUser(id, image, name, email, phone, dateOfBirth, gender, address);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -104,37 +106,6 @@ public class UserController {
         String jwt = jwtUtils.generateJwtToken(authentication);
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
-    /*@GetMapping("/user")
-    private APIResponse<Page<User>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "roleName", required = false) String roleName
-    ){
-        Page<User> getAllUser;
-        if(roleName  == "" ||roleName == null){
-            getAllUser = userService.getAllUsers(page -1,pageSize);
-        }
-        else {
-            getAllUser = userService.getAllUsersPagination(page -1,pageSize,roleName);
-        }
-        return new APIResponse<>(getAllUser.getSize(),getAllUser);
-    }*/
-    /*@GetMapping("/user")
-    private APIResponse<Page<UserDto>> getAllUserByRoleName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "roleId", required = false, defaultValue = "0") int roleId
-            , @RequestHeader("Authorization") String authHeader){
-        Page<UserDto> getAllUser;
-        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        String role = temp.get("role").toString();
-
-        if((Integer)roleId == 0){
-            getAllUser = userService.getAllUsers(page,pageSize);
-        }
-        else {
-            getAllUser = userService.getAllUsersPagination(page,pageSize,roleId);
-        }
-        return new APIResponse<>(getAllUser.getSize(),getAllUser);
-    }*/
 
     @GetMapping("/user/getAll")
     private APIResponse<Page<UserDto>> getAllUserByAdmin(@RequestParam(value = "page",required = false,defaultValue = "1") int page

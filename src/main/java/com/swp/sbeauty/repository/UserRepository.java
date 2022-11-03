@@ -37,8 +37,8 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     @Query(value = "select u.* from `users` as u , `user_role` as ur where ur.role_id != 1 and u.id = ur.user_id",nativeQuery = true)
     Page<Users> getAllUserByAdmin( Pageable pageable);
 
-    @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1 ORDER BY ?#{#pageable}",
-            countQuery = "select count(*) from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1"
+    @Query(value = "select  a.* from users a, user_branch_mapping b, user_role c where (a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1) or (a.id = b.id_user and a.id = c.user_id and c.role_id=4 and b.id_branch = ?1) ORDER BY ?#{#pageable}",
+            countQuery = "select  count(*) from users a, user_branch_mapping b, user_role c where (a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1) or (a.id = b.id_user and a.id = c.user_id and c.role_id=4 and b.id_branch = ?1)"
             ,nativeQuery = true)
     Page<Users>getAllUserByManager(Integer idCheck ,Pageable pageable);
 
