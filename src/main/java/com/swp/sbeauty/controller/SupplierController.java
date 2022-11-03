@@ -27,7 +27,7 @@ public class SupplierController {
     @GetMapping("/supplier/getById")
     public ResponseEntity<SupplierDto> getSupplierById(@RequestParam(value = "id",required = false) Long id) {
         SupplierDto result = supplierService.getById(id);
-        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
     @PostMapping(value = "/supplier/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveSupplier(@RequestParam(value = "name") String name,

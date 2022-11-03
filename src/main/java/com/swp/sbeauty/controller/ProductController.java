@@ -52,8 +52,8 @@ public class ProductController {
     @PostMapping(value = "/product/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveProduct(@RequestParam(value = "name") String name,
                                      @RequestParam(value = "price") Double price,
-                                     @RequestParam(value = "description") String description,
-                                     @RequestParam(value = "image") MultipartFile image,
+                                     @RequestParam(value = "description",required = false) String description,
+                                     @RequestParam(value = "image",required = false) MultipartFile image,
                                      @RequestParam(value = "discountStart") String discountStart,
                                      @RequestParam(value = "discountEnd") String discountEnd,
                                      @RequestParam(value = "discountPercent") Double discountPercent,
