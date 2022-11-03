@@ -13,6 +13,7 @@ public class Service_Product_MappingDto {
     public Service_Product_MappingDto() {
     }
 
+
     public Service_Product_MappingDto(ProductDto productDto, long usage) {
         this.productDto = productDto;
         this.usage = usage;

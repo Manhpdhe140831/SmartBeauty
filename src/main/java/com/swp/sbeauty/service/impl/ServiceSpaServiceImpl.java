@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,23 +55,60 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         return false;
     }
 
+//           if(name != null){
+//        service.setName(name);
+//    }
+//        if (discountStart != null) {
+//        service.setDiscountStart(discountStart);
+//    }
+//            if (discountEnd != null){
+//        service.setDiscountEnd(discountEnd);
+//    }
+//            if (discountPercent != null){
+//        service.setDiscountPercent(discountPercent);
+//    }
+//            if (price != null){
+//        service.setPrice(price);
+//    }
+//            if (description != null){
+//        service.setDescription(description);
+//    }
+//            if (image != null){
+//        service.setImage(image);
+//    }
     @Override
-    public ServiceDto save(ServiceDto serviceDto) {
-
-        try {
-            if (serviceDto != null){
+    public Boolean save(String name, Date discountStart, Date discountEnd, Double discountPercent, Double price, String description,Long duration ,String image, List<Service_Product_MappingDto> service_product_mappingDtos) {
                 Service service = new Service();
+                service.setName(name);
+                service.setDiscountStart(discountStart);
+                service.setDiscountEnd(discountEnd);
+                service.setDiscountPercent(discountPercent);
+                service.setPrice(price);
+                service.setDescription(description);
+                service.setDuration(duration);
+                service.setImage(image);
 
+            if (service_product_mappingDtos == null){
+                repository.save(service);
+            }else {
+                repository.save(service);
+                Service_Product_MappingDto service_product_mappingDto = new Service_Product_MappingDto();
+
+
+                for (Service_Product_MappingDto itemS : service_product_mappingDtos
+                ) {
+                    service_product_mappingDto = new Service_Product_MappingDto(itemS.getProductDto(), itemS.getUsage());
+                    service_product_mapping_repository.save(new Service_Product_mapping(service.getId(), service_product_mappingDto.getProductDto().getId(), service_product_mappingDto.getUsage()));
+
+                }
             }
 
-        }catch (Exception e){
-            throw e;
-        }
 
-
-
-        return null;
+        return true;
     }
+
+
+
 
     @Override
     public ServiceDto getServiceById(Long id) {
@@ -83,8 +121,18 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
             List<Service_Product_mapping> productsRaw = service_product_mapping_repository.listProducts(id);
             List<Service_Product_MappingDto> products = new ArrayList<>();
+            ProductDto productDto = null;
+            Long usage = 0l;
             for(Service_Product_mapping a : productsRaw){
 
+                Product product = null;
+                    Optional<Product> optional1 = productRepository.findById(a.getProduct_id());
+                    if (optional.isPresent()){
+                        product = optional1.get();
+                        productDto = new ProductDto(product);
+                        usage = service_product_mapping_repository.getUsage(id, a.getProduct_id());
+                        products.add(new Service_Product_MappingDto(productDto, usage));
+                    }
             }
 
             ServiceDto serviceDto = new ServiceDto(service, products);
@@ -93,8 +141,10 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
 
 
+        }else {
+            return null;
         }
-        return null;
+
     }
 
     @Override
@@ -130,17 +180,29 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
          Pageable pageable = PageRequest.of(pageNo, pageSize);
          Page<Service> page = repository.findAll(pageable);
          List<Service> services = page.getContent();
-         List<ServiceDto> serviceDtos = new ArrayList<>();
-         List<ProductDto> productDtos = new ArrayList<>();
-         List<Product> listProduct = new ArrayList<>();
-        for (Service itemS: services
-             ) {
-            ServiceDto serviceDto= new ServiceDto();
-            serviceDto = mapper.map(itemS, ServiceDto.class);
-            serviceDtos.add(serviceDto);
-        }
 
-        serviceResponseDto.setData(serviceDtos);
+
+//         List<Product> listProduct = new ArrayList<>();
+//         Long usage = 0l;
+       List<ServiceDto> listServiceDtos = new ArrayList<>();
+//        ServiceDto serviceDto = new ServiceDto();
+//        Service_Product_MappingDto service_product_mappingDto  = new Service_Product_MappingDto();
+//        List<Service_Product_MappingDto> service_product_mappingDtoList = new ArrayList<>();
+//        for (Service itemS: services
+//             ) {
+//            listProduct = service_product_mapping_repository.getProductByService(itemS.getId());
+//
+//            for (Product p: listProduct
+//                 ) {
+//                usage = service_product_mapping_repository.getUsage(itemS.getId(), p.getId());
+//
+//                service_product_mappingDto = new Service_Product_MappingDto(new ProductDto(p), usage);
+//                service_product_mappingDtoList.add(service_product_mappingDto);
+//            }
+//            serviceDto = new ServiceDto(itemS, service_product_mappingDtoList);
+//            listServiceDtos.add(serviceDto);
+//        }
+        serviceResponseDto.setData(listServiceDtos);
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setTotalElement(page.getTotalElements());
         serviceResponseDto.setPageIndex(pageNo);

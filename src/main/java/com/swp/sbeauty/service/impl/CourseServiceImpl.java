@@ -1,9 +1,6 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.CourseDto;
-import com.swp.sbeauty.dto.CourseResponseDto;
-import com.swp.sbeauty.dto.ServiceDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.CourseRepository;
@@ -47,7 +44,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Boolean save(String name, double price, int duration, Date endOfCourse, Date discountStart, Date discountEnd, double discountPercent, String image, String description, boolean deleted, List<Long> listProductId) {
+    public Boolean save(String name, double price, int duration, Date endOfCourse, Date discountStart, Date discountEnd, double discountPercent, String image, String description, boolean deleted, String[] services) {
 
             Course course = new Course();
             course.setName(name);
@@ -61,13 +58,13 @@ public class CourseServiceImpl implements CourseService {
             course.setDescription(description);
             course.setDeleted(false);
 
-            if (null == listProductId){
+            if (null == services){
                 course = courseRepository.save(course);
                 return true;
-            }else if (null != listProductId){
-                for (Long item: listProductId
+            }else if (null != services){
+                for (int i =0; i < services.length; i++
                      ) {
-                    Course_Service_Mapping course_service_mapping = new Course_Service_Mapping(course.getId(), item);
+                    Course_Service_Mapping course_service_mapping = new Course_Service_Mapping(course.getId(), Long.parseLong(services[i]));
                     course_service_mapping_repository.save(course_service_mapping);
                 }
                 return true;
@@ -110,14 +107,24 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponseDto getAll(int pageNo, int pageSize) {
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Course> page = courseRepository.getAll(pageable);
+        Page<Course> page = courseRepository.findAll(pageable);
         List<Course> courses = page.getContent();
         List<CourseDto> courseDtos = new ArrayList<>();
         for (Course itemC: courses
              ) {
-            CourseDto courseDto = null;
-            courseDto = mapper.map(itemC, CourseDto.class);
-            courseDtos.add(courseDto);
+            List<ServiceDto> serviceDtos = new ArrayList<>();
+            List<Service> services = serviceRepository.getServiceByCourseId(itemC.getId());
+            for (Service s: services
+            ) {
+
+                serviceDtos.add(new ServiceDto(s));
+
+
+
+            }
+            courseDtos.add(new CourseDto(itemC, serviceDtos));
+
+
         }
 
         courseResponseDto.setData(courseDtos);
@@ -126,6 +133,8 @@ public class CourseServiceImpl implements CourseService {
         courseResponseDto.setPageIndex(pageNo + 1);
         return courseResponseDto;
     }
+
+
 
     @Override
     public Date parseDate(String strDate) {
@@ -186,6 +195,7 @@ public class CourseServiceImpl implements CourseService {
                         courseRepository.save(course);
                         return true;
                     } else {
+
                         for (Long item : listServiceId
                         ) {
                             course = courseRepository.save(course);
@@ -204,6 +214,32 @@ public class CourseServiceImpl implements CourseService {
                 return false;
             }
 
+    }
+
+    @Override
+    public CourseDto getCourseById(Long id) {
+        Course course = null;
+        Optional<Course> optional = courseRepository.findById(id);
+        if (optional.isPresent()){
+            course = optional.get();
+        }
+
+        List<Service> services = serviceRepository.getServiceByCourseId(course.getId());
+
+        List<ServiceDto> serviceDtos = new ArrayList<>();
+        for (Service s: services
+             ) {
+
+            serviceDtos.add(new ServiceDto(s));
+        }
+        CourseDto courseDto = new CourseDto(course, serviceDtos);
+
+
+
+
+
+
+        return courseDto;
     }
 
 

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -57,16 +58,17 @@ public class CourseController {
             @RequestParam(value = "image", defaultValue = "") String image,
             @RequestParam("description") String description,
             @RequestParam(value = "deleted", required = false) boolean deleted,
-            @RequestParam (value = "listProduct", required = false) List<Long> listProduct
+            @RequestParam (value = "services", required = false) String[] services
     ){
 
         Date startDate = service.parseDate(discountStart);
         Date endDate = service.parseDate(discountEnd);
         Date endCourse = service.parseDate(endOfCourse);
-        Boolean result = service.save(name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, listProduct);
+        Boolean result = service.save(name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, services);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
+
 
     @RequestMapping(value = "/course/update", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
     public ResponseEntity<?> updateCourse (
@@ -90,6 +92,11 @@ public class CourseController {
         Boolean result = service.update(id, name, price, duration, endCourse, startDate, endDate, discountPercent, image, description, deleted, listProduct);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
+    }
+    @GetMapping(value = "/course/getcourse")
+    public ResponseEntity<?> getCourseById(@RequestParam("id") Long id){
+        CourseDto courseDto = service.getCourseById(id);
+        return new ResponseEntity<>(courseDto, HttpStatus.OK);
     }
 
 //    @RequestMapping(value = "/course/remove", method = RequestMethod.POST)

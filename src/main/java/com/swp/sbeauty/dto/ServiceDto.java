@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +65,22 @@ public class ServiceDto {
 
         }
         this.setProducts(products);
+
+    }
+    public ServiceDto(Service service) {
+
+        if (null != service) {
+            this.setId(service.getId());
+            this.setName(service.getName());
+            this.setDiscountStart(service.getDiscountStart());
+            this.setDiscountEnd(service.getDiscountEnd());
+            this.setPrice(service.getPrice());
+            this.setDescription(service.getDescription());
+            this.setDuration(service.getDuration());
+            this.setImage(service.getImage());
+
+        }
+
 
     }
 }

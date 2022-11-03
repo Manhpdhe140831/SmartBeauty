@@ -29,5 +29,11 @@ public class Service_Product_mapping {
         this.productUsage = productUsage;
     }
 
+    public Service_Product_mapping(Long service_id, Long product_id, Long productUsage){
+        this.setService_id(service_id);
+        this.setProduct_id(product_id);
+        this.setProductUsage(productUsage);
+    }
+
 }
 

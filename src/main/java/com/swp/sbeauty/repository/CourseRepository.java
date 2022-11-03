@@ -23,4 +23,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     public Boolean remove(Long id);
 
 
+
 }

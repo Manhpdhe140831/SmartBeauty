@@ -29,6 +29,8 @@ public class Course_Service_Mapping {
         this.course_id = course_id;
         this.service_id = service_id;
     }
+
+
 }
 
 
