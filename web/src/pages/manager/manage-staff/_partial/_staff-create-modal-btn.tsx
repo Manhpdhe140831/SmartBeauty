@@ -1,6 +1,7 @@
 import { Button, Modal } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import { useState } from "react";
+import StaffCreate from "../_create-staff";
 // import CreateStaff from "../_create-branch";
 
 type StaffModalProps = {
@@ -23,6 +24,7 @@ const StaffCreateModalBtn = ({ onChanged }: StaffModalProps) => {
       <Modal
         title={<h1 className="text-center font-thin capitalize">New Staff</h1>}
         opened={newStaffModal}
+        size={"auto"}
         onClose={() => {
           console.log("closed");
           // close dialog without update to the list screen
@@ -30,15 +32,15 @@ const StaffCreateModalBtn = ({ onChanged }: StaffModalProps) => {
           onChanged();
         }}
       >
-        {/* <CreateBranch
-          onSave={async (e) => {
+        <StaffCreate
+          onClose={(e) => {
             //  TODO: handle API call
             console.log(e);
             // close dialog and update to the list screen
-            onChanged(true);
-            setNewBranchModal(false);
+            onChanged && onChanged(true);
+            setNewStaffModal(false);
           }}
-        /> */}
+        />
       </Modal>
     </>
   );
