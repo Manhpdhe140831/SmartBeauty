@@ -2,12 +2,13 @@ import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import ListCustomer from "../../_shared/customer/customer-list";
 import { USER_ROLE } from "../../../const/user-role.const";
 import { useRouter } from "next/router";
-import { Divider, Pagination } from "@mantine/core";
+import { Button, Divider, Pagination } from "@mantine/core";
+import { IconPlus } from "@tabler/icons";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { useQuery } from "@tanstack/react-query";
 import mockCustomer from "../../../mock/customer";
 
-const ManageCustomer: AppPageInterface = () => {
+const SaleStaffCustomerList: AppPageInterface = () => {
   const router = useRouter();
   const {
     pageSize,
@@ -24,13 +25,22 @@ const ManageCustomer: AppPageInterface = () => {
 
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>
+      <div className="flex justify-end space-x-2">
+        {/*  Btn create new customer   */}
+        <Button color={"teal"} leftIcon={<IconPlus />}>
+          Customer
+        </Button>
+      </div>
+
+      <Divider my={8}></Divider>
+
       <div className="flex-1">
         <ListCustomer
           page={currentPage}
           pageSize={pageSize}
           data={listUser}
           isLoading={listUserLoading}
-          role={USER_ROLE.manager}
+          role={USER_ROLE.sale_staff}
         />
       </div>
 
@@ -47,6 +57,4 @@ const ManageCustomer: AppPageInterface = () => {
   );
 };
 
-ManageCustomer.guarded = USER_ROLE.manager;
-
-export default ManageCustomer;
+export default SaleStaffCustomerList;

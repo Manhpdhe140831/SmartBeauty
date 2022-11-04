@@ -1,5 +1,6 @@
-import { CustomerModel } from "../../../../model/customer.model";
+import { CustomerModel } from "../../../../../model/customer.model";
 import {
+  Button,
   Input,
   InputVariant,
   MantineSize,
@@ -8,7 +9,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import FormErrorMessage from "../../../../components/form-error-message";
+import FormErrorMessage from "../../../../../components/form-error-message";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -16,25 +17,31 @@ import {
   ageSchemaFn,
   emailSchema,
   genderSchema,
+  idDbSchema,
   nameSchema,
   phoneSchema,
-} from "../../../../validation/field.schema";
+} from "../../../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { GENDER } from "../../../../const/gender.const";
+import { GENDER } from "../../../../../const/gender.const";
 import { DatePicker } from "@mantine/dates";
-import { ageTilToday } from "../../../../utilities/fn.helper";
+import { ageTilToday } from "../../../../../utilities/fn.helper";
 import MaskedInput from "react-text-mask";
-import { PhoneNumberMask } from "../../../../const/input-masking.const";
+import { PhoneNumberMask } from "../../../../../const/input-masking.const";
+import { DialogSubmit } from "../../../../../utilities/form-data.helper";
+import { FormEvent } from "react";
 
 type FormProps = {
   data: CustomerModel;
   readonly?: boolean;
-  onChanged?: () => void;
+  onChanged?: (mutatedData?: unknown) => void;
+  mode: "view" | "create";
 };
 
-const InformationForm = ({ data, readonly }: FormProps) => {
+const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
+  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
   const schema = z.object({
+    id: idSchema,
     name: nameSchema,
     phone: phoneSchema,
     email: emailSchema,
@@ -46,17 +53,21 @@ const InformationForm = ({ data, readonly }: FormProps) => {
   const {
     register,
     control,
-    formState: { errors },
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      ...data,
-      dateOfBirth: data.dateOfBirth
-        ? dayjs(data.dateOfBirth).toDate()
-        : undefined,
-    },
+    defaultValues: data
+      ? {
+          ...data,
+          dateOfBirth: data.dateOfBirth
+            ? dayjs(data.dateOfBirth).toDate()
+            : undefined,
+        }
+      : undefined,
   });
 
   const generalProps = (
@@ -95,8 +106,18 @@ const InformationForm = ({ data, readonly }: FormProps) => {
     size: "lg" as MantineSize,
   });
 
+  const submitData = (dataSubmit: z.infer<typeof schema>) =>
+    DialogSubmit(mode, dirtyFields, onChanged, data)(dataSubmit);
+
+  const handleReset = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    reset();
+    onChanged && onChanged();
+  };
+
   return (
-    <form className={""}>
+    <form onReset={handleReset} onSubmit={handleSubmit(submitData)}>
       <fieldset disabled={readonly} className={"flex w-80 flex-col"}>
         <TextInput
           {...generalProps("Customer Name", readonly, { required: true })}
@@ -195,6 +216,22 @@ const InformationForm = ({ data, readonly }: FormProps) => {
         ></Textarea>
         <FormErrorMessage errors={errors} name={"address"} />
       </fieldset>
+
+      {isDirty && (
+        <div className="flex w-full justify-end space-x-4">
+          <Button type={"reset"} variant={"light"} color={"red"}>
+            Cancel
+          </Button>
+          <Button
+            disabled={!isValid}
+            type={"submit"}
+            variant={"filled"}
+            color={"orange"}
+          >
+            Update
+          </Button>
+        </div>
+      )}
     </form>
   );
 };

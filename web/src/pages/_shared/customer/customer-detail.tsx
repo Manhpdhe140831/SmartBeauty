@@ -1,29 +1,29 @@
-import { AppPageInterface } from "../../interfaces/app-page.interface";
-import { USER_ROLE } from "../../const/user-role.const";
-import { useRouter } from "next/router";
+import { USER_ROLE } from "../../../const/user-role.const";
 import { Url } from "url";
 import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../mock/customer";
+import mockCustomer from "../../../mock/customer";
 import { Avatar, Button } from "@mantine/core";
 import InformationForm from "./_partial/detail/information.form";
 import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons";
+import { FC } from "react";
 
 type CustomerDetailProps = {
   role: USER_ROLE;
   previousUrl?: string;
   page?: number;
   id: number;
+  onInfoChanged?: (mutateData: unknown) => void;
 };
 
-const CustomerDetail: AppPageInterface<CustomerDetailProps> = ({
+const CustomerDetail: FC<CustomerDetailProps> = ({
   role,
   page,
   previousUrl,
   id,
+  onInfoChanged,
 }) => {
-  const router = useRouter();
-
+  // TODO integrate API get user by id
   const { data, isLoading } = useQuery(["customer-detail", id], async () => {
     const l = await mockCustomer();
     return l.find((c) => c.id === id);
@@ -64,7 +64,12 @@ const CustomerDetail: AppPageInterface<CustomerDetailProps> = ({
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
         />
 
-        <InformationForm readonly={role === USER_ROLE.manager} data={data} />
+        <InformationForm
+          mode={role === USER_ROLE.manager ? "view" : "create"}
+          readonly={role === USER_ROLE.manager}
+          data={data}
+          onChanged={onInfoChanged}
+        />
       </div>
     </div>
   );
