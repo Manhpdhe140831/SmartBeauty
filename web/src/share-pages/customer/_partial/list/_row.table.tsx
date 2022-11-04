@@ -1,5 +1,5 @@
-import { CustomerModel } from "../../../../../model/customer.model";
-import { formatDate } from "../../../../../utilities/fn.helper";
+import { CustomerModel } from "../../../../model/customer.model";
+import { formatDate } from "../../../../utilities/fn.helper";
 
 type RowProps<T extends CustomerModel> = {
   data: T;
@@ -13,7 +13,7 @@ const ListRowTable = <T extends CustomerModel>({
   onSelect,
 }: RowProps<T>) => {
   return (
-    <tr onClick={() => onSelect && onSelect(data)}>
+    <tr className={"cursor-pointer"} onClick={() => onSelect && onSelect(data)}>
       <td className={"text-center"}>{no}</td>
       <td>{data.name}</td>
       <td className={"text-center uppercase"}>{data.gender}</td>

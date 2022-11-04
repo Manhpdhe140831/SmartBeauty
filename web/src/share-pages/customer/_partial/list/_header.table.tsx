@@ -6,7 +6,7 @@ const ListHeaderTable = () => {
         <col />
         <col className={"w-24"} />
         <col className={"w-28"} />
-        <col className={"w-28"} />
+        <col className={"w-32"} />
       </colgroup>
 
       <thead>

@@ -28,7 +28,7 @@ export const branchAdminConfig: NavLinkItemProp[] = [
 export const branchManagerConfig: NavLinkItemProp[] = [
   {
     label: "Manage Customer",
-    href: "/manager/customer",
+    href: "/manager/manage-customer",
   },
   {
     label: "Manage Schedule",

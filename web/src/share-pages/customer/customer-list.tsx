@@ -1,39 +1,47 @@
-import { AppPageInterface } from "../../../interfaces/app-page.interface";
+import { AppPageInterface } from "../../interfaces/app-page.interface";
 import { useRouter } from "next/router";
-import { USER_ROLE } from "../../../const/user-role.const";
-import useWindowPathname from "../../../hooks/window-pathname.hook";
+import { USER_ROLE } from "../../const/user-role.const";
 import { Button, Divider, Pagination, Table } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import ListHeaderTable from "./_partial/list/_header.table";
 import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../../mock/customer";
-import RowPlaceholderTable from "../../../components/row-placeholder.table";
-import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
+import mockCustomer from "../../mock/customer";
+import RowPlaceholderTable from "../../components/row-placeholder.table";
+import usePaginationHook, { getItemNo } from "../../hooks/pagination.hook";
 import ListRowTable from "./_partial/list/_row.table";
+import { ParsedUrlQuery } from "querystring";
 
-const ListCustomer: AppPageInterface = () => {
+type ListCustomerProps = {
+  role: USER_ROLE;
+  query: ParsedUrlQuery;
+};
+
+const ListCustomer: AppPageInterface<ListCustomerProps> = ({ role, query }) => {
   const router = useRouter();
-  const { paths } = useWindowPathname();
   const {
     pageSize,
     currentPage,
     totalPage,
     update: updatePagination,
-  } = usePaginationHook();
-
-  const viewingRole = paths[0] as USER_ROLE.manager | USER_ROLE.sale_staff;
+  } = usePaginationHook(undefined, Number(query.page ?? "1"));
 
   const { data: listUser, isLoading: listUserLoading } = useQuery(
-    ["list-customer", router.query.role, currentPage],
+    ["list-customer", query.role, currentPage],
     () => mockCustomer()
   );
 
-  if (
-    viewingRole !== USER_ROLE.sale_staff &&
-    viewingRole !== USER_ROLE.manager
-  ) {
-    void router.replace("/404");
-    return <>redirecting...</>;
+  function navigateToDetail(role: USER_ROLE, id: number, currentPage: number) {
+    const url = `${router.pathname}/detail/${id}`;
+    void router.push(
+      {
+        pathname: url,
+        query: {
+          previousUrl: router.pathname,
+          page: currentPage,
+        },
+      },
+      url
+    );
   }
 
   return (
@@ -78,6 +86,9 @@ const ListCustomer: AppPageInterface = () => {
                   key={d.id}
                   data={d}
                   no={getItemNo(i, currentPage, pageSize)}
+                  onSelect={(data) =>
+                    navigateToDetail(role, data.id, currentPage)
+                  }
                 />
               ))
             )}
