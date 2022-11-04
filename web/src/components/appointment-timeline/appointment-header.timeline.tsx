@@ -9,7 +9,9 @@ type SlotProps = {
 
 const AppointmentHeaderTimeline: FC<SlotProps> = ({ title, timeFrame }) => {
   return (
-    <AppointmentSlot className={"flex flex-col items-end"}>
+    <AppointmentSlot
+      className={"flex select-none flex-col items-end justify-center"}
+    >
       <Text className={"font-semibold"}>{title}</Text>
       <Text size={"sm"} color={"dimmed"}>
         {timeFrame}

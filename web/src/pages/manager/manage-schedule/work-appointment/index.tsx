@@ -2,8 +2,8 @@ import { AppPageInterface } from "../../../../interfaces/app-page.interface";
 import { Button, Divider, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import CalendarController from "./_partial/calendar-controller";
-import AppointmentTimeline from "./_partial/appointment.timeline";
-import AppointmentHeaderTimeline from "./_partial/appointment-header.timeline";
+import AppointmentTimeline from "../../../../components/appointment-timeline/appointment.timeline";
+import AppointmentHeaderTimeline from "../../../../components/appointment-timeline/appointment-header.timeline";
 
 const ManageAppointmentSchedule: AppPageInterface = () => {
   return (
@@ -18,10 +18,10 @@ const ManageAppointmentSchedule: AppPageInterface = () => {
 
       <div className="flex-1">
         <div className="flex h-full w-full">
-          <div className={"flex w-48 flex-col px-4"}>
+          <div className={"flex w-32 flex-col px-4"}>
             <div className="h-24 border-b"></div>
             <div className="flex flex-1 flex-col divide-y">
-              <div className="flex h-16 items-center justify-end font-semibold">
+              <div className="flex h-16 select-none items-center justify-end text-right font-semibold">
                 <Text className={"uppercase"}>Bed Number</Text>
               </div>
               <AppointmentHeaderTimeline

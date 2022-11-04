@@ -36,36 +36,34 @@ const CalendarController = () => {
   };
 
   return (
-    <div className={"flex flex-col"}>
-      <div className="flex">
-        <Select
-          label={"Viewing Staff"}
-          data={staffLoading || !listStaff ? [] : listStaff}
-          placeholder={"select the staff"}
-          searchable
-          itemComponent={AutoCompleteItem}
-          nothingFound={staffLoading ? "loading..." : "No result found"}
-          maxDropdownHeight={200}
-          required={true}
-          defaultValue={staffId !== null ? String(staffId) : null}
-          onChange={fnOnChange}
-        />
+    <div className="flex">
+      <Select
+        label={"Viewing Staff"}
+        data={staffLoading || !listStaff ? [] : listStaff}
+        placeholder={"select the staff"}
+        searchable
+        itemComponent={AutoCompleteItem}
+        nothingFound={staffLoading ? "loading..." : "No result found"}
+        maxDropdownHeight={200}
+        required={true}
+        defaultValue={staffId !== null ? String(staffId) : null}
+        onChange={fnOnChange}
+      />
 
-        <Divider orientation={"vertical"} className={"mx-4"} />
+      <Divider orientation={"vertical"} className={"mx-4"} />
 
-        <DatePicker
-          placeholder="Pick date"
-          label="Schedule at date"
-          withAsterisk
-        />
-        <ActionIcon mt={28} ml={4} variant="filled">
-          <IconArrowLeft size={12} />
-        </ActionIcon>
+      <DatePicker
+        placeholder="Pick date"
+        label="Schedule at date"
+        withAsterisk
+      />
+      <ActionIcon mt={29} ml={4} variant="filled">
+        <IconArrowLeft size={12} />
+      </ActionIcon>
 
-        <ActionIcon mt={28} ml={2} variant="filled">
-          <IconArrowRight size={12} />
-        </ActionIcon>
-      </div>
+      <ActionIcon mt={29} ml={2} variant="filled">
+        <IconArrowRight size={12} />
+      </ActionIcon>
     </div>
   );
 };

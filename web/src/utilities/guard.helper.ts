@@ -11,7 +11,7 @@ import { UserModel } from "../model/user.model";
  */
 export function needRedirectedOnRole(
   router: NextRouter,
-  isGuarded: USER_ROLE,
+  isGuarded: USER_ROLE | USER_ROLE[],
   user: UserModel | null
 ) {
   if (isGuarded !== USER_ROLE.all) {
@@ -29,12 +29,19 @@ export function needRedirectedOnRole(
         return false;
       }
 
-      // the page is protected by a role config
-      // (must log in with the correct role).
-      if (isGuarded !== user?.role) {
-        void router.push("/401");
-        return true;
+      // `isGuarded` guard can either be an array or a single role.
+      let isNavigated: boolean;
+      if (Array.isArray(isGuarded)) {
+        isNavigated = routeWithMultipleRole(isGuarded, router, user);
+      } else {
+        isNavigated = routeWithSingleRole(isGuarded, router, user);
       }
+
+      if (isNavigated) {
+        // not matching the specified role
+        return isNavigated;
+      }
+
       // user challenges the page guard successfully.
       // proceed to render the page.
     } else {
@@ -48,4 +55,32 @@ export function needRedirectedOnRole(
     }
   }
   return false;
+}
+
+function routeWithSingleRole(
+  isGuarded: USER_ROLE,
+  router: NextRouter,
+  user: UserModel
+) {
+  // the page is protected by a role config
+  // (must log in with the correct role).
+  if (isGuarded !== user.role) {
+    void router.push("/401");
+    return true;
+  }
+  return false;
+}
+
+function routeWithMultipleRole(
+  isGuarded: USER_ROLE[],
+  router: NextRouter,
+  user: UserModel
+) {
+  // the page is protected by multiple role config
+  // (must log in with the either correct role).
+  if (isGuarded.includes(user.role)) {
+    return false;
+  }
+  void router.push("/401");
+  return true;
 }

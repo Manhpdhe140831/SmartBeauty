@@ -29,6 +29,15 @@ export function formatTime(time: number, unit: DurationUnitType) {
   return dayjs.duration(time, unit).humanize();
 }
 
+/**
+ * Convert iso format date string to a suitable viewing format.
+ * @param date iso-format
+ * @param format
+ */
+export function formatDate(date: string, format = "DD/MM/YYYY") {
+  return dayjs(new Date(date)).format(format);
+}
+
 export const formatterNumberInput = (value: string | undefined): string => {
   if (value === undefined) {
     return "";
