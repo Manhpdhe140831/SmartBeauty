@@ -23,6 +23,7 @@ import com.swp.sbeauty.repository.mappingRepo.User_Branch_Mapping_Repo;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -68,7 +69,8 @@ public class UserServiceImpl implements UserService {
             user.setPhone(phone);
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             Date dob = df.parse(dateOfBirth);
-            user.setDateOfBirth(dob);
+            Date birthDate = new DateTime(dateOfBirth).toDate();
+            user.setDateOfBirth(birthDate);
             user.setGender(gender);
             user.setAddress(address);
             user.setPassword(encoder.encode(password));
@@ -181,9 +183,10 @@ public class UserServiceImpl implements UserService {
                     user.setPhone(phone);
                 }
                 if(dateOfBirth!=null){
+                    Date birthDate = new DateTime(dateOfBirth).toDate();
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     Date dob = df.parse(dateOfBirth);
-                    user.setDateOfBirth(dob);
+                    user.setDateOfBirth(birthDate);
                 }
                 if(gender!=null){
                     user.setGender(gender);

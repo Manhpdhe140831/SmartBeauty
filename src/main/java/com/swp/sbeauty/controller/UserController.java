@@ -62,6 +62,7 @@ public class UserController {
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
         String check = userService.validateUser(email, phone);
         if (check == "") {
+
             Boolean result = userService.saveUser(image, name, email, phone, dateOfBirth, gender, address, password, role, roleCheck, idcheck);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {

@@ -7,6 +7,7 @@ import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.service.ProductService;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,8 +63,8 @@ public class ProductController {
                                      @RequestParam(value = "dose") Integer dose){
         String check = productService.validateProduct(name);
         if(check == ""){
-            Date startDate = productService.parseDate(discountStart);
-            Date endDate = productService.parseDate(discountEnd);
+            Date startDate = new DateTime(discountStart).toDate();
+            Date endDate = new DateTime(discountEnd).toDate();
             Boolean result = productService.saveProduct(name,price,description,image,startDate,endDate,discountPercent,supplier,unit,dose );
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
