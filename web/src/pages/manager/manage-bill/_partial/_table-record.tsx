@@ -1,9 +1,6 @@
 import { Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { BillModel } from "../../../../model/bill.model";
-import { BranchModel } from "../../../../model/branch.model";
-import { ManagerModel } from "../../../../model/manager.model";
-import { StaffModel } from "../../../../model/staff.model";
 
 type RecordProps = {
   no?: number;
@@ -52,7 +49,7 @@ export default function TableRecord(props: RecordProps) {
           <span>{props.data.code_bill}</span>
         </Tooltip>
       </td>
-      
+
       <td className="text-center">{props.action}</td>
     </tr>
   );

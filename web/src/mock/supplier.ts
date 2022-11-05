@@ -1,6 +1,6 @@
 import { SupplierModel } from "../model/supplier.model";
 
-export const providers: SupplierModel[] = [
+export const Supplier: SupplierModel[] = [
   {
     id: 1,
     name: "HNC",
@@ -24,7 +24,7 @@ const mockProviders = (find?: string) =>
     setTimeout(
       () =>
         resolve(
-          find ? providers.filter((p) => p.name.includes(find)) : providers
+          find ? Supplier.filter((p) => p.name.includes(find)) : Supplier
         ),
       500
     )

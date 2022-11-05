@@ -1,76 +1,58 @@
-import { BranchModel } from "../model/branch.model";
-import { ManagerModel } from "../model/manager.model";
-import { GENDER } from "../const/gender.const";
-import { USER_ROLE } from "../const/user-role.const";
-import { StaffModel } from "../model/staff.model";
 import { BillModel } from "../model/bill.model";
+import { Customer } from "./customer";
+import { Staff } from "./staff";
+import { Supplier } from "./supplier";
 
-const bill: BillModel[] = [{
+const Bill: BillModel[] = [
+  {
     id: 1,
-    code_bill: "7540",
-    date_bill: "10/27/2021",
-    provider: "Yodoo",
-    cost: "$6.05"
-  }, {
+    customer: Customer.at(1)!,
+    staff: Staff.at(1)!,
+    supplier: Supplier.at(1)!,
+    status: "false",
+    createdDate: "2022-08-11T05:49:08Z",
+    price: 35775,
+  },
+  {
     id: 2,
-    code_bill: "E8148",
-    date_bill: "6/17/2022",
-    provider: "Gigabox",
-    cost: "$9.35"
-  }, {
+    customer: Customer.at(2)!,
+    staff: Staff.at(2)!,
+    supplier: Supplier.at(2)!,
+    status: "false",
+    createdDate: "2022-07-24T20:32:31Z",
+    price: 21655,
+  },
+  {
     id: 3,
-    code_bill: "48801",
-    date_bill: "4/20/2022",
-    provider: "Katz",
-    cost: "$4.07"
-  }, {
+    customer: Customer.at(3)!,
+    staff: Staff.at(3)!,
+    supplier: Supplier.at(3)!,
+    status: "true",
+    createdDate: "2022-06-18T16:42:52Z",
+    price: 59649,
+  },
+  {
     id: 4,
-    code_bill: "1455",
-    date_bill: "5/15/2022",
-    provider: "Mita",
-    cost: "$1.34"
-  }, {
+    customer: Customer.at(4)!,
+    staff: Staff.at(4)!,
+    supplier: Supplier.at(4)!,
+    status: "true",
+    createdDate: "2022-04-07T06:49:16Z",
+    price: 67898,
+  },
+  {
     id: 5,
-    code_bill: "8781",
-    date_bill: "3/10/2022",
-    provider: "Yata",
-    cost: "$7.68"
-  }, {
-    id: 6,
-    code_bill: "65310",
-    date_bill: "1/21/2022",
-    provider: "Mybuzz",
-    cost: "$5.20"
-  }, {
-    id: 7,
-    code_bill: "37262",
-    date_bill: "5/2/2022",
-    provider: "Kamba",
-    cost: "$6.80"
-  }, {
-    id: 8,
-    code_bill: "6820",
-    date_bill: "11/22/2021",
-    provider: "Topicblab",
-    cost: "$6.27"
-  }, {
-    id: 9,
-    code_bill: "99699",
-    date_bill: "2/19/2022",
-    provider: "Tagpad",
-    cost: "$2.91"
-  }, {
-    id: 10,
-    code_bill: "72782",
-    date_bill: "8/21/2022",
-    provider: "Jaxworks",
-    cost: "$2.15"
-  }];
+    customer: Customer.at(5)!,
+    staff: Staff.at(5)!,
+    supplier: Supplier.at(5)!,
+    status: "true",
+    createdDate: "2022-02-03T04:44:14Z",
+    price: 94495,
+  },
+];
 
 const mockBill = () =>
-  new Promise<BillModel[]>((resolve) =>
-    setTimeout(() => resolve(bill), 500)
-  );
+  new Promise<BillModel[]>((resolve) => setTimeout(() => resolve(Bill), 500));
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>

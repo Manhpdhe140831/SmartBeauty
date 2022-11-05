@@ -1,46 +1,40 @@
-import { Table } from "@mantine/core";
-import ListHeaderTable from "./_partial/list/_header.table";
-import RowPlaceholderTable from "../../../components/row-placeholder.table";
-import { getItemNo } from "../../../hooks/pagination.hook";
-import ListRowTable from "./_partial/list/_row.table";
-import { CustomerModel } from "../../../model/customer.model";
 import { FC } from "react";
+import RowPlaceholderTable from "../../../components/row-placeholder.table";
+import { Table } from "@mantine/core";
+import { BillModel } from "../../../model/bill.model";
+import HeaderTable from "./list/_header.table";
+import RowTable from "./list/_row.table";
+import { getItemNo } from "../../../hooks/pagination.hook";
 
-type ListCustomerProps = {
+type ListProps = {
   isLoading?: boolean;
-  data?: CustomerModel[];
+  data?: BillModel[];
 
   page: number;
   pageSize: number;
 
-  // events
-  onRowClick?: (dataPerRow: CustomerModel, index: number) => void;
+  onRowClick?: (data: BillModel, index: number) => void;
 };
 
-const ListCustomer: FC<ListCustomerProps> = ({
+const BillList: FC<ListProps> = ({
   isLoading,
   data,
-  page,
-  pageSize,
   onRowClick,
+  pageSize,
+  page,
 }) => {
   return (
     <Table
-      className={"table-fixed"}
+      className="table-fixed"
       withBorder
       withColumnBorders
       highlightOnHover
-      striped
-      cellSpacing={16}
-      horizontalSpacing={16}
-      verticalSpacing={16}
     >
-      <ListHeaderTable />
-
+      <HeaderTable />
       <tbody>
         {isLoading ? (
           <RowPlaceholderTable
-            colSpan={5}
+            colSpan={7}
             className={"min-h-12"}
             message={
               <div className="text-center font-semibold text-gray-500">
@@ -51,11 +45,11 @@ const ListCustomer: FC<ListCustomerProps> = ({
         ) : (
           data &&
           data.map((d, i) => (
-            <ListRowTable
+            <RowTable
               key={d.id}
-              data={d}
               no={getItemNo(i, page, pageSize)}
-              onSelect={(data) => onRowClick && onRowClick(data, i)}
+              data={d}
+              onSelect={(d) => onRowClick && onRowClick(d, i)}
             />
           ))
         )}
@@ -64,4 +58,4 @@ const ListCustomer: FC<ListCustomerProps> = ({
   );
 };
 
-export default ListCustomer;
+export default BillList;

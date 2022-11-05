@@ -1,4 +1,3 @@
-
 /**
  * Raw representation data from the server response.
  *
@@ -6,21 +5,37 @@
  * - By default, it's the id of the associated manager.
  * -
  */
+import { CustomerModel } from "./customer.model";
+import { StaffModel } from "./staff.model";
+import { SupplierModel } from "./supplier.model";
+
 export interface BillModel<> {
   id: number;
-  code_bill: string;
-  date_bill: string;
-  provider: string;
-  cost: string;
+  customer: CustomerModel;
+  staff: StaffModel;
+  supplier: SupplierModel;
+  status: string;
+  createdDate: string;
+  price: number;
 }
 
-/**
- * Interface for the payload to register branch.
- * This payload interface will not have id field,
- * and dataType of the logo will be different.
- */
-export interface BillPayload<> {
-  // if the user does not update the logo,
-  // the datatype will remain the same (as string)
-  // otherwise the logo will be a File.
+export interface BillCreateEntity
+  extends Omit<
+    BillModel,
+    "id" | "customer" | "supplier" | "staff" | "createdDate"
+  > {
+  customer: number;
+  supplier: number;
+  createdDate: Date;
+}
+
+export interface BillUpdateEntity
+  extends Omit<
+    Partial<BillModel>,
+    "id" | "customer" | "supplier" | "staff" | "createdDate"
+  > {
+  id: number;
+  customer?: number;
+  supplier?: number;
+  createdDate?: Date;
 }

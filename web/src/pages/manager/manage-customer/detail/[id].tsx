@@ -16,12 +16,28 @@ const ManageCustomerDetail: AppPageInterface = () => {
     return <>redirecting</>;
   }
 
+  function navigatePreviousPage(previousUrl?: string, page?: number): void {
+    const mainPath = previousUrl ?? `/${USER_ROLE.manager}/manage-customer`;
+    void router.push({
+      pathname: mainPath,
+      query: page
+        ? {
+            page: String(page),
+          }
+        : undefined,
+    });
+  }
+
   return (
     <CustomerDetail
       id={id}
       role={USER_ROLE.manager}
-      previousUrl={previousUrl as string}
-      page={page ? Number(page as string) : undefined}
+      onBackBtnClicked={() =>
+        navigatePreviousPage(
+          previousUrl as string,
+          page ? Number(page as string) : undefined
+        )
+      }
     />
   );
 };

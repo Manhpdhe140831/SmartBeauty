@@ -2,7 +2,7 @@ import { CustomerModel } from "../model/customer.model";
 import { GENDER } from "../const/gender.const";
 import { shuffleArray } from "../utilities/fn.helper";
 
-const Customer: CustomerModel[] = [
+export const Customer: CustomerModel[] = [
   {
     id: 1,
     name: "Deonne Mixter",

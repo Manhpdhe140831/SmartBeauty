@@ -1,48 +1,29 @@
 import { USER_ROLE } from "../../../const/user-role.const";
-import { Url } from "url";
 import { useQuery } from "@tanstack/react-query";
 import mockCustomer from "../../../mock/customer";
 import { Avatar, Button } from "@mantine/core";
 import InformationForm from "./_partial/detail/information.form";
-import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons";
 import { FC } from "react";
 
 type CustomerDetailProps = {
   role: USER_ROLE;
-  previousUrl?: string;
-  page?: number;
   id: number;
   onInfoChanged?: (mutateData: unknown) => void;
+  onBackBtnClicked?: () => void;
 };
 
 const CustomerDetail: FC<CustomerDetailProps> = ({
   role,
-  page,
-  previousUrl,
   id,
   onInfoChanged,
+  onBackBtnClicked,
 }) => {
   // TODO integrate API get user by id
   const { data, isLoading } = useQuery(["customer-detail", id], async () => {
     const l = await mockCustomer();
     return l.find((c) => c.id === id);
   });
-
-  function constructPreviousURL(
-    previousUrl?: string,
-    page?: number
-  ): Partial<Url> {
-    const mainPath = previousUrl ?? `/${role}/manage-customer`;
-    return {
-      pathname: mainPath,
-      query: page
-        ? {
-            page: String(page),
-          }
-        : undefined,
-    };
-  }
 
   if (isLoading || !data) {
     return <>loading...</>;
@@ -52,11 +33,9 @@ const CustomerDetail: FC<CustomerDetailProps> = ({
     <div className={"flex flex-col"}>
       <div className="flex flex-wrap justify-center space-x-8 p-4">
         <div className="flex-start mb-8 flex w-full">
-          <Link href={constructPreviousURL(previousUrl, page)}>
-            <Button leftIcon={<IconArrowLeft />} component={"a"}>
-              Back to List
-            </Button>
-          </Link>
+          <Button leftIcon={<IconArrowLeft />} onClick={onBackBtnClicked}>
+            Back to List
+          </Button>
         </div>
 
         <Avatar

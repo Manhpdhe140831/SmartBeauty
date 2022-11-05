@@ -22,6 +22,20 @@ const ManageCustomer: AppPageInterface = () => {
     () => mockCustomer()
   );
 
+  function navigateToDetail(id: number, currentPage: number) {
+    const url = `${router.pathname}/detail/${id}`;
+    void router.push(
+      {
+        pathname: url,
+        query: {
+          previousUrl: router.pathname,
+          page: currentPage,
+        },
+      },
+      url
+    );
+  }
+
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>
       <div className="flex-1">
@@ -30,7 +44,7 @@ const ManageCustomer: AppPageInterface = () => {
           pageSize={pageSize}
           data={listUser}
           isLoading={listUserLoading}
-          role={USER_ROLE.manager}
+          onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />
       </div>
 

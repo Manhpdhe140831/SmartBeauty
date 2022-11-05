@@ -1,6 +1,5 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import ListCustomer from "../../_shared/customer/customer-list";
-import { USER_ROLE } from "../../../const/user-role.const";
 import { useRouter } from "next/router";
 import { Button, Divider, Pagination } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
@@ -23,6 +22,20 @@ const SaleStaffCustomerList: AppPageInterface = () => {
     () => mockCustomer()
   );
 
+  function navigateToDetail(id: number, currentPage: number) {
+    const url = `${router.pathname}/detail/${id}`;
+    void router.push(
+      {
+        pathname: url,
+        query: {
+          previousUrl: router.pathname,
+          page: currentPage,
+        },
+      },
+      url
+    );
+  }
+
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
@@ -40,7 +53,7 @@ const SaleStaffCustomerList: AppPageInterface = () => {
           pageSize={pageSize}
           data={listUser}
           isLoading={listUserLoading}
-          role={USER_ROLE.sale_staff}
+          onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />
       </div>
 
