@@ -10,6 +10,7 @@ import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.repository.mappingRepo.Product_Supplier_Repository;
 import com.swp.sbeauty.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -208,13 +209,14 @@ public class ProductServiceImpl implements ProductService {
 
                 }
                 if (discountStart != null) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    Date startDate = df.parse(discountStart);
+                    Date startDate = new DateTime(discountStart).toDate();
+
                     product.setDiscountStart(startDate);
                 }
                 if (discountEnd != null) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    Date endDate = df.parse(discountEnd);
+//                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//                    Date endDate = df.parse(discountEnd);
+                    Date endDate = new DateTime(discountEnd).toDate();
                     product.setDiscountEnd(endDate);
                 }
                 if (unit != null) {

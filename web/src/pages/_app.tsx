@@ -45,7 +45,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     ));
 
   // Default all routes are guarded.
-  const isGuarded: USER_ROLE = RenderPage.guarded ?? USER_ROLE.authenticated;
+  const isGuarded: USER_ROLE | USER_ROLE[] =
+    RenderPage.guarded ?? USER_ROLE.authenticated;
   useEffect(() => {
     setClientPassedGuard(!needRedirectedOnRole(router, isGuarded, authState));
   }, [isGuarded, authState]);

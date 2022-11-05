@@ -1,17 +1,18 @@
-import { Button, Group, Image, Input } from "@mantine/core";
+import { Button, Group, Image, Input, Textarea } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import mockManager from "../../../mock/manager";
-import { AutoCompleteItemProp } from "../../../components/auto-complete-item";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { nameSchema } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StaffModel, StaffPayload } from "../../../model/staff.model";
+import { StaffCreateEntity } from "../../../model/staff.model";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
+import MaskedInput from "react-text-mask";
+import { PhoneNumberMask } from "../../../const/input-masking.const";
 
 type ViewStaffPropsType = {
-  onClose: (staffData?: StaffPayload) => void;
+  onClose: (staffData?: StaffCreateEntity) => void;
 };
 
 const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
@@ -19,7 +20,7 @@ const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
   const updateSchema = z.object({
     name: nameSchema,
     Role: nameSchema,
-    PhoneNumber: nameSchema,
+    PhoneNumber: nameSchema
   });
 
   const {
@@ -27,24 +28,22 @@ const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty },
-  } = useForm<StaffPayload>({
+    formState: { errors, isValid, isDirty }
+  } = useForm<StaffCreateEntity>({
     resolver: zodResolver(updateSchema),
-    mode: "onChange",
+    mode: "onChange"
     // defaultValues: { },
   });
 
-  const { data: availableManager, isLoading: managerLoading } = useQuery<
-    AutoCompleteItemProp[]
-  >(["available-manager"], async () => {
+  const { data: availableManager, isLoading: managerLoading } = useQuery(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
       // add fields of SelectItemGeneric
       value: String(m.id),
       label: m.name,
       data: {
-        description: m.phone,
-      },
+        description: m.phone
+      }
     }));
   });
 
@@ -54,14 +53,16 @@ const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
     return dayjs(dateString).toDate();
   };
 
-  const setCancel = () => {};
+  const setCancel = () => {
+    //
+  };
 
   const saveInfo = () => {
     //Lưu thông tin
     setCancel();
   };
 
-  const onSubmit = (data: StaffPayload) => onClose();
+  const onSubmit = (data: StaffCreateEntity) => onClose();
 
   return (
     <div>
@@ -106,6 +107,8 @@ const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
               />
               <Input.Wrapper label={"Phone number"}>
                 <Input
+                  component={MaskedInput}
+                  mask={PhoneNumberMask}
                   placeholder="Phone number"
                 />
               </Input.Wrapper>
@@ -119,7 +122,11 @@ const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
               </Input.Wrapper>
               <Input placeholder="District" />
               <Input placeholder="Ward" />
-              <Input placeholder="Full address" />
+              <Textarea
+                autosize={false}
+                rows={4}
+                placeholder={"Full address"}
+              ></Textarea>
             </div>
           </div>
         </div>
@@ -128,14 +135,13 @@ const StaffInfo = ({ onClose }: ViewStaffPropsType) => {
       <div className={"mt-3"}>
         <Group position="center">
           <Button
-            variant={"outline"}
             color="gray"
             size="md"
             onClick={() => setCancel()}
           >
             Cancel
           </Button>
-          <Button variant={"outline"} size="md" onClick={() => saveInfo()}>
+          <Button size="md" onClick={() => saveInfo()}>
             Save
           </Button>
         </Group>

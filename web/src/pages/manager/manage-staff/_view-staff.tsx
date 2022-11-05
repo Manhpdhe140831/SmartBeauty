@@ -1,4 +1,4 @@
-import { Button, Group, Image, Input } from "@mantine/core";
+import { Button, Group, Image, Input, Textarea } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import mockManager from "../../../mock/manager";
 import { AutoCompleteItemProp } from "../../../components/auto-complete-item";
@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { StaffModel, StaffCreateEntity } from "../../../model/staff.model";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
+import { PhoneNumberMask } from "../../../const/input-masking.const";
+import MaskedInput from "react-text-mask";
 
 type ViewStaffPropsType = {
   staffData: StaffModel;
@@ -37,9 +39,7 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     defaultValues: { ...staffData },
   });
 
-  const { data: availableManager, isLoading: managerLoading } = useQuery<
-    AutoCompleteItemProp[]
-  >(["available-manager"], async () => {
+  const { data: availableManager, isLoading: managerLoading } = useQuery(["available-manager"], async () => {
     const manager = await mockManager();
     return manager.map((m) => ({
       // add fields of SelectItemGeneric
@@ -57,7 +57,9 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
     return dayjs(dateString).toDate();
   };
 
-  const setCancel = () => {};
+  const setCancel = () => {
+    //
+  };
 
   const saveInfo = () => {
     //Lưu thông tin
@@ -108,6 +110,8 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
               />
               <Input.Wrapper label={"Phone number"}>
                 <Input
+                  component={MaskedInput}
+                  mask={PhoneNumberMask}
                   placeholder="Phone number"
                   defaultValue={staffData.phone}
                 />
@@ -118,15 +122,17 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
             </div>
             <div className={"flex w-full flex-col gap-3"}>
               <Input.Wrapper label={"Address"}>
-                <Input placeholder="City" disabled />
+                <Textarea placeholder="City" disabled />
               </Input.Wrapper>
               <Input placeholder="District" disabled />
               <Input placeholder="Ward" disabled />
-              <Input
-                placeholder="Full address"
-                disabled
+              <Textarea
+                autosize={false}
+                rows={4}
+                placeholder={"Full address"}
                 defaultValue={staffData.address}
-              />
+                disabled
+              ></Textarea>
             </div>
           </div>
         </div>
@@ -135,14 +141,13 @@ const StaffInfo = ({ staffData, onClose }: ViewStaffPropsType) => {
       <div className={"mt-3"}>
         <Group position="center">
           <Button
-            variant={"outline"}
             color="gray"
             size="md"
             onClick={() => setCancel()}
           >
             Cancel
           </Button>
-          <Button variant={"outline"} size="md" onClick={() => saveInfo()}>
+          <Button size="md" onClick={() => saveInfo()}>
             Save
           </Button>
         </Group>

@@ -27,6 +27,10 @@ export const branchAdminConfig: NavLinkItemProp[] = [
 
 export const branchManagerConfig: NavLinkItemProp[] = [
   {
+    label: "Manage Customer",
+    href: "/manager/manage-customer",
+  },
+  {
     label: "Manage Schedule",
     nested: [
       {
@@ -42,14 +46,6 @@ export const branchManagerConfig: NavLinkItemProp[] = [
   {
     href: "/manager/manage-bill",
     label: "Quản lý đơn hàng",
-  },
-  {
-    href: "/manager/manage-guest",
-    label: "Quản lý khách hàng",
-  },
-  {
-    href: "/manager/manage-guest",
-    label: "Quản lý kho ",
   },
 ];
 export const branchEmployeeConfig: NavLinkItemProp[] = [];

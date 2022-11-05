@@ -1,15 +1,13 @@
-import { Divider, Input, Pagination } from "@mantine/core";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
-import { IconSearch } from "@tabler/icons";
-import { useQuery } from "@tanstack/react-query";
-import { BillModel } from "../../../model/bill.model";
-import mockBill from "../../../mock/bill";
-import BillCreateModalBtn from "./_partial/_staff-create-modal-btn";
-import BillList from "../../_shared/bill/bill-list";
+import ListCustomer from "../../_shared/customer/customer-list";
 import { useRouter } from "next/router";
+import { Button, Divider, Pagination } from "@mantine/core";
+import { IconPlus } from "@tabler/icons";
 import usePaginationHook from "../../../hooks/pagination.hook";
+import { useQuery } from "@tanstack/react-query";
+import mockCustomer from "../../../mock/customer";
 
-const Index: AppPageInterface = () => {
+const SaleStaffCustomerList: AppPageInterface = () => {
   const router = useRouter();
   const {
     pageSize,
@@ -18,15 +16,11 @@ const Index: AppPageInterface = () => {
     update: updatePagination,
   } = usePaginationHook(undefined, Number(router.query.page ?? "1"));
 
-  const {
-    data: bills,
-    isLoading,
-    refetch,
-  } = useQuery<BillModel[]>(["list-bill", currentPage], async () => {
-    const bills = await mockBill();
-    updatePagination({ total: bills.length });
-    return bills;
-  });
+  // TODO integrate API list customer.
+  const { data: listUser, isLoading: listUserLoading } = useQuery(
+    ["list-customer", router.query.role, currentPage],
+    () => mockCustomer()
+  );
 
   function navigateToDetail(id: number, currentPage: number) {
     const url = `${router.pathname}/detail/${id}`;
@@ -43,29 +37,28 @@ const Index: AppPageInterface = () => {
   }
 
   return (
-    <div className="flex min-h-full flex-col space-y-4 p-4">
+    <div className={"flex h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
-        <BillCreateModalBtn onChanged={(u) => u && refetch()} />
-
-        {/*Search by name*/}
-        <Input
-          icon={<IconSearch />}
-          placeholder={"Bill name..."}
-          type={"text"}
-          className="w-56"
-        />
+        {/*  Btn create new customer   */}
+        <Button color={"teal"} leftIcon={<IconPlus />}>
+          Customer
+        </Button>
       </div>
-      <Divider my={8} />
+
+      <Divider my={8}></Divider>
+
       <div className="flex-1">
-        <BillList
+        <ListCustomer
           page={currentPage}
           pageSize={pageSize}
-          data={bills}
-          isLoading={isLoading}
+          data={listUser}
+          isLoading={listUserLoading}
           onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />
       </div>
+
       <Divider my={8} />
+
       {/*Total record / 10 (per-page)*/}
       <Pagination
         position={"center"}
@@ -77,6 +70,4 @@ const Index: AppPageInterface = () => {
   );
 };
 
-Index.routerName = "List of Bill";
-
-export default Index;
+export default SaleStaffCustomerList;

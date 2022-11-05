@@ -2,7 +2,7 @@ import { USER_ROLE } from "../const/user-role.const";
 import { StaffModel } from "../model/staff.model";
 import { GENDER } from "../const/gender.const";
 
-const staff: StaffModel[] = [
+export const Staff: StaffModel[] = [
   {
     id: 1,
     name: "Saunderson Clover",
@@ -126,7 +126,7 @@ const staff: StaffModel[] = [
 ];
 
 const mockStaff = () =>
-  new Promise<StaffModel[]>((resolve) => setTimeout(() => resolve(staff), 500));
+  new Promise<StaffModel[]>((resolve) => setTimeout(() => resolve(Staff), 500));
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>

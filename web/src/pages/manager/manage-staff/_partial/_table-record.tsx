@@ -32,7 +32,8 @@ export default function TableRecord(props: RecordProps) {
         </Tooltip>
       </td>
 
-      <td onClick={() => clipboard.copy(props.data.phone)}>
+      <td className="text-center overflow-hidden text-ellipsis"
+        onClick={() => clipboard.copy(props.data.phone)}>
         {props.data.phone}
       </td>
 

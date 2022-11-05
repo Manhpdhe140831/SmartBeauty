@@ -18,7 +18,7 @@ export type AppPageInterface<Props = unknown> = NextComponentType<
   // This page is restricted to a specific role.
   // The validation happens in `_app.tsx` at `needRedirectedOnRole()`.
   // Visit `USER_ROLE` for more details.
-  guarded?: USER_ROLE;
+  guarded?: USER_ROLE | USER_ROLE[];
   // TODO: use for breadcrumbs.
   routerName?: string;
 };

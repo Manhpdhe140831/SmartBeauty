@@ -17,7 +17,7 @@ const NavWithHref = (props: NavLinkItemBaseProp) => {
       <NavLink
         component={"a"}
         color={"black"}
-        active={router.pathname.startsWith(props.href)}
+        active={router.asPath.startsWith(props.href)}
         icon={props.leftIcon}
         label={props.label}
         description={props.description}
