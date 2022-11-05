@@ -61,8 +61,8 @@ const Index: AppPageInterface = () => {
           <colgroup>
             <col className="w-4" />
             <col className="w-40" />
-            <col className="w-8" />
-            <col className="w-8" />
+            <col className="w-24" />
+            <col className="w-14" />
             <col className="w-16" />
           </colgroup>
           <TableHeader />
