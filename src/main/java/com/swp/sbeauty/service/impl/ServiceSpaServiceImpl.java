@@ -1,9 +1,9 @@
 package com.swp.sbeauty.service.impl;
 
-import com.swp.sbeauty.dto.BranchDto;
-import com.swp.sbeauty.dto.ProductDto;
-import com.swp.sbeauty.dto.ServiceDto;
-import com.swp.sbeauty.dto.ServiceResponseDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
@@ -13,16 +13,17 @@ import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
 import com.swp.sbeauty.repository.mappingRepo.Service_Product_Mapping_Repository;
 import com.swp.sbeauty.service.ServiceSpaService;
+import org.apache.tomcat.util.json.JSONParser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
@@ -35,6 +36,9 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    ServiceRepository serviceRepository;
 
     @Autowired
     Service_Product_Mapping_Repository service_product_mapping_repository;
@@ -77,33 +81,43 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 //        service.setImage(image);
 //    }
     @Override
-    public Boolean save(String name, Date discountStart, Date discountEnd, Double discountPercent, Double price, String description,Long duration ,String image, List<Service_Product_MappingDto> service_product_mappingDtos) {
-                Service service = new Service();
-                service.setName(name);
-                service.setDiscountStart(discountStart);
-                service.setDiscountEnd(discountEnd);
-                service.setDiscountPercent(discountPercent);
-                service.setPrice(price);
-                service.setDescription(description);
-                service.setDuration(duration);
-                service.setImage(image);
-
-            if (service_product_mappingDtos == null){
-                repository.save(service);
-            }else {
-                repository.save(service);
-                Service_Product_MappingDto service_product_mappingDto = new Service_Product_MappingDto();
-
-
-                for (Service_Product_MappingDto itemS : service_product_mappingDtos
-                ) {
-                    service_product_mappingDto = new Service_Product_MappingDto(itemS.getProductDto(), itemS.getUsage());
-                    service_product_mapping_repository.save(new Service_Product_mapping(service.getId(), service_product_mappingDto.getProductDto().getId(), service_product_mappingDto.getUsage()));
-
-                }
+    public Boolean save(String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description,Long duration ,String image, String products) {
+        try {
+            Service service = new Service();
+            service.setName(name);
+            if (discountStart != null) {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date startDate = df.parse(discountStart);
+                service.setDiscountStart(startDate);
             }
+            if(discountEnd != null){
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date endDate = df.parse(discountEnd);
+                service.setDiscountStart(endDate);
+            }
+            if(discountPercent!=null){
+                service.setDiscountPercent(discountPercent);
+            }
+            service.setPrice(price);
+            if(description!=null){
+                service.setDescription(description);
+            }
+            service.setDuration(duration);
+            if(image!=null){
+                service.setImage(image);
+            }
+            service = serviceRepository.save(service);
 
-
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+            List<Service_Product_MappingDto> mappingDto = mapper.readValue(products, new TypeReference<List<Service_Product_MappingDto>>() {});
+            for(Service_Product_MappingDto mapping : mappingDto){
+                service_product_mapping_repository.save(new Service_Product_mapping(service.getId(), mapping.getProductId(), mapping.getUsage()));
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -179,30 +193,22 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
          ServiceResponseDto serviceResponseDto = new ServiceResponseDto();
          Pageable pageable = PageRequest.of(pageNo, pageSize);
          Page<Service> page = repository.findAll(pageable);
-         List<Service> services = page.getContent();
 
+        List<ServiceDto> serviceDtos = page
+                .stream()
+                .map(course -> mapper.map(course, ServiceDto.class))
+                .collect(Collectors.toList());
+        for(ServiceDto serviceDto : serviceDtos){
+            List<Service_Product_mapping> listMapping = service_product_mapping_repository.getMappingByServiceId(serviceDto.getId());
+            List<Service_Product_MappingDto> list = new ArrayList<>();
+            for(Service_Product_mapping mapping : listMapping){
+                Product product = productRepository.getProductById(mapping.getProduct_id());
+                list.add(new Service_Product_MappingDto(new ProductDto(product), mapping.getProductUsage()));
+            }
+            serviceDto.setProducts(list);
+        }
 
-//         List<Product> listProduct = new ArrayList<>();
-//         Long usage = 0l;
-       List<ServiceDto> listServiceDtos = new ArrayList<>();
-//        ServiceDto serviceDto = new ServiceDto();
-//        Service_Product_MappingDto service_product_mappingDto  = new Service_Product_MappingDto();
-//        List<Service_Product_MappingDto> service_product_mappingDtoList = new ArrayList<>();
-//        for (Service itemS: services
-//             ) {
-//            listProduct = service_product_mapping_repository.getProductByService(itemS.getId());
-//
-//            for (Product p: listProduct
-//                 ) {
-//                usage = service_product_mapping_repository.getUsage(itemS.getId(), p.getId());
-//
-//                service_product_mappingDto = new Service_Product_MappingDto(new ProductDto(p), usage);
-//                service_product_mappingDtoList.add(service_product_mappingDto);
-//            }
-//            serviceDto = new ServiceDto(itemS, service_product_mappingDtoList);
-//            listServiceDtos.add(serviceDto);
-//        }
-        serviceResponseDto.setData(listServiceDtos);
+        serviceResponseDto.setData(serviceDtos);
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setTotalElement(page.getTotalElements());
         serviceResponseDto.setPageIndex(pageNo);
