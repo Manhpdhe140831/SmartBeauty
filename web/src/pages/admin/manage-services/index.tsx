@@ -57,7 +57,7 @@ const Index: AppPageInterface = () => {
               />
             ) : (
               services &&
-              services.map((s, i) => (
+              services.data.map((s, i) => (
                 <ServiceRowTable
                   onClick={(service) => openModal("view", service)}
                   key={s.id}

@@ -120,7 +120,7 @@ const Index: AppPageInterface = () => {
               />
             ) : (
               products &&
-              products.map((p, i) => (
+              products.data.map((p, i) => (
                 <ProductRowTable
                   onClick={(product) => openModal("view", product)}
                   key={p.id}

@@ -24,10 +24,22 @@ export const useListCourseQuery = (
   currentPage: number,
   updatePagination: fnUpdatePagination
 ) =>
-  useQuery<CourseModel[]>(["list-course", currentPage], () => mockCourse(), {
-    onSuccess: (d) => updatePagination({ total: d.length }),
-    onError: () => updatePagination({ total: 0, newPage: 1 }),
-  });
+  useQuery<PaginatedResponse<CourseModel>>(
+    ["list-course", currentPage],
+    async () => {
+      const courses = await mockCourse();
+      return {
+        data: courses,
+        pageIndex: 1,
+        totalPage: 1,
+        totalElement: courses.length,
+      };
+    },
+    {
+      onSuccess: (d) => updatePagination({ total: d.totalElement }),
+      onError: () => updatePagination({ total: 0, newPage: 1 }),
+    }
+  );
 
 export const useListServiceQuery = (
   currentPage: number,
