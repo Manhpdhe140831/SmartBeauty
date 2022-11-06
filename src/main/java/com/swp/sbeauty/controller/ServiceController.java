@@ -1,5 +1,6 @@
 package com.swp.sbeauty.controller;
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.dto.ServiceResponseDto;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
@@ -34,7 +35,6 @@ public class ServiceController {
 
 
     @GetMapping(value = "/service")
-
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false) String name
@@ -51,7 +51,8 @@ public class ServiceController {
             return new ResponseEntity<>(serviceResponseDto, HttpStatus.OK);
         }
     }
-    @GetMapping(value = "/service/getservice")
+
+    @GetMapping(value = "/service/getById")
     public ResponseEntity<ServiceDto> getServiceById(@RequestParam("id") Long id
     ){
         ServiceDto serviceDto = service.getServiceById(id);
@@ -70,12 +71,32 @@ public class ServiceController {
             @RequestParam(value = "image", required = false) String image,
             @RequestParam(value = "products", required = false) String products
             ) {
-        Boolean check = service.save(name, discountStart, discountEnd, discountPercent, price, description, duration, image, products);
-        return new ResponseEntity<>(check, HttpStatus.OK);
+        String check = service.validateService(name, discountStart, discountEnd, discountPercent);
+        if(check == ""){
+            Boolean result = service.save(name, discountStart, discountEnd, discountPercent, price, description, duration, image, products);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
     }
 
-
-
-
-
+    @PutMapping(value = "/service/update", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> updateService(@RequestParam(value = "id") Long id,
+                                           @RequestParam(value = "name", required = false) String name,
+                                           @RequestParam(value = "discountStart", required = false) String discountStart,
+                                           @RequestParam(value = "discountEnd", required = false) String discountEnd,
+                                           @RequestParam(value = "discountPercent", required = false) Double discountPercent,
+                                           @RequestParam(value = "price", required = false) Double price,
+                                           @RequestParam(value = "description", required = false) String description,
+                                           @RequestParam(value = "duration", required = false) Long duration,
+                                           @RequestParam(value = "image", required = false) String image,
+                                           @RequestParam(value = "products", required = false) String products) {
+        String check = service.validateService(name, discountStart, discountEnd, discountPercent);
+        if(check == ""){
+            Boolean result = service.update(id, name, discountStart, discountEnd, discountPercent, price, description, duration, image, products);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
