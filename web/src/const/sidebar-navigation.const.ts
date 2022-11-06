@@ -40,12 +40,12 @@ export const branchManagerConfig: NavLinkItemProp[] = [
     ],
   },
   {
-    href: "/manager/manage-staff",
-    label: "Quản lý nhân viên",
+    href: "/manager/manage-invoice",
+    label: "Manage Invoice",
   },
   {
-    href: "/manager/manage-bill",
-    label: "Quản lý đơn hàng",
+    href: "/manager/manage-staff",
+    label: "Quản lý nhân viên",
   },
 ];
 export const branchEmployeeConfig: NavLinkItemProp[] = [];

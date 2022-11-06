@@ -1,6 +1,6 @@
 import AutoCompleteItem, { AutoCompleteItemProp } from "./auto-complete-item";
-import { Select } from "@mantine/core";
-import { FocusEventHandler, useState } from "react";
+import { Select, SelectProps } from "@mantine/core";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
@@ -13,37 +13,42 @@ type ItemSearchSelectProps<dataType extends object> = {
   displayValue: AutoCompleteItemProp<dataType> | null;
   onSearching: searchFn<dataType>;
   onSelected: (value: string | null) => void;
-  onBlur?: FocusEventHandler;
   debouncedBy?: number;
-  placeholder?: string;
-  required?: boolean;
-};
+} & Omit<
+  SelectProps,
+  "searchable" | "data" | "defaultValue" | "onSearchChange" | "onChange"
+>;
 
 /**
  * Generic autocomplete-select with API-searchable.
  * @param props
  * @constructor
  */
-const DatabaseSearchSelect = <dataType extends object>(
-  props: ItemSearchSelectProps<dataType>
-) => {
+const DatabaseSearchSelect = <dataType extends object>({
+  value,
+  displayValue,
+  onSearching,
+  onSelected,
+  debouncedBy,
+  ...selectProps
+}: ItemSearchSelectProps<dataType>) => {
   const [searchWord, setSearchWord] = useState<string | undefined>();
   const [searchKey, { isPending }] = useDebounce(
     searchWord,
-    props.debouncedBy ?? 300
+    debouncedBy ?? 300
   );
 
   const { data: collection, isLoading: collectionLoading } = useQuery<
     AutoCompleteItemProp<dataType>[]
   >(
-    ["search-mutation", searchKey, props.onSearching, props.value],
+    ["search-mutation", searchKey, onSearching, value, displayValue?.value],
     async () => {
       const fnSearch: searchFn<dataType> =
-        props.onSearching ?? (() => Promise.resolve([]));
+        onSearching ?? (() => Promise.resolve([]));
       const foundCollection = searchKey ? await fnSearch(searchKey) : [];
-      const filtered = foundCollection.filter((c) => c.value !== props.value);
+      const filtered = foundCollection.filter((c) => c.value !== value);
       return [
-        ...(props.displayValue ? [props.displayValue] : []),
+        ...(displayValue ? [displayValue] : []),
         ...filtered,
       ] as AutoCompleteItemProp<dataType>[];
     }
@@ -52,18 +57,17 @@ const DatabaseSearchSelect = <dataType extends object>(
   return (
     <Select
       data={collectionLoading || !collection ? [] : collection}
-      placeholder={props.placeholder}
       searchable
+      defaultValue={value}
+      onSearchChange={setSearchWord}
+      onChange={onSelected}
+      // replaceable props
       itemComponent={AutoCompleteItem}
       nothingFound={
         collectionLoading || isPending() ? "loading..." : "No result found"
       }
       maxDropdownHeight={200}
-      required={props.required}
-      defaultValue={props.value}
-      onSearchChange={setSearchWord}
-      onChange={props.onSelected}
-      onFocus={props.onBlur}
+      {...selectProps}
     />
   );
 };

@@ -2,8 +2,6 @@ import { CustomerModel } from "../../../../../model/customer.model";
 import {
   Button,
   Input,
-  InputVariant,
-  MantineSize,
   Select,
   Text,
   Textarea,
@@ -30,6 +28,7 @@ import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../../../const/input-masking.const";
 import { DialogSubmit } from "../../../../../utilities/form-data.helper";
 import { FormEvent } from "react";
+import { stateInputProps } from "../../../../../utilities/mantine.helper";
 
 type FormProps = {
   data: CustomerModel;
@@ -70,42 +69,6 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
       : undefined,
   });
 
-  const generalProps = (
-    label: string,
-    readonly?: boolean,
-    otp?: { withStyle?: boolean; required?: boolean }
-  ) => ({
-    label: (
-      <Text color={"dimmed"} size={"sm"}>
-        {label}{" "}
-        {!readonly && otp?.required ? (
-          <span className="text-red-500">*</span>
-        ) : (
-          ""
-        )}
-      </Text>
-    ),
-    variant: (readonly ? "unstyled" : "filled") as InputVariant,
-    readOnly: readonly,
-    sx:
-      readonly && otp?.withStyle !== false
-        ? {
-            input: {
-              height: 32,
-              lineHeight: 32,
-              fontWeight: 500,
-              color: "#000",
-              opacity: 1,
-            },
-            textarea: {
-              padding: 0,
-            },
-          }
-        : undefined,
-    width: "100%",
-    size: "lg" as MantineSize,
-  });
-
   const submitData = (dataSubmit: z.infer<typeof schema>) =>
     DialogSubmit(mode, dirtyFields, onChanged, data)(dataSubmit);
 
@@ -120,7 +83,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
     <form onReset={handleReset} onSubmit={handleSubmit(submitData)}>
       <fieldset disabled={readonly} className={"flex w-80 flex-col"}>
         <TextInput
-          {...generalProps("Customer Name", readonly, { required: true })}
+          {...stateInputProps("Customer Name", readonly, { required: true })}
           {...register("name")}
         />
         <FormErrorMessage name={"name"} errors={errors} />
@@ -139,7 +102,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               }}
               onBlur={field.onBlur}
               defaultValue={field.value}
-              {...generalProps("Gender", readonly, { required: true })}
+              {...stateInputProps("Gender", readonly, { required: true })}
             />
           )}
           name={"gender"}
@@ -165,7 +128,9 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
                   {field.value ? `(${ageTilToday(field.value)} old)` : "-"}
                 </Text>
               }
-              {...generalProps("Date of Birth", readonly, { required: true })}
+              {...stateInputProps("Date of Birth", readonly, {
+                required: true,
+              })}
             />
           )}
           name={"dateOfBirth"}
@@ -192,7 +157,9 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 defaultValue={field.value}
-                {...generalProps("Phone Number", readonly, { required: true })}
+                {...stateInputProps("Phone Number", readonly, {
+                  required: true,
+                })}
               />
             </Input.Wrapper>
           )}
@@ -202,7 +169,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
         <TextInput
           type="email"
           placeholder={"john_smith@domain.com"}
-          {...generalProps("Email", readonly)}
+          {...stateInputProps("Email", readonly)}
           {...register("email")}
         />
         <FormErrorMessage errors={errors} name={"email"} />
@@ -211,7 +178,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
           autosize={false}
           rows={4}
           placeholder={"the address of the customer..."}
-          {...generalProps("Address", readonly)}
+          {...stateInputProps("Address", readonly)}
           {...register("address")}
         ></Textarea>
         <FormErrorMessage errors={errors} name={"address"} />

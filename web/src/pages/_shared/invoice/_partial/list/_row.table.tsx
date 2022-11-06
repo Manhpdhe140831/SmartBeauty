@@ -1,8 +1,9 @@
 import { Text, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { BillModel } from "../../../../model/bill.model";
+import { BillModel } from "../../../../../model/bill.model";
 import dayjs from "dayjs";
-import { formatPrice } from "../../../../utilities/fn.helper";
+import { formatPrice } from "../../../../../utilities/fn.helper";
+import { useCustomerDetailQuery, useStaffDetailQuery } from "../../_query";
 
 type RowProps = {
   no: number;
@@ -13,6 +14,10 @@ type RowProps = {
 export default function RowTable(props: RowProps) {
   const clipboard = useClipboard({ timeout: 500 });
 
+  const { data: customerDetail } = useCustomerDetailQuery(props.data?.customer);
+
+  const { data: staffDetail } = useStaffDetailQuery(props.data?.staff);
+
   function timeToHours(rawIsoTime: string) {
     return dayjs(rawIsoTime).format("HH:mm:ss");
   }
@@ -22,33 +27,36 @@ export default function RowTable(props: RowProps) {
   }
 
   return (
-    <tr>
+    <tr
+      className={"cursor-pointer"}
+      onClick={() => props.onSelect && props.onSelect(props.data)}
+    >
       <td className="text-center">{props.no}</td>
-      <td onClick={() => clipboard.copy(props.data.customer.name)}>
+      <td onClick={() => clipboard.copy(customerDetail?.name)}>
         <div className="flex flex-col">
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-            <Tooltip label={props.data.customer.name}>
-              <span>{props.data.customer.name}</span>
+            <Tooltip label={customerDetail?.name}>
+              <span>{customerDetail?.name}</span>
             </Tooltip>
           </div>
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             <Text size={"sm"} color={"dimmed"}>
-              {props.data.customer.phone}
+              {customerDetail?.phone}
             </Text>
           </div>
         </div>
       </td>
 
-      <td onClick={() => clipboard.copy(props.data.staff.name)}>
+      <td onClick={() => clipboard.copy(staffDetail?.name)}>
         <div className="flex flex-col">
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-            <Tooltip label={props.data.staff.name}>
-              <span>{props.data.staff.name}</span>
+            <Tooltip label={staffDetail?.name}>
+              <span>{staffDetail?.name}</span>
             </Tooltip>
           </div>
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             <Text size={"sm"} color={"dimmed"}>
-              {props.data.staff.phone}
+              {staffDetail?.phone}
             </Text>
           </div>
         </div>
@@ -69,7 +77,9 @@ export default function RowTable(props: RowProps) {
         </div>
       </td>
 
-      <td className={"text-center"}>{formatPrice(props.data.price)} VND</td>
+      <td className={"text-center"}>
+        {formatPrice(props.data.priceBeforeTax)} VND
+      </td>
     </tr>
   );
 }

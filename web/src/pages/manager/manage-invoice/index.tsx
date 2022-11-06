@@ -4,8 +4,7 @@ import { IconSearch } from "@tabler/icons";
 import { useQuery } from "@tanstack/react-query";
 import { BillModel } from "../../../model/bill.model";
 import mockBill from "../../../mock/bill";
-import BillCreateModalBtn from "./_partial/_staff-create-modal-btn";
-import BillList from "../../_shared/bill/bill-list";
+import InvoiceList from "../../_shared/invoice/invoice-list";
 import { useRouter } from "next/router";
 import usePaginationHook from "../../../hooks/pagination.hook";
 
@@ -22,7 +21,7 @@ const Index: AppPageInterface = () => {
     data: bills,
     isLoading,
     refetch,
-  } = useQuery<BillModel[]>(["list-bill", currentPage], async () => {
+  } = useQuery<BillModel[]>(["list-invoice", currentPage], async () => {
     const bills = await mockBill();
     updatePagination({ total: bills.length });
     return bills;
@@ -45,8 +44,6 @@ const Index: AppPageInterface = () => {
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
       <div className="flex justify-end space-x-2">
-        <BillCreateModalBtn onChanged={(u) => u && refetch()} />
-
         {/*Search by name*/}
         <Input
           icon={<IconSearch />}
@@ -57,7 +54,7 @@ const Index: AppPageInterface = () => {
       </div>
       <Divider my={8} />
       <div className="flex-1">
-        <BillList
+        <InvoiceList
           page={currentPage}
           pageSize={pageSize}
           data={bills}

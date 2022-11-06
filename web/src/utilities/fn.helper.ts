@@ -57,7 +57,7 @@ export const parserNumberInput = (
   value: string | undefined
 ): string | undefined => value?.replace(/[.,]*/g, "");
 
-type autoItemGeneric = object & {
+export type AutoItemGenericType<T> = Partial<T> & {
   id: number;
   name: string;
   description: string;
@@ -67,8 +67,8 @@ type autoItemGeneric = object & {
 
 export function rawToAutoItem<T extends object>(
   p: T,
-  fn: (d: T) => autoItemGeneric
-): AutoCompleteItemProp<T> {
+  fn: (d: T) => AutoItemGenericType<T>
+) {
   const fnParser = fn(p);
   return {
     value: String(fnParser.id),
@@ -80,5 +80,25 @@ export function rawToAutoItem<T extends object>(
       color: fnParser.color,
       image: fnParser.image,
     },
-  };
+  } as AutoCompleteItemProp<T>;
+}
+
+export function toNumberType<T>(value?: T | null) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const parsed = Number(value);
+  if (isNaN(parsed)) {
+    return null;
+  }
+
+  return parsed;
+}
+
+export function toStringType<T>(value?: T | null) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  return String(value);
 }

@@ -2,8 +2,8 @@ import { FC } from "react";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import { Table } from "@mantine/core";
 import { BillModel } from "../../../model/bill.model";
-import HeaderTable from "./list/_header.table";
-import RowTable from "./list/_row.table";
+import HeaderTable from "./_partial/list/_header.table";
+import RowTable from "./_partial/list/_row.table";
 import { getItemNo } from "../../../hooks/pagination.hook";
 
 type ListProps = {
@@ -16,7 +16,7 @@ type ListProps = {
   onRowClick?: (data: BillModel, index: number) => void;
 };
 
-const BillList: FC<ListProps> = ({
+const InvoiceList: FC<ListProps> = ({
   isLoading,
   data,
   onRowClick,
@@ -34,7 +34,7 @@ const BillList: FC<ListProps> = ({
       <tbody>
         {isLoading ? (
           <RowPlaceholderTable
-            colSpan={7}
+            colSpan={6}
             className={"min-h-12"}
             message={
               <div className="text-center font-semibold text-gray-500">
@@ -58,4 +58,4 @@ const BillList: FC<ListProps> = ({
   );
 };
 
-export default BillList;
+export default InvoiceList;
