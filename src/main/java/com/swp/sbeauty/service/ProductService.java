@@ -16,11 +16,13 @@ public interface ProductService {
 
     ProductDto getProductById(Long id);
 
-
     ProductResponseDto getProductAndSearchByName(String name, int pageNo, int pageSize);
+
     ProductResponseDto getAllProduct(int pageNo,int pageSize);
-    String validateProduct(String name);
-    Boolean saveProduct(String name, Double price, String description, MultipartFile image, Date discountStart, Date discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
+
     Boolean updateProduct(Long id,String name, Double price, String description, MultipartFile image  , String discountStart, String discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
-    Date parseDate(String strDate);
+
+    Boolean saveProduct(String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose);
+
+    String validateProduct(String name, String discountStart, String discountEnd, Double discountPercent);
 }
