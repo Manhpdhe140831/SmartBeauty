@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.CourseDto;
 import com.swp.sbeauty.dto.CourseResponseDto;
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Course;
@@ -27,7 +28,6 @@ public class CourseController {
     private CourseService service;
 
     @GetMapping(value = "/course")
-
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false) String name
@@ -54,17 +54,23 @@ public class CourseController {
             @RequestParam(value = "timeOfUse") Integer timeOfUse,
             @RequestParam(value = "discountStart", required = false) String discountStart,
             @RequestParam(value = "discountEnd", required = false) String discountEnd,
-            @RequestParam(value = "discountPercent") Double discountPercent ,
+            @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
             @RequestParam(value = "image", required = false) String image,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam (value = "services", required = false) String[] services
     ){
-        Boolean result = service.saveCourse(name, price, duration,timeOfUse, discountStart, discountEnd, discountPercent, image, description, services);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        String check = service.validateCourse(name, discountStart, discountEnd, discountPercent);
+        if(check == ""){
+            Boolean result = service.saveCourse(name, price, duration,timeOfUse, discountStart, discountEnd, discountPercent, image, description, services);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 
-    @RequestMapping(value = "/course/update", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
+    @RequestMapping(value = "/course/update", headers="Content-Type=multipart/form-data",method = RequestMethod.PUT)
     public ResponseEntity<?> updateCourse (
             @RequestParam("id") Long id,
             @RequestParam(value = "name", required = false) String name,
@@ -77,22 +83,19 @@ public class CourseController {
             @RequestParam(value = "description",required = false) String description,
             @RequestParam (value = "services", required = false) String[] services
     ){
-        Boolean result = service.update(id, name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-
+        String check = service.validateCourse(name, discountStart, discountEnd, discountPercent);
+        if(check == ""){
+            Boolean result = service.update(id, name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
     }
-    @GetMapping(value = "/course/getcourse")
+    @GetMapping(value = "/course/getById")
     public ResponseEntity<?> getCourseById(@RequestParam("id") Long id){
         CourseDto courseDto = service.getCourseById(id);
         return new ResponseEntity<>(courseDto, HttpStatus.OK);
     }
-
-//    @RequestMapping(value = "/course/remove", method = RequestMethod.POST)
-//    public ResponseEntity<?> removeCourse(@RequestParam("id") Long id){
-//
-//        Boolean checkRemove = service.remove(id);
-//        return new ResponseEntity<>(checkRemove, HttpStatus.OK);
-//    }
 
 
 }

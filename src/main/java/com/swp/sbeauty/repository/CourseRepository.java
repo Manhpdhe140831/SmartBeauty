@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface CourseRepository extends JpaRepository<Course,Long> {
     @Query(value = "SELECT c from Course c where c.name like %?1% or c.code like %?1%")
     public Page<Course> getListCoursePaginationAndSearch(String name, String code, Pageable pageable);
+
+    Boolean existsByName(String name);
+    Course getCourseById(Long id);
 }

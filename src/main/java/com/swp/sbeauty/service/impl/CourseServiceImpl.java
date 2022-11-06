@@ -28,22 +28,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
     @Autowired
     ServiceRepository serviceRepository;
+
     @Autowired
     BranchRepository branchRepository;
 
     @Autowired
     Course_Service_Mapping_Repository course_service_mapping_repository;
+
     @Autowired
     ModelMapper mapper;
-
-    @Override
-    public Page<Course> getListCourse(int offset, int pageSize) {
-        Page<Course> courses  = courseRepository.findAll(PageRequest.of(offset, pageSize));
-
-        return courses;
-    }
 
     @Override
     public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
@@ -53,12 +49,19 @@ public class CourseServiceImpl implements CourseService {
             course.setPrice(price);
             course.setDuration(duration);
             course.setTimeOfUse(timeOfUse);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            Date startDate = df.parse(discountStart);
-            course.setDiscountStart(startDate);
-            Date endDate = df.parse(discountEnd);
-            course.setDiscountEnd(endDate);
-            course.setDiscountPercent(discountPercent);
+            if(discountStart != null){
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date startDate = df.parse(discountStart);
+                course.setDiscountStart(startDate);
+            }
+            if(discountEnd != null){
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date endDate = df.parse(discountEnd);
+                course.setDiscountEnd(endDate);
+            }
+            if(discountPercent!=null){
+                course.setDiscountPercent(discountPercent);
+            }
             if(image!=null){
                 course.setImage(image);
             }
@@ -78,17 +81,6 @@ public class CourseServiceImpl implements CourseService {
             return false;
         }
     }
-
-//    @Override
-//    public Boolean remove(Long id) {
-//
-//        Boolean checkRemove = courseRepository.remove(id);
-//        if (checkRemove == true){
-//            return true;
-//        }else{
-//            return false;
-//        }
-//    }
 
     @Override
     public CourseResponseDto getListCoursePaginationAndSearch(String name, String code, int pageNo, int pageSize) {
@@ -120,7 +112,6 @@ public class CourseServiceImpl implements CourseService {
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Course> page = courseRepository.findAll(pageable);
-
         List<CourseDto> courseDtos = page
                 .stream()
                 .map(course -> mapper.map(course, CourseDto.class))
@@ -133,8 +124,6 @@ public class CourseServiceImpl implements CourseService {
             }
             courseDto.setService(list);
         }
-
-
         courseResponseDto.setData(courseDtos);
         courseResponseDto.setTotalPage(page.getTotalPages());
         courseResponseDto.setTotalElement(page.getTotalElements());
@@ -142,80 +131,53 @@ public class CourseServiceImpl implements CourseService {
         return courseResponseDto;
     }
 
-
-
-    @Override
-    public Date parseDate(String strDate) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(strDate);
-            return date;
-
-        }catch (Exception e){
-            try {
-                throw e;
-            } catch (ParseException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
     @Override
     public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
-//            Course course = null;
-//            Optional<Course> optional = courseRepository.findById(id);
-//            if (optional.isPresent()){
-//                course = optional.get();
-//                if (name != null){
-//                    course.setName(name);
-//                }
-//                if (price != null){
-//                    course.setPrice(price);
-//                }
-//                if (duration != null){
-//                    course.setDuration(duration);
-//                }
-//                if (discountStart != null){
-//                    course.setDiscountStart(discountStart);
-//                }
-//                if (discountEnd != null){
-//                    course.setDiscountEnd(discountEnd);
-//                }
-//                if (discountPercent != null){
-//                    course.setDiscountPercent(discountPercent);
-//                }
-//                if (image != null){
-//                    course.setImage(image);
-//                }
-//                if (description != null){
-//                    course.setDescription(description);
-//                }
-//                Course_Service_Mapping course_service_mapping = course_service_mapping_repository.getServiceById(course.getId());
-//                if (null !=course_service_mapping) {
-//                    course_service_mapping_repository.delete(course_service_mapping);
-//                    if (null == services) {
-//                        courseRepository.save(course);
-//                        return true;
-//                    } else {
-//
-//                        for (int i =0; i < services.length; i++
-//                        ) {
-//                            course = courseRepository.save(course);
-//                            Course_Service_Mapping course_service_mapping1 = new Course_Service_Mapping(course.getId(), Long.parseLong(services[i]));
-//                            course_service_mapping_repository.save(course_service_mapping1);
-//
-//                        }
-//                        return true;
-//                    }
-//                }else{
-//                    courseRepository.save(course);
-//                    return true;
-//                }
-//
-//            }else{
-//                return false;
-//            }
-        return false;
+        try {
+            Course course = null;
+            course = courseRepository.getCourseById(id);
+            if (name != null) {
+                course.setName(name);
+            }
+            if (price != null) {
+                course.setPrice(price);
+            }
+            if (duration != null) {
+                course.setDuration(duration);
+            }
+            if (discountStart != null) {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date startDate = df.parse(discountStart);
+                course.setDiscountStart(startDate);
+            }
+            if (discountEnd != null) {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date endDate = df.parse(discountEnd);
+                course.setDiscountEnd(endDate);
+            }
+            if (discountPercent != null) {
+                course.setDiscountPercent(discountPercent);
+            }
+            if (image != null) {
+                course.setImage(image);
+            }
+            if (description != null) {
+                course.setDescription(description);
+            }
+            List<Course_Service_Mapping> listMapping = course_service_mapping_repository.getMappingById(id);
+            for(Course_Service_Mapping mapping : listMapping){
+                course_service_mapping_repository.deleteById(mapping.getId());
+            }
+            if (services != null) {
+                for (int i = 0; i < services.length; i++) {
+                    Course_Service_Mapping course_service_mapping = new Course_Service_Mapping(course.getId(), Long.parseLong(services[i]));
+                    course_service_mapping_repository.save(course_service_mapping);
+                }
+            }
+            return true;
+        } catch (Exception e){
+            return false;
+        }
     }
 
     @Override
@@ -225,24 +187,27 @@ public class CourseServiceImpl implements CourseService {
         if (optional.isPresent()){
             course = optional.get();
         }
-
         List<com.swp.sbeauty.entity.Service> services = serviceRepository.getServiceByCourseId(course.getId());
-
         List<ServiceDto> serviceDtos = new ArrayList<>();
         for (com.swp.sbeauty.entity.Service s: services
              ) {
-
             serviceDtos.add(new ServiceDto(s));
         }
         CourseDto courseDto = new CourseDto(course, serviceDtos);
-
-
-
-
-
-
         return courseDto;
     }
 
-
+    @Override
+    public String validateCourse(String name, String discountStart, String discountEnd, Double discountPercent) {
+        String result = "";
+        if(discountStart!=null || discountEnd!=null){
+            if(discountPercent == null){
+                result += "Discount percent cannot be null. ";
+            }
+        }
+        if(courseRepository.existsByName(name)){
+            result += "Name already exists in data. ";
+        }
+        return result;
+    }
 }

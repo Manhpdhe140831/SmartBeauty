@@ -14,21 +14,16 @@ import java.util.List;
 
 public interface CourseService {
 
-    Page<Course> getListCourse(int offset, int page);
     Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services);
-//    Boolean remove(Long id);
 
     CourseResponseDto getListCoursePaginationAndSearch(String name, String code, int pageNo, int pageSize);
 
     CourseResponseDto getAll(int pageNo, int pageSize);
 
-    public Date parseDate(String strDate);
-
-    public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services);
+    Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services);
 
     CourseDto getCourseById(Long id);
 
-    
 
-
+    String validateCourse(String name, String discountStart, String discountEnd, Double discountPercent);
 }
