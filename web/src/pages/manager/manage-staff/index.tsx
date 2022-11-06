@@ -1,32 +1,28 @@
 import { Divider, Input, Pagination, Table } from "@mantine/core";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { IconSearch } from "@tabler/icons";
-
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
-import { StaffModel } from "../../../model/staff.model";
-import mockStaff from "../../../mock/staff";
 import StaffViewModalBtn from "./_partial/_staff-view-modal-btn";
 import StaffCreateModalBtn from "./_partial/_staff-create-modal-btn";
 import StaffCDeleteModalBtn from "./_partial/_staff-delete-modal-btn";
+import { useListUser } from "../../../query/model-list";
+import usePaginationHook from "../../../hooks/pagination.hook";
+import { StaffModel } from "../../../model/staff.model";
 
 const Index: AppPageInterface = () => {
-  const [page, setPage] = useState(1);
-  const [totalRecords, setTotalRecords] = useState(0);
+  const {
+    currentPage,
+    update: updatePagination,
+    totalPage,
+  } = usePaginationHook();
 
   const {
     data: staffs,
     isLoading,
-    refetch
-  } = useQuery<StaffModel[]>(["list-staff", page], async () => {
-    const staffs = await mockStaff();
-    setTotalRecords(staffs.length);
-    setPage(1);
-    return staffs;
-  });
+    refetch,
+  } = useListUser<StaffModel>("staff", currentPage, updatePagination);
 
   const arrBtn = (data: any) => {
     return (
@@ -34,7 +30,7 @@ const Index: AppPageInterface = () => {
         <StaffViewModalBtn staffData={data} />
         <StaffCDeleteModalBtn staffData={data} />
       </div>
-    )
+    );
   };
 
   return (
@@ -67,27 +63,27 @@ const Index: AppPageInterface = () => {
           </colgroup>
           <TableHeader />
           <tbody>
-          {isLoading ? (
-            <RowPlaceholderTable
-              colSpan={5}
-              className={"min-h-12"}
-              message={
-                <div className="text-center font-semibold text-gray-500">
-                  Loading...
-                </div>
-              }
-            />
-          ) : (
-            staffs &&
-            staffs.map((d, i) => (
-              <TableRecord
-                key={d.id}
-                no={i + 1}
-                data={d}
-                action={arrBtn(d)}
+            {isLoading ? (
+              <RowPlaceholderTable
+                colSpan={5}
+                className={"min-h-12"}
+                message={
+                  <div className="text-center font-semibold text-gray-500">
+                    Loading...
+                  </div>
+                }
               />
-            ))
-          )}
+            ) : (
+              staffs &&
+              staffs.data.map((d, i) => (
+                <TableRecord
+                  key={d.id}
+                  no={i + 1}
+                  data={d}
+                  action={arrBtn(d)}
+                />
+              ))
+            )}
           </tbody>
         </Table>
       </div>
@@ -95,9 +91,9 @@ const Index: AppPageInterface = () => {
       {/*Total record / 10 (per-page)*/}
       <Pagination
         position={"center"}
-        page={page}
-        onChange={setPage}
-        total={totalRecords / 10}
+        page={currentPage}
+        onChange={(p) => updatePagination({ newPage: p })}
+        total={totalPage}
       ></Pagination>
     </div>
   );

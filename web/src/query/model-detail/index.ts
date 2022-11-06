@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../../../mock/customer";
-import { CustomerModel } from "../../../../model/customer.model";
-import mockStaff from "../../../../mock/staff";
-import { StaffModel } from "../../../../model/staff.model";
+import mockCustomer from "../../mock/customer";
+import { CustomerModel } from "../../model/customer.model";
+import mockStaff from "../../mock/staff";
+import { StaffModel } from "../../model/staff.model";
 
 export const useCustomerDetailQuery = (customerId?: number) =>
   useQuery(["customer-detail", customerId], async () => {

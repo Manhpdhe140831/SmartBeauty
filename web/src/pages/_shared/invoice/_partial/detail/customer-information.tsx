@@ -9,7 +9,7 @@ type InformationProps = {
 
 const CustomerInformationBlock: FC<InformationProps> = ({ data }) => {
   return (
-    <div className="flex flex-wrap gap-x-6 gap-y-4 overflow-hidden w-full">
+    <div className="flex w-full flex-wrap gap-x-6 gap-y-4 overflow-hidden text-[14px]">
       <InformationBlock
         data={{
           from: data,

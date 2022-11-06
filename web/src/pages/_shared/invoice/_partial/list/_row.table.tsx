@@ -3,7 +3,7 @@ import { useClipboard } from "@mantine/hooks";
 import { BillModel } from "../../../../../model/bill.model";
 import dayjs from "dayjs";
 import { formatPrice } from "../../../../../utilities/fn.helper";
-import { useCustomerDetailQuery, useStaffDetailQuery } from "../../_query";
+import { useCustomerDetailQuery, useStaffDetailQuery } from "../../../../../query/model-detail";
 
 type RowProps = {
   no: number;

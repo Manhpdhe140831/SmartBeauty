@@ -14,7 +14,7 @@ import mockCustomer from "../../../mock/customer";
 import { CustomerModel } from "../../../model/customer.model";
 import { AutoCompleteItemProp } from "../../../components/auto-complete-item";
 import mockBill from "../../../mock/bill";
-import { useCustomerDetailQuery, useStaffDetailQuery } from "./_query";
+import { useCustomerDetailQuery, useStaffDetailQuery } from "../../../query/model-detail";
 import CustomerInformationBlock from "./_partial/detail/customer-information";
 import { StaffModel } from "../../../model/staff.model";
 import StaffInformation from "./_partial/detail/staff-information";
@@ -59,7 +59,9 @@ const InvoiceDetail: FC<InvoiceDetailProps> = ({
   return (
     <div className={"flex h-full flex-col bg-gray-100 p-4"}>
       <div className="flex items-center space-x-4">
-        <Button leftIcon={<IconArrowLeft />}>Back</Button>
+        <Button leftIcon={<IconArrowLeft />} onClick={onBackBtnClicked}>
+          Back
+        </Button>
         <h1 className={"flex flex-1 items-center space-x-4"}>
           <span>Invoice Details</span>
           <Text className={"inline select-none"} color={"dimmed"}>
@@ -92,7 +94,7 @@ const InvoiceDetail: FC<InvoiceDetailProps> = ({
                   }
                   onSearching={findCustomerByName}
                   onSelected={(id) => console.log(id)}
-                  {...stateInputProps("Customer Name", true, {
+                  {...stateInputProps("Customer", true, {
                     required: true,
                   })}
                 />

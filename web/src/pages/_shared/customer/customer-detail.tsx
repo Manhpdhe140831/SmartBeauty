@@ -1,10 +1,9 @@
 import { USER_ROLE } from "../../../const/user-role.const";
-import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../../mock/customer";
 import { Avatar, Button } from "@mantine/core";
 import InformationForm from "./_partial/detail/information.form";
 import { IconArrowLeft } from "@tabler/icons";
 import { FC } from "react";
+import { useCustomerDetailQuery } from "../../../query/model-detail";
 
 type CustomerDetailProps = {
   role: USER_ROLE;
@@ -20,10 +19,7 @@ const CustomerDetail: FC<CustomerDetailProps> = ({
   onBackBtnClicked,
 }) => {
   // TODO integrate API get user by id
-  const { data, isLoading } = useQuery(["customer-detail", id], async () => {
-    const l = await mockCustomer();
-    return l.find((c) => c.id === id);
-  });
+  const { data, isLoading } = useCustomerDetailQuery(id);
 
   if (isLoading || !data) {
     return <>loading...</>;

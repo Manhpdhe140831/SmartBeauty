@@ -6,14 +6,13 @@ import {
   CourseModel,
   CourseUpdateEntity,
 } from "../../../model/course.model";
-import { useQuery } from "@tanstack/react-query";
-import mockCourse from "../../../mock/course";
 import { Button, Divider, Pagination, Table } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import CourseHeaderTable from "./_partial/course-header.table";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import CourseRowTable from "./_partial/course-row.table";
 import CourseDetailDialog from "./_course-detail.dialog";
+import { useListCourseQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const {
@@ -28,13 +27,7 @@ const Index: AppPageInterface = () => {
     data: course,
     isLoading,
     refetch,
-  } = useQuery<CourseModel[]>(
-    ["list-course", currentPage],
-    () => mockCourse(),
-    {
-      onSuccess: (d) => updatePagination({ total: d.length }),
-    }
-  );
+  } = useListCourseQuery(currentPage, updatePagination);
 
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>
