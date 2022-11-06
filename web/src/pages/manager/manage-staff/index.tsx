@@ -7,7 +7,7 @@ import TableRecord from "./_partial/_table-record";
 import StaffViewModalBtn from "./_partial/_staff-view-modal-btn";
 import StaffCreateModalBtn from "./_partial/_staff-create-modal-btn";
 import StaffCDeleteModalBtn from "./_partial/_staff-delete-modal-btn";
-import { useListUser } from "../../../query/model-list";
+import { useListUserQuery } from "../../../query/model-list";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { StaffModel } from "../../../model/staff.model";
 
@@ -22,7 +22,7 @@ const Index: AppPageInterface = () => {
     data: staffs,
     isLoading,
     refetch,
-  } = useListUser<StaffModel>("staff", currentPage, updatePagination);
+  } = useListUserQuery<StaffModel>("staff", currentPage, updatePagination);
 
   const arrBtn = (data: any) => {
     return (

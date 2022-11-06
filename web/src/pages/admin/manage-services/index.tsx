@@ -10,11 +10,10 @@ import {
   ServiceUpdateEntity,
 } from "../../../model/service.model";
 import { IconPlus } from "@tabler/icons";
-import { useQuery } from "@tanstack/react-query";
-import mockService from "../../../mock/service";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import ServiceRowTable from "./_partial/service-row.table";
 import ServiceDetailDialog from "./_service-detail.dialog";
+import { useListServiceQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
@@ -29,11 +28,7 @@ const Index: AppPageInterface = () => {
     data: services,
     isLoading,
     refetch,
-  } = useQuery<ServiceModel[]>(["list-service", currentPage], async () => {
-    const serviceList = await mockService();
-    updatePagination({ total: serviceList.length });
-    return serviceList;
-  });
+  } = useListServiceQuery(currentPage, updatePagination);
 
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>

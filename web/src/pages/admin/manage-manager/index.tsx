@@ -8,7 +8,7 @@ import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { USER_ROLE } from "../../../const/user-role.const";
-import { useListUser } from "../../../query/model-list";
+import { useListUserQuery } from "../../../query/model-list";
 import { ManagerModel } from "../../../model/manager.model";
 
 const ManageManager: AppPageInterface = () => {
@@ -24,7 +24,7 @@ const ManageManager: AppPageInterface = () => {
     data: allManager,
     isLoading,
     refetch,
-  } = useListUser<ManagerModel>(
+  } = useListUserQuery<ManagerModel>(
     USER_ROLE.manager,
     currentPage,
     updatePagination

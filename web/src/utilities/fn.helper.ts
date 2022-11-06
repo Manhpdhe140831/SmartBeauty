@@ -1,12 +1,6 @@
 /* Randomize an array using Durstenfeld shuffle algorithm */
-import dayjs from "dayjs";
-import duration, { DurationUnitType } from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { AutoCompleteItemProp } from "../components/auto-complete-item";
 import { DefaultMantineColor } from "@mantine/core";
-
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
 
 export function shuffleArray<T>(originalArr: T[]) {
   // shallow clone the array since we only need to shuffle its position.
@@ -23,23 +17,6 @@ export function shuffleArray<T>(originalArr: T[]) {
 export function formatPrice(price: number) {
   // 123456 -> 123.456
   return new Intl.NumberFormat("vi-VN").format(price);
-}
-
-export function formatTime(time: number, unit: DurationUnitType) {
-  return dayjs.duration(time, unit).humanize();
-}
-
-export function ageTilToday(date: Date, withoutSuffix = true) {
-  return dayjs(date).toNow(withoutSuffix);
-}
-
-/**
- * Convert iso format date string to a suitable viewing format.
- * @param date iso-format
- * @param format
- */
-export function formatDate(date: string, format = "DD/MM/YYYY") {
-  return dayjs(new Date(date)).format(format);
 }
 
 export const formatterNumberInput = (value: string | undefined): string => {

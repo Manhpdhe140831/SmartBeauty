@@ -4,7 +4,7 @@ import { Button, Divider, Input, Pagination, Table } from "@mantine/core";
 import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
 import ProductHeaderTable from "./_partial/product-header.table";
 import ProductRowTable from "./_partial/product-row.table";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import {
   ProductCreateEntity,
   ProductModel,
@@ -16,11 +16,11 @@ import ProductDetailDialog from "./_product-detail-dialog";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import {
   createProduct,
-  getListProduct,
   updateProduct,
 } from "../../../services/product.service";
 import { IErrorResponse } from "../../../interfaces/api.interface";
 import { showNotification } from "@mantine/notifications";
+import { useListProductQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const { modal, openModal, resetModal } = useDialogDetailRow<ProductModel>();
@@ -35,11 +35,7 @@ const Index: AppPageInterface = () => {
     data: products,
     isLoading,
     refetch,
-  } = useQuery<ProductModel[]>(["list-product", currentPage], async () => {
-    const response = await getListProduct(currentPage, pageSize);
-    updatePagination({ total: response.totalElement });
-    return response.data;
-  });
+  } = useListProductQuery(currentPage, updatePagination);
 
   const createMutation = useMutation<
     boolean,

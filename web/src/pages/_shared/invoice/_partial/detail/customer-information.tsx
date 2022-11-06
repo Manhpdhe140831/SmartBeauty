@@ -1,7 +1,7 @@
 import InformationBlock from "./_information-block";
 import { CustomerModel } from "../../../../../model/customer.model";
 import { FC } from "react";
-import { formatDate } from "../../../../../utilities/fn.helper";
+import { formatDate } from "../../../../../utilities/time.helper";
 
 type InformationProps = {
   data?: CustomerModel | null;

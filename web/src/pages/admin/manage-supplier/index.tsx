@@ -1,14 +1,12 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
-import { useQuery } from "@tanstack/react-query";
 import { Divider, Pagination, Table } from "@mantine/core";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
-import { SupplierModel } from "../../../model/supplier.model";
 import SupplierHeaderTable from "./_partial/supplier-header.table";
 import SupplierRowTable from "./_partial/supplier-row.table";
 import SupplierCreateButton from "./_partial/supplier-create.button";
-import { getListSupplier } from "../../../services/supplier.service";
+import { useListSupplierQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const {
@@ -23,11 +21,7 @@ const Index: AppPageInterface = () => {
     data: suppliers,
     isLoading,
     refetch,
-  } = useQuery<SupplierModel[]>(["list-supplier", currentPage], async () => {
-    const response = await getListSupplier(currentPage, pageSize);
-    updatePagination({ total: response.totalElement });
-    return response.data;
-  });
+  } = useListSupplierQuery(currentPage, updatePagination);
 
   return (
     <div className="flex h-full flex-col space-y-4 p-4">
@@ -62,7 +56,7 @@ const Index: AppPageInterface = () => {
               />
             ) : (
               suppliers &&
-              suppliers.map((d, i) => (
+              suppliers.data.map((d, i) => (
                 <SupplierRowTable
                   rowUpdated={refetch}
                   key={d.id}

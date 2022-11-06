@@ -1,12 +1,10 @@
 import { Divider, Input, Pagination } from "@mantine/core";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { IconSearch } from "@tabler/icons";
-import { useQuery } from "@tanstack/react-query";
-import { BillModel } from "../../../model/bill.model";
-import mockBill from "../../../mock/bill";
 import InvoiceList from "../../_shared/invoice/invoice-list";
 import { useRouter } from "next/router";
 import usePaginationHook from "../../../hooks/pagination.hook";
+import { useListInvoiceQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const router = useRouter();
@@ -17,15 +15,10 @@ const Index: AppPageInterface = () => {
     update: updatePagination,
   } = usePaginationHook(undefined, Number(router.query.page ?? "1"));
 
-  const {
-    data: bills,
-    isLoading,
-    refetch,
-  } = useQuery<BillModel[]>(["list-invoice", currentPage], async () => {
-    const bills = await mockBill();
-    updatePagination({ total: bills.length });
-    return bills;
-  });
+  const { data: bills, isLoading } = useListInvoiceQuery(
+    currentPage,
+    updatePagination
+  );
 
   function navigateToDetail(id: number, currentPage: number) {
     const url = `${router.pathname}/detail/${id}`;
@@ -57,7 +50,7 @@ const Index: AppPageInterface = () => {
         <InvoiceList
           page={currentPage}
           pageSize={pageSize}
-          data={bills}
+          data={bills?.data}
           isLoading={isLoading}
           onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />

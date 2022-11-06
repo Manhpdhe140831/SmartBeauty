@@ -23,12 +23,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { GENDER } from "../../../../../const/gender.const";
 import { DatePicker } from "@mantine/dates";
-import { ageTilToday } from "../../../../../utilities/fn.helper";
 import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../../../const/input-masking.const";
 import { DialogSubmit } from "../../../../../utilities/form-data.helper";
 import { FormEvent } from "react";
 import { stateInputProps } from "../../../../../utilities/mantine.helper";
+import { ageTilToday } from "../../../../../utilities/time.helper";
 
 type FormProps = {
   data: CustomerModel;
