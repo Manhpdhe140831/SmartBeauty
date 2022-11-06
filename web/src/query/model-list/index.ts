@@ -17,6 +17,7 @@ import { ProductModel } from "../../model/product.model";
 import { getListProduct } from "../../services/product.service";
 import { ServiceModel } from "../../model/service.model";
 import mockService from "../../mock/service";
+import { getListSpaServices } from "../../services/spa-service.service";
 
 type fnUpdatePagination = ReturnType<typeof usePaginationHook>["update"];
 
@@ -47,15 +48,7 @@ export const useListServiceQuery = (
 ) =>
   useQuery<PaginatedResponse<ServiceModel>>(
     ["list-service", currentPage],
-    async () => {
-      const serviceList = await mockService();
-      return {
-        data: serviceList,
-        totalPage: 1,
-        totalElement: serviceList.length,
-        pageIndex: 1,
-      };
-    },
+    async () => getListSpaServices(currentPage),
     {
       onSuccess: (res) => updatePagination({ total: res.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),

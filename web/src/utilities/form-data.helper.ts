@@ -1,6 +1,9 @@
 export function jsonToFormData<T extends object>(
   rawJSON: T,
-  formData: FormData = new FormData()
+  formData: FormData = new FormData(),
+  opts?: {
+    whenFormArray?: typeof onItemInArray;
+  }
 ) {
   for (const field of Object.keys(rawJSON)) {
     const formKey = field as unknown as keyof T;
@@ -12,19 +15,37 @@ export function jsonToFormData<T extends object>(
       continue;
     }
     const valueField = rawJSON[formKey];
-    if (valueField instanceof File) {
-      formData.append(field, valueField);
-    } else if (valueField instanceof Date) {
-      formData.append(field, valueField.toISOString());
-    } else {
-      formData.append(
-        field,
-        typeof valueField === "string" ? valueField : JSON.stringify(valueField)
-      );
+
+    if (typeof valueField === "object") {
+      if (valueField instanceof File) {
+        formData.append(field, valueField);
+        continue;
+      } else if (valueField instanceof Date) {
+        formData.append(field, valueField.toISOString());
+        continue;
+      } else if (Array.isArray(valueField)) {
+        const fnParser = opts?.whenFormArray || onItemInArray;
+        valueField.forEach((item, index) => {
+          formData.append(`${field}[${index}]`, fnParser(item));
+        });
+        continue;
+      }
     }
+    formData.append(
+      field,
+      typeof valueField === "string" ? valueField : JSON.stringify(valueField)
+    );
   }
 
   return formData;
+}
+
+function onItemInArray(item: unknown) {
+  if (typeof item === "string") {
+    return item;
+  }
+
+  return JSON.stringify(item);
 }
 
 // Map RHF's dirtyFields over the `data` received by `handleSubmit` and return the changed subset of that data.

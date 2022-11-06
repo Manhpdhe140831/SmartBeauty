@@ -1,11 +1,16 @@
 import { InputVariant, MantineSize, Text } from "@mantine/core";
 
 export const stateInputProps = (
-  label: string,
+  label?: string,
   readonly?: boolean,
-  otp?: { withStyle?: boolean; required?: boolean }
+  otp?: {
+    withStyle?: boolean;
+    required?: boolean;
+    size?: MantineSize;
+    variant?: InputVariant;
+  }
 ) => ({
-  label: (
+  label: label ? (
     <Text color={"dimmed"} size={"sm"}>
       {label}{" "}
       {!readonly && otp?.required ? (
@@ -14,8 +19,8 @@ export const stateInputProps = (
         ""
       )}
     </Text>
-  ),
-  variant: (readonly ? "unstyled" : "filled") as InputVariant,
+  ) : undefined,
+  variant: (readonly ? "unstyled" : otp?.variant ?? "filled") as InputVariant,
   readOnly: readonly,
   sx:
     readonly && otp?.withStyle !== false
@@ -33,5 +38,5 @@ export const stateInputProps = (
         }
       : undefined,
   width: "100%",
-  size: "lg" as MantineSize,
+  size: otp?.size ?? "lg",
 });
