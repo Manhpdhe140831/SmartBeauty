@@ -24,10 +24,10 @@ import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { MAX_PRICE } from "../../../const/_const";
 import {
   formatterNumberInput,
-  formatTime,
   parserNumberInput,
 } from "../../../utilities/fn.helper";
 import ServiceInCourseTable from "./_partial/service-in-course.table";
+import { formatTime } from "../../../utilities/time.helper";
 
 const CourseDetailDialog: FC<
   DialogProps<CourseModel, CourseUpdateEntity, CourseUpdateEntity>

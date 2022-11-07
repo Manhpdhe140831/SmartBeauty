@@ -5,37 +5,27 @@
  * - By default, it's the id of the associated manager.
  * -
  */
-import { CustomerModel } from "./customer.model";
-import { StaffModel } from "./staff.model";
-import { SupplierModel } from "./supplier.model";
 
-export interface BillModel<> {
+export interface BillModel {
   id: number;
-  customer: CustomerModel;
-  staff: StaffModel;
-  supplier: SupplierModel;
+  branch: number;
+  customer: number;
+  staff: number;
   status: string;
   createdDate: string;
-  price: number;
+  priceBeforeTax: number;
+  priceAfterTax: number;
+  items: BillItems[];
 }
 
-export interface BillCreateEntity
-  extends Omit<
-    BillModel,
-    "id" | "customer" | "supplier" | "staff" | "createdDate"
-  > {
-  customer: number;
-  supplier: number;
-  createdDate: Date;
-}
-
-export interface BillUpdateEntity
-  extends Omit<
-    Partial<BillModel>,
-    "id" | "customer" | "supplier" | "staff" | "createdDate"
-  > {
+export type BillItems = {
   id: number;
-  customer?: number;
-  supplier?: number;
-  createdDate?: Date;
-}
+  type: "product" | "service" | "course";
+};
+
+export type BillCreateEntity = Omit<
+  BillModel,
+  "id" | "branch" | "staff" | "createdDate"
+>;
+
+export type BillUpdateEntity = Pick<BillModel, "id" | "status">;

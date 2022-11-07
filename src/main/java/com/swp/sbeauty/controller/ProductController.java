@@ -34,14 +34,12 @@ public class ProductController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
-
-
     @GetMapping("/product")
     private ResponseEntity<?> getAllProductAndSearchByName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false,defaultValue = "") String name){
+            , @RequestParam(value = "name", required = false) String name){
         Pageable p = PageRequest.of(page,pageSize);
-        if(name  == "" ||name == null){
+        if(name == null){
             ProductResponseDto productResponseDto = productService.getAllProduct(page -1,pageSize);
             return new ResponseEntity<>(productResponseDto,HttpStatus.OK);
         }
@@ -55,17 +53,15 @@ public class ProductController {
                                      @RequestParam(value = "price") Double price,
                                      @RequestParam(value = "description",required = false) String description,
                                      @RequestParam(value = "image",required = false) MultipartFile image,
-                                     @RequestParam(value = "discountStart") String discountStart,
-                                     @RequestParam(value = "discountEnd") String discountEnd,
-                                     @RequestParam(value = "discountPercent") Double discountPercent,
+                                     @RequestParam(value = "discountStart",required = false) String discountStart,
+                                     @RequestParam(value = "discountEnd",required = false) String discountEnd,
+                                     @RequestParam(value = "discountPercent",required = false) Double discountPercent,
                                      @RequestParam(value = "supplier") Long supplier,
                                      @RequestParam(value = "unit") String unit,
                                      @RequestParam(value = "dose") Integer dose){
-        String check = productService.validateProduct(name);
+        String check = productService.validateProduct(name, discountStart, discountEnd, discountPercent);
         if(check == ""){
-            Date startDate = new DateTime(discountStart).toDate();
-            Date endDate = new DateTime(discountEnd).toDate();
-            Boolean result = productService.saveProduct(name,price,description,image,startDate,endDate,discountPercent,supplier,unit,dose );
+            Boolean result = productService.saveProduct(name,price,description,image,discountStart,discountEnd,discountPercent,supplier,unit,dose );
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -84,7 +80,7 @@ public class ProductController {
                                        @RequestParam(value = "supplier",required = false) Long supplier,
                                        @RequestParam(value = "unit",required = false) String unit,
                                        @RequestParam(value = "dose",required = false) Integer dose){
-        String check = productService.validateProduct(name);
+        String check = productService.validateProduct(name, discountStart, discountEnd, discountPercent);
         if(check == ""){
             Boolean result = productService.updateProduct(id, name, price,description,image,discountStart,discountEnd,discountPercent,supplier,unit,dose);
             return new ResponseEntity<>(result, HttpStatus.OK);

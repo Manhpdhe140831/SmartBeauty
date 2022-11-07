@@ -1,6 +1,4 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
-import { useQuery } from "@tanstack/react-query";
-import { ManagerModel } from "../../../model/manager.model";
 import BtnCreateManager from "./_partial/_btn-create-manager";
 import { Divider, Group, Pagination, Table } from "@mantine/core";
 import ManagerHeaderTable from "./_partial/manager-header.table";
@@ -10,8 +8,8 @@ import ManagerViewModal from "./_partial/_btn-view-manager";
 import BtnPasswordManager from "./_partial/_btn-password-manager";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { USER_ROLE } from "../../../const/user-role.const";
-import { getAllAccount } from "../../../services/user.service";
-import { PaginatedResponse } from "../../../interfaces/api.interface";
+import { useListUserQuery } from "../../../query/model-list";
+import { ManagerModel } from "../../../model/manager.model";
 
 const ManageManager: AppPageInterface = () => {
   const {
@@ -26,13 +24,10 @@ const ManageManager: AppPageInterface = () => {
     data: allManager,
     isLoading,
     refetch,
-  } = useQuery<PaginatedResponse<ManagerModel>>(
-    ["list-manager", currentPage],
-    () => getAllAccount<ManagerModel>(currentPage, pageSize),
-    {
-      onSuccess: (data) => updatePagination({ total: data.totalElement }),
-      onError: () => updatePagination({ total: 0, newPage: 1 }),
-    }
+  } = useListUserQuery<ManagerModel>(
+    USER_ROLE.manager,
+    currentPage,
+    updatePagination
   );
 
   return (

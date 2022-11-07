@@ -64,10 +64,10 @@ export const roleSchema = z.nativeEnum(USER_ROLE, {
 
 export const refineSaleSchema = <
   T extends ZodObject<{
-    discountPercent: z.ZodOptional<z.ZodNumber>;
     price: z.ZodNumber;
-    discountStart: z.ZodOptional<z.ZodDate>;
-    discountEnd: z.ZodOptional<z.ZodDate>;
+    discountPercent: z.ZodNullable<z.ZodNumber>;
+    discountStart: z.ZodNullable<z.ZodDate>;
+    discountEnd: z.ZodNullable<z.ZodDate>;
   }>
 >(
   schema: T
@@ -117,42 +117,12 @@ export const refineSaleSchema = <
 
 export const saleSchema = z.object({
   price: priceSchema,
-  discountStart: z.date().optional(),
-  discountEnd: z.date().optional(),
-  discountPercent: z.number().optional(),
-});
-//   .refine(({ discountPercent, discountEnd, discountStart }) => {
-//     if (discountPercent !== undefined) {
-//       return discountEnd !== undefined || discountStart !== undefined;
-//     }
-//
-//     return true;
-//   })
-//   // Refine time end sale
-//   .refine(
-//     ({ discountEnd, discountStart }) => {
-//       if (discountEnd && dayjs(discountEnd).isBefore(new Date())) {
-//         // sale end date cannot start before today.
-//         return false;
-//       }
-//       if (discountEnd && discountStart) {
-//         // if both dates are available, discountEnd must after discountStart.
-//         return dayjs(discountEnd).isAfter(discountStart);
-//       }
-//
-//       return true;
-//     },
-//     {
-//       message:
-//         "Invalid sale ending time. It must after the current date, and after the sale start date.",
-//     }
-//   )
-//   .refine(
-//     ({ discountStart }) =>
-//       !discountStart || dayjs(discountStart).isAfter(new Date())
-//   ) as unknown as ZodObject<{
-//   price: z.ZodNumber;
-//   discountStart: z.ZodNullable<z.ZodDate>;
-//   discountEnd: z.ZodNullable<z.ZodDate>;
-//   discountPercent: z.ZodNullable<z.ZodNumber>;
-// }>;
+  discountStart: z.date().optional().nullable(),
+  discountEnd: z.date().optional().nullable(),
+  discountPercent: z.number().optional().nullable(),
+}) as unknown as ZodObject<{
+  price: z.ZodNumber;
+  discountStart: z.ZodNullable<z.ZodDate>;
+  discountEnd: z.ZodNullable<z.ZodDate>;
+  discountPercent: z.ZodNullable<z.ZodNumber>;
+}>;

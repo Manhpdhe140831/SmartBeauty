@@ -10,7 +10,14 @@ import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.repository.mappingRepo.Product_Supplier_Repository;
 import com.swp.sbeauty.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Chronology;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.chrono.GregorianChronology;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.tz.UTCProvider;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +36,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,15 +69,19 @@ public class ProductServiceImpl implements ProductService {
             Long idSupplier = product_supplier_repository.getSupplierId(id);
             Supplier supplier = supplierRepository.getSupplierById(idSupplier);
             if (entity != null) {
-                return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), entity.getDiscountStart(),entity.getDiscountEnd(),entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),supplier.getId());
+
+                return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), entity.getDiscountStart(),entity.getDiscountEnd(),entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),new SupplierDto(supplier));
+
+
+
+
+
+
+
             }
         }
         return null;
     }
-
-
-
-
 
     @Override
     public ProductResponseDto getProductAndSearchByName(String name, int pageNo, int pageSize) {
@@ -78,12 +90,6 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Product> page = productRepository.searchListWithField(name,pageable);
         List<Product> products = page.getContent();
-        /*List<ProductDto> productDtos = new ArrayList<>();
-        for (Product product : products){
-            ProductDto productDto = new ProductDto();
-            productDto = mapper.map(product,ProductDto.class);
-            productDtos.add(productDto);
-        }*/
         List<ProductDto> dtos = page
                 .stream()
                 .map(product -> mapper.map(product, ProductDto.class))
@@ -91,8 +97,7 @@ public class ProductServiceImpl implements ProductService {
         dtos.stream().forEach(f->
                 {
                     Supplier supplier = supplierRepository.getSupplierFromProduct(f.getId());
-                    //f.setSuppliers(new SupplierDto(supplier));
-                    f.setSupplier(supplier.getId());
+                    f.setSupplier(new SupplierDto(supplier));
                 }
         );
         List<ProductDto> pageResult = new ArrayList<>(dtos);
@@ -110,21 +115,18 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Product> page = productRepository.findAll(pageable);
         List<Product> products = page.getContent();
-        /*List<ProductDto> productDtos = new ArrayList<>();
-        for (Product product : products){
-            ProductDto productDto = new ProductDto();
-            productDto = mapper.map(product,ProductDto.class);
-            productDtos.add(productDto);
-        }*/
         List<ProductDto> dtos = page
                 .stream()
                 .map(product -> mapper.map(product, ProductDto.class))
                 .collect(Collectors.toList());
         dtos.stream().forEach(f->
                 {
+                    Date dateStart = new DateTime(f.getDiscountStart()).toDate();
+                    Date dateEnd = new DateTime(f.getDiscountEnd()).toDate();
+                    f.setDiscountStart(dateEnd);
+                    f.setDiscountStart(dateStart);
                     Supplier supplier = supplierRepository.getSupplierFromProduct(f.getId());
-                    f.setSupplier(supplier.getId());
-                    //f.setSuppliers(new SupplierDto(supplier));
+                    f.setSupplier(new SupplierDto(supplier));
                 }
         );
         List<ProductDto> pageResult = new ArrayList<>(dtos);
@@ -136,21 +138,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String validateProduct(String name) {
+    public String validateProduct(String name, String discountStart, String discountEnd, Double discountPercent) {
         String result = "";
+        if(discountStart!=null || discountEnd!=null){
+            if(discountPercent == null){
+                result += "Discount percent cannot be null. ";
+            }
+        }
         if(productRepository.existsByName(name)){
-            result += "Name already exists in data, ";
+            result += "Name already exists in data. ";
         }
         return result;
     }
 
     @Override
-    public Boolean saveProduct(String name, Double price, String description, MultipartFile image, Date discountStart, Date discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
+    public Boolean saveProduct(String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
         try {
             Product product = new Product();
             product.setName(name);
             product.setPrice(price);
-            product.setDescription(description);
+            if(description!=null){
+                product.setDescription(description);
+            }
+
             if(image != null){
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
@@ -165,9 +175,19 @@ public class ProductServiceImpl implements ProductService {
                 product.setImage(imagePath.resolve(image.getOriginalFilename()).toString());
 
             }
-            product.setDiscountStart(discountStart);
-            product.setDiscountEnd(discountEnd);
-            product.setDiscountPercent(discountPercent);
+            if(discountStart!=null){
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date startDate = df.parse(discountStart);
+                product.setDiscountStart(startDate);
+            }
+            if(discountEnd!=null){
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date endDate = df.parse(discountEnd);
+                product.setDiscountStart(endDate);
+            }
+            if(discountEnd!=null){
+                product.setDiscountPercent(discountPercent);
+            }
             product.setUnit(unit);
             product.setDose(dose);
             product = productRepository.save(product);
@@ -216,7 +236,7 @@ public class ProductServiceImpl implements ProductService {
                 if (discountEnd != null) {
 //                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 //                    Date endDate = df.parse(discountEnd);
-                    Date endDate = new DateTime(discountEnd).toDate();
+                   Date endDate = new DateTime(discountEnd).toDate();
                     product.setDiscountEnd(endDate);
                 }
                 if (unit != null) {
@@ -243,22 +263,6 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public Date parseDate(String strDate) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(strDate);
-            return date;
-
-        }catch (Exception e){
-            try {
-                throw e;
-            } catch (ParseException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
     }
 
 

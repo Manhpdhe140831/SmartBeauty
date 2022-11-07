@@ -1,5 +1,5 @@
 import { CustomerModel } from "../../../../../model/customer.model";
-import { formatDate } from "../../../../../utilities/fn.helper";
+import { formatDate } from "../../../../../utilities/time.helper";
 
 type RowProps<T extends CustomerModel> = {
   data: T;

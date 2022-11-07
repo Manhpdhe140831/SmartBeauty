@@ -10,7 +10,7 @@ const SidebarLayout = ({
   return (
     <AppShell
       padding={0}
-      navbar={<CoreNavbar userRole={role} width={{ base: 300 }} />}
+      navbar={<CoreNavbar userRole={role} width={{ base: 256 }} />}
       styles={(theme) => ({
         main: {
           backgroundColor:

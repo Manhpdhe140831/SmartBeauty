@@ -3,16 +3,12 @@ import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { IconSearch } from "@tabler/icons";
 import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
-import { useQuery } from "@tanstack/react-query";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import BranchCreateModalBtn from "./_partial/_branch-create-modal-btn";
 import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
-import { BranchModel } from "../../../model/branch.model";
-import { ManagerModel } from "../../../model/manager.model";
 import { USER_ROLE } from "../../../const/user-role.const";
-import { getAllBranch } from "../../../services/branch.service";
 import usePaginationHook from "../../../hooks/pagination.hook";
-import { PaginatedResponse } from "../../../interfaces/api.interface";
+import { useListBranchQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const {
@@ -26,16 +22,7 @@ const Index: AppPageInterface = () => {
     data: fetchBranches,
     isLoading,
     refetch,
-  } = useQuery<PaginatedResponse<BranchModel<ManagerModel>>>(
-    // dependencies
-    ["list-branch", page],
-    // API caller
-    () => getAllBranch(page),
-    // once API success
-    {
-      onSuccess: (res) => updatePagination({ total: res.totalElement }),
-    }
-  );
+  } = useListBranchQuery(page, updatePagination);
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">

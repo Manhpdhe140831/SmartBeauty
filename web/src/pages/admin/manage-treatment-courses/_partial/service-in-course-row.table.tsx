@@ -2,14 +2,11 @@ import { ActionIcon, Image } from "@mantine/core";
 import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { IconX } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
-import {
-  formatPrice,
-  formatTime,
-  rawToAutoItem,
-} from "../../../../utilities/fn.helper";
+import { formatPrice, rawToAutoItem } from "../../../../utilities/fn.helper";
 import DatabaseSearchSelect from "../../../../components/database-search.select";
 import { useQuery } from "@tanstack/react-query";
 import mockService from "../../../../mock/service";
+import { formatTime } from "../../../../utilities/time.helper";
 
 type rowProps = {
   no: number;

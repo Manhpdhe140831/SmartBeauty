@@ -25,10 +25,10 @@ public class ProductDto {
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountEnd;
     private Double discountPercent;
-    private Long supplier;
+    private Long supplierId;
     private String unit;
     private Integer dose;
-    private SupplierDto suppliers;
+    private SupplierDto supplier;
 
 
 
@@ -54,7 +54,21 @@ public class ProductDto {
 
     }
 
-    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, Long supplier) {
+    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, Long supplierId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.unit = unit;
+        this.dose = dose;
+        this.supplierId = supplierId;
+    }
+
+    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, SupplierDto supplier) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -66,20 +80,6 @@ public class ProductDto {
         this.unit = unit;
         this.dose = dose;
         this.supplier = supplier;
-    }
-
-    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, SupplierDto suppliers) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.image = image;
-        this.discountStart = discountStart;
-        this.discountEnd = discountEnd;
-        this.discountPercent = discountPercent;
-        this.unit = unit;
-        this.dose = dose;
-        this.suppliers = suppliers;
     }
 }
 

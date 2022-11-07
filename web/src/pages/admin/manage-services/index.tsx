@@ -1,8 +1,7 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
-import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
-import { Button, Divider, Pagination, Table } from "@mantine/core";
-import ServiceHeaderTable from "./_partial/service-header.table";
+import usePaginationHook from "../../../hooks/pagination.hook";
+import { Button, Divider, Pagination } from "@mantine/core";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import {
   ServiceCreateEntity,
@@ -10,11 +9,10 @@ import {
   ServiceUpdateEntity,
 } from "../../../model/service.model";
 import { IconPlus } from "@tabler/icons";
-import { useQuery } from "@tanstack/react-query";
-import mockService from "../../../mock/service";
-import RowPlaceholderTable from "../../../components/row-placeholder.table";
-import ServiceRowTable from "./_partial/service-row.table";
-import ServiceDetailDialog from "./_service-detail.dialog";
+import ServiceList from "../../_shared/services/service-list";
+import { useListServiceQuery } from "../../../query/model-list";
+import AdminServiceDetailDialog from "./_detail.dialog";
+import { useMutation } from "@tanstack/react-query";
 
 const Index: AppPageInterface = () => {
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
@@ -29,11 +27,18 @@ const Index: AppPageInterface = () => {
     data: services,
     isLoading,
     refetch,
-  } = useQuery<ServiceModel[]>(["list-service", currentPage], async () => {
-    const serviceList = await mockService();
-    updatePagination({ total: serviceList.length });
-    return serviceList;
-  });
+  } = useListServiceQuery(currentPage, updatePagination);
+
+  const createSpaService = useMutation(
+    ["create-spa-services"],
+    async (d: ServiceCreateEntity) => {
+      console.log(d);
+      return d;
+    },
+    {
+      onSuccess: () => refetch(),
+    }
+  );
 
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>
@@ -46,43 +51,30 @@ const Index: AppPageInterface = () => {
       <Divider my={8} />
 
       <div className="flex-1">
-        <Table className={"table-fixed"} withBorder highlightOnHover striped>
-          <ServiceHeaderTable />
-
-          <tbody>
-            {isLoading ? (
-              <RowPlaceholderTable
-                colSpan={4}
-                className={"min-h-12"}
-                message={
-                  <div className="text-center font-semibold text-gray-500">
-                    Loading...
-                  </div>
-                }
-              />
-            ) : (
-              services &&
-              services.map((s, i) => (
-                <ServiceRowTable
-                  onClick={(service) => openModal("view", service)}
-                  key={s.id}
-                  data={s}
-                  no={getItemNo(i, currentPage, pageSize)}
-                />
-              ))
-            )}
-          </tbody>
-        </Table>
+        <ServiceList
+          pageSize={pageSize}
+          page={currentPage}
+          data={services?.data}
+          isLoading={isLoading}
+          onRowClick={(d) => openModal("view", d)}
+        />
         {modal && (
-          <ServiceDetailDialog
+          <AdminServiceDetailDialog
             mode={modal.mode as never} // silent the TS-error
             data={modal.data}
             opened={!!modal}
-            onClosed={(update?: ServiceCreateEntity | ServiceUpdateEntity) => {
+            onClosed={async (
+              update?: ServiceCreateEntity | ServiceUpdateEntity
+            ) => {
               if (update) {
                 console.log(update);
-                // TODO update
-                refetch();
+                if (modal?.mode === "create") {
+                  await createSpaService.mutateAsync(
+                    update as ServiceCreateEntity
+                  );
+                } else {
+                }
+                return;
               }
               resetModal();
             }}

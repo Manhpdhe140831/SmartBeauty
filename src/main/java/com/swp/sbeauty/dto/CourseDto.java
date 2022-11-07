@@ -31,6 +31,7 @@ public class CourseDto {
     private String name;
     private double price;
     private int duration;
+    private Integer timeOfUse;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date discountStart;
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -46,6 +47,7 @@ public class CourseDto {
         this.setName(course.getName());
         this.setPrice(course.getPrice());
         this.setDuration(course.getDuration());
+        this.setTimeOfUse(course.getTimeOfUse());
         this.setDiscountStart(course.getDiscountStart());
         this.setDiscountEnd(course.getDiscountEnd());
         this.setDiscountPercent(course.getDiscountPercent());
@@ -135,6 +137,14 @@ public class CourseDto {
         this.description = description;
     }
 
+    public Integer getTimeOfUse() {
+        return timeOfUse;
+    }
+
+    public void setTimeOfUse(Integer timeOfUse) {
+        this.timeOfUse = timeOfUse;
+    }
+
     public List<ServiceDto> getService() {
         return service;
     }
@@ -155,6 +165,7 @@ public class CourseDto {
             this.setDiscountPercent(course.getDiscountPercent());
             this.setImage(course.getImage());
             this.setDescription(course.getDescription());
+            this.setTimeOfUse(course.getTimeOfUse());
         }
         this.setService(listService);
 

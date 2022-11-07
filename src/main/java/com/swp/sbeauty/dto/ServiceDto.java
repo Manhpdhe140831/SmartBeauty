@@ -38,7 +38,7 @@ public class ServiceDto {
     private List<Service_Product_MappingDto> products;
 
 
-    public ServiceDto(long id, String code, String name, Date discountStart, Date discountEnd, Double discountPercent, double price, String description, long duration, String image, List<Service_Product_MappingDto> products) {
+    public ServiceDto(Long id, String name, Date discountStart, Date discountEnd, Double discountPercent, Double price, String description, Long duration, String image, List<Service_Product_MappingDto> products) {
         this.id = id;
         this.name = name;
         this.discountStart = discountStart;

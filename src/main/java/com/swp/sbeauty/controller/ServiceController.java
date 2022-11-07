@@ -1,5 +1,6 @@
 package com.swp.sbeauty.controller;
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.dto.ServiceResponseDto;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
@@ -14,11 +15,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
@@ -30,15 +34,14 @@ public class ServiceController {
     CourseService courseService;
 
 
-    @GetMapping(value = "/service/getallservice")
-
+    @GetMapping(value = "/service")
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            , @RequestParam(value = "name", required = false) String name
             ){
         Pageable p = PageRequest.of(page, pageSize);
 
-        if (name==""){
+        if (name==null){
             ServiceResponseDto serviceResponseDto = new ServiceResponseDto();
             serviceResponseDto = service.getAll(page -1, pageSize);
             return new ResponseEntity<>(serviceResponseDto,HttpStatus.OK);
@@ -48,35 +51,52 @@ public class ServiceController {
             return new ResponseEntity<>(serviceResponseDto, HttpStatus.OK);
         }
     }
-    @GetMapping(value = "/service/getservice")
+
+    @GetMapping(value = "/service/getById")
     public ResponseEntity<ServiceDto> getServiceById(@RequestParam("id") Long id
     ){
         ServiceDto serviceDto = service.getServiceById(id);
         return new ResponseEntity<>(serviceDto, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/service/create")
+    @PostMapping(value = "/service/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveService(
             @RequestParam(value = "name") String name,
-            @RequestParam(value = "discountStart") String discountStart,
-            @RequestParam(value = "discountEnd") String discountEnd,
-            @RequestParam(value = "discountPercent") Double discountPercent,
+            @RequestParam(value = "discountStart", required = false) String discountStart,
+            @RequestParam(value = "discountEnd", required = false) String discountEnd,
+            @RequestParam(value = "discountPercent", required = false) Double discountPercent,
             @RequestParam(value = "price") Double price,
-            @RequestParam(value = "description") String description,
+            @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "duration") Long duration,
-            @RequestParam(value = "image") String image,
-            @RequestParam(value = "listServiceProduct", required = false)List<Service_Product_MappingDto> listServiceProduct
+            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "products", required = false) String products
             ) {
-
-        Date dsDate = courseService.parseDate(discountStart);
-        Date deDate = courseService.parseDate(discountEnd);
-        Boolean check = service.save(name, dsDate, deDate, discountPercent, price, description, duration, image, listServiceProduct);
-        return new ResponseEntity<>(check, HttpStatus.OK);
-
+        String check = service.validateService(name, discountStart, discountEnd, discountPercent);
+        if(check == ""){
+            Boolean result = service.save(name, discountStart, discountEnd, discountPercent, price, description, duration, image, products);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
     }
 
-
-
-
-
+    @PutMapping(value = "/service/update", headers="Content-Type=multipart/form-data")
+    public ResponseEntity<?> updateService(@RequestParam(value = "id") Long id,
+                                           @RequestParam(value = "name", required = false) String name,
+                                           @RequestParam(value = "discountStart", required = false) String discountStart,
+                                           @RequestParam(value = "discountEnd", required = false) String discountEnd,
+                                           @RequestParam(value = "discountPercent", required = false) Double discountPercent,
+                                           @RequestParam(value = "price", required = false) Double price,
+                                           @RequestParam(value = "description", required = false) String description,
+                                           @RequestParam(value = "duration", required = false) Long duration,
+                                           @RequestParam(value = "image", required = false) String image,
+                                           @RequestParam(value = "products", required = false) String products) {
+        String check = service.validateService(name, discountStart, discountEnd, discountPercent);
+        if(check == ""){
+            Boolean result = service.update(id, name, discountStart, discountEnd, discountPercent, price, description, duration, image, products);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

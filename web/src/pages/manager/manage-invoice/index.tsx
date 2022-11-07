@@ -1,13 +1,10 @@
 import { Divider, Input, Pagination } from "@mantine/core";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { IconSearch } from "@tabler/icons";
-import { useQuery } from "@tanstack/react-query";
-import { BillModel } from "../../../model/bill.model";
-import mockBill from "../../../mock/bill";
-import BillCreateModalBtn from "./_partial/_staff-create-modal-btn";
-import BillList from "../../_shared/bill/bill-list";
+import InvoiceList from "../../_shared/invoice/invoice-list";
 import { useRouter } from "next/router";
 import usePaginationHook from "../../../hooks/pagination.hook";
+import { useListInvoiceQuery } from "../../../query/model-list";
 
 const Index: AppPageInterface = () => {
   const router = useRouter();
@@ -18,15 +15,10 @@ const Index: AppPageInterface = () => {
     update: updatePagination,
   } = usePaginationHook(undefined, Number(router.query.page ?? "1"));
 
-  const {
-    data: bills,
-    isLoading,
-    refetch,
-  } = useQuery<BillModel[]>(["list-bill", currentPage], async () => {
-    const bills = await mockBill();
-    updatePagination({ total: bills.length });
-    return bills;
-  });
+  const { data: bills, isLoading } = useListInvoiceQuery(
+    currentPage,
+    updatePagination
+  );
 
   function navigateToDetail(id: number, currentPage: number) {
     const url = `${router.pathname}/detail/${id}`;
@@ -45,8 +37,6 @@ const Index: AppPageInterface = () => {
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
       <div className="flex justify-end space-x-2">
-        <BillCreateModalBtn onChanged={(u) => u && refetch()} />
-
         {/*Search by name*/}
         <Input
           icon={<IconSearch />}
@@ -57,10 +47,10 @@ const Index: AppPageInterface = () => {
       </div>
       <Divider my={8} />
       <div className="flex-1">
-        <BillList
+        <InvoiceList
           page={currentPage}
           pageSize={pageSize}
-          data={bills}
+          data={bills?.data}
           isLoading={isLoading}
           onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />

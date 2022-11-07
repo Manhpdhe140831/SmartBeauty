@@ -27,6 +27,7 @@ public class Course {
     private String name;
     private double price;
     private int duration;
+    private Integer timeOfUse;
     private Date discountStart;
     private Date discountEnd;
     private double discountPercent;

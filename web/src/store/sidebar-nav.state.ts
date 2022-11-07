@@ -5,7 +5,7 @@ import {
   branchAdminConfig,
   branchEmployeeConfig,
   branchManagerConfig,
-} from "../const/sidebar-nav.const";
+} from "../const/sidebar-navigation.const";
 
 type SidebarNavState = {
   config: NavLinkItemProp[];

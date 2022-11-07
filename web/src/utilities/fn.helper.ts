@@ -1,12 +1,6 @@
 /* Randomize an array using Durstenfeld shuffle algorithm */
-import dayjs from "dayjs";
-import duration, { DurationUnitType } from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { AutoCompleteItemProp } from "../components/auto-complete-item";
 import { DefaultMantineColor } from "@mantine/core";
-
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
 
 export function shuffleArray<T>(originalArr: T[]) {
   // shallow clone the array since we only need to shuffle its position.
@@ -25,23 +19,6 @@ export function formatPrice(price: number) {
   return new Intl.NumberFormat("vi-VN").format(price);
 }
 
-export function formatTime(time: number, unit: DurationUnitType) {
-  return dayjs.duration(time, unit).humanize();
-}
-
-export function ageTilToday(date: Date, withoutSuffix = true) {
-  return dayjs(date).toNow(withoutSuffix);
-}
-
-/**
- * Convert iso format date string to a suitable viewing format.
- * @param date iso-format
- * @param format
- */
-export function formatDate(date: string, format = "DD/MM/YYYY") {
-  return dayjs(new Date(date)).format(format);
-}
-
 export const formatterNumberInput = (value: string | undefined): string => {
   if (value === undefined) {
     return "";
@@ -57,7 +34,7 @@ export const parserNumberInput = (
   value: string | undefined
 ): string | undefined => value?.replace(/[.,]*/g, "");
 
-type autoItemGeneric = object & {
+export type AutoItemGenericType<T> = Partial<T> & {
   id: number;
   name: string;
   description: string;
@@ -67,8 +44,8 @@ type autoItemGeneric = object & {
 
 export function rawToAutoItem<T extends object>(
   p: T,
-  fn: (d: T) => autoItemGeneric
-): AutoCompleteItemProp<T> {
+  fn: (d: T) => AutoItemGenericType<T>
+) {
   const fnParser = fn(p);
   return {
     value: String(fnParser.id),
@@ -80,5 +57,25 @@ export function rawToAutoItem<T extends object>(
       color: fnParser.color,
       image: fnParser.image,
     },
-  };
+  } as AutoCompleteItemProp<T>;
+}
+
+export function toNumberType<T>(value?: T | null) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const parsed = Number(value);
+  if (isNaN(parsed)) {
+    return null;
+  }
+
+  return parsed;
+}
+
+export function toStringType<T>(value?: T | null) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  return String(value);
 }
