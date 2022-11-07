@@ -25,10 +25,8 @@ public class Product {
     private double price;
     private String description;
     private String image;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date discountStart;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date discountEnd;
+    private String discountStart;
+    private String discountEnd;
     private double discountPercent;
     private String unit;
     private int dose;

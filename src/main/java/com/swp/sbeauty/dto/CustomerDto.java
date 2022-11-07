@@ -16,14 +16,14 @@ public class CustomerDto {
     @Email
     private String email;
     private String gender;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date dateOfBirth;
+
+    private String dateOfBirth;
     private String address;
 
     public CustomerDto() {
     }
 
-    public CustomerDto(String name, String phone, String email, String gender, Date dateOfBirth, String address) {
+    public CustomerDto(String name, String phone, String email, String gender, String dateOfBirth, String address) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -32,7 +32,7 @@ public class CustomerDto {
         this.address = address;
     }
 
-    public CustomerDto(Long id, String name, String phone, String email, String gender, Date dateOfBirth, String address) {
+    public CustomerDto(Long id, String name, String phone, String email, String gender, String dateOfBirth, String address) {
         this.id = id;
         this.name = name;
         this.phone = phone;

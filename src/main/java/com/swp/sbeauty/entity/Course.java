@@ -25,12 +25,12 @@ public class Course {
     private long id;
     private String code;
     private String name;
-    private double price;
+    private Double price;
     private int duration;
     private Integer timeOfUse;
-    private Date discountStart;
-    private Date discountEnd;
-    private double discountPercent;
+    private String discountStart;
+    private String discountEnd;
+    private Double discountPercent;
     private String image;
     private String description;
 }

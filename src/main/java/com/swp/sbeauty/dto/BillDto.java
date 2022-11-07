@@ -17,11 +17,11 @@ public class BillDto {
     private UserDto staff;
     private CustomerDto customer;
     private String status;
-    private Date createDate;
+    private String createDate;
     private Double priceBeforeTax;
     private Double priceAfterTax;
 
-    public BillDto(Long id, String code,BranchDto branch, UserDto staff, CustomerDto customer, String status, Date createDate, Double priceBeforeTax, Double privateAfterTax) {
+    public BillDto(Long id, String code,BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double privateAfterTax) {
         this.id = id;
         this.code = code;
         this.branch = branch;

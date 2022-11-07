@@ -16,9 +16,8 @@ public class Bill {
     private String code;
     private Long   branch;
     private Long   staff;
-    @Column(columnDefinition = "null")
     private Long   customer;
-    private Date   date;
+    private String   date;
     private Double moneyPerTax;
     private Double moneyAfterTax;
     private String status;

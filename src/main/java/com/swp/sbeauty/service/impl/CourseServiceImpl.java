@@ -50,14 +50,14 @@ public class CourseServiceImpl implements CourseService {
             course.setDuration(duration);
             course.setTimeOfUse(timeOfUse);
             if(discountStart != null){
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date startDate = df.parse(discountStart);
-                course.setDiscountStart(startDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date startDate = df.parse(discountStart);
+                course.setDiscountStart(discountStart);
             }
             if(discountEnd != null){
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date endDate = df.parse(discountEnd);
-                course.setDiscountEnd(endDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date endDate = df.parse(discountEnd);
+                course.setDiscountEnd(discountEnd);
             }
             if(discountPercent!=null){
                 course.setDiscountPercent(discountPercent);
@@ -146,14 +146,14 @@ public class CourseServiceImpl implements CourseService {
                 course.setDuration(duration);
             }
             if (discountStart != null) {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date startDate = df.parse(discountStart);
-                course.setDiscountStart(startDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date startDate = df.parse(discountStart);
+                course.setDiscountStart(discountStart);
             }
             if (discountEnd != null) {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date endDate = df.parse(discountEnd);
-                course.setDiscountEnd(endDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date endDate = df.parse(discountEnd);
+                course.setDiscountEnd(discountEnd);
             }
             if (discountPercent != null) {
                 course.setDiscountPercent(discountPercent);
