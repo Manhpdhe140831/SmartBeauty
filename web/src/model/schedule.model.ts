@@ -5,6 +5,7 @@ export interface BookingModel {
 }
 
 export interface ScheduleModel {
+  id: number,
   bed_name: string,
   sale_name: string,
   technical_name: string,

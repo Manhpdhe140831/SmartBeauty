@@ -18,13 +18,7 @@ const ManageAppointmentSchedule: AppPageInterface = () => {
   );
   return (
     <div className={"flex h-full flex-col space-y-4"}>
-      <div className="flex justify-end space-x-2 px-4 pt-4">
-        <Button color={"peal"} leftIcon={<IconPlus />}>
-          Bed
-        </Button>
-      </div>
-
-      <Divider my={8} mx={8} />
+      {/*<Divider my={8} mx={8} />*/}
 
       <div className="flex-1">
         <div className="flex flex-row h-24 border-b">

@@ -7,6 +7,7 @@ export const Schedule: BookingModel[] = [
     booking: "slot_1",
     schedule: [
       {
+        id: 1,
         bed_name: "Bed 1",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
@@ -23,6 +24,7 @@ export const Schedule: BookingModel[] = [
     booking: "slot_2",
     schedule: [
       {
+        id: 2,
         bed_name: "Bed 2",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
@@ -39,6 +41,7 @@ export const Schedule: BookingModel[] = [
     booking: "slot_5",
     schedule: [
       {
+        id: 3,
         bed_name: "Bed 3",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
@@ -55,6 +58,7 @@ export const Schedule: BookingModel[] = [
     booking: "slot_3",
     schedule: [
       {
+        id: 4,
         bed_name: "Bed 4",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",

@@ -4,7 +4,7 @@ import { Button, Modal, Text } from "@mantine/core";
 import { BookingModel, ScheduleModel } from "../../model/schedule.model";
 import { Beds } from "../../mock/bed";
 import { mapStatusHelper } from "../../utilities/map-status.helper";
-import BookingInfo from "../../pages/manager/manage-schedule/work-appointment/_partial/booking-info";
+import { router } from "next/client";
 
 type SlotProps = {
   title: string;
@@ -13,12 +13,18 @@ type SlotProps = {
 };
 
 const AppointmentHeaderTimeline: FC<SlotProps> = ({ title, timeFrame, bedSchedule }) => {
-  const [opened, setOpened] = useState(false);
-  const [scheduleSelected, setScheduleSelected] = useState<ScheduleModel | null>(null);
+  // const [opened, setOpened] = useState(false);
+  // const [scheduleSelected, setScheduleSelected] = useState<ScheduleModel | null>(null);
 
   const moreInfo = (data: ScheduleModel) => {
-    setScheduleSelected(data);
-    setOpened(true);
+    // setScheduleSelected(data);
+    // setOpened(true);
+    void router.push({
+      pathname: '/manager/manage-schedule/work-appointment/booking-info',
+      query: {
+        scheduleId: data.id
+      }
+    })
   };
 
   return (
@@ -64,18 +70,18 @@ const AppointmentHeaderTimeline: FC<SlotProps> = ({ title, timeFrame, bedSchedul
         })
       }
 
-      <Modal opened={opened}
-             onClose={() => {
-               setScheduleSelected(null);
-               setOpened(false);
-             }}
-             size="xl"
-             transition="fade"
-             transitionDuration={600}
-             transitionTimingFunction="ease"
-             title="Booking info">
-        <BookingInfo data={scheduleSelected} />
-      </Modal>
+      {/*<Modal opened={opened}*/}
+      {/*       onClose={() => {*/}
+      {/*         setScheduleSelected(null);*/}
+      {/*         setOpened(false);*/}
+      {/*       }}*/}
+      {/*       size="xl"*/}
+      {/*       transition="fade"*/}
+      {/*       transitionDuration={600}*/}
+      {/*       transitionTimingFunction="ease"*/}
+      {/*       title="Booking info">*/}
+      {/*  <BookingInfo data={scheduleSelected} />*/}
+      {/*</Modal>*/}
     </div>
   );
 };
