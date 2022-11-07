@@ -13,6 +13,7 @@ import ServiceList from "../../_shared/services/service-list";
 import { useListServiceQuery } from "../../../query/model-list";
 import AdminServiceDetailDialog from "./_detail.dialog";
 import { useMutation } from "@tanstack/react-query";
+import { createSpaService } from "../../../services/spa-service.service";
 
 const Index: AppPageInterface = () => {
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
@@ -29,12 +30,9 @@ const Index: AppPageInterface = () => {
     refetch,
   } = useListServiceQuery(currentPage, updatePagination);
 
-  const createSpaService = useMutation(
+  const createServiceMutation = useMutation(
     ["create-spa-services"],
-    async (d: ServiceCreateEntity) => {
-      console.log(d);
-      return d;
-    },
+    async (d: ServiceCreateEntity) => createSpaService(d),
     {
       onSuccess: () => refetch(),
     }
@@ -69,7 +67,7 @@ const Index: AppPageInterface = () => {
               if (update) {
                 console.log(update);
                 if (modal?.mode === "create") {
-                  await createSpaService.mutateAsync(
+                  await createServiceMutation.mutateAsync(
                     update as ServiceCreateEntity
                   );
                 } else {

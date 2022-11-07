@@ -121,6 +121,36 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
           />
           <FormErrorMessage errors={errors} name={"description"} />
 
+          <Controller
+            name={"duration"}
+            control={control}
+            render={({ field }) => (
+              <NumberInput
+                placeholder={"perform duration (1 - 90 minutes)..."}
+                hideControls
+                min={1}
+                precision={0}
+                step={1}
+                max={90}
+                defaultValue={field.value ?? undefined}
+                onChange={(v) => field.onChange(v ?? null)}
+                onBlur={field.onBlur}
+                rightSectionWidth={75}
+                rightSection={
+                  <Text color={"dimmed"} size={"sm"}>
+                    minutes
+                  </Text>
+                }
+                {...stateInputProps("Service Duration", readOnly, {
+                  required: true,
+                  variant: "default",
+                  size: "sm",
+                })}
+              />
+            )}
+          ></Controller>
+          <FormErrorMessage errors={errors} name={"duration"} />
+
           <Divider my={8} />
 
           <h2

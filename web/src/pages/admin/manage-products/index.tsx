@@ -21,9 +21,11 @@ import {
 import { IErrorResponse } from "../../../interfaces/api.interface";
 import { showNotification } from "@mantine/notifications";
 import { useListProductQuery } from "../../../query/model-list";
+import { SupplierModel } from "../../../model/supplier.model";
 
 const Index: AppPageInterface = () => {
-  const { modal, openModal, resetModal } = useDialogDetailRow<ProductModel>();
+  const { modal, openModal, resetModal } =
+    useDialogDetailRow<ProductModel<SupplierModel>>();
   const {
     pageSize,
     currentPage,

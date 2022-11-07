@@ -6,19 +6,13 @@ import { FC } from "react";
 import SalePriceTableCell from "../../../../components/cell-sale-price.table";
 import dayjs from "dayjs";
 import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
-import { useQuery } from "@tanstack/react-query";
-import { getSupplierById } from "../../../../services/supplier.service";
+import { SupplierModel } from "../../../../model/supplier.model";
 
-const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
+const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
   data,
   no,
   onClick,
 }) => {
-  const { isLoading: supplierLoading, data: supplierData } = useQuery(
-    ["detail-supplier", data.supplier],
-    () => getSupplierById(data.supplier)
-  );
-
   const firstRow = (
     <tr onClick={() => onClick(data)} className={styleRow.custom_table_row}>
       <td className={"text-center"} rowSpan={2}>
@@ -62,7 +56,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel>> = ({
       </td>
 
       <td className={"text-center"} rowSpan={2}>
-        {supplierLoading ? "loading..." : supplierData?.name}
+        {data.supplier.name}
       </td>
     </tr>
   );

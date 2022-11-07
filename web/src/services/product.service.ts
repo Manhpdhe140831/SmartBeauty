@@ -10,6 +10,7 @@ import {
   ProductUpdateEntity,
 } from "../model/product.model";
 import { jsonToFormData } from "../utilities/form-data.helper";
+import { SupplierModel } from "../model/supplier.model";
 
 export async function getListProduct(
   page = 1,
@@ -17,16 +18,15 @@ export async function getListProduct(
   searchParams?: SearchParamUrl
 ) {
   try {
-    const apiResult = await axios.get<PaginatedResponse<ProductModel>>(
-      "/product",
-      {
-        params: {
-          page,
-          pageSize,
-          ...(searchParams ?? {}),
-        },
-      }
-    );
+    const apiResult = await axios.get<
+      PaginatedResponse<ProductModel<SupplierModel>>
+    >("/product", {
+      params: {
+        page,
+        pageSize,
+        ...(searchParams ?? {}),
+      },
+    });
 
     return apiResult.data;
   } catch (e) {

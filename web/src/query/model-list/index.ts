@@ -59,7 +59,7 @@ export const useListProductQuery = (
   currentPage: number,
   updatePagination: fnUpdatePagination
 ) =>
-  useQuery<PaginatedResponse<ProductModel>>(
+  useQuery<PaginatedResponse<ProductModel<SupplierModel>>>(
     ["list-product", currentPage],
     () => getListProduct(currentPage),
     {

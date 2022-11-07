@@ -67,7 +67,9 @@ const ProductInServiceRowTable = ({
     const paginateProducts = await getListProduct(1, 50, {
       name: productName,
     });
-    return paginateProducts.data.map((i) => rawToAutoItem(i, fnHelper));
+    return paginateProducts.data.map((i) =>
+      rawToAutoItem({ ...i, supplier: i.supplier.id }, fnHelper)
+    );
   }
 
   return (
