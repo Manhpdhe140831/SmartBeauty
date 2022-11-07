@@ -10,7 +10,14 @@ import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.repository.mappingRepo.Product_Supplier_Repository;
 import com.swp.sbeauty.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Chronology;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.chrono.GregorianChronology;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.tz.UTCProvider;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +36,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,7 +69,15 @@ public class ProductServiceImpl implements ProductService {
             Long idSupplier = product_supplier_repository.getSupplierId(id);
             Supplier supplier = supplierRepository.getSupplierById(idSupplier);
             if (entity != null) {
+
                 return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), entity.getDiscountStart(),entity.getDiscountEnd(),entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),new SupplierDto(supplier));
+
+
+
+
+
+
+
             }
         }
         return null;
@@ -105,6 +121,10 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
         dtos.stream().forEach(f->
                 {
+                    Date dateStart = new DateTime(f.getDiscountStart()).toDate();
+                    Date dateEnd = new DateTime(f.getDiscountEnd()).toDate();
+                    f.setDiscountStart(dateEnd);
+                    f.setDiscountStart(dateStart);
                     Supplier supplier = supplierRepository.getSupplierFromProduct(f.getId());
                     f.setSupplier(new SupplierDto(supplier));
                 }
@@ -216,7 +236,7 @@ public class ProductServiceImpl implements ProductService {
                 if (discountEnd != null) {
 //                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 //                    Date endDate = df.parse(discountEnd);
-                    Date endDate = new DateTime(discountEnd).toDate();
+                   Date endDate = new DateTime(discountEnd).toDate();
                     product.setDiscountEnd(endDate);
                 }
                 if (unit != null) {
