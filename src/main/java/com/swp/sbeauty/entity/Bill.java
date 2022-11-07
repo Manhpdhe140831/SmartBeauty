@@ -16,12 +16,7 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long   id;
     private String code;
-    private Long   branch;
-    private Long   staff;
-    private Long   customer;
-    private String   date;
-
-
+    private String  date;
     private Double moneyPerTax;
     private Double moneyAfterTax;
     private String status;

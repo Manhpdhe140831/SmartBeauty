@@ -70,13 +70,9 @@ public class ProductServiceImpl implements ProductService {
             Supplier supplier = supplierRepository.getSupplierById(idSupplier);
             if (entity != null) {
 
-                    DateTime datetime = new DateTime(entity.getDiscountStart())
-                            .withZoneRetainFields(DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
-                    Date dateStart = datetime.toDate();
-                    Date dateEnd = new DateTime(entity.getDiscountEnd())
-                            .withZoneRetainFields(DateTimeZone.UTC).withZone(DateTimeZone.getDefault()).toDate();
 
-                return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), dateStart,dateEnd,entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),new SupplierDto(supplier));
+
+                return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), entity.getDiscountStart(), entity.getDiscountEnd(), entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),new SupplierDto(supplier));
 
             }
         }
