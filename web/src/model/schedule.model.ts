@@ -1,23 +1,23 @@
-export interface ScheduleModel {
+export interface BookingModel {
   id: number,
+  booking: string,
+  schedule: ScheduleModel[]
+}
+
+export interface ScheduleModel {
   bed_name: string,
-  schedule: [
-    {
-      booking: string,
-      sale_name: string,
-      technical_name: string,
-      customer_name: string,
-      customer_phone: string,
-      services: string,
-      status: ScheduleStatus,
-      note: string,
-    }
-  ]
+  sale_name: string,
+  technical_name: string,
+  customer_name: string,
+  customer_phone: string,
+  services: string,
+  status: ScheduleStatus,
+  note: string,
 }
 
 export enum ScheduleStatus {
   Cancel,
+  Waiting,
   OnGoing,
-  IsWorking,
   Finish
 }

@@ -1,13 +1,13 @@
-import { ScheduleModel, ScheduleStatus } from "../model/schedule.model";
+import { BookingModel, ScheduleModel, ScheduleStatus } from "../model/schedule.model";
 import { slotWorkConst } from "../const/slot-work.const";
 
-export const Schedule: ScheduleModel[] = [
+export const Schedule: BookingModel[] = [
   {
     id: 1,
-    bed_name: "Bed 1",
+    booking: "slot_1",
     schedule: [
       {
-        booking: "slot_1",
+        bed_name: "Bed 1",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
         customer_name: "David Beckham",
@@ -20,48 +20,48 @@ export const Schedule: ScheduleModel[] = [
   },
   {
     id: 2,
-    bed_name: "Bed 2",
+    booking: "slot_2",
     schedule: [
       {
-        booking: "slot_2",
+        bed_name: "Bed 2",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
         customer_name: "David Beckham",
         customer_phone: "0987896541",
         services: "Chăm sóc da",
-        status: ScheduleStatus.Cancel,
+        status: ScheduleStatus.Waiting,
         note: "something",
       }
     ]
   },
   {
     id: 3,
-    bed_name: "Bed 3",
+    booking: "slot_5",
     schedule: [
       {
-        booking: "slot_5",
+        bed_name: "Bed 3",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
         customer_name: "David Beckham",
         customer_phone: "0987896541",
         services: "Chăm sóc da",
-        status: ScheduleStatus.Cancel,
+        status: ScheduleStatus.OnGoing,
         note: "something",
       }
     ]
   },
   {
     id: 4,
-    bed_name: "Bed 4",
+    booking: "slot_3",
     schedule: [
       {
-        booking: "slot_3",
+        bed_name: "Bed 4",
         sale_name: "Cong Vinh",
         technical_name: "Tan Truong",
         customer_name: "David Beckham",
         customer_phone: "0987896541",
         services: "Chăm sóc da",
-        status: ScheduleStatus.Cancel,
+        status: ScheduleStatus.Finish,
         note: "something",
       }
     ]
@@ -69,7 +69,7 @@ export const Schedule: ScheduleModel[] = [
 ]
 
 const mockSchedule = () =>
-  new Promise<ScheduleModel[]>((resolve) => setTimeout(() => resolve(Schedule), 500));
+  new Promise<BookingModel[]>((resolve) => setTimeout(() => resolve(Schedule), 500));
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>
