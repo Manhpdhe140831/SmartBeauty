@@ -70,13 +70,9 @@ public class ProductServiceImpl implements ProductService {
             Supplier supplier = supplierRepository.getSupplierById(idSupplier);
             if (entity != null) {
 
-                return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), entity.getDiscountStart(),entity.getDiscountEnd(),entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),new SupplierDto(supplier));
 
 
-
-
-
-
+                return new ProductDto(id, entity.getName(), entity.getPrice(), entity.getDescription(), entity.getImage(), entity.getDiscountStart(), entity.getDiscountEnd(), entity.getDiscountPercent(),entity.getUnit(),entity.getDose(),new SupplierDto(supplier));
 
             }
         }
@@ -121,10 +117,10 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
         dtos.stream().forEach(f->
                 {
-                    Date dateStart = new DateTime(f.getDiscountStart()).toDate();
-                    Date dateEnd = new DateTime(f.getDiscountEnd()).toDate();
-                    f.setDiscountStart(dateEnd);
-                    f.setDiscountStart(dateStart);
+                    //Date dateStart = new DateTime(f.getDiscountStart()).toDate();
+                   // Date dateEnd = new DateTime(f.getDiscountEnd()).toDate();
+                   // f.setDiscountStart(dateEnd);
+                   // f.setDiscountStart(dateStart);
                     Supplier supplier = supplierRepository.getSupplierFromProduct(f.getId());
                     f.setSupplier(new SupplierDto(supplier));
                 }
@@ -176,14 +172,14 @@ public class ProductServiceImpl implements ProductService {
 
             }
             if(discountStart!=null){
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date startDate = df.parse(discountStart);
-                product.setDiscountStart(startDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date startDate = df.parse(discountStart);
+                product.setDiscountStart(discountStart);
             }
             if(discountEnd!=null){
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date endDate = df.parse(discountEnd);
-                product.setDiscountStart(endDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date endDate = df.parse(discountEnd);
+                product.setDiscountEnd(discountEnd);
             }
             if(discountEnd!=null){
                 product.setDiscountPercent(discountPercent);
@@ -229,15 +225,15 @@ public class ProductServiceImpl implements ProductService {
 
                 }
                 if (discountStart != null) {
-                    Date startDate = new DateTime(discountStart).toDate();
+                    //Date startDate = new DateTime(discountStart).toDate();
 
-                    product.setDiscountStart(startDate);
+                    product.setDiscountStart(discountStart);
                 }
                 if (discountEnd != null) {
 //                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 //                    Date endDate = df.parse(discountEnd);
-                   Date endDate = new DateTime(discountEnd).toDate();
-                    product.setDiscountEnd(endDate);
+                   //Date endDate = new DateTime(discountEnd).toDate();
+                    product.setDiscountEnd(discountEnd);
                 }
                 if (unit != null) {
                     product.setUnit(unit);

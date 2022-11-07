@@ -24,19 +24,14 @@ import java.util.Set;
 @NoArgsConstructor
 public class CourseDto {
     private long id;
-
-
-
     private String code;
     private String name;
-    private double price;
+    private Double price;
     private int duration;
     private Integer timeOfUse;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date discountStart;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date discountEnd;
-    private double discountPercent;
+    private String discountStart;
+    private String discountEnd;
+    private Double discountPercent;
     private String image;
     private String description;
     private List<ServiceDto> service;
@@ -54,103 +49,6 @@ public class CourseDto {
         this.setImage(course.getImage());
         this.setDescription(course.getDescription());
 
-    }
-
-    public long getId() {
-        return id;
-    }
-
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public Date getDiscountStart() {
-        return discountStart;
-    }
-
-    public void setDiscountStart(Date discountBegin) {
-        this.discountStart = discountBegin;
-    }
-
-    public Date getDiscountEnd() {
-        return discountEnd;
-    }
-
-    public void setDiscountEnd(Date discountEnd) {
-        this.discountEnd = discountEnd;
-    }
-
-    public double getDiscountPercent() {
-        return discountPercent;
-    }
-
-    public void setDiscountPercent(double discountPercent) {
-        this.discountPercent = discountPercent;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getTimeOfUse() {
-        return timeOfUse;
-    }
-
-    public void setTimeOfUse(Integer timeOfUse) {
-        this.timeOfUse = timeOfUse;
-    }
-
-    public List<ServiceDto> getService() {
-        return service;
-    }
-
-    public void setService(List<ServiceDto> service) {
-        this.service = service;
     }
 
     public CourseDto(Course course, List<ServiceDto> listService){

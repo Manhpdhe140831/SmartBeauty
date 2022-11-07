@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class BillServiceImpl implements BillService {
@@ -62,6 +63,7 @@ public class BillServiceImpl implements BillService {
                     f.setStaff(userDto);
 
 
+
                 }
                 );
         List<BillDto> pageResult = new ArrayList<>(dtos);
@@ -99,18 +101,11 @@ public class BillServiceImpl implements BillService {
     public Boolean saveBill(BillDto billDto) {
        Bill bill = new Bill();
        bill.setCode(billDto.getCode());
-       bill.setBranch(billDto.getBranch().getId());
-       bill.setStaff(billDto.getStaff().getId());
        bill.setDate(billDto.getCreateDate());
        bill.setStatus(billDto.getStatus());
        bill.setMoneyPerTax(billDto.getPriceBeforeTax());
        bill.setMoneyAfterTax(billDto.getPriceAfterTax());
        Long customerId = billDto.getCustomer().getId();
-       if (customerId != null){
-           bill.setCustomer(billDto.getCustomer().getId());
-       }else{
-           bill.setCustomer(null);
-       }
        billRepository.save(bill);
        bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), billDto.getBranch().getId()));
        bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), billDto.getStaff().getId()));
@@ -124,6 +119,17 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Boolean updateBill(Long id, BillDto billDto) {
-        return null;
+        Bill bill = null;
+        Optional<Bill> optional = billRepository.findById(id);
+        if (optional.isPresent()){
+            bill = optional.get();
+        }
+        bill.setDate(billDto.getCreateDate());
+        bill.setStatus(billDto.getStatus());
+        bill.setMoneyPerTax(bill.getMoneyPerTax());
+        bill.setMoneyAfterTax(bill.getMoneyAfterTax());
+
+
+        return false;
     }
 }

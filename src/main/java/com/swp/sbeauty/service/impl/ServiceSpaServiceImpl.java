@@ -51,14 +51,14 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             Service service = new Service();
             service.setName(name);
             if (discountStart != null) {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date startDate = df.parse(discountStart);
-                service.setDiscountStart(startDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date startDate = df.parse(discountStart);
+                service.setDiscountStart(discountStart);
             }
             if(discountEnd != null){
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date endDate = df.parse(discountEnd);
-                service.setDiscountStart(endDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+               // Date endDate = df.parse(discountEnd);
+                service.setDiscountStart(discountEnd);
             }
             if(discountPercent!=null){
                 service.setDiscountPercent(discountPercent);
@@ -181,14 +181,14 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 service.setName(name);
             }
             if (discountStart != null) {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date startDate = df.parse(discountStart);
-                service.setDiscountStart(startDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date startDate = df.parse(discountStart);
+                service.setDiscountStart(discountStart);
             }
             if(discountEnd != null){
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                Date endDate = df.parse(discountEnd);
-                service.setDiscountStart(endDate);
+                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                //Date endDate = df.parse(discountEnd);
+                service.setDiscountStart(discountEnd);
             }
             if(discountPercent!=null){
                 service.setDiscountPercent(discountPercent);

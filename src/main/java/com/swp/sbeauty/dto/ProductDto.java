@@ -20,10 +20,8 @@ public class ProductDto {
     private Double price;
     private String description;
     private String image;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date discountStart;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date discountEnd;
+    private String discountStart;
+    private String discountEnd;
     private Double discountPercent;
     private Long supplierId;
     private String unit;
@@ -54,7 +52,7 @@ public class ProductDto {
 
     }
 
-    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, Long supplierId) {
+    public ProductDto(Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose, Long supplierId) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -68,7 +66,7 @@ public class ProductDto {
         this.supplierId = supplierId;
     }
 
-    public ProductDto(Long id, String name, Double price, String description, String image, Date discountStart, Date discountEnd, Double discountPercent, String unit, Integer dose, SupplierDto supplier) {
+    public ProductDto(Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose, SupplierDto supplier) {
         this.id = id;
         this.name = name;
         this.price = price;

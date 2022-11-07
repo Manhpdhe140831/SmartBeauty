@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,11 +19,12 @@ public class BillDto {
     private UserDto staff;
     private CustomerDto customer;
     private String status;
-    private Date createDate;
+    private String createDate;
     private Double priceBeforeTax;
     private Double priceAfterTax;
+    private List<BillDetailDto> items;
 
-    public BillDto(Long id, String code,BranchDto branch, UserDto staff, CustomerDto customer, String status, Date createDate, Double priceBeforeTax, Double privateAfterTax) {
+    public BillDto(Long id, String code,BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double privateAfterTax) {
         this.id = id;
         this.code = code;
         this.branch = branch;

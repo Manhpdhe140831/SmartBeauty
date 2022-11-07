@@ -27,8 +27,8 @@ import java.util.Set;
 public class ServiceDto {
     private long id;
     private String name;
-    private Date discountStart;
-    private Date discountEnd;
+    private String discountStart;
+    private String discountEnd;
     private Double discountPercent;
     private double price;
     private String description;
@@ -38,7 +38,7 @@ public class ServiceDto {
     private List<Service_Product_MappingDto> products;
 
 
-    public ServiceDto(Long id, String name, Date discountStart, Date discountEnd, Double discountPercent, Double price, String description, Long duration, String image, List<Service_Product_MappingDto> products) {
+    public ServiceDto(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image, List<Service_Product_MappingDto> products) {
         this.id = id;
         this.name = name;
         this.discountStart = discountStart;

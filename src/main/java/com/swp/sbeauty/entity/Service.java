@@ -20,8 +20,8 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private Date discountStart;
-    private Date discountEnd;
+    private String discountStart;
+    private String discountEnd;
     private Double discountPercent;
     private double price;
     private String description;

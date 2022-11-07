@@ -64,9 +64,9 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setPhone(phone);
             customer.setEmail(email);
             customer.setGender(gender);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            Date dob = df.parse(dateOfBirth);
-            customer.setDateOfBirth(dob);
+            //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            //Date dob = df.parse(dateOfBirth);
+            customer.setDateOfBirth(dateOfBirth);
             customer.setAddress(address);
             customerRepository.save(customer);
             return true;
@@ -94,9 +94,9 @@ public class CustomerServiceImpl implements CustomerService {
                     customer.setGender(gender);
                 }
                 if (dateOfBirth != null) {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    Date dob = df.parse(dateOfBirth);
-                    customer.setDateOfBirth(dob);
+                    //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    //Date dob = df.parse(dateOfBirth);
+                    customer.setDateOfBirth(dateOfBirth);
                 }
                 if(address != null){
                     customer.setAddress(address);
