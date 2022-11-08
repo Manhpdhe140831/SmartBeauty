@@ -5,23 +5,23 @@ import {
 } from "../interfaces/api.interface";
 import axios, { AxiosError } from "axios";
 import {
-  ServiceCreateEntity,
-  ServiceModel,
-  ServiceUpdateEntity,
-} from "../model/service.model";
-import {
   jsonToFormData,
-  StringifyParseStrategy,
+  SimpleArrayParseStrategy,
 } from "../utilities/form-data.helper";
+import {
+  CourseCreateEntity,
+  CourseModel,
+  CourseUpdateEntity,
+} from "../model/course.model";
 
-export async function getListSpaServices(
+export async function getListSpaCourses(
   page = 1,
   pageSize = 10,
   searchParams?: SearchParamUrl
 ) {
   try {
-    const apiResult = await axios.get<PaginatedResponse<ServiceModel>>(
-      "/service",
+    const apiResult = await axios.get<PaginatedResponse<CourseModel>>(
+      "/course",
       {
         params: {
           page,
@@ -39,27 +39,13 @@ export async function getListSpaServices(
   }
 }
 
-export async function getDetailSpaService(id: number) {
-  try {
-    const apiResult = await axios.get<ServiceModel>("/service/getById", {
-      params: {
-        id,
-      },
-    });
-
-    return apiResult.data;
-  } catch (e) {
-    const error = e as AxiosError<IErrorResponse>;
-    console.error(error);
-    throw error.response?.data;
-  }
-}
-
-export async function createSpaService(data: ServiceCreateEntity) {
+export async function createSpaCourse(data: CourseCreateEntity) {
   try {
     const apiResult = await axios.post<boolean>(
-      "/service/create",
-      jsonToFormData(data, new FormData(), { strategy: StringifyParseStrategy })
+      "/course/create",
+      jsonToFormData(data, new FormData(), {
+        strategy: SimpleArrayParseStrategy,
+      })
     );
 
     return apiResult.data;
@@ -70,11 +56,13 @@ export async function createSpaService(data: ServiceCreateEntity) {
   }
 }
 
-export async function updateSpaService(data: ServiceUpdateEntity) {
+export async function updateSpaCourse(data: CourseUpdateEntity) {
   try {
     const apiResult = await axios.put<boolean>(
-      "/service/update",
-      jsonToFormData(data, new FormData(), { strategy: StringifyParseStrategy })
+      "/course/update",
+      jsonToFormData(data, new FormData(), {
+        strategy: SimpleArrayParseStrategy,
+      })
     );
 
     return apiResult.data;

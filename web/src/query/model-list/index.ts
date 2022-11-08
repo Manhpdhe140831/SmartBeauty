@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { CourseModel } from "../../model/course.model";
-import mockCourse from "../../mock/course";
 import usePaginationHook from "../../hooks/pagination.hook";
 import { PaginatedResponse } from "../../interfaces/api.interface";
 import { BranchModel } from "../../model/branch.model";
@@ -17,6 +16,7 @@ import { ProductModel } from "../../model/product.model";
 import { getListProduct } from "../../services/product.service";
 import { ServiceModel } from "../../model/service.model";
 import { getListSpaServices } from "../../services/spa-service.service";
+import { getListSpaCourses } from "../../services/spa-course.service";
 
 type fnUpdatePagination = ReturnType<typeof usePaginationHook>["update"];
 
@@ -26,15 +26,7 @@ export const useListCourseQuery = (
 ) =>
   useQuery<PaginatedResponse<CourseModel>>(
     ["list-course", currentPage],
-    async () => {
-      const courses = await mockCourse();
-      return {
-        data: courses,
-        pageIndex: 1,
-        totalPage: 1,
-        totalElement: courses.length,
-      };
-    },
+    () => getListSpaCourses(currentPage),
     {
       onSuccess: (d) => updatePagination({ total: d.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),

@@ -148,7 +148,7 @@ const CourseDetailDialog: FC<
 
               <div className="flex flex-1 flex-col">
                 <label
-                  htmlFor="expireIn"
+                  htmlFor="duration"
                   className="text-[14px] font-[500] text-gray-900"
                 >
                   Course Duration <span className="text-red-500">*</span>
@@ -157,7 +157,7 @@ const CourseDetailDialog: FC<
                   treatment process in days
                 </small>
                 <Controller
-                  name={"expireIn"}
+                  name={"duration"}
                   control={control}
                   render={({ field }) => (
                     <div
@@ -187,7 +187,7 @@ const CourseDetailDialog: FC<
                     </div>
                   )}
                 ></Controller>
-                <FormErrorMessage errors={errors} name={"expireIn"} />
+                <FormErrorMessage errors={errors} name={"duration"} />
               </div>
             </div>
 

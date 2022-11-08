@@ -1,9 +1,15 @@
+type parserStrategyFn = (
+  data: object,
+  formData: FormData,
+  fieldName: string
+) => void | Promise<void>;
+
 export function jsonToFormData<T extends object>(
   rawJSON: T,
   formData: FormData = new FormData(),
   opts?: {
     // simple strategy will simply `.toString()` or `JSON.stringify()` the object.
-    strategy?: ((data: object) => string) | "simple";
+    strategy?: parserStrategyFn | "simple";
   }
 ) {
   for (const field of Object.keys(rawJSON)) {
@@ -17,9 +23,9 @@ export function jsonToFormData<T extends object>(
     }
     const valueField = rawJSON[formKey];
     const strategy = opts?.strategy ?? "simple";
-    let fn: (data: object) => string;
+    let fn: parserStrategyFn;
     if (strategy === "simple") {
-      fn = (data) => (data.toString ? data.toString() : JSON.stringify(data));
+      fn = SimpleParseStrategy;
     } else {
       fn = strategy;
     }
@@ -32,8 +38,7 @@ export function jsonToFormData<T extends object>(
         formData.append(field, valueField.toISOString());
         continue;
       }
-      const valParsed = fn(valueField as object);
-      formData.append(field, valParsed);
+      fn(valueField as object, formData, field);
       continue;
     }
     formData.append(
@@ -43,10 +48,6 @@ export function jsonToFormData<T extends object>(
   }
 
   return formData;
-}
-
-export function StringifyStrategy(data: object) {
-  return JSON.stringify(data);
 }
 
 // Map RHF's dirtyFields over the `data` received by `handleSubmit` and return the changed subset of that data.
@@ -94,3 +95,47 @@ export function DialogSubmit<
     }
   };
 }
+
+/**
+ * Form data parsing complex object type strategy.
+ * This strategy will try to trigger either `.toString()` or `JSON.stringify` of the object.
+ */
+export const SimpleParseStrategy: parserStrategyFn = (
+  data: object,
+  formData,
+  parentName
+) =>
+  formData.append(
+    parentName,
+    data.toString ? data.toString() : JSON.stringify(data)
+  );
+
+/**
+ * Form data parsing complex object type strategy.
+ * This strategy will try to stringify the data with `JSON.stringify`.
+ */
+export const StringifyParseStrategy: parserStrategyFn = (
+  data: object,
+  formData,
+  parentName
+) => {
+  return formData.append(parentName, JSON.stringify(data));
+};
+
+/**
+ * Form data parsing complex object type strategy.
+ * This strategy will create an array field and stringify all values in that array.
+ */
+export const SimpleArrayParseStrategy: parserStrategyFn = (
+  data: object,
+  formData,
+  parentName
+) => {
+  if (!Array.isArray(data)) {
+    return StringifyParseStrategy(data, formData, parentName);
+  }
+  const name = `${parentName}[]`;
+  return data.forEach((k) => {
+    StringifyParseStrategy(k, formData, name);
+  });
+};

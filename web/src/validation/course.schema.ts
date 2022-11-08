@@ -14,14 +14,15 @@ const BaseCourseModelSchema = z
     name: nameSchema,
     description: descriptionSchema,
     timeOfUse: z.number().min(1),
-    expireIn: z.number().min(1),
+    duration: z.number().min(1),
     services: idDbSchema.array().min(1),
   })
   .extend(saleSchema.shape);
 export default BaseCourseModelSchema;
 
 export function getCourseModelSchema(mode: "view" | "create") {
-  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
+  const idSchema =
+    mode === "create" ? idDbSchema.optional().nullable() : idDbSchema;
   const imageSchema =
     mode === "create"
       ? fileUploadSchema.and(imageTypeSchema).nullable().optional()
