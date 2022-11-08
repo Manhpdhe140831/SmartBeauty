@@ -22,6 +22,7 @@ public class BillDto {
     private String createDate;
     private Double priceBeforeTax;
     private Double priceAfterTax;
+
     private List<BillDetailDto> items;
 
     public BillDto(Long id, String code,BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double privateAfterTax) {
@@ -44,4 +45,16 @@ public class BillDto {
         this.setPriceAfterTax(bill.getMoneyAfterTax());
     }
 
+    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax, List<BillDetailDto> items) {
+        this.id = id;
+        this.code = code;
+        this.branch = branch;
+        this.staff = staff;
+        this.customer = customer;
+        this.status = status;
+        this.createDate = createDate;
+        this.priceBeforeTax = priceBeforeTax;
+        this.priceAfterTax = priceAfterTax;
+        this.items = items;
+    }
 }

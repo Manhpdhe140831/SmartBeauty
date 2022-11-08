@@ -14,7 +14,6 @@ public class BillDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long bill_id;
     private long course_id;
     private long service_id;
     private long product_id;

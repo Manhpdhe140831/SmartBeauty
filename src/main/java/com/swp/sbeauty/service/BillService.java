@@ -14,7 +14,7 @@ public interface BillService {
 
     public BillDto getBillById(Long id);
 
-    public Boolean saveBill(BillDto billDto);
+    public Boolean saveBill(BillDto billDto, String authHeader);
 
     public Boolean updateBill(Long id, BillDto billDto);
 
