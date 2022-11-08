@@ -11,7 +11,7 @@ const ServiceHeaderTable = () => {
         <tr>
           <th>No.</th>
           <th>Name</th>
-          <th>Price</th>
+          <th className={"!text-center"}>Price</th>
           <th>Description</th>
         </tr>
       </thead>

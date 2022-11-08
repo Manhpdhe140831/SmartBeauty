@@ -37,7 +37,7 @@ const ProductModelSchema = refineSaleSchema(
 
 export const ProductInServiceModelSchema = z.object({
   usage: z.number().min(1),
-  product: idDbSchema,
+  productId: idDbSchema,
 });
 
 export default ProductModelSchema;

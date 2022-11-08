@@ -41,6 +41,10 @@ const AdminServiceDetailDialog: FC<
                   ? dayjs(data.discountEnd).toDate()
                   : null,
                 discountPercent: data.discountPercent ?? null,
+                products: data.products.map((p) => ({
+                  productId: p.product.id,
+                  usage: p.usage,
+                })),
               }
             : undefined
         }

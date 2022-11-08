@@ -2,7 +2,8 @@ export function jsonToFormData<T extends object>(
   rawJSON: T,
   formData: FormData = new FormData(),
   opts?: {
-    whenFormArray?: typeof onItemInArray;
+    // simple strategy will simply `.toString()` or `JSON.stringify()` the object.
+    strategy?: ((data: object) => string) | "simple";
   }
 ) {
   for (const field of Object.keys(rawJSON)) {
@@ -15,6 +16,13 @@ export function jsonToFormData<T extends object>(
       continue;
     }
     const valueField = rawJSON[formKey];
+    const strategy = opts?.strategy ?? "simple";
+    let fn: (data: object) => string;
+    if (strategy === "simple") {
+      fn = (data) => (data.toString ? data.toString() : JSON.stringify(data));
+    } else {
+      fn = strategy;
+    }
 
     if (typeof valueField === "object") {
       if (valueField instanceof File) {
@@ -23,13 +31,10 @@ export function jsonToFormData<T extends object>(
       } else if (valueField instanceof Date) {
         formData.append(field, valueField.toISOString());
         continue;
-      } else if (Array.isArray(valueField)) {
-        const fnParser = opts?.whenFormArray || onItemInArray;
-        valueField.forEach((item, index) => {
-          formData.append(`${field}[${index}]`, fnParser(item));
-        });
-        continue;
       }
+      const valParsed = fn(valueField as object);
+      formData.append(field, valParsed);
+      continue;
     }
     formData.append(
       field,
@@ -40,12 +45,8 @@ export function jsonToFormData<T extends object>(
   return formData;
 }
 
-function onItemInArray(item: unknown) {
-  if (typeof item === "string") {
-    return item;
-  }
-
-  return JSON.stringify(item);
+export function StringifyStrategy(data: object) {
+  return JSON.stringify(data);
 }
 
 // Map RHF's dirtyFields over the `data` received by `handleSubmit` and return the changed subset of that data.

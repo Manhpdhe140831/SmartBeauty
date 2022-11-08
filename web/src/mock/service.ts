@@ -1,5 +1,6 @@
 import { ServiceModel } from "../model/service.model";
 import { shuffleArray } from "../utilities/fn.helper";
+import { Supplier } from "./supplier";
 
 const services: ServiceModel[] = [
   {
@@ -88,7 +89,19 @@ const services: ServiceModel[] = [
     discountEnd: "2022-02-02T01:13:03Z",
     products: [
       {
-        product: 1, // id product
+        product: {
+          id: 1,
+          name: "Triclosan",
+          price: 61170,
+          description: "Other diagnostic procedures on ureter",
+          image: "http://dummyimage.com/170x204.png/ff4444/ffffff",
+          discountStart: "2022-09-02T19:40:42Z",
+          discountEnd: "2022-07-22T02:24:11Z",
+          discountPercent: 73.3,
+          supplier: Supplier[0]!.id,
+          unit: "gram",
+          dose: 12,
+        }, // id product
         usage: 200,
       },
     ],

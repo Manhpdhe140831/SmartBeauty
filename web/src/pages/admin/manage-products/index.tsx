@@ -43,7 +43,7 @@ const Index: AppPageInterface = () => {
     boolean,
     IErrorResponse,
     ProductCreateEntity
-  >(["create-product"], (data: ProductCreateEntity) => createProduct(data), {
+  >((data: ProductCreateEntity) => createProduct(data), {
     onSuccess: () => {
       showNotification({
         title: "Success!",
