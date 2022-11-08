@@ -23,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CourseController {
     @Autowired
     private CourseService service;
