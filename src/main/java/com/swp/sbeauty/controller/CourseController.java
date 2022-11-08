@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CourseController {
     @Autowired
