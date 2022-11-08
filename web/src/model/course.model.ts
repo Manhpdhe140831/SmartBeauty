@@ -8,7 +8,7 @@ export interface CourseModel<serviceType extends number | ServiceModel = number>
   // the amount of time to use the course per purchase.
   timeOfUse: number;
   // expire in number of days.
-  expireIn: number;
+  duration: number;
   image?: string;
   description: string;
 
@@ -22,8 +22,8 @@ export interface CourseCreateEntity<
     "id" | "image" | "discountStart" | "discountEnd"
   > {
   image?: File;
-  discountStart: Date | null;
-  discountEnd: Date | null;
+  discountStart?: Date | null;
+  discountEnd?: Date | null;
 }
 
 export interface CourseUpdateEntity<
@@ -33,6 +33,6 @@ export interface CourseUpdateEntity<
     "image" | "discountStart" | "discountEnd"
   > {
   image?: File | string;
-  discountStart: Date | null;
-  discountEnd: Date | null;
+  discountStart?: Date | null;
+  discountEnd?: Date | null;
 }

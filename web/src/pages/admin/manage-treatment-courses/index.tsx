@@ -7,27 +7,86 @@ import {
   CourseUpdateEntity,
 } from "../../../model/course.model";
 import { Button, Divider, Pagination, Table } from "@mantine/core";
-import { IconPlus } from "@tabler/icons";
+import { IconCheck, IconPlus, IconX } from "@tabler/icons";
 import CourseHeaderTable from "./_partial/course-header.table";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import CourseRowTable from "./_partial/course-row.table";
 import CourseDetailDialog from "./_course-detail.dialog";
 import { useListCourseQuery } from "../../../query/model-list";
+import { useMutation } from "@tanstack/react-query";
+import { IErrorResponse } from "../../../interfaces/api.interface";
+import {
+  createSpaCourse,
+  updateSpaCourse,
+} from "../../../services/spa-course.service";
+import { showNotification } from "@mantine/notifications";
 
 const Index: AppPageInterface = () => {
+  const { modal, openModal, resetModal } = useDialogDetailRow<CourseModel>();
   const {
     pageSize,
     currentPage,
     totalRecord,
     update: updatePagination,
   } = usePaginationHook();
-  const { modal, openModal, resetModal } = useDialogDetailRow<CourseModel>();
 
   const {
     data: course,
     isLoading,
     refetch,
   } = useListCourseQuery(currentPage, updatePagination);
+
+  const updateMutation = useMutation<
+    boolean,
+    IErrorResponse,
+    CourseUpdateEntity
+  >((d) => updateSpaCourse(d), {
+    onSuccess: () => {
+      showNotification({
+        title: "Success!",
+        message: "You have updated the Course!",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+      resetModal();
+      refetch();
+    },
+    onError: (e) => {
+      console.error(e);
+      showNotification({
+        title: "Failed!",
+        message: "Cannot update the Course. Please try again!",
+        color: "red",
+        icon: <IconX />,
+      });
+    },
+  });
+
+  const createMutation = useMutation<
+    boolean,
+    IErrorResponse,
+    CourseCreateEntity
+  >((data: CourseCreateEntity) => createSpaCourse(data), {
+    onSuccess: () => {
+      showNotification({
+        title: "Success!",
+        message: "You have created a new Course!",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+      resetModal();
+      refetch();
+    },
+    onError: (e) => {
+      console.error(e);
+      showNotification({
+        title: "Failed!",
+        message: "Cannot create new Course. Please try again!",
+        color: "red",
+        icon: <IconX />,
+      });
+    },
+  });
 
   return (
     <div className={"flex h-full flex-col space-y-4 p-4"}>
@@ -72,11 +131,15 @@ const Index: AppPageInterface = () => {
             mode={modal.mode as never} // silent the TS-error
             data={modal.data}
             opened={!!modal}
-            onClosed={(update?: CourseCreateEntity | CourseUpdateEntity) => {
-              if (update) {
-                console.log(update);
-                // TODO update
-                refetch();
+            onClosed={async (u?: CourseCreateEntity | CourseUpdateEntity) => {
+              if (u) {
+                if (modal.mode === "create") {
+                  await createMutation.mutateAsync(u as CourseCreateEntity);
+                  return;
+                } else {
+                  await updateMutation.mutateAsync(u as CourseUpdateEntity);
+                  return;
+                }
               }
               resetModal();
             }}

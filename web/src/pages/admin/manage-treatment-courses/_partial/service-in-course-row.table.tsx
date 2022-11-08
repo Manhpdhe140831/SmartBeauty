@@ -5,8 +5,11 @@ import { ServiceModel } from "../../../../model/service.model";
 import { formatPrice, rawToAutoItem } from "../../../../utilities/fn.helper";
 import DatabaseSearchSelect from "../../../../components/database-search.select";
 import { useQuery } from "@tanstack/react-query";
-import mockService from "../../../../mock/service";
 import { formatTime } from "../../../../utilities/time.helper";
+import {
+  getDetailSpaService,
+  getListSpaServices,
+} from "../../../../services/spa-service.service";
 
 type rowProps = {
   no: number;
@@ -30,30 +33,21 @@ const ServiceInCourseRowTable = ({
   });
 
   const { data: viewingService, isLoading: viewLoading } =
-    useQuery<ServiceModel | null>(
-      ["available-service", serviceId],
-      async () => {
-        if (serviceId === undefined || serviceId === null) {
-          return null;
-        }
-        const p = await mockService();
-        const f = p.find((p) => p.id === serviceId);
-        return f ?? null;
-      }
+    useQuery<ServiceModel | null>(["available-service", serviceId], () =>
+      serviceId ? getDetailSpaService(serviceId) : null
     );
 
-  // TODO transfer to service.
   async function searchService(
     serviceName: string,
     disableList: number[]
   ): Promise<AutoCompleteItemProp<ServiceModel>[]> {
-    const listProduct = await mockService();
-    return listProduct
-      .filter((p) => p.name.includes(serviceName))
-      .map((i) => ({
-        ...rawToAutoItem(i, fnHelper),
-        disabled: disableList.includes(i.id),
-      }));
+    const paginateProducts = await getListSpaServices(1, 50, {
+      name: serviceName,
+    });
+    return paginateProducts.data.map((i) => ({
+      ...rawToAutoItem(i, fnHelper),
+      disabled: disableList.includes(i.id),
+    }));
   }
 
   return (
