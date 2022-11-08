@@ -16,7 +16,6 @@ import mockBill from "../../mock/bill";
 import { ProductModel } from "../../model/product.model";
 import { getListProduct } from "../../services/product.service";
 import { ServiceModel } from "../../model/service.model";
-import mockService from "../../mock/service";
 import { getListSpaServices } from "../../services/spa-service.service";
 
 type fnUpdatePagination = ReturnType<typeof usePaginationHook>["update"];
