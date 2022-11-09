@@ -9,4 +9,7 @@ public interface Bill_Branch_Mapping_Repository extends JpaRepository<Bill_Branc
 
     @Query("SELECT b from Branch b join Bill_Branch_Mapping bbm on bbm.branch_id = b.id where bbm.bill_id =?1")
     public Branch getBranchByBill(Long id);
+
+    @Query(value = "select bbm from Bill_Branch_Mapping bbm where bbm.bill_id =?1")
+    Bill_Branch_Mapping getByBillId(Long id);
 }

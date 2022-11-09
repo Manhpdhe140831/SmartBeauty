@@ -9,4 +9,7 @@ public interface Bill_Cusomter_Mapping_Repositry extends JpaRepository<Bill_Cust
 
     @Query(value = "select c from Customer c join Bill_Customer_Mapping bcm on bcm.customer_id = c.id where bcm.bill_id =?1")
     public Customer getCustomerByBill(Long id);
+
+    @Query(value = "SELECT bcm from Bill_Customer_Mapping bcm where bcm.bill_id =?1")
+    public Bill_Customer_Mapping getByBillId(Long id);
 }

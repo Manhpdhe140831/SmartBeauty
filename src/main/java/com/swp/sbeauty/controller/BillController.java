@@ -37,4 +37,12 @@ public class BillController {
         Boolean result = billService.saveBill(billDto, authHeader);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @PostMapping("/bill/update")
+    public ResponseEntity<?> update(@RequestParam("id") Long id,
+            @RequestBody BillDto billDto,
+                                  @RequestHeader("Authorization") String authHeader                    ){
+        Boolean result = billService.updateBill(id, billDto, authHeader);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

@@ -164,18 +164,80 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Boolean updateBill(Long id, BillDto billDto) {
+    public Boolean updateBill(Long id, BillDto billDto, String authHeader) {
         Bill bill = null;
         Optional<Bill> optional = billRepository.findById(id);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             bill = optional.get();
         }
+// xoa bill_billdetail_mapping
+        Bill_BillDetail_Mapping bill_billDetail_mapping = bill_billDetail_mapping_repository.getByBillId(id);
+        if (null != bill_billDetail_mapping) {
+            bill_billDetail_mapping_repository.delete(bill_billDetail_mapping);
+        }
+
+        // xoa bill customer mapping
+        Bill_Customer_Mapping bill_customer_mapping = bill_cusomter_mapping_repositry.getByBillId(id);
+        if (null != bill_customer_mapping){
+            bill_cusomter_mapping_repositry.delete(bill_customer_mapping);
+    }
+       // xoa bill user mapping
+       Bill_User_Mapping bill_user_mapping = bill_user_mapping_repository.getByBillId(id);
+       if (null != bill_user_mapping){
+           bill_user_mapping_repository.delete(bill_user_mapping);
+       }
+       // xoa bill branch mapping
+       Bill_Branch_Mapping bill_branch_mapping = bill_branch_mapping_repository.getByBillId(id);
+        // xoa bill detail by billid
+       if (null != bill_branch_mapping){
+           bill_branch_mapping_repository.delete(bill_branch_mapping);
+       }
+        List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
+        for (BillDetail itemb: billDetailList
+        ) {
+            billDetailRepository.delete(itemb);
+        }
+
+
         bill.setDate(billDto.getCreateDate());
         bill.setStatus(billDto.getStatus());
-        bill.setMoneyPerTax(bill.getMoneyPerTax());
-        bill.setMoneyAfterTax(bill.getMoneyAfterTax());
+        bill.setMoneyPerTax(billDto.getPriceBeforeTax());
+        bill.setMoneyAfterTax(billDto.getPriceAfterTax());
+        bill = billRepository.save(bill);
+        List<BillDetailDto> billDetailDtos = billDto.getItems();
+        for (BillDetailDto billDetailDto: billDetailDtos) {
+            if (billDetailDto.getType().equalsIgnoreCase("product")){
+                BillDetail billDetail = new BillDetail();
+                billDetail.setProduct_id(billDetailDto.getType_id());
+                billDetail.setQuantity(billDetailDto.getQuantity());
+                billDetail = billDetailRepository.save(billDetail);
+                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+            }if (billDetailDto.getType().equalsIgnoreCase("service")){
+                BillDetail billDetail = new BillDetail();
+                billDetail.setService_id(billDetailDto.getType_id());
+                billDetail.setQuantity(billDetailDto.getQuantity());
+                billDetailRepository.save(billDetail);
+                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+            }if (billDetailDto.getType().equalsIgnoreCase("course")){
+                BillDetail billDetail = new BillDetail();
+                billDetail.setCourse_id(billDetailDto.getType_id());
+                billDetail.setQuantity(billDetailDto.getQuantity());
+                billDetailRepository.save(billDetail);
+                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+            }
+        }
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        Long idStaff = Long.parseLong(temp.get("id").toString());
+        Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
+        bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
+        bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
+        bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
 
+        if (bill != null){
+            return true;
+        }else {
+            return false;
+        }
 
-        return false;
     }
 }
