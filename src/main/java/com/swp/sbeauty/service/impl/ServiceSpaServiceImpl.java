@@ -58,7 +58,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             if(discountEnd != null){
                 //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                // Date endDate = df.parse(discountEnd);
-                service.setDiscountStart(discountEnd);
+                service.setDiscountEnd(discountEnd);
             }
             if(discountPercent!=null){
                 service.setDiscountPercent(discountPercent);
@@ -188,7 +188,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             if(discountEnd != null){
                 //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 //Date endDate = df.parse(discountEnd);
-                service.setDiscountStart(discountEnd);
+                service.setDiscountEnd(discountEnd);
             }
             if(discountPercent!=null){
                 service.setDiscountPercent(discountPercent);
