@@ -13,6 +13,7 @@ export interface BillModel {
   staff: number;
   status: string;
   createdDate: string;
+  approvedDate: string;
   priceBeforeTax: number;
   priceAfterTax: number;
   items: BillItems[];

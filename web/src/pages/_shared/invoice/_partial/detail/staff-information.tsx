@@ -11,7 +11,7 @@ const StaffInformation: FC<InformationProps> = ({ data }) => {
   const clipboard = useClipboard({ timeout: 500 });
 
   return (
-    <div className="rounded bg-white p-4 shadow">
+    <div className="rounded-lg bg-white p-4 shadow">
       <div className="flex items-center space-x-2">
         <Image
           width={50}
