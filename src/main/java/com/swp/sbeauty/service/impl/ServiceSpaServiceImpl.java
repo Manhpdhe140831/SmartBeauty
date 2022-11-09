@@ -206,15 +206,17 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 service.setImage(image);
             }
             serviceRepository.save(service);
-            List<Service_Product_mapping> listMapping = service_product_mapping_repository.getMappingByServiceId(id);
-            for(Service_Product_mapping mapping : listMapping){
-                service_product_mapping_repository.deleteById(mapping.getId());
-            }
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-            List<Service_Product_MappingDto> mappingDto = mapper.readValue(products, new TypeReference<List<Service_Product_MappingDto>>() {});
-            for(Service_Product_MappingDto mapping : mappingDto){
-                service_product_mapping_repository.save(new Service_Product_mapping(id, mapping.getProductId(), mapping.getUsage()));
+            if(products!=null){
+                List<Service_Product_mapping> listMapping = service_product_mapping_repository.getMappingByServiceId(id);
+                for(Service_Product_mapping mapping : listMapping){
+                    service_product_mapping_repository.deleteById(mapping.getId());
+                }
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+                List<Service_Product_MappingDto> mappingDto = mapper.readValue(products, new TypeReference<List<Service_Product_MappingDto>>() {});
+                for(Service_Product_MappingDto mapping : mappingDto){
+                    service_product_mapping_repository.save(new Service_Product_mapping(id, mapping.getProductId(), mapping.getUsage()));
+                }
             }
         } catch (Exception e){
             e.printStackTrace();
