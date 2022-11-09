@@ -153,12 +153,13 @@ public class UserController {
     }
 
     @GetMapping("/user/getStaffFree")
-    private ResponseEntity<?> getStaffFree(@RequestHeader("Authorization") String authHeader){
+    private ResponseEntity<?> getStaffFree(@RequestHeader("Authorization") String authHeader,
+                                           @RequestParam(value = "date") String date){
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
             Long idCheck = Long.parseLong(id);
-            List<UserDto> list = userService.getStaffFree(idCheck);
+            List<UserDto> list = userService.getStaffFree(idCheck, date);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, "Not logged in"), HttpStatus.BAD_REQUEST);

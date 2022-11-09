@@ -21,11 +21,13 @@ public class User_Slot_Mapping {
     private Long id;
     private Long id_user;
     private Long id_slot;
+    private String date;
 
     public User_Slot_Mapping(){}
 
-    public User_Slot_Mapping(Long id_user, Long id_slot){
+    public User_Slot_Mapping(Long id_user, Long id_slot, String date){
         this.id_user = id_user;
         this.id_slot = id_slot;
+        this.date = date;
     }
 }

@@ -32,5 +32,5 @@ public interface UserService {
 
     Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address);
 
-    List<UserDto> getStaffFree(Long idCheck);
+    List<UserDto> getStaffFree(Long idCheck, String date);
 }

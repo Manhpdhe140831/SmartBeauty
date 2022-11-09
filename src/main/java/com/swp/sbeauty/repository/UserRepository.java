@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     @Query(value = "select a.* from users a, user_branch_mapping b, user_role c where a.id = b.id_user and a.id = c.user_id and c.role_id=2 and b.id_branch = ?1", nativeQuery = true)
     Users getManagerFromBranch(Long id);
 
-    @Query(value = "select a.* from users a, user_role c, user_branch_mapping b where a.id = c.user_id and c.role_id=4 and a.id = b.id_user and b.id_branch=?1 and not exists \n" +
+    @Query(value = "select a.* from users a, user_role c, user_branch_mapping b where a.id = c.user_id and c.role_id=4 and a.id = b.id_user and b.id_branch=?1 and b.date =?2 and not exists \n" +
             "(select 1 from user_slot_mapping d where a.id = d.id_user)", nativeQuery = true)
-    List<Users> getStaffFree(Long id_branch);
+    List<Users> getStaffFree(Long id_branch, String date);
 }

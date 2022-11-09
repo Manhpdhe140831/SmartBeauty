@@ -192,10 +192,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getStaffFree(Long idCheck) {
+    public List<UserDto> getStaffFree(Long idCheck, String date) {
         if(idCheck!=null){
             Long idBranch = user_branch_mapping_repo.idBranch(idCheck);
-            List<Users> list = userRepository.getStaffFree(idBranch);
+            List<Users> list = userRepository.getStaffFree(idBranch, date);
             List<UserDto> listDto = new ArrayList<>();
             if(list!=null){
                 for(Users user : list){
