@@ -196,8 +196,9 @@ public class UserServiceImpl implements UserService {
         if(idCheck==null || date == null || slot == null){
             return null;
         } else {
-            List<Users> allUsers = userRepository.getAllTechStaff();
+
             Long idBranch = user_branch_mapping_repo.idBranch(idCheck);
+            List<Users> allUsers = userRepository.getAllTechStaff(idBranch);
             List<Users> listDup = userRepository.getStaffFree(idBranch, date, slot);
             List<Users> listResult = new ArrayList<>();
             for(Users users : allUsers){

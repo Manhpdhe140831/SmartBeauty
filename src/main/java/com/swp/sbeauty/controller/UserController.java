@@ -163,8 +163,9 @@ public class UserController {
             List<UserDto> list = userService.getStaffFree(idCheck, date, slot);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ResponseDto<>(400, "Not logged in"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
     }
+
 
 }

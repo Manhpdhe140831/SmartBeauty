@@ -157,4 +157,39 @@ public class SpaBedServiceImpl implements SpaBedService {
             return false;
         }
     }
+
+    @Override
+    public List<SpaBedDto> getBedFree(Long idCheck, String date, Long slot) {
+        if(idCheck==null || date == null || slot == null){
+            return null;
+        } else {
+
+            Long idBranch = spaBed_branch_repository.idBranch(idCheck);
+            List<SpaBed> allBeds = spaBedRepository.getAllBed(idBranch);
+            List<SpaBed> listDup = spaBedRepository.getBedFree(idBranch, date, slot);
+            List<SpaBed> listResult = new ArrayList<>();
+            for(SpaBed spaBeds : allBeds){
+                if(listDup!=null){
+                    Boolean check = false;
+                    for(SpaBed spaBed: listDup){
+                        if(spaBeds.getId() == spaBed.getId()){
+                            check = true;
+                        }
+                    }
+                    if(check == false){
+                        listResult.add(spaBeds);
+                    }
+                } else{
+                    listResult.add(spaBeds);
+                }
+            }
+            List<SpaBedDto> listDto = new ArrayList<>();
+            if(listResult!=null){
+                for(SpaBed spaBed : listResult){
+                    listDto.add(new SpaBedDto(spaBed));
+                }
+            }
+            return listDto;
+        }
+    }
 }

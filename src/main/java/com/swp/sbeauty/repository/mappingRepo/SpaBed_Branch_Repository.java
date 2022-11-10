@@ -12,4 +12,7 @@ public interface SpaBed_Branch_Repository extends JpaRepository<Bed_Branch_Mappi
 
     @Query(value = "select * from bed_branch_mapping as a where a.id_spa_bed = ?1", nativeQuery = true)
     Bed_Branch_Mapping getSpaBedByBranch(Long id);
+
+    @Query(value = "select a.id_branch from user_branch_mapping as a where a.id_user = ?1", nativeQuery = true)
+    Long idBranch(Long idStaff);
 }
