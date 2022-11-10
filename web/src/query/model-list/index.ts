@@ -10,7 +10,7 @@ import { USER_ROLE } from "../../const/user-role.const";
 import { UserModel } from "../../model/user.model";
 import { SupplierModel } from "../../model/supplier.model";
 import { getListSupplier } from "../../services/supplier.service";
-import { BillModel } from "../../model/bill.model";
+import { InvoiceModel } from "../../model/invoice.model";
 import mockBill from "../../mock/bill";
 import { ProductModel } from "../../model/product.model";
 import { getListProduct } from "../../services/product.service";
@@ -106,7 +106,7 @@ export const useListInvoiceQuery = (
   currentPage: number,
   updatePagination: fnUpdatePagination
 ) =>
-  useQuery<PaginatedResponse<BillModel>>(
+  useQuery<PaginatedResponse<InvoiceModel>>(
     ["list-invoice", currentPage],
     async () => {
       const bills = await mockBill();

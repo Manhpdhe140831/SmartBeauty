@@ -9,6 +9,7 @@ import CustomerInformationBlock from "./_partial/detail/customer-information";
 import StaffInformation from "./_partial/detail/staff-information";
 import TimeInvoiceInformation from "./_partial/detail/time-invoice-information";
 import PricingInformation from "./_partial/detail/pricing-information";
+import PurchaseListInformation from "./_partial/detail/purchase-list-information";
 
 type InvoiceDetailProps = {
   role?: USER_ROLE;
@@ -46,14 +47,16 @@ const InvoiceDetail: FC<InvoiceDetailProps> = ({
       <Divider my={16} />
 
       <div className="flex items-start space-x-6">
-        <div className="flex flex-1 flex-col space-y-6">
+        <div className="flex flex-1 flex-col space-y-6 rounded-lg bg-white p-4 shadow">
           {/*   Customer section    */}
           <CustomerInformationBlock customerId={data?.customer} />
           {/*   Invoice Datetime    */}
           <TimeInvoiceInformation data={data} />
+
+          <PurchaseListInformation data={data} />
         </div>
 
-        <div className="flex w-80 flex-col space-y-6">
+        <div className="flex w-72 flex-col space-y-6">
           <StaffInformation data={staffDetail} />
 
           <PricingInformation data={data} />

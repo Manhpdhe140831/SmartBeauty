@@ -1,10 +1,10 @@
-import { BillModel } from "../../../../../model/bill.model";
+import { InvoiceModel } from "../../../../../model/invoice.model";
 import { Divider, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { formatPrice } from "../../../../../utilities/fn.helper";
 
 type PricingInformationProps = {
-  data?: BillModel;
+  data?: InvoiceModel;
 };
 
 const PricingInformation = ({ data }: PricingInformationProps) => {

@@ -1,11 +1,11 @@
 import { Divider, Text, Tooltip } from "@mantine/core";
 import { timeToDate, timeToHours } from "../../../../../utilities/time.helper";
-import { BillModel } from "../../../../../model/bill.model";
+import { InvoiceModel } from "../../../../../model/invoice.model";
 import { useClipboard } from "@mantine/hooks";
 import dayjs from "dayjs";
 
 type TimeInvoiceProps = {
-  data?: BillModel;
+  data?: InvoiceModel;
 };
 
 const TimeInvoiceInformation = ({ data }: TimeInvoiceProps) => {

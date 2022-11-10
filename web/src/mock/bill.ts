@@ -1,6 +1,8 @@
-import { BillModel } from "../model/bill.model";
+import { InvoiceModel } from "../model/invoice.model";
+import { products } from "./product";
+import { services } from "./service";
 
-const Bill: BillModel[] = [
+const Bill: InvoiceModel[] = [
   {
     id: 1,
     customer: 1,
@@ -11,7 +13,10 @@ const Bill: BillModel[] = [
     approvedDate: "2022-10-11T05:49:08Z",
     priceBeforeTax: 35775,
     priceAfterTax: 35775,
-    items: [],
+    items: [
+      { type: "product", product: products[0]!, quantity: 20 },
+      { type: "service", service: services[0]!, quantity: 1 },
+    ],
   },
   {
     id: 2,
@@ -64,7 +69,9 @@ const Bill: BillModel[] = [
 ];
 
 const mockBill = () =>
-  new Promise<BillModel[]>((resolve) => setTimeout(() => resolve(Bill), 500));
+  new Promise<InvoiceModel[]>((resolve) =>
+    setTimeout(() => resolve(Bill), 500)
+  );
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>

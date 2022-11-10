@@ -40,7 +40,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({ customerId }) => {
   }
 
   return (
-    <div className="flex items-start space-x-4 rounded-lg bg-white p-4 shadow">
+    <div className="flex items-start space-x-4">
       <ThemeIcon radius={"xl"} size={"xl"}>
         <IconFileInvoice />
       </ThemeIcon>

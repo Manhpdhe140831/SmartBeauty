@@ -1,6 +1,8 @@
 /* Randomize an array using Durstenfeld shuffle algorithm */
 import { AutoCompleteItemProp } from "../components/auto-complete-item";
 import { DefaultMantineColor } from "@mantine/core";
+import dayjs from "dayjs";
+import { BasePriceModel } from "../model/_price.model";
 
 export function shuffleArray<T>(originalArr: T[]) {
   // shallow clone the array since we only need to shuffle its position.
@@ -78,4 +80,40 @@ export function toStringType<T>(value?: T | null) {
     return null;
   }
   return String(value);
+}
+
+export function isBetweenSale(priceInfo?: BasePriceModel) {
+  if (
+    (!priceInfo?.discountEnd && !priceInfo?.discountStart) ||
+    !priceInfo?.discountPercent
+  ) {
+    return false;
+  }
+
+  if (priceInfo.discountStart) {
+    if (dayjs().isBefore(new Date(priceInfo.discountStart), "date")) {
+      return false;
+    }
+  }
+
+  if (priceInfo.discountEnd) {
+    if (dayjs().isAfter(new Date(priceInfo.discountEnd), "date")) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * the date is between the sale duration
+ * Either:
+ * - After the starting date
+ *  + Without the ending date.
+ * - After the starting date
+ *  + Before the ending date
+ * - Before ending date
+ *  + Without the starting date
+ */
+export function calculateDiscount(discountData: BasePriceModel) {
+  return ((100 - discountData.discountPercent!) / 100) * discountData.price;
 }

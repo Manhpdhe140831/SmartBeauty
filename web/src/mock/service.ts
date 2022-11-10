@@ -2,7 +2,7 @@ import { ServiceModel } from "../model/service.model";
 import { shuffleArray } from "../utilities/fn.helper";
 import { Supplier } from "./supplier";
 
-const services: ServiceModel[] = [
+export const services: ServiceModel[] = [
   {
     id: 1,
     name: "SENNOSIDES",
