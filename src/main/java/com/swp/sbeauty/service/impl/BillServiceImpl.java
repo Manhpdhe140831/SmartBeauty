@@ -69,9 +69,17 @@ public class BillServiceImpl implements BillService {
                     f.setCustomer(customerDto);
                     f.setBranch(branchDto);
                     f.setStaff(userDto);
+                    List<BillDetailDto> list = new ArrayList<>();
+                    List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(f.getId());
+                    for (BillDetail itemb: billDetailList
+                    ) {
+                        ProductDto p = billDetailRepository.getProductByBillDetail(itemb.getId());
+                        ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
+                        CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
+                        list.add(new BillDetailDto(itemb.getId(), p, s, c, itemb.getQuantity()));
 
-
-
+                    }
+                    f.setItems(list);
                 }
                 );
         List<BillDto> pageResult = new ArrayList<>(dtos);
@@ -79,11 +87,6 @@ public class BillServiceImpl implements BillService {
         billResponseDto.setTotalElement(page.getTotalElements());
         billResponseDto.setPageIndex(offSet + 1);
         billResponseDto.setTotalPage(page.getTotalPages());
-
-
-
-
-
         return billResponseDto;
     }
 
@@ -107,6 +110,7 @@ public class BillServiceImpl implements BillService {
             ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
             CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
             list.add(new BillDetailDto(itemb.getId(), p, s, c, itemb.getQuantity()));
+
         }
         if (entity != null){
             return new BillDto(entity.getId(), entity.getCode(),branchDto, userDto, customerDto, entity.getStatus(), entity.getDate(), entity.getMoneyPerTax(), entity.getMoneyAfterTax(), list);
