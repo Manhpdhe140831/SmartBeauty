@@ -19,18 +19,18 @@ public class Bill {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     private String code;
-    private String  date;
-    private Double moneyPerTax;
-    private Double moneyAfterTax;
+    private String  createDate;
+    private Double priceBeforeTax;
+    private Double priceAfterTax;
     private String status;
 
 
-    public Bill(Long id, String code, String date, Double moneyPerTax, Double moneyAfterTax, String status) {
+    public Bill(Long id, String code, String date, Double priceBeforeTax, Double priceAfterTax, String status) {
         this.id = id;
         this.code = code;
-        this.date = date;
-        this.moneyPerTax = moneyPerTax;
-        this.moneyAfterTax = moneyAfterTax;
+        this.createDate = date;
+        this.priceBeforeTax = priceBeforeTax;
+        this.priceAfterTax = priceAfterTax;
         this.status = status;
     }
 }

@@ -40,9 +40,9 @@ public class BillDto {
         this.setId(bill.getId());
         this.setCode(bill.getCode());
         this.setStatus(bill.getStatus());
-        this.setCreateDate(bill.getDate());
-        this.setPriceBeforeTax(bill.getMoneyPerTax());
-        this.setPriceAfterTax(bill.getMoneyAfterTax());
+        this.setCreateDate(bill.getCreateDate());
+        this.setPriceBeforeTax(bill.getPriceBeforeTax());
+        this.setPriceAfterTax(bill.getPriceAfterTax());
     }
 
     public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax, List<BillDetailDto> items) {

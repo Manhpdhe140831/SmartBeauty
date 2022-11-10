@@ -113,7 +113,7 @@ public class BillServiceImpl implements BillService {
 
         }
         if (entity != null){
-            return new BillDto(entity.getId(), entity.getCode(),branchDto, userDto, customerDto, entity.getStatus(), entity.getDate(), entity.getMoneyPerTax(), entity.getMoneyAfterTax(), list);
+            return new BillDto(entity.getId(), entity.getCode(),branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), list);
         }
 
         return null;
@@ -123,10 +123,10 @@ public class BillServiceImpl implements BillService {
     public Boolean saveBill(BillDto billDto, String authHeader) {
        Bill bill = new Bill();
        bill.setCode(billDto.getCode());
-       bill.setDate(billDto.getCreateDate());
+       bill.setCreateDate(billDto.getCreateDate());
        bill.setStatus(billDto.getStatus());
-       bill.setMoneyPerTax(billDto.getPriceBeforeTax());
-       bill.setMoneyAfterTax(billDto.getPriceAfterTax());
+       bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
+       bill.setPriceAfterTax(billDto.getPriceAfterTax());
        bill = billRepository.save(bill);
        List<BillDetailDto> billDetailDtos = billDto.getItems();
         for (BillDetailDto billDetailDto: billDetailDtos) {
@@ -153,9 +153,19 @@ public class BillServiceImpl implements BillService {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         Long idStaff = Long.parseLong(temp.get("id").toString());
         Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
-        bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
+        if (idBranch != null){
+            bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
+        }
+
         bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
         bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
+// customer - course
+//        Long idCourse = null;
+//        for (BillDetailDto billDetailDto: billDetailDtos) {
+//            if (billDetailDto.getType().equalsIgnoreCase("course")){
+//                idCourse = billDetailDto.getType_id();
+//            }
+//        }
 
         if (bill != null){
             return true;
@@ -203,10 +213,10 @@ public class BillServiceImpl implements BillService {
         }
 
 
-        bill.setDate(billDto.getCreateDate());
+        bill.setCreateDate(billDto.getCreateDate());
         bill.setStatus(billDto.getStatus());
-        bill.setMoneyPerTax(billDto.getPriceBeforeTax());
-        bill.setMoneyAfterTax(billDto.getPriceAfterTax());
+        bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
+        bill.setPriceAfterTax(billDto.getPriceAfterTax());
         bill = billRepository.save(bill);
         List<BillDetailDto> billDetailDtos = billDto.getItems();
         for (BillDetailDto billDetailDto: billDetailDtos) {
