@@ -3,12 +3,15 @@ package com.swp.sbeauty.controller;
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.dto.ServiceResponseDto;
+import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.CourseService;
 import com.swp.sbeauty.service.ServiceSpaService;
 //import org.graalvm.compiler.replacements.nodes.UnaryMathIntrinsicNode;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +36,8 @@ public class ServiceController {
     @Autowired
     CourseService courseService;
 
-
+    @Autowired
+    JwtUtils jwtUtils;
     @GetMapping(value = "/service")
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
@@ -97,6 +101,19 @@ public class ServiceController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/service/getAllService")
+    private ResponseEntity<?> getAllService(@RequestHeader("Authorization") String authHeader,
+                                           @RequestParam(value = "customer") Long customer){
+        if(authHeader != null){
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            String id = temp.get("id").toString();
+            Long idCheck = Long.parseLong(id);
+            List<ServiceDto> list = service.getAllService(idCheck, customer);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
     }
 }

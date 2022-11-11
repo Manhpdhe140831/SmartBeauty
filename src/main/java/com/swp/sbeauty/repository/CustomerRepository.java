@@ -15,8 +15,10 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
     Boolean existsByPhone(String phone);
 
     Customer getCustomerById(Long id);
-
-    @Query(value = "SELECT b FROM Customer b where  " +
-            "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
-    public Page<Customer> searchListWithField(String key, String key2, String key3, Pageable pageable);
+    @Query(value = "SELECT b.* FROM customer b, customer_branch_mapping c where b.id = c.id_customer and c.id_branch = ?1 ORDER BY ?#{#pageable}",
+            countQuery = "SELECT count(*) FROM customer b, customer_branch_mapping c where b.id = c.id_customer and c.id_branch = ?1",nativeQuery = true)
+    Page<Customer> getAllCustomer(Long idBranch, Pageable pageable);
+    @Query(value = "SELECT b.* FROM customer b, customer_branch_mapping c where b.id = c.id_customer and c.id_branch = ?1 and b.name like %?2% or b.phone like %?3% ORDER BY ?#{#pageable}",
+            countQuery = "SELECT count(*) FROM Customer b, customer_branch_mapping c where b.id = c.id_customer and c.id_branch = ?1 and b.name like %?2% or b.phone = %?3%",nativeQuery = true)
+    Page<Customer> searchListWithField(Long idCheck,String name, String phone, Pageable pageable);
 }

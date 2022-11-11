@@ -14,6 +14,7 @@ public class BillDetailDto {
     private ServiceDto service;
     private CourseDto course;
     private Long quantity;
+    private String status;
 
     public BillDetailDto(){}
 
@@ -30,4 +31,17 @@ public class BillDetailDto {
         this.course = course;
         this.quantity = quantity;
     }
+
+    public BillDetailDto(Long id, String type, Long type_id, ProductDto product, ServiceDto service, CourseDto course, Long quantity, String status) {
+        this.id = id;
+        this.type = type;
+        this.type_id = type_id;
+        this.product = product;
+        this.service = service;
+        this.course = course;
+        this.quantity = quantity;
+        this.status = status;
+    }
+
+
 }

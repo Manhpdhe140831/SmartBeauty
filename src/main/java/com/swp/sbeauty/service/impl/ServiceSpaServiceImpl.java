@@ -8,9 +8,11 @@ import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
 import com.swp.sbeauty.entity.Service_Product_mapping;
+import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
+import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
 import com.swp.sbeauty.repository.mappingRepo.Service_Product_Mapping_Repository;
 import com.swp.sbeauty.service.ServiceSpaService;
 import org.modelmapper.ModelMapper;
@@ -41,7 +43,8 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
     @Autowired
     Service_Product_Mapping_Repository service_product_mapping_repository;
-
+    @Autowired
+    Service_Branch_Mapping_Repo service_branch_mapping_repo;
     @Autowired
     private ModelMapper mapper;
 
@@ -171,6 +174,21 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             result += "Name already exists in data. ";
         }
         return result;
+    }
+
+    @Override
+    public List<ServiceDto> getAllService(Long idCheck, Long customer) {
+        if(idCheck==null || customer == null){
+            return null;
+        } else {
+            Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
+            List<Service> allUsers = serviceRepository.getAllService(idBranch,customer);
+            List<ServiceDto> serviceDtos = new ArrayList<>();
+            for (Service service : allUsers){
+                serviceDtos.add(new ServiceDto(service));
+            }
+            return serviceDtos;
+        }
     }
 
     @Override
