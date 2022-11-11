@@ -56,17 +56,18 @@ const ProductDetailDialog = ({
   opened,
   onClosed,
   mode,
-}: DialogProps<ProductModel, ProductUpdateEntity, ProductCreateEntity>) => {
+}: DialogProps<
+  ProductModel<SupplierModel>,
+  ProductUpdateEntity,
+  ProductCreateEntity
+>) => {
   const [selectedSupplier, setSelectedSupplier] = useState<number | null>(
-    data?.supplier ?? null
+    data?.supplier.id ?? null
   );
   const idSchema = mode === "create" ? idDbSchema.optional() : idDbSchema;
   const imageSchema =
     mode === "create"
-      ? fileUploadSchema
-          .and(imageTypeSchema)
-          .nullable()
-          .optional()
+      ? fileUploadSchema.and(imageTypeSchema).nullable().optional()
       : fileUploadSchema
           .and(imageTypeSchema)
           .or(z.string().url())
@@ -107,6 +108,7 @@ const ProductDetailDialog = ({
               ? dayjs(data.discountEnd).toDate()
               : undefined,
             discountPercent: data.discountPercent ?? undefined,
+            supplier: data.supplier.id,
           }
         : undefined,
   });
@@ -139,9 +141,7 @@ const ProductDetailDialog = ({
     supplierName: string
   ): Promise<AutoCompleteItemProp<SupplierModel>[]> {
     const response = await getListSupplier(1, 50, { name: supplierName });
-    return response.data
-      .filter((p) => p.name.includes(supplierName))
-      .map((i) => rawToAutoItem(i, fnHelper));
+    return response.data.map((i) => rawToAutoItem(i, fnHelper));
   }
 
   return (

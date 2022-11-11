@@ -7,6 +7,7 @@ import com.swp.sbeauty.dto.SupplierResponseDto;
 import com.swp.sbeauty.entity.Customer;
 import com.swp.sbeauty.entity.Supplier;
 import com.swp.sbeauty.repository.CustomerRepository;
+import com.swp.sbeauty.repository.mappingRepo.Customer_Branch_Mapping_Repo;
 import com.swp.sbeauty.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,6 +31,8 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private Customer_Branch_Mapping_Repo customer_branch_mapping_repo;
     @Override
     public CustomerDto getById(Long id) {
         if (id != null) {
@@ -111,42 +115,51 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto getAllCustomer(int pageNo, int pageSize) {
-        ModelMapper mapper = new ModelMapper();
-        CustomerResponseDto customerResponseDto = new CustomerResponseDto();
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
-        Page<Customer> page = customerRepository.findAll(pageable);
-        List<Customer> customers = page.getContent();
-        List<CustomerDto> customerDtos = new ArrayList<>();
-        for (Customer customer : customers){
-            CustomerDto customerDto = new CustomerDto();
-            customerDto = mapper.map(customer,CustomerDto.class);
-            customerDtos.add(customerDto);
-        }
-        customerResponseDto.setData(customerDtos);
-        customerResponseDto.setTotalElement(page.getTotalElements());
-        customerResponseDto.setTotalPage(page.getTotalPages());
-        customerResponseDto.setPageIndex(pageNo+1);
-        return customerResponseDto;
+    public CustomerResponseDto getAllCustomer(Long idCheck,int pageNo, int pageSize) {
+            ModelMapper mapper = new ModelMapper();
+            CustomerResponseDto customerResponseDto = new CustomerResponseDto();
+            Pageable pageable = PageRequest.of(pageNo, pageSize);
+            Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
+            Page<Customer> page = customerRepository.getAllCustomer(idBranch,pageable);
+            List<Customer> customers = page.getContent();
+            List<CustomerDto> customerDtos = new ArrayList<>();
+            for (Customer customer : customers) {
+                CustomerDto customerDto = new CustomerDto();
+                customerDto = mapper.map(customer, CustomerDto.class);
+                customerDtos.add(customerDto);
+            }
+            customerResponseDto.setData(customerDtos);
+            customerResponseDto.setTotalElement(page.getTotalElements());
+            customerResponseDto.setTotalPage(page.getTotalPages());
+            customerResponseDto.setPageIndex(pageNo + 1);
+            return customerResponseDto;
+
     }
 
     @Override
-    public CustomerResponseDto getCustomerAndSearch(String name, String address, String phone, int pageNo, int pageSize) {
-        ModelMapper mapper = new ModelMapper();
-        CustomerResponseDto customerResponseDto = new CustomerResponseDto();
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
-        Page<Customer> page = customerRepository.searchListWithField(name,address,phone,pageable);
-        List<Customer> customers = page.getContent();
-        List<CustomerDto> customerDtos = new ArrayList<>();
-        for (Customer customer : customers){
-            CustomerDto customerDto = new CustomerDto();
-            customerDto = mapper.map(customer,CustomerDto.class);
-            customerDtos.add(customerDto);
-        }
-        customerResponseDto.setData(customerDtos);
-        customerResponseDto.setTotalElement(page.getTotalElements());
-        customerResponseDto.setTotalPage(page.getTotalPages());
-        customerResponseDto.setPageIndex(pageNo+1);
-        return customerResponseDto;
+    public CustomerResponseDto getCustomerAndSearch(Long idCheck,String name, String phone, int pageNo, int pageSize) {
+         Pageable pageable = PageRequest.of(pageNo, pageSize);
+         Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
+         Page<Customer> page = customerRepository.searchListWithField(idBranch,name, phone, pageable);
+         ModelMapper mapper = new ModelMapper();
+         CustomerResponseDto customerResponseDto = new CustomerResponseDto();
+         List<Customer> customers = page.getContent();
+         List<CustomerDto> customerDtos = new ArrayList<>();
+            for (Customer customer : customers) {
+                CustomerDto customerDto = new CustomerDto();
+                customerDto = mapper.map(customer, CustomerDto.class);
+                customerDtos.add(customerDto);
+            }
+        /*List<CustomerDto> dtos = page
+                .stream()
+                .map(customer -> mapper.map(customer,CustomerDto.class))
+                .collect(Collectors.toList());
+        List<CustomerDto> pageResult = new ArrayList<>(dtos);*/
+            customerResponseDto.setData(customerDtos);
+            customerResponseDto.setTotalElement(page.getTotalElements());
+            customerResponseDto.setTotalPage(page.getTotalPages());
+            customerResponseDto.setPageIndex(pageNo + 1);
+            return customerResponseDto;
+
     }
 }

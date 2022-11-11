@@ -3,7 +3,6 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.*;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,7 +11,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Role;
 import com.swp.sbeauty.entity.User_Branch_Mapping;
 import com.swp.sbeauty.entity.Users;
@@ -33,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -130,16 +127,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUserToBranch(UserDto userDto, String roleAuth, Integer idCheck) {
-        if (roleAuth.equalsIgnoreCase("manager")){
-            Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
-            Integer idStaff = userRepository.getIdUserByEmail(userDto.getEmail());
-            User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(idBranch, idStaff);
-            user_branch_mapping_repo.save(user_branch_mapping);
-        }
-    }
-
-    @Override
     public Page<UserDto> getAllUsersByManager(Integer idCheck, int offset, int pageSize) {
         Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
         Page<Users> users = userRepository.getAllUserByManager(idBranch,PageRequest.of(offset,pageSize));
@@ -204,6 +191,40 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public List<UserDto> getStaffFree(Long idCheck, String date, Long slot) {
+        if(idCheck==null || date == null || slot == null){
+            return null;
+        } else {
+
+            Long idBranch = user_branch_mapping_repo.idBranch(idCheck);
+            List<Users> allUsers = userRepository.getAllTechStaff(idBranch);
+            List<Users> listDup = userRepository.getStaffFree(idBranch, date, slot);
+            List<Users> listResult = new ArrayList<>();
+            for(Users users : allUsers){
+                if(listDup!=null){
+                    Boolean check = false;
+                    for(Users user: listDup){
+                        if(users.getId() == user.getId()){
+                            check = true;
+                        }
+                    }
+                    if(check == false){
+                        listResult.add(users);
+                    }
+                } else{
+                    listResult.add(users);
+                }
+            }
+            List<UserDto> listDto = new ArrayList<>();
+            if(listResult!=null){
+                for(Users user : listResult){
+                    listDto.add(new UserDto(user));
+                }
+            }
+            return listDto;
+        }
+    }
 
     @Override
     public UserDto getById(Long id) {
@@ -211,17 +232,6 @@ public class UserServiceImpl implements UserService {
             Users entity = userRepository.findById(id).orElse(null);
             if (entity != null) {
                 return new UserDto(entity);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<Users> getByRole(Long id) {
-        if(id!=null){
-            List<Users> result = userRepository.findUserByRoleId(id);
-            if(result != null){
-                return result;
             }
         }
         return null;
@@ -238,27 +248,6 @@ public class UserServiceImpl implements UserService {
         }
         return result;
     }
-
-    @Override
-
-    public Page<UserDto> getAllUsersPagination(int offset, int pageSize, int roleId) {
-        Page<Users> users = userRepository.getUserByRoleId(roleId,PageRequest.of(offset,pageSize));
-        ModelMapper mapper = new ModelMapper();
-        List<UserDto> dtos = users
-                .stream()
-                .map(user -> mapper.map(user, UserDto.class))
-                .collect(Collectors.toList());
-        dtos.stream().forEach(f->
-                {
-                f.setPassword("");
-                f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
-                    f.setRoles(null);
-                }
-        );
-        Page<UserDto> pageResult = new PageImpl<>(dtos);
-        return pageResult;
-    }
-
 
     @Override
     public Page<UserDto> getAllUsers(int offset, int pageSize) {
@@ -299,9 +288,6 @@ public class UserServiceImpl implements UserService {
         return pageResult;
     }
 
-
-
-
     public List<UserDto> getUsersByBranch(String id) {
         List<Users> list = userRepository.getListByBranch(Long.parseLong(id));
         List<UserDto> listDto = new ArrayList<>();
@@ -330,13 +316,6 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
         Page<Users> page = userRepository.getAllUserByManager(idBranch,pageable);
-        List<Users> users = page.getContent();
-        /*List<UserResponseDto> userResponseDtos = new ArrayList<>();
-        for (Users users1 : users){
-            UserResponseDto userResponseDto = new UserResponseDto();
-            userResponseDto = mapper.map(users1,UserResponseDto.class);
-            userResponseDtos.add(userResponseDto);
-        }*/
         List<UserDto> dtos = page
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
@@ -362,13 +341,6 @@ public class UserServiceImpl implements UserService {
         UserResponse userResponse = new UserResponse();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
         Page<Users> page = userRepository.getAllUserByAdmin(pageable);
-        List<Users> users = page.getContent();
-        /*List<UserDto> userDtos = new ArrayList<>();
-        for (Users users1 : users){
-            UserDto userDto = new UserDto();
-            userDto = mapper.map(users1,UserDto.class);
-            userDtos.add(userDto);
-        }*/
         List<UserDto> dtos = page
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
@@ -388,45 +360,6 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
-
-    //    @Override
-//    public RoleDto saveRole(RoleDto roleDto) {
-//        if(roleDto != null){
-//            Role role = new Role();
-//            role.setName(roleDto.getName());
-//            role = roleRepository.save(role);
-//            if(role!=null){
-//                return new RoleDto(role);
-//            }
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public Boolean addRoleToUser(Long roleId, Long userId) {
-//        if(roleId!=null && userId!=null){
-//            User user = null;
-//            Optional<User> optional = userRepository.findById(userId);
-//            if(optional.isPresent()){
-//                user = optional.get();
-//            }
-//            Role role = null;
-//            Optional<Role> optional1 = roleRepository.findById(roleId);
-//            if(optional.isPresent()){
-//                role = optional1.get();
-//            }
-//            user.getRoles().add(role);
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public UserDto getUser(String username) {
-//        UserDto result = userRepository.findByUserName(username);
-//        return result;
-//    }
-//
     @Override
     public List<UserDto> getUsers() {
         List<Users> list = userRepository.findAll();
@@ -436,6 +369,4 @@ public class UserServiceImpl implements UserService {
         }
         return result;
     }
-
-
 }

@@ -13,6 +13,10 @@ import ServiceList from "../../_shared/services/service-list";
 import { useListServiceQuery } from "../../../query/model-list";
 import AdminServiceDetailDialog from "./_detail.dialog";
 import { useMutation } from "@tanstack/react-query";
+import {
+  createSpaService,
+  updateSpaService,
+} from "../../../services/spa-service.service";
 
 const Index: AppPageInterface = () => {
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
@@ -29,14 +33,25 @@ const Index: AppPageInterface = () => {
     refetch,
   } = useListServiceQuery(currentPage, updatePagination);
 
-  const createSpaService = useMutation(
-    ["create-spa-services"],
-    async (d: ServiceCreateEntity) => {
-      console.log(d);
-      return d;
-    },
+  const createServiceMutation = useMutation(
+    ["create-spa-service"],
+    async (d: ServiceCreateEntity) => createSpaService(d),
     {
-      onSuccess: () => refetch(),
+      onSuccess: () => {
+        void refetch();
+        resetModal();
+      },
+    }
+  );
+
+  const updateServiceMutation = useMutation(
+    ["update-spa-service"],
+    async (d: ServiceUpdateEntity) => updateSpaService(d),
+    {
+      onSuccess: () => {
+        void refetch();
+        resetModal();
+      },
     }
   );
 
@@ -69,10 +84,13 @@ const Index: AppPageInterface = () => {
               if (update) {
                 console.log(update);
                 if (modal?.mode === "create") {
-                  await createSpaService.mutateAsync(
+                  await createServiceMutation.mutateAsync(
                     update as ServiceCreateEntity
                   );
                 } else {
+                  await updateServiceMutation.mutateAsync(
+                    update as ServiceUpdateEntity
+                  );
                 }
                 return;
               }

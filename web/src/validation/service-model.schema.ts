@@ -22,7 +22,8 @@ const BaseServiceModelSchema = z
 export default BaseServiceModelSchema;
 
 export function getServiceModelSchema(mode: "view" | "create") {
-  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
+  const idSchema =
+    mode === "create" ? idDbSchema.optional().nullable() : idDbSchema;
   const imageSchema =
     mode === "create"
       ? fileUploadSchema.and(imageTypeSchema).nullable().optional()

@@ -45,6 +45,7 @@ public class CourseServiceImpl implements CourseService {
     public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
         try{
             Course course = new Course();
+            course.setCode("code");
             course.setName(name);
             course.setPrice(price);
             course.setDuration(duration);

@@ -1,7 +1,9 @@
 package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.*;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.CustomerService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     @GetMapping("/customer/getById")
     public ResponseEntity<CustomerDto> getCustomerById(@RequestParam(value = "id",required = false) Long id) {
@@ -57,21 +62,27 @@ public class CustomerController {
     }
 
     @GetMapping("/customer")
-    private ResponseEntity<?> getCustomerPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+    private ResponseEntity<?> getCustomerPagination(@RequestHeader("Authorization") String authHeader,
+                                                    @RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false, defaultValue = "") String name
-            , @RequestParam(value = "address", required = false,defaultValue = "") String address
-            , @RequestParam(value = "phone", required = false,defaultValue = "") String phone
+            , @RequestParam(value = "name", required = false) String name
+            , @RequestParam(value = "phone", required = false) String phone
     ){
-        Pageable p = PageRequest.of(page,pageSize);
-        if(name  == "" && address == "" && phone == ""){
-            CustomerResponseDto customerResponseDto = customerService.getAllCustomer(page-1,pageSize);
-            return new ResponseEntity<>(customerResponseDto,HttpStatus.OK);
+        if(authHeader != null) {
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            String id = temp.get("id").toString();
+            Long idCheck = Long.parseLong(id);
+            Pageable p = PageRequest.of(page, pageSize);
+            if ( name == null && phone == null) {
+                CustomerResponseDto customerResponseDto = customerService.getAllCustomer(idCheck,page - 1, pageSize);
+                return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
 
-        }
-        else {
-            CustomerResponseDto customerResponseDto = customerService.getCustomerAndSearch(name,address,phone,page-1,pageSize);
-            return new ResponseEntity<>(customerResponseDto,HttpStatus.OK);
+            } else {
+                CustomerResponseDto customerResponseDto = customerService.getCustomerAndSearch(idCheck,name,phone,page - 1, pageSize);
+                return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
+            }
+        }else {
+            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
 
     }

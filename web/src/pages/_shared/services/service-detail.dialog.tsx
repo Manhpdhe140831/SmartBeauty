@@ -28,10 +28,11 @@ import { getServiceModelSchema } from "../../../validation/service-model.schema"
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { stateInputProps } from "../../../utilities/mantine.helper";
+import { DialogSubmit } from "../../../utilities/form-data.helper";
 
 type DetailDialogProps = {
   readOnly?: boolean;
-  mode?: "view" | "create";
+  mode: "view" | "create";
 
   validateSchema: ReturnType<typeof getServiceModelSchema>;
   defaultValue?: z.infer<ReturnType<typeof getServiceModelSchema>>;
@@ -56,7 +57,7 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
     mode: "onBlur",
@@ -92,7 +93,14 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
       <form
         className="flex w-[800px] flex-wrap p-4"
         onReset={handleReset}
-        onSubmit={onFormSubmit && handleSubmit(onFormSubmit)}
+        onSubmit={
+          onFormSubmit &&
+          handleSubmit(
+            DialogSubmit(mode, dirtyFields, onFormSubmit, {
+              id: defaultValue?.id ?? undefined,
+            })
+          )
+        }
       >
         <div className="flex flex-1 flex-col">
           <h2
@@ -120,6 +128,36 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             {...register("description")}
           />
           <FormErrorMessage errors={errors} name={"description"} />
+
+          <Controller
+            name={"duration"}
+            control={control}
+            render={({ field }) => (
+              <NumberInput
+                placeholder={"perform duration (1 - 90 minutes)..."}
+                hideControls
+                min={1}
+                precision={0}
+                step={1}
+                max={90}
+                defaultValue={field.value ?? undefined}
+                onChange={(v) => field.onChange(v ?? null)}
+                onBlur={field.onBlur}
+                rightSectionWidth={75}
+                rightSection={
+                  <Text color={"dimmed"} size={"sm"}>
+                    minutes
+                  </Text>
+                }
+                {...stateInputProps("Service Duration", readOnly, {
+                  required: true,
+                  variant: "default",
+                  size: "sm",
+                })}
+              />
+            )}
+          ></Controller>
+          <FormErrorMessage errors={errors} name={"duration"} />
 
           <Divider my={8} />
 
@@ -315,7 +353,7 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
                     <Button
                       onClick={() =>
                         append({
-                          product: null as unknown as number,
+                          productId: null as unknown as number,
                           usage: 0,
                         })
                       }

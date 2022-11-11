@@ -1,5 +1,4 @@
 import { NavLink, useMantineTheme } from "@mantine/core";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FC, useEffect, useState } from "react";
 import {
@@ -13,32 +12,31 @@ const NavWithHref = (props: NavLinkItemBaseProp) => {
   const router = useRouter();
 
   return (
-    <Link href={props.href} passHref>
-      <NavLink
-        component={"a"}
-        color={"black"}
-        active={router.asPath.startsWith(props.href)}
-        icon={props.leftIcon}
-        label={props.label}
-        description={props.description}
-        rightSection={props.rightIcon}
-        sx={{
-          fontWeight: 600,
-          padding: theme.spacing.md,
-          borderRadius: theme.radius.sm,
-          color: theme.colors.dark[0],
-          "&[data-active]": {
-            backgroundColor: theme.colors.dark[8],
-          },
-          "&[data-active]:hover": {
-            backgroundColor: theme.colors.dark[7],
-          },
-          "&:hover": {
-            backgroundColor: theme.colors.dark[7],
-          },
-        }}
-      ></NavLink>
-    </Link>
+    <NavLink
+      href={props.href}
+      component={"a"}
+      color={"black"}
+      active={router.asPath.startsWith(props.href)}
+      icon={props.leftIcon}
+      label={props.label}
+      description={props.description}
+      rightSection={props.rightIcon}
+      sx={{
+        fontWeight: 600,
+        padding: theme.spacing.md,
+        borderRadius: theme.radius.sm,
+        color: theme.colors.dark[0],
+        "&[data-active]": {
+          backgroundColor: theme.colors.dark[8],
+        },
+        "&[data-active]:hover": {
+          backgroundColor: theme.colors.dark[7],
+        },
+        "&:hover": {
+          backgroundColor: theme.colors.dark[7],
+        },
+      }}
+    ></NavLink>
   );
 };
 
@@ -86,32 +84,32 @@ const NavNested = (props: NavLinkItemNestedProp) => {
       defaultOpened={parentActive}
     >
       {props.nested.map((c) => (
-        <Link key={c.href} href={c.href} passHref>
-          <NavLink
-            component={"a"}
-            color={"black"}
-            icon={c.leftIcon}
-            rightSection={c.rightIcon}
-            description={c.description}
-            label={c.label}
-            active={router.asPath.startsWith(c.href)}
-            sx={{
-              fontWeight: 600,
-              padding: theme.spacing.md,
-              borderRadius: theme.radius.sm,
-              color: theme.colors.dark[0],
-              "&[data-active]": {
-                backgroundColor: theme.colors.dark[8],
-              },
-              "&[data-active]:hover": {
-                backgroundColor: theme.colors.dark[7],
-              },
-              "&:hover": {
-                backgroundColor: theme.colors.dark[7],
-              },
-            }}
-          />
-        </Link>
+        <NavLink
+          component={"a"}
+          key={c.href}
+          href={c.href}
+          color={"black"}
+          icon={c.leftIcon}
+          rightSection={c.rightIcon}
+          description={c.description}
+          label={c.label}
+          active={router.asPath.startsWith(c.href)}
+          sx={{
+            fontWeight: 600,
+            padding: theme.spacing.md,
+            borderRadius: theme.radius.sm,
+            color: theme.colors.dark[0],
+            "&[data-active]": {
+              backgroundColor: theme.colors.dark[8],
+            },
+            "&[data-active]:hover": {
+              backgroundColor: theme.colors.dark[7],
+            },
+            "&:hover": {
+              backgroundColor: theme.colors.dark[7],
+            },
+          }}
+        />
       ))}
     </NavLink>
   );

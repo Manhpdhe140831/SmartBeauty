@@ -1,19 +1,19 @@
 import { FC } from "react";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import { Table } from "@mantine/core";
-import { BillModel } from "../../../model/bill.model";
+import { InvoiceModel } from "../../../model/invoice.model";
 import HeaderTable from "./_partial/list/_header.table";
 import RowTable from "./_partial/list/_row.table";
 import { getItemNo } from "../../../hooks/pagination.hook";
 
 type ListProps = {
   isLoading?: boolean;
-  data?: BillModel[];
+  data?: InvoiceModel[];
 
   page: number;
   pageSize: number;
 
-  onRowClick?: (data: BillModel, index: number) => void;
+  onRowClick?: (data: InvoiceModel, index: number) => void;
 };
 
 const InvoiceList: FC<ListProps> = ({

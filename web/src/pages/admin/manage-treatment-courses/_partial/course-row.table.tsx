@@ -36,7 +36,7 @@ const CourseRowTable: FC<DataRowProps<CourseModel>> = ({
       </td>
 
       <td className={"text-center"}>{data.timeOfUse}</td>
-      <td className={"text-center"}>{data.expireIn}</td>
+      <td className={"text-center"}>{data.duration}</td>
       <td>
         <SalePriceTableCell priceModel={data} />
       </td>

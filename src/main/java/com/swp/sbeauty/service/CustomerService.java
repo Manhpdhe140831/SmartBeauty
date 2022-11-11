@@ -10,6 +10,6 @@ public interface CustomerService {
     String validateCustomer(String name, String email, String phone);
     Boolean saveCustomer(String name, String phone,String email,String gender,String dateOfBirth, String address);
     Boolean updateCustomer(Long id,String name, String phone,String email,String gender,String dateOfBirth, String address);
-    CustomerResponseDto getAllCustomer(int pageNo, int pageSize);
-    CustomerResponseDto getCustomerAndSearch(String name, String address, String phone, int pageNo, int pageSize);
+    CustomerResponseDto getAllCustomer(Long idCheck,int pageNo, int pageSize);
+    CustomerResponseDto getCustomerAndSearch(Long idCheck,String name, String phone, int pageNo, int pageSize);
 }

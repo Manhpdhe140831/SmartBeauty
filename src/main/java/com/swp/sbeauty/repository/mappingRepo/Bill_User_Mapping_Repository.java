@@ -8,4 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface Bill_User_Mapping_Repository extends JpaRepository<Bill_User_Mapping, Long> {
     @Query(value = "select u from Users u join Bill_User_Mapping  bum on bum.user_id = u.id where bum.bill_id =?1")
     Users getStaffByBill(Long id);
+
+    @Query(value = "select bum from Bill_User_Mapping bum where bum.bill_id =?1")
+    public Bill_User_Mapping getByBillId(Long id);
 }

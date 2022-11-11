@@ -1,6 +1,8 @@
-import { BillModel } from "../model/bill.model";
+import { InvoiceModel } from "../model/invoice.model";
+import { products } from "./product";
+import { services } from "./service";
 
-const Bill: BillModel[] = [
+const Bill: InvoiceModel[] = [
   {
     id: 1,
     customer: 1,
@@ -8,9 +10,13 @@ const Bill: BillModel[] = [
     branch: 1,
     status: "false",
     createdDate: "2022-08-11T05:49:08Z",
+    approvedDate: "2022-10-11T05:49:08Z",
     priceBeforeTax: 35775,
     priceAfterTax: 35775,
-    items: [],
+    items: [
+      { type: "product", product: products[0]!, quantity: 20 },
+      { type: "service", service: services[0]!, quantity: 1 },
+    ],
   },
   {
     id: 2,
@@ -19,6 +25,7 @@ const Bill: BillModel[] = [
     branch: 2,
     status: "false",
     createdDate: "2022-07-24T20:32:31Z",
+    approvedDate: "2022-10-24T20:32:31Z",
     priceBeforeTax: 21655,
     priceAfterTax: 21655,
     items: [],
@@ -30,6 +37,7 @@ const Bill: BillModel[] = [
     branch: 3,
     status: "true",
     createdDate: "2022-06-18T16:42:52Z",
+    approvedDate: "2022-10-18T16:42:52Z",
     priceBeforeTax: 59649,
     priceAfterTax: 59649,
     items: [],
@@ -41,6 +49,7 @@ const Bill: BillModel[] = [
     branch: 4,
     status: "true",
     createdDate: "2022-04-07T06:49:16Z",
+    approvedDate: "2022-10-07T06:49:16Z",
     priceBeforeTax: 67898,
     priceAfterTax: 67898,
     items: [],
@@ -52,6 +61,7 @@ const Bill: BillModel[] = [
     branch: 5,
     status: "true",
     createdDate: "2022-02-03T04:44:14Z",
+    approvedDate: "2022-10-03T04:44:14Z",
     priceBeforeTax: 94495,
     priceAfterTax: 94495,
     items: [],
@@ -59,7 +69,9 @@ const Bill: BillModel[] = [
 ];
 
 const mockBill = () =>
-  new Promise<BillModel[]>((resolve) => setTimeout(() => resolve(Bill), 500));
+  new Promise<InvoiceModel[]>((resolve) =>
+    setTimeout(() => resolve(Bill), 500)
+  );
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>

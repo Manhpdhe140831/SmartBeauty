@@ -18,6 +18,8 @@ type displayPriceType = {
 /**
  * TODO: calculate price based on date too.
  * @param priceModel
+ * @param before
+ * @param after
  * @constructor
  */
 const SalePriceTableCell: FC<cellProps> = ({ priceModel, before, after }) => {

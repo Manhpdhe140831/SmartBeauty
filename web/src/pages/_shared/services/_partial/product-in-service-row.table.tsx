@@ -45,7 +45,7 @@ const ProductInServiceRowTable = ({
   remove,
   readonly,
 }: NestedArrayRowProps) => {
-  const [selectedId, setSelectedId] = useState<number | null>(field.product);
+  const [selectedId, setSelectedId] = useState<number | null>(field.productId);
 
   const { data: viewingProduct, isLoading: viewLoading } =
     useQuery<ProductModel | null>(["available-product", selectedId], () => {
@@ -67,7 +67,9 @@ const ProductInServiceRowTable = ({
     const paginateProducts = await getListProduct(1, 50, {
       name: productName,
     });
-    return paginateProducts.data.map((i) => rawToAutoItem(i, fnHelper));
+    return paginateProducts.data.map((i) =>
+      rawToAutoItem({ ...i, supplier: i.supplier.id }, fnHelper)
+    );
   }
 
   return (
@@ -114,14 +116,14 @@ const ProductInServiceRowTable = ({
               )
             }
             control={control}
-            name={`products.${index}.product` as Path<inferParentSchema>}
+            name={`products.${index}.productId` as Path<inferParentSchema>}
           />
         )}
 
         <FormErrorMessage
           noPreHeight={true}
           errors={errors}
-          name={`products.${index}.product`}
+          name={`products.${index}.productId`}
         />
       </td>
       <td className={"text-center"}>{viewingProduct?.dose}</td>

@@ -5,12 +5,12 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-export function timeToHours(rawIsoTime: string) {
-  return dayjs(rawIsoTime).format("HH:mm:ss");
+export function timeToHours(rawIsoTime: string, format = "HH:mm:ss") {
+  return dayjs(rawIsoTime).format(format);
 }
 
-export function timeToDate(rawIsoTime: string) {
-  return dayjs(rawIsoTime).format("DD/MM/YYYY");
+export function timeToDate(rawIsoTime: string, format = "DD/MM/YYYY") {
+  return dayjs(rawIsoTime).format(format);
 }
 
 export function formatTime(time: number, unit: DurationUnitType) {

@@ -22,7 +22,8 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping("/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CourseController {
     @Autowired
     private CourseService service;
@@ -46,7 +47,7 @@ public class CourseController {
         }
     }
 
-    @RequestMapping(value = "/course/save", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
+    @RequestMapping(value = "/course/create", headers="Content-Type=multipart/form-data",method = RequestMethod.POST)
     public ResponseEntity<?> saveCourse (
             @RequestParam(value = "name") String name,
             @RequestParam(value = "price") Double price,

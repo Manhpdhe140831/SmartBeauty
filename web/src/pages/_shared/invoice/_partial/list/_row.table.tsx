@@ -1,14 +1,17 @@
 import { Text, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { BillModel } from "../../../../../model/bill.model";
+import { InvoiceModel } from "../../../../../model/invoice.model";
 import dayjs from "dayjs";
 import { formatPrice } from "../../../../../utilities/fn.helper";
-import { useCustomerDetailQuery, useStaffDetailQuery } from "../../../../../query/model-detail";
+import {
+  useCustomerDetailQuery,
+  useStaffDetailQuery,
+} from "../../../../../query/model-detail";
 
 type RowProps = {
   no: number;
-  data: BillModel;
-  onSelect?: (d: BillModel) => void;
+  data: InvoiceModel;
+  onSelect?: (d: InvoiceModel) => void;
 };
 
 export default function RowTable(props: RowProps) {

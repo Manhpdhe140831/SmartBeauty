@@ -1,14 +1,29 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
-import { Divider, Pagination, Table } from "@mantine/core";
+import { Button, Divider, Pagination, Table } from "@mantine/core";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import SupplierHeaderTable from "./_partial/supplier-header.table";
 import SupplierRowTable from "./_partial/supplier-row.table";
-import SupplierCreateButton from "./_partial/supplier-create.button";
 import { useListSupplierQuery } from "../../../query/model-list";
+import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
+import {
+  SupplierCreateEntity,
+  SupplierModel,
+  SupplierUpdateEntity,
+} from "../../../model/supplier.model";
+import SupplierDetailDialog from "./_supplier-detail.dialog";
+import { useMutation } from "@tanstack/react-query";
+import { IErrorResponse } from "../../../interfaces/api.interface";
+import {
+  createSupplier,
+  updateSupplier,
+} from "../../../services/supplier.service";
+import { showNotification } from "@mantine/notifications";
+import { IconCheck, IconPlus, IconX } from "@tabler/icons";
 
 const Index: AppPageInterface = () => {
+  const { modal, openModal, resetModal } = useDialogDetailRow<SupplierModel>();
   const {
     pageSize,
     currentPage,
@@ -23,12 +38,66 @@ const Index: AppPageInterface = () => {
     refetch,
   } = useListSupplierQuery(currentPage, updatePagination);
 
+  const updateMutation = useMutation<
+    boolean,
+    IErrorResponse,
+    SupplierUpdateEntity
+  >(["update-supplier"], (data: SupplierUpdateEntity) => updateSupplier(data), {
+    onSuccess: () => {
+      showNotification({
+        title: "Success!",
+        message: "You have updated the supplier!",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+      resetModal();
+      refetch();
+    },
+    onError: (e) => {
+      console.error(e);
+      showNotification({
+        title: "Failed!",
+        message: "Cannot update the supplier. Please try again!",
+        color: "red",
+        icon: <IconX />,
+      });
+    },
+  });
+
+  const createMutation = useMutation<
+    boolean,
+    IErrorResponse,
+    SupplierCreateEntity
+  >(["create-supplier"], (data: SupplierCreateEntity) => createSupplier(data), {
+    onSuccess: () => {
+      showNotification({
+        title: "Success!",
+        message: "You have created a new supplier!",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+      resetModal();
+      refetch();
+    },
+    onError: (e) => {
+      console.error(e);
+      showNotification({
+        title: "Failed!",
+        message: "Cannot create new supplier. Please try again!",
+        color: "red",
+        icon: <IconX />,
+      });
+    },
+  });
+
   return (
     <div className="flex h-full flex-col space-y-4 p-4">
       {/*  Search section   */}
       <div className="flex justify-end space-x-2">
         {/*  Btn create new supplier   */}
-        <SupplierCreateButton onCreated={refetch} />
+        <Button onClick={() => openModal("create")} leftIcon={<IconPlus />}>
+          Supplier
+        </Button>
       </div>
 
       <Divider my={8}></Divider>
@@ -58,7 +127,7 @@ const Index: AppPageInterface = () => {
               suppliers &&
               suppliers.data.map((d, i) => (
                 <SupplierRowTable
-                  rowUpdated={refetch}
+                  onClick={(s) => openModal("view", s)}
                   key={d.id}
                   data={d}
                   no={getItemNo(i, currentPage, pageSize)}
@@ -67,6 +136,28 @@ const Index: AppPageInterface = () => {
             )}
           </tbody>
         </Table>
+
+        {modal && (
+          <SupplierDetailDialog
+            mode={modal.mode as never}
+            data={modal.data}
+            opened={!!modal}
+            onClosed={async (
+              u?: SupplierUpdateEntity | SupplierCreateEntity
+            ) => {
+              if (u) {
+                if (modal.mode === "create") {
+                  await createMutation.mutateAsync(u as SupplierCreateEntity);
+                  return;
+                } else {
+                  await updateMutation.mutateAsync(u as SupplierUpdateEntity);
+                  return;
+                }
+              }
+              resetModal();
+            }}
+          />
+        )}
       </div>
 
       <Divider my={8} />
