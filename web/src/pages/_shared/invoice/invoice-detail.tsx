@@ -31,7 +31,7 @@ const InvoiceDetail: FC<InvoiceDetailProps> = ({
   const { data: staffDetail } = useStaffDetailQuery(data?.staff);
 
   return (
-    <div className={"flex h-full flex-col bg-gray-100 p-4"}>
+    <div className={"flex flex-col bg-gray-100 p-4"}>
       <div className="flex items-center space-x-4">
         <Button leftIcon={<IconArrowLeft />} onClick={onBackBtnClicked}>
           Back

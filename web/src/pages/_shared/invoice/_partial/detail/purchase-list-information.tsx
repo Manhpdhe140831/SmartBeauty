@@ -1,7 +1,7 @@
 import { Divider, Table } from "@mantine/core";
 import { InvoiceModel } from "../../../../../model/invoice.model";
 import { FC } from "react";
-import ItemProductTable from "./_item-product.table";
+import ItemInvoiceTable from "./_item-invoice.table";
 
 type BillItemsInformationProps = {
   data?: InvoiceModel;
@@ -23,7 +23,7 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({ data }) => {
         fontSize={"sm"}
       >
         <colgroup>
-          <col className={"w-14"} />
+          <col className={"w-12"} />
           <col className={"w-14"} />
           <col />
           <col className={"w-24"} />
@@ -35,7 +35,7 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({ data }) => {
             <th className={"!text-right"}>No.</th>
             <th>Image</th>
             <th>Name</th>
-            <th>Quantity</th>
+            <th className={"!text-right"}>Quantity</th>
             <th>Price</th>
             <th>Due</th>
           </tr>
@@ -44,14 +44,34 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({ data }) => {
           {data?.items.map((item, index) => {
             if (item.type === "product") {
               return (
-                <ItemProductTable
+                <ItemInvoiceTable
                   key={`${item.type}-${index}`}
                   no={index}
-                  data={item}
+                  data={item.product}
+                  quantity={item.quantity}
+                  categoryClass={"border-blue-600"}
+                />
+              );
+            } else if (item.type === "service") {
+              return (
+                <ItemInvoiceTable
+                  key={`${item.type}-${index}`}
+                  no={index}
+                  data={item.service}
+                  quantity={item.quantity}
+                  categoryClass={"border-red-600"}
                 />
               );
             }
-            return <></>;
+            return (
+              <ItemInvoiceTable
+                key={`${item.type}-${index}`}
+                no={index}
+                data={item.course}
+                quantity={item.quantity}
+                categoryClass={"border-green-600"}
+              />
+            );
           })}
         </tbody>
       </Table>
