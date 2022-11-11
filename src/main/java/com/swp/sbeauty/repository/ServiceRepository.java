@@ -33,6 +33,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
             "and c.id = cb.id_customer\n" +
             "and cb.id_branch =?1\n" +
             "and c.id = ?2\n" +
+            "and b.status IN ('dathanhtoan')" +
             "and bd.status IN ('chuasudung')", nativeQuery = true)
     List<Service> getAllService(Long idBranch, Long idCustomer);
 }
