@@ -34,7 +34,7 @@ public class CourseDto {
     private Double discountPercent;
     private String image;
     private String description;
-    private List<ServiceDto> service;
+    private List<ServiceDto> services;
 
 
     public CourseDto(Course course) {
@@ -65,7 +65,7 @@ public class CourseDto {
             this.setDescription(course.getDescription());
             this.setTimeOfUse(course.getTimeOfUse());
         }
-        this.setService(listService);
+        this.setServices(listService);
 
     }
 }

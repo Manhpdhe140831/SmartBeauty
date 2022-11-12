@@ -99,7 +99,7 @@ public class CourseServiceImpl implements CourseService {
             for(Long id : listIdService){
                 list.add(new ServiceDto(serviceRepository.getServiceById(id)));
             }
-            courseDto.setService(list);
+            courseDto.setServices(list);
         }
         courseResponseDto.setData(courseDtos);
         courseResponseDto.setTotalPage(page.getTotalPages());
@@ -123,7 +123,7 @@ public class CourseServiceImpl implements CourseService {
             for(Long id : listIdService){
                 list.add(new ServiceDto(serviceRepository.getServiceById(id)));
             }
-            courseDto.setService(list);
+            courseDto.setServices(list);
         }
         courseResponseDto.setData(courseDtos);
         courseResponseDto.setTotalPage(page.getTotalPages());
