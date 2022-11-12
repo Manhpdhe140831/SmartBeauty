@@ -1,6 +1,6 @@
 export interface BookingModel {
   id: number;
-  booking: string;
+  slot: number;
   schedule: ScheduleModel[];
 }
 

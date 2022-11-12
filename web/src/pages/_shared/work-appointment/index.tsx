@@ -67,11 +67,11 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
             Object.keys(slotWorkConst).map((slot: any, i) => {
               return (
                 <AppointmentHeaderTimeline
-                  key={slotWorkConst[slot].name}
+                  key={slotWorkConst[slot].id}
                   title={slotWorkConst[slot].name}
                   timeFrame={slotWorkConst[slot].timeline}
                   bedSchedule={allSchedule?.find(
-                    (s) => s.booking === slotWorkConst[slot].name
+                    (s) => s.slot === slotWorkConst[slot].id
                   )}
                 />
               );

@@ -3,7 +3,7 @@ import { BookingModel, ScheduleStatus } from "../model/schedule.model";
 export const Schedule: BookingModel[] = [
   {
     id: 1,
-    booking: "slot_1",
+    slot: 1,
     schedule: [
       {
         id: 1,
@@ -20,7 +20,7 @@ export const Schedule: BookingModel[] = [
   },
   {
     id: 2,
-    booking: "slot_2",
+    slot: 2,
     schedule: [
       {
         id: 2,
@@ -37,7 +37,7 @@ export const Schedule: BookingModel[] = [
   },
   {
     id: 3,
-    booking: "slot_5",
+    slot: 5,
     schedule: [
       {
         id: 3,
@@ -54,7 +54,7 @@ export const Schedule: BookingModel[] = [
   },
   {
     id: 4,
-    booking: "slot_3",
+    slot: 4,
     schedule: [
       {
         id: 4,
@@ -72,7 +72,9 @@ export const Schedule: BookingModel[] = [
 ];
 
 const mockSchedule = () =>
-    new Promise<BookingModel[]>((resolve) => setTimeout(() => resolve(Schedule), 500));
+  new Promise<BookingModel[]>((resolve) =>
+    setTimeout(() => resolve(Schedule), 500)
+  );
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>
