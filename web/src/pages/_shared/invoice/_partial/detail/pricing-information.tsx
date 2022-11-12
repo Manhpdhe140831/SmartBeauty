@@ -47,9 +47,10 @@ const PricingInformation = ({ data }: PricingInformationProps) => {
     if (data) {
       // the bill was completed. The price will be fixed!
       if (data.priceBeforeTax && data.priceAfterTax) {
+        debugger;
         subtotal = data.priceBeforeTax;
         due = data.priceAfterTax;
-        tax = Math.floor((data.priceAfterTax / 92) * 100);
+        tax = Math.floor((due / 92) * 100) - due;
         discount = subtotal - due + tax;
 
         setAmount({
