@@ -11,7 +11,7 @@ const Bill: InvoiceModel[] = [
     status: "false",
     createdDate: "2022-08-11T05:49:08Z",
     approvedDate: "2022-10-11T05:49:08Z",
-    priceBeforeTax: 35775,
+    priceBeforeTax: 40000,
     priceAfterTax: 35775,
     items: [
       { type: "product", product: products[0]!, quantity: 20 },

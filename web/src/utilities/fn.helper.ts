@@ -82,6 +82,16 @@ export function toStringType<T>(value?: T | null) {
   return String(value);
 }
 
+/**
+ * the date is between the sale duration
+ * Either:
+ * - After the starting date
+ *  + Without the ending date.
+ * - After the starting date
+ *  + Before the ending date
+ * - Before ending date
+ *  + Without the starting date
+ */
 export function isBetweenSale(priceInfo?: BasePriceModel) {
   if (
     (!priceInfo?.discountEnd && !priceInfo?.discountStart) ||
@@ -105,15 +115,9 @@ export function isBetweenSale(priceInfo?: BasePriceModel) {
 }
 
 /**
- * the date is between the sale duration
- * Either:
- * - After the starting date
- *  + Without the ending date.
- * - After the starting date
- *  + Before the ending date
- * - Before ending date
- *  + Without the starting date
+ * Calculate the discounting price after discount.
+ * @param discountData
  */
-export function calculateDiscount(discountData: BasePriceModel) {
-  return ((100 - discountData.discountPercent!) / 100) * discountData.price;
+export function calculateDiscountAmount(discountData: BasePriceModel) {
+  return ((discountData.discountPercent ?? 0) * discountData.price) / 100;
 }
