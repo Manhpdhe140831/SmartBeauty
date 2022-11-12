@@ -153,10 +153,11 @@ const Login: AppPageInterface = () => {
           Login
         </Button>
 
-        <Link href={"/forgot-password"}>
-          <a className="mt-2 mb-4 text-center text-xs text-blue-500">
-            Forgot your password?
-          </a>
+        <Link
+          className="mt-2 mb-4 text-center text-xs text-blue-500"
+          href={"/forgot-password"}
+        >
+          Forgot your password?
         </Link>
       </form>
     </div>
