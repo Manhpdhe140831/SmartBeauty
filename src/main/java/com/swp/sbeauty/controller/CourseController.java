@@ -58,7 +58,7 @@ public class CourseController {
             @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
             @RequestParam(value = "image", required = false) String image,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam (value = "services", required = false) String[] services
+            @RequestParam (value = "services[]", required = false) String[] services
     ){
         String check = service.validateCourse(name, discountStart, discountEnd, discountPercent);
         if(check == ""){
@@ -82,7 +82,7 @@ public class CourseController {
             @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
             @RequestParam(value = "image", required = false) String image,
             @RequestParam(value = "description",required = false) String description,
-            @RequestParam (value = "services", required = false) String[] services
+            @RequestParam (value = "services[]", required = false) String[] services
     ){
         String check = service.validateCourse(name, discountStart, discountEnd, discountPercent);
         if(check == ""){

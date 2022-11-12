@@ -142,12 +142,16 @@ public class BillServiceImpl implements BillService {
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetailRepository.save(billDetail);
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                // for (i=>billDetailDto.getQuantity())
+                // Customer_Course_Mapping (Long bill_id, Long customer_id, Long service_id, String status "chuasudung")
             }if (billDetailDto.getType().equalsIgnoreCase("course")){
                 BillDetail billDetail = new BillDetail();
                 billDetail.setCourse_id(billDetailDto.getType_id());
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetailRepository.save(billDetail);
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                // for (i=>billDetailDto.getQuantity())
+                //Customer_Course_Mapping(Long bill_id, Long customer_id, Long course_id, String endDate, Integer count (0), String status (chuasudung))
             }
         }
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -159,22 +163,12 @@ public class BillServiceImpl implements BillService {
 
         bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
         bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
-// customer - course
-//        Long idCourse = null;
-//        for (BillDetailDto billDetailDto: billDetailDtos) {
-//            if (billDetailDto.getType().equalsIgnoreCase("course")){
-//                idCourse = billDetailDto.getType_id();
-//            }
-//        }
 
         if (bill != null){
             return true;
         }else {
             return false;
         }
-
-
-
     }
 
     @Override
