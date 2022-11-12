@@ -8,7 +8,9 @@ import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Course;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.CourseService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,9 @@ import java.util.List;
 public class CourseController {
     @Autowired
     private CourseService service;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     @GetMapping(value = "/course")
     private ResponseEntity<?> getServiceWithPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
@@ -96,6 +101,20 @@ public class CourseController {
     public ResponseEntity<?> getCourseById(@RequestParam("id") Long id){
         CourseDto courseDto = service.getCourseById(id);
         return new ResponseEntity<>(courseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/course/getCourseBuyed")
+    private ResponseEntity<?> getCourseBuyed(@RequestHeader("Authorization") String authHeader,
+                                            @RequestParam(value = "customer") Long customer){
+        if(authHeader != null){
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            String id = temp.get("id").toString();
+            Long idCheck = Long.parseLong(id);
+            List<CourseDto> list = service.getServiceBuyed(idCheck, customer);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
+        }
     }
 
 

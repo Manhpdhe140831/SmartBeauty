@@ -24,7 +24,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
 
     Boolean existsByName(String name);
 
-    @Query(value = "select * from service s, customer_course_mapping cc, bill b, bill_customer_mapping bc, customer c , customer_branch_mapping cb\n" +
+    @Query(value = "select s.* from service s, customer_course_mapping cc, bill b, bill_customer_mapping bc, customer c , customer_branch_mapping cb\n" +
             "            where s.id = cc.service_id\n" +
             "            and cc.bill_id = b.id\n" +
             "            and b.id = bc.bill_id\n" +
