@@ -1,14 +1,18 @@
 import { DatePicker } from "@mantine/dates";
 import { useQuery } from "@tanstack/react-query";
-import AutoCompleteItem from "../../../../../components/auto-complete-item";
-import { rawToAutoItem } from "../../../../../utilities/fn.helper";
-import mockStaff from "../../../../../mock/staff";
-import { StaffModel } from "../../../../../model/staff.model";
-import { ActionIcon, Divider, Select } from "@mantine/core";
+import { Button, Divider, Select } from "@mantine/core";
 import { useState } from "react";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
+import { rawToAutoItem } from "../../../../utilities/fn.helper";
+import { StaffModel } from "../../../../model/staff.model";
+import mockStaff from "../../../../mock/staff";
+import AutoCompleteItem from "../../../../components/auto-complete-item";
 
-const CalendarController = () => {
+type calendarProps = {
+  dateData?: Date;
+  onChange?: (selectedDate: Date) => void;
+};
+
+const CalendarController = ({ dateData, onChange }: calendarProps) => {
   const [staffId, setStaffId] = useState<number | null>(null);
   const [viewDate, setViewDate] = useState<Date | null>(null);
 
@@ -36,7 +40,7 @@ const CalendarController = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex items-center gap-4">
       <Select
         label={"Viewing Staff"}
         data={staffLoading || !listStaff ? [] : listStaff}
@@ -50,20 +54,21 @@ const CalendarController = () => {
         onChange={fnOnChange}
       />
 
-      <Divider orientation={"vertical"} className={"mx-4"} />
+      <Divider orientation={"vertical"} />
 
       <DatePicker
         placeholder="Pick date"
         label="Schedule at date"
+        value={dateData}
+        onChange={onChange}
         withAsterisk
       />
-      <ActionIcon mt={29} ml={4} variant="filled">
-        <IconArrowLeft size={12} />
-      </ActionIcon>
-
-      <ActionIcon mt={29} ml={2} variant="filled">
-        <IconArrowRight size={12} />
-      </ActionIcon>
+      <Button
+        className={"mt-6"}
+        onClick={() => onChange && onChange(new Date())}
+      >
+        Hôm nay
+      </Button>
     </div>
   );
 };

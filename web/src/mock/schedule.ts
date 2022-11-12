@@ -1,5 +1,4 @@
-import { BookingModel, ScheduleModel, ScheduleStatus } from "../model/schedule.model";
-import { slotWorkConst } from "../const/slot-work.const";
+import { BookingModel, ScheduleStatus } from "../model/schedule.model";
 
 export const Schedule: BookingModel[] = [
   {
@@ -16,8 +15,8 @@ export const Schedule: BookingModel[] = [
         services: "Chăm sóc da",
         status: ScheduleStatus.Cancel,
         note: "something",
-      }
-    ]
+      },
+    ],
   },
   {
     id: 2,
@@ -33,8 +32,8 @@ export const Schedule: BookingModel[] = [
         services: "Chăm sóc da",
         status: ScheduleStatus.Waiting,
         note: "something",
-      }
-    ]
+      },
+    ],
   },
   {
     id: 3,
@@ -48,10 +47,10 @@ export const Schedule: BookingModel[] = [
         customer_name: "David Beckham",
         customer_phone: "0987896541",
         services: "Chăm sóc da",
-        status: ScheduleStatus.OnGoing,
+        status: ScheduleStatus.Waiting,
         note: "something",
-      }
-    ]
+      },
+    ],
   },
   {
     id: 4,
@@ -67,13 +66,13 @@ export const Schedule: BookingModel[] = [
         services: "Chăm sóc da",
         status: ScheduleStatus.Finish,
         note: "something",
-      }
-    ]
+      },
+    ],
   },
-]
+];
 
 const mockSchedule = () =>
-  new Promise<BookingModel[]>((resolve) => setTimeout(() => resolve(Schedule), 500));
+    new Promise<BookingModel[]>((resolve) => setTimeout(() => resolve(Schedule), 500));
 
 // export const mockBranchWithManager = () =>
 //   new Promise<BranchModel<ManagerModel>[]>((resolve) =>

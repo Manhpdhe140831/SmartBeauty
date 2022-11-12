@@ -8,8 +8,8 @@ type AppointmentBedProps = {
 
 const AppointmentColTimeline = ({ bedInformation }: AppointmentBedProps) => {
   return (
-    <div className="flex flex-col h-full w-64">
-      <div className="flex h-16 items-center justify-center bg-gray-100 font-semibold border-x">
+    <div className="flex h-full min-w-64 flex-col">
+      <div className="flex h-16 items-center justify-center border-x bg-gray-100 font-semibold">
         <Text>{bedInformation.name}</Text>
       </div>
     </div>
