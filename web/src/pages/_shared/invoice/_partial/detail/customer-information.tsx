@@ -1,6 +1,6 @@
 import InformationBlock from "./_information-block";
 import { CustomerModel } from "../../../../../model/customer.model";
-import { FC } from "react";
+import { FC, ReactNode, useState } from "react";
 import { formatDate } from "../../../../../utilities/time.helper";
 import DatabaseSearchSelect from "../../../../../components/database-search.select";
 import {
@@ -18,10 +18,18 @@ import { IconFileInvoice } from "@tabler/icons";
 
 type InformationProps = {
   customerId?: number;
+  onChange?: (id: number | null) => void;
+  readOnly?: boolean;
+  error?: JSX.Element | ReactNode | string;
 };
 
-const CustomerInformationBlock: FC<InformationProps> = ({ customerId }) => {
-  const { data, isLoading } = useCustomerDetailQuery(customerId);
+const CustomerInformationBlock: FC<InformationProps> = ({
+  customerId,
+  onChange,
+  error,
+}) => {
+  const [id, setId] = useState<number | undefined>(customerId);
+  const { data, isLoading } = useCustomerDetailQuery(id);
 
   const parserFn = <T extends CustomerModel | StaffModel>(customer: T) =>
     ({
@@ -46,7 +54,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({ customerId }) => {
       </ThemeIcon>
 
       <div className="flex flex-col">
-        {!isLoading && data && (
+        {!isLoading && (
           <DatabaseSearchSelect
             value={toStringType(data?.id)}
             displayValue={
@@ -58,12 +66,19 @@ const CustomerInformationBlock: FC<InformationProps> = ({ customerId }) => {
                 : null
             }
             onSearching={findCustomerByName}
-            onSelected={(id) => console.log(id)}
-            {...stateInputProps("Customer", true, {
+            onSelected={(id) => {
+              if (!id) {
+                return onChange && onChange(null);
+              }
+              setId(Number(id));
+              onChange && onChange(Number(id));
+            }}
+            {...stateInputProps("Customer", onChange === undefined, {
               required: true,
             })}
           />
         )}
+        {error}
 
         <Divider my={8} />
 

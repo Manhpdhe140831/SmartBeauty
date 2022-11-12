@@ -1,14 +1,18 @@
 import { Divider, Table } from "@mantine/core";
-import { InvoiceModel } from "../../../../../model/invoice.model";
+import { BillItemsModel } from "../../../../../model/invoice.model";
 import { FC } from "react";
-import ItemInvoiceTable from "./_item-invoice.table";
 
 type BillItemsInformationProps = {
-  data?: InvoiceModel;
+  data: BillItemsModel[];
+  render: (item: BillItemsModel, index: number) => JSX.Element;
+  removable?: boolean;
 };
 
-const PurchaseListInformation: FC<BillItemsInformationProps> = ({ data }) => {
-  console.log(data);
+const PurchaseListInformation: FC<BillItemsInformationProps> = ({
+  data,
+  render,
+  removable,
+}) => {
   return (
     <div className="flex flex-col">
       <h1 className="text-lg font-semibold">Purchased Items</h1>
@@ -26,9 +30,10 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({ data }) => {
           <col className={"w-12"} />
           <col className={"w-14"} />
           <col />
+          <col className={"w-20"} />
+          <col className={"w-28"} />
           <col className={"w-24"} />
-          <col className={"w-24"} />
-          <col className={"w-24"} />
+          {removable && <col className={"w-14"} />}
         </colgroup>
         <thead>
           <tr>
@@ -38,42 +43,10 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({ data }) => {
             <th className={"!text-right"}>Quantity</th>
             <th>Price</th>
             <th>Due</th>
+            {removable && <th />}
           </tr>
         </thead>
-        <tbody>
-          {data?.items.map((item, index) => {
-            if (item.type === "product") {
-              return (
-                <ItemInvoiceTable
-                  key={`${item.type}-${index}`}
-                  no={index}
-                  data={item.product}
-                  quantity={item.quantity}
-                  categoryClass={"border-blue-600"}
-                />
-              );
-            } else if (item.type === "service") {
-              return (
-                <ItemInvoiceTable
-                  key={`${item.type}-${index}`}
-                  no={index}
-                  data={item.service}
-                  quantity={item.quantity}
-                  categoryClass={"border-red-600"}
-                />
-              );
-            }
-            return (
-              <ItemInvoiceTable
-                key={`${item.type}-${index}`}
-                no={index}
-                data={item.course}
-                quantity={item.quantity}
-                categoryClass={"border-green-600"}
-              />
-            );
-          })}
-        </tbody>
+        <tbody>{data.map((item, index) => render(item, index))}</tbody>
       </Table>
     </div>
   );

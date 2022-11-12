@@ -6,7 +6,6 @@ import { StaffModel } from "../../model/staff.model";
 
 export const useCustomerDetailQuery = (customerId?: number) =>
   useQuery(["customer-detail", customerId], async () => {
-    console.log("trigger when: ", customerId);
     if (customerId === undefined) {
       return null;
     }

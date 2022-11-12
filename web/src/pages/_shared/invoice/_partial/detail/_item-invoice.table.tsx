@@ -1,5 +1,12 @@
-import { FC } from "react";
-import { Badge, Image, Text, Tooltip } from "@mantine/core";
+import { FC, useMemo } from "react";
+import {
+  ActionIcon,
+  Badge,
+  Image,
+  NumberInput,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import { formatPrice, isBetweenSale } from "../../../../../utilities/fn.helper";
 import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
 import { discountedAmount } from "../../../../../utilities/pricing.helper";
@@ -13,6 +20,9 @@ type ItemTableProps = {
   } & BasePriceModel;
   quantity: number;
   categoryClass: string;
+  onRemove?: (index: number, item: ItemTableProps["data"]) => void;
+  onQuantityChange?: (quantity?: number) => void;
+  quantityDisabled?: boolean;
 };
 
 const ItemInvoiceTable: FC<ItemTableProps> = ({
@@ -20,12 +30,21 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
   no,
   quantity,
   categoryClass,
+  onRemove,
+  onQuantityChange,
+  quantityDisabled,
 }) => {
+  const isSaleOff = useMemo(() => isBetweenSale(data), [data]);
+
   return (
     <>
-      <tr className={`border-l-4 ${categoryClass}`}>
-        <td className={"text-center"}>{no}</td>
-        <td>
+      <tr
+        className={`border-l-4 ${categoryClass} ${
+          !isSaleOff ? "" : "[&>td]:!border-b-transparent"
+        }`}
+      >
+        <td className={"text-center align-top"}>{no}</td>
+        <td className={"align-top"}>
           {data?.image && (
             <Image
               alt={data.name}
@@ -37,20 +56,29 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
             />
           )}
         </td>
-        <td>
+        <td className={"align-top"}>
           <Tooltip label={data?.name}>
             <Text className={"overflow-hidden text-ellipsis"} size={"xs"}>
               {data?.name}
             </Text>
           </Tooltip>
         </td>
-        <td className={"overflow-hidden text-right"}>
+        <td className={"overflow-hidden text-right align-top"}>
           <div className="flex items-center justify-end space-x-2">
-            <Text>{quantity}</Text>
+            {onQuantityChange ? (
+              <NumberInput
+                placeholder={"amount..."}
+                defaultValue={quantity}
+                readOnly={quantityDisabled}
+                onChange={(v) => onQuantityChange(v)}
+              />
+            ) : (
+              <Text>{quantity}</Text>
+            )}
             <IconX className={"mt-[2px]"} size={14} />
           </div>
         </td>
-        <td>
+        <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
             {data?.price && formatPrice(data?.price)}
           </p>
@@ -58,16 +86,23 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
             per product
           </Text>
         </td>
-        <td>
+        <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
             {formatPrice((data?.price ?? 0) * (quantity ?? 1))}
           </p>
         </td>
+        {onRemove && (
+          <td rowSpan={2}>
+            <ActionIcon onClick={() => onRemove(no, data)} color={"red"}>
+              <IconX />
+            </ActionIcon>
+          </td>
+        )}
       </tr>
-      {isBetweenSale(data) && (
+      {isSaleOff && (
         <tr className={"border-l-4 border-blue-600"}>
           <td className={"!pt-1 !pr-0"} colSpan={5}>
-            <div className="flex items-center justify-end space-x-4">
+            <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">
                 Applied Discount!
               </small>
