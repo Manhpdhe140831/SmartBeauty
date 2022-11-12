@@ -28,9 +28,11 @@ import {
 } from "../../../utilities/fn.helper";
 import ServiceInCourseTable from "./_partial/service-in-course.table";
 import { formatTime } from "../../../utilities/time.helper";
+import { DialogSubmit } from "../../../utilities/form-data.helper";
+import { ServiceModel } from "../../../model/service.model";
 
 const CourseDetailDialog: FC<
-  DialogProps<CourseModel, CourseUpdateEntity, CourseUpdateEntity>
+  DialogProps<CourseModel<ServiceModel>, CourseUpdateEntity, CourseUpdateEntity>
 > = ({ data, opened, onClosed, mode }) => {
   const validateSchema = getCourseModelSchema(mode);
 
@@ -40,7 +42,7 @@ const CourseDetailDialog: FC<
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
     mode: "onBlur",
@@ -56,6 +58,7 @@ const CourseDetailDialog: FC<
               ? dayjs(data.discountEnd).toDate()
               : undefined,
             discountPercent: data.discountPercent ?? undefined,
+            services: data.services.map((s) => s.id),
           }
         : undefined,
   });
@@ -66,6 +69,9 @@ const CourseDetailDialog: FC<
     reset();
     onClosed && onClosed();
   };
+
+  const onSubmit = (submitData: z.infer<typeof validateSchema>) =>
+    DialogSubmit(mode, dirtyFields, onClosed, data)(submitData);
 
   return (
     <Modal
@@ -94,7 +100,7 @@ const CourseDetailDialog: FC<
 
         <form
           onReset={handleReset}
-          onSubmit={onClosed && handleSubmit(onClosed as never)}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex w-[800px] flex-wrap p-4"
         >
           <div className="flex flex-1 flex-col">

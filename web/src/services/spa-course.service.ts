@@ -13,6 +13,7 @@ import {
   CourseModel,
   CourseUpdateEntity,
 } from "../model/course.model";
+import { ServiceModel } from "../model/service.model";
 
 export async function getListSpaCourses(
   page = 1,
@@ -20,16 +21,15 @@ export async function getListSpaCourses(
   searchParams?: SearchParamUrl
 ) {
   try {
-    const apiResult = await axios.get<PaginatedResponse<CourseModel>>(
-      "/course",
-      {
-        params: {
-          page,
-          pageSize,
-          ...(searchParams ?? {}),
-        },
-      }
-    );
+    const apiResult = await axios.get<
+      PaginatedResponse<CourseModel<ServiceModel>>
+    >("/course", {
+      params: {
+        page,
+        pageSize,
+        ...(searchParams ?? {}),
+      },
+    });
 
     return apiResult.data;
   } catch (e) {

@@ -30,7 +30,6 @@ const BtnCreateManager: FC<BtnCreateManagerProps> = ({ onChanged }) => {
       console.warn(error);
       // TODO better error system
       alert(error.message);
-      debugger;
     },
   });
 

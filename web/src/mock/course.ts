@@ -140,9 +140,17 @@ const course: CourseModel[] = [
   },
 ];
 
-const mockCourse = () =>
+const mockCourse = (name?: string) =>
   new Promise<CourseModel[]>((resolve) =>
-    setTimeout(() => resolve(shuffleArray(course)), 500)
+    setTimeout(() => {
+      if (!name) return resolve(shuffleArray(course));
+
+      return resolve(
+        shuffleArray(course).filter((s) =>
+          s.name.toLowerCase().includes(name.toLowerCase())
+        )
+      );
+    }, 500)
   );
 
 export default mockCourse;

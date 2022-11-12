@@ -6,6 +6,7 @@ import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.CourseRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
 import com.swp.sbeauty.repository.mappingRepo.Course_Service_Mapping_Repository;
+import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
 import com.swp.sbeauty.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -38,6 +39,8 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     Course_Service_Mapping_Repository course_service_mapping_repository;
 
+    @Autowired
+    Service_Branch_Mapping_Repo service_branch_mapping_repo;
     @Autowired
     ModelMapper mapper;
 
@@ -99,7 +102,7 @@ public class CourseServiceImpl implements CourseService {
             for(Long id : listIdService){
                 list.add(new ServiceDto(serviceRepository.getServiceById(id)));
             }
-            courseDto.setService(list);
+            courseDto.setServices(list);
         }
         courseResponseDto.setData(courseDtos);
         courseResponseDto.setTotalPage(page.getTotalPages());
@@ -123,7 +126,7 @@ public class CourseServiceImpl implements CourseService {
             for(Long id : listIdService){
                 list.add(new ServiceDto(serviceRepository.getServiceById(id)));
             }
-            courseDto.setService(list);
+            courseDto.setServices(list);
         }
         courseResponseDto.setData(courseDtos);
         courseResponseDto.setTotalPage(page.getTotalPages());
@@ -147,13 +150,9 @@ public class CourseServiceImpl implements CourseService {
                 course.setDuration(duration);
             }
             if (discountStart != null) {
-                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                //Date startDate = df.parse(discountStart);
                 course.setDiscountStart(discountStart);
             }
             if (discountEnd != null) {
-                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                //Date endDate = df.parse(discountEnd);
                 course.setDiscountEnd(discountEnd);
             }
             if (discountPercent != null) {
@@ -196,6 +195,21 @@ public class CourseServiceImpl implements CourseService {
         }
         CourseDto courseDto = new CourseDto(course, serviceDtos);
         return courseDto;
+    }
+
+    @Override
+    public List<CourseDto> getServiceBuyed(Long idCheck, Long customer) {
+        if(idCheck==null || customer == null){
+            return null;
+        } else {
+            Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
+            List<Course> allUsers = courseRepository.getCourseBuyed(idBranch,customer);
+            List<CourseDto> courseDtos = new ArrayList<>();
+            for (Course course : allUsers){
+                courseDtos.add(new CourseDto(course));
+            }
+            return courseDtos;
+        }
     }
 
     @Override

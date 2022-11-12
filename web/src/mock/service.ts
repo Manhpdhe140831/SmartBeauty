@@ -145,9 +145,17 @@ export const services: ServiceModel[] = [
   },
 ];
 
-const mockService = () =>
+const mockService = (name?: string) =>
   new Promise<ServiceModel[]>((resolve) =>
-    setTimeout(() => resolve(shuffleArray(services)), 500)
+    setTimeout(() => {
+      if (!name) return resolve(shuffleArray(services));
+
+      return resolve(
+        shuffleArray(services).filter((s) =>
+          s.name.toLowerCase().includes(name.toLowerCase())
+        )
+      );
+    }, 500)
   );
 
 export default mockService;

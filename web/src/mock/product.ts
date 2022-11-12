@@ -136,9 +136,19 @@ export const products: ProductModel[] = [
   },
 ];
 
-const mockProduct = () =>
+const mockProduct = (name?: string) =>
   new Promise<ProductModel[]>((resolve) =>
-    setTimeout(() => resolve(shuffleArray(products)), 500)
+    setTimeout(() => {
+      if (!name) {
+        return resolve(shuffleArray(products));
+      }
+
+      return resolve(
+        shuffleArray(products).filter((s) =>
+          s.name.toLowerCase().includes(name.toLowerCase())
+        )
+      );
+    }, 500)
   );
 
 export default mockProduct;

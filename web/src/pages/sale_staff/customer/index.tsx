@@ -37,7 +37,7 @@ const SaleStaffCustomerList: AppPageInterface = () => {
   }
 
   return (
-    <div className={"flex h-full flex-col space-y-4 p-4"}>
+    <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
         {/*  Btn create new customer   */}
         <Button color={"teal"} leftIcon={<IconPlus />}>

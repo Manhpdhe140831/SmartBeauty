@@ -5,7 +5,7 @@ const Home: AppPageInterface = () => {
   return (
     <div
       className={
-        "flex h-full w-full select-none flex-col items-center justify-center space-y-2 text-gray-800"
+        "flex min-h-full w-full select-none flex-col items-center justify-center space-y-2 text-gray-800"
       }
     >
       <h1 className={"text-center"}>Welcome</h1>

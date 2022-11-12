@@ -103,7 +103,7 @@ public class ServiceController {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/service/getAllService")
+    @GetMapping("/service/getServiceBuyed")
     private ResponseEntity<?> getAllService(@RequestHeader("Authorization") String authHeader,
                                            @RequestParam(value = "customer") Long customer){
         if(authHeader != null){
