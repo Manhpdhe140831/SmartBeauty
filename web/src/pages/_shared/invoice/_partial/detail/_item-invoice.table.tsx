@@ -7,9 +7,12 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { formatPrice, isBetweenSale } from "../../../../../utilities/fn.helper";
 import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
-import { discountedAmount } from "../../../../../utilities/pricing.helper";
+import {
+  discountedAmount,
+  formatPrice,
+  isBetweenSale,
+} from "../../../../../utilities/pricing.helper";
 import { BasePriceModel } from "../../../../../model/_price.model";
 
 type ItemTableProps = {

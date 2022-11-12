@@ -37,7 +37,7 @@ const ManageCustomer: AppPageInterface = () => {
   }
 
   return (
-    <div className={"flex h-full flex-col space-y-4 p-4"}>
+    <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex-1">
         <ListCustomer
           page={currentPage}

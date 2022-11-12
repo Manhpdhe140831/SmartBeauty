@@ -50,7 +50,7 @@ const ManageInvoiceDetail: AppPageInterface = () => {
   }
 
   return (
-    <div className={"flex h-full flex-col bg-gray-100 p-4"}>
+    <div className={"flex min-h-full flex-col bg-gray-100 p-4"}>
       <div className="flex items-center space-x-4">
         <Button
           leftIcon={<IconArrowLeft />}
@@ -95,7 +95,7 @@ const ManageInvoiceDetail: AppPageInterface = () => {
                       <ItemInvoiceTable
                         key={`${item.type}-${index}`}
                         no={index}
-                        data={item.product}
+                        data={item.item}
                         quantity={item.quantity}
                         categoryClass={"border-blue-600"}
                       />
@@ -105,7 +105,7 @@ const ManageInvoiceDetail: AppPageInterface = () => {
                       <ItemInvoiceTable
                         key={`${item.type}-${index}`}
                         no={index}
-                        data={item.service}
+                        data={item.item}
                         quantity={item.quantity}
                         categoryClass={"border-red-600"}
                       />
@@ -115,7 +115,7 @@ const ManageInvoiceDetail: AppPageInterface = () => {
                     <ItemInvoiceTable
                       key={`${item.type}-${index}`}
                       no={index}
-                      data={item.course}
+                      data={item.item}
                       quantity={item.quantity}
                       categoryClass={"border-green-600"}
                     />

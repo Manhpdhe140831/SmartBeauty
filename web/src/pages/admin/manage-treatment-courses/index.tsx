@@ -20,9 +20,11 @@ import {
   updateSpaCourse,
 } from "../../../services/spa-course.service";
 import { showNotification } from "@mantine/notifications";
+import { ServiceModel } from "../../../model/service.model";
 
 const Index: AppPageInterface = () => {
-  const { modal, openModal, resetModal } = useDialogDetailRow<CourseModel>();
+  const { modal, openModal, resetModal } =
+    useDialogDetailRow<CourseModel<ServiceModel>>();
   const {
     pageSize,
     currentPage,
@@ -89,7 +91,7 @@ const Index: AppPageInterface = () => {
   });
 
   return (
-    <div className={"flex h-full flex-col space-y-4 p-4"}>
+    <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
         <Button onClick={() => openModal("create")} leftIcon={<IconPlus />}>
           Course

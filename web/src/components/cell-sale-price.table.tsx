@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Text } from "@mantine/core";
-import { formatPrice } from "../utilities/fn.helper";
 import { BasePriceModel } from "../model/_price.model";
+import { formatPrice } from "../utilities/pricing.helper";
 
 type cellProps = {
   priceModel: BasePriceModel;

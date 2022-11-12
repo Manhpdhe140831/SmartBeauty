@@ -3,8 +3,9 @@ import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
 import { CourseModel } from "../../../../model/course.model";
 import { Image, Text, Tooltip } from "@mantine/core";
 import SalePriceTableCell from "../../../../components/cell-sale-price.table";
+import { ServiceModel } from "../../../../model/service.model";
 
-const CourseRowTable: FC<DataRowProps<CourseModel>> = ({
+const CourseRowTable: FC<DataRowProps<CourseModel<ServiceModel>>> = ({
   onClick,
   data,
   no,

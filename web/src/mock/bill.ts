@@ -14,8 +14,8 @@ const Bill: InvoiceModel[] = [
     priceBeforeTax: 40000,
     priceAfterTax: 35775,
     items: [
-      { type: "product", product: products[0]!, quantity: 20 },
-      { type: "service", service: services[0]!, quantity: 1 },
+      { type: "product", item: products[0]!, quantity: 20 },
+      { type: "service", item: services[0]!, quantity: 1 },
     ],
   },
   {

@@ -2,11 +2,11 @@ import { Text, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { InvoiceModel } from "../../../../../model/invoice.model";
 import dayjs from "dayjs";
-import { formatPrice } from "../../../../../utilities/fn.helper";
 import {
   useCustomerDetailQuery,
   useStaffDetailQuery,
 } from "../../../../../query/model-detail";
+import { formatPrice } from "../../../../../utilities/pricing.helper";
 
 type RowProps = {
   no: number;

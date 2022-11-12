@@ -1,13 +1,13 @@
 import { InvoiceModel } from "../../../../../model/invoice.model";
 import { Divider, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
+import { BasePriceModel } from "../../../../../model/_price.model";
+import { useEffect, useState } from "react";
 import {
   calculateDiscountAmount,
   formatPrice,
   isBetweenSale,
-} from "../../../../../utilities/fn.helper";
-import { BasePriceModel } from "../../../../../model/_price.model";
-import { useEffect, useState } from "react";
+} from "../../../../../utilities/pricing.helper";
 
 type PricingInformationProps = {
   data?: InvoiceModel;
@@ -47,7 +47,6 @@ const PricingInformation = ({ data }: PricingInformationProps) => {
     if (data) {
       // the bill was completed. The price will be fixed!
       if (data.priceBeforeTax && data.priceAfterTax) {
-        debugger;
         subtotal = data.priceBeforeTax;
         due = data.priceAfterTax;
         tax = Math.floor((due / 92) * 100) - due;
@@ -66,11 +65,11 @@ const PricingInformation = ({ data }: PricingInformationProps) => {
     data.items.forEach((item) => {
       let buyStuff: BasePriceModel;
       if (item.type === "product") {
-        buyStuff = item.product;
+        buyStuff = item.item;
       } else if (item.type === "service") {
-        buyStuff = item.service;
+        buyStuff = item.item;
       } else {
-        buyStuff = item.course;
+        buyStuff = item.item;
       }
       subtotal += buyStuff.price * item.quantity;
       if (isBetweenSale(buyStuff)) {

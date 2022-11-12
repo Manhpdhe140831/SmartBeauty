@@ -24,7 +24,7 @@ export const useListCourseQuery = (
   currentPage: number,
   updatePagination: fnUpdatePagination
 ) =>
-  useQuery<PaginatedResponse<CourseModel>>(
+  useQuery<PaginatedResponse<CourseModel<ServiceModel>>>(
     ["list-course", currentPage],
     () => getListSpaCourses(currentPage),
     {

@@ -15,17 +15,17 @@ export type BillItem = {
 
 export type BillProductItem = BillItem & {
   type: "product";
-  product: ProductModel;
+  item: ProductModel;
 };
 
 export type BillServiceItem = BillItem & {
   type: "service";
-  service: ServiceModel;
+  item: ServiceModel;
 };
 
 export type BillCourseItem = BillItem & {
   type: "course";
-  course: CourseModel;
+  item: CourseModel;
 };
 
 export type BillItemsModel = BillCourseItem | BillServiceItem | BillProductItem;
@@ -43,21 +43,21 @@ export interface InvoiceModel {
   items: BillItemsModel[];
 }
 
-export type BillProductEntity = Omit<BillProductItem, "product"> & {
-  productId: number;
+export type BillProductEntity = Omit<BillProductItem, "item"> & {
+  item: number;
 };
-export type BillServiceEntity = Omit<BillServiceItem, "service"> & {
-  serviceId: number;
+export type BillServiceEntity = Omit<BillServiceItem, "item"> & {
+  item: number;
 };
-export type BillCourseEntity = Omit<BillCourseItem, "course"> & {
-  courseId: number;
+export type BillCourseEntity = Omit<BillCourseItem, "item"> & {
+  item: number;
 };
 
 export type BillCreateEntity = Omit<
   InvoiceModel,
   "id" | "branch" | "staff" | "createdDate" | "items"
 > & {
-  items: BillProductEntity | BillServiceEntity | BillCourseEntity;
+  items: (BillProductEntity | BillServiceEntity | BillCourseEntity)[];
 };
 
 export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status">;

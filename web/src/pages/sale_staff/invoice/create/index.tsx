@@ -25,7 +25,7 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
   }
 
   return (
-    <div className={"flex h-full flex-col bg-gray-100 p-4"}>
+    <div className={"flex min-h-full flex-col bg-gray-100 p-4"}>
       <div className="flex items-center space-x-4">
         <Button
           leftIcon={<IconArrowLeft />}

@@ -13,7 +13,7 @@ import { ActionIcon, Image, NumberInput, Text } from "@mantine/core";
 import { IconX } from "@tabler/icons";
 import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { useQuery } from "@tanstack/react-query";
-import { formatPrice, rawToAutoItem } from "../../../../utilities/fn.helper";
+import { rawToAutoItem } from "../../../../utilities/fn.helper";
 import { ProductModel } from "../../../../model/product.model";
 import FormErrorMessage from "../../../../components/form-error-message";
 import DatabaseSearchSelect from "../../../../components/database-search.select";
@@ -23,6 +23,7 @@ import {
   getListProduct,
   getProductById,
 } from "../../../../services/product.service";
+import { formatPrice } from "../../../../utilities/pricing.helper";
 
 type ParentSchema = ReturnType<typeof getServiceModelSchema>;
 type inferParentSchema = z.infer<ParentSchema>;

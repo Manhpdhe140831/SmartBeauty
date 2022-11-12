@@ -2,7 +2,7 @@ import { ActionIcon, Image } from "@mantine/core";
 import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { IconX } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
-import { formatPrice, rawToAutoItem } from "../../../../utilities/fn.helper";
+import { rawToAutoItem } from "../../../../utilities/fn.helper";
 import DatabaseSearchSelect from "../../../../components/database-search.select";
 import { useQuery } from "@tanstack/react-query";
 import { formatTime } from "../../../../utilities/time.helper";
@@ -10,6 +10,7 @@ import {
   getDetailSpaService,
   getListSpaServices,
 } from "../../../../services/spa-service.service";
+import { formatPrice } from "../../../../utilities/pricing.helper";
 
 type rowProps = {
   no: number;
