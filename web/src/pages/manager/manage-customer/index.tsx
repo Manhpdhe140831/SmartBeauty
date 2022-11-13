@@ -4,8 +4,7 @@ import { USER_ROLE } from "../../../const/user-role.const";
 import { useRouter } from "next/router";
 import { Divider, Pagination } from "@mantine/core";
 import usePaginationHook from "../../../hooks/pagination.hook";
-import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../../mock/customer";
+import { useListCustomerQuery } from "../../../query/model-list";
 
 const ManageCustomer: AppPageInterface = () => {
   const router = useRouter();
@@ -16,10 +15,12 @@ const ManageCustomer: AppPageInterface = () => {
     update: updatePagination,
   } = usePaginationHook(undefined, Number(router.query.page ?? "1"));
 
-  // TODO integrate API list customer.
-  const { data: listUser, isLoading: listUserLoading } = useQuery(
-    ["list-customer", router.query.role, currentPage],
-    () => mockCustomer()
+  const { data: listUser, isLoading: listUserLoading } = useListCustomerQuery(
+    currentPage,
+    updatePagination,
+    {
+      pageSize,
+    }
   );
 
   function navigateToDetail(id: number, currentPage: number) {
@@ -42,7 +43,7 @@ const ManageCustomer: AppPageInterface = () => {
         <ListCustomer
           page={currentPage}
           pageSize={pageSize}
-          data={listUser}
+          data={listUser?.data}
           isLoading={listUserLoading}
           onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />

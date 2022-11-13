@@ -1,16 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../mock/customer";
-import { CustomerModel } from "../../model/customer.model";
 import mockStaff from "../../mock/staff";
 import { StaffModel } from "../../model/staff.model";
+import { getCustomerById } from "../../services/customer.service";
 
 export const useCustomerDetailQuery = (customerId?: number) =>
-  useQuery(["customer-detail", customerId], async () => {
+  useQuery(["customer-detail", customerId], () => {
     if (customerId === undefined) {
       return null;
     }
-    const mc = await mockCustomer();
-    return mc.find((c) => c.id === customerId) as CustomerModel;
+    return getCustomerById(customerId);
   });
 
 export const useStaffDetailQuery = (staffId?: number) =>

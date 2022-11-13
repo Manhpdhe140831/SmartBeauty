@@ -17,7 +17,10 @@ const Index: AppPageInterface = () => {
 
   const { data: bills, isLoading } = useListInvoiceQuery(
     currentPage,
-    updatePagination
+    updatePagination,
+    {
+      pageSize,
+    }
   );
 
   function navigateToDetail(id: number, currentPage: number) {

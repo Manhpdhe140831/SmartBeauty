@@ -5,7 +5,7 @@ import { Button, Divider, Pagination } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../../mock/customer";
+import { getAllCustomers } from "../../../services/customer.service";
 
 const SaleStaffCustomerList: AppPageInterface = () => {
   const router = useRouter();
@@ -16,10 +16,9 @@ const SaleStaffCustomerList: AppPageInterface = () => {
     update: updatePagination,
   } = usePaginationHook(undefined, Number(router.query.page ?? "1"));
 
-  // TODO integrate API list customer.
   const { data: listUser, isLoading: listUserLoading } = useQuery(
     ["list-customer", router.query.role, currentPage],
-    () => mockCustomer()
+    () => getAllCustomers(currentPage, pageSize)
   );
 
   function navigateToDetail(id: number, currentPage: number) {
@@ -51,7 +50,7 @@ const SaleStaffCustomerList: AppPageInterface = () => {
         <ListCustomer
           page={currentPage}
           pageSize={pageSize}
-          data={listUser}
+          data={listUser?.data}
           isLoading={listUserLoading}
           onRowClick={(d) => navigateToDetail(d.id, currentPage)}
         />
