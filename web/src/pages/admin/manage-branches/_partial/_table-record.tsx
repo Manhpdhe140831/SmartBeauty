@@ -49,7 +49,7 @@ export default function TableRecord(props: RecordProps) {
               <p className="max-w-40 whitespace-pre-wrap">
                 {props.data.address}
               </p>
-              <small className="text-gray-400">click to copy</small>
+              <small className="text-gray-400">Click để copy</small>
             </div>
           }
         >

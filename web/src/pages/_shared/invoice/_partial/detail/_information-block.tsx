@@ -31,7 +31,7 @@ const InformationBlock = <T extends object, K extends keyof T>({
             {data.from && (parser(data.from[data.key]) as string)}
           </p>
           {data.allowCopy !== false && (
-            <small className="text-gray-400">click to copy</small>
+            <small className="text-gray-400">Click để copy</small>
           )}
         </div>
       }

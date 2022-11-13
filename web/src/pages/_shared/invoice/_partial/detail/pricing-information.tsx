@@ -91,33 +91,33 @@ const PricingInformation = ({ data }: PricingInformationProps) => {
   return (
     <div className={"flex flex-col rounded-lg bg-white p-4 shadow"}>
       <h1 className="text-lg font-semibold">
-        Amount Due <span className={"font-normal text-gray-400"}>(VND)</span>
+        Thanh Toán <span className={"font-normal text-gray-400"}>(VND)</span>
       </h1>
       <Divider my={8} />
 
       <div className="flex select-none flex-col space-y-1 opacity-50 hover:opacity-100">
         <div className="flex px-2">
-          <div className="w-24 font-semibold text-gray-500">Subtotal</div>
+          <div className="w-24 font-semibold text-gray-500">Tổng cộng</div>
           <p className="flex-1 text-right font-semibold">
             {formatPrice(amountInfo.subtotal)}
           </p>
         </div>
 
         <div className="flex rounded bg-green-100 p-2 text-sm">
-          <div className="w-24 font-semibold text-gray-500">Discount</div>
+          <div className="w-24 font-semibold text-gray-500">Giảm giá</div>
           <p className="flex-1 text-right">
             -{formatPrice(amountInfo.discount)}
           </p>
         </div>
 
         <div className="flex rounded bg-gray-100 p-2 text-sm">
-          <div className="w-24 font-semibold text-gray-500">Tax (8%)</div>
+          <div className="w-24 font-semibold text-gray-500">Thuế (8%)</div>
           <p className="flex-1 text-right">+{formatPrice(amountInfo.tax)}</p>
         </div>
       </div>
 
       <Tooltip
-        label={<small className={"text-xs text-gray-200"}>Click to copy</small>}
+        label={<small className={"text-xs text-gray-200"}>Click để copy</small>}
       >
         <div
           onClick={() => clipboard.copy(data?.priceAfterTax)}
@@ -128,14 +128,17 @@ const PricingInformation = ({ data }: PricingInformationProps) => {
               "w-full text-right text-sm font-semibold uppercase text-gray-400"
             }
           >
-            Deposit Due
+            Thành Tiền
           </small>
           <h1
             className={
               "cursor-pointer select-none overflow-hidden text-ellipsis whitespace-nowrap text-right font-semibold leading-none"
             }
           >
-            {data?.priceAfterTax && formatPrice(data?.priceAfterTax)}
+            <span>
+              {data?.priceAfterTax && formatPrice(data?.priceAfterTax)}
+            </span>{" "}
+            <small className={"select-none text-xs"}>VND</small>
           </h1>
         </div>
       </Tooltip>

@@ -21,7 +21,7 @@ const PurchaseListInformation = <
 }: BillItemsInformationProps<T>) => {
   return (
     <div className="flex flex-col">
-      <h1 className="text-lg font-semibold">Purchased Items</h1>
+      <h1 className="text-lg font-semibold capitalize">Sản phẩm đã mua</h1>
 
       <Divider my={8} />
 
@@ -44,11 +44,11 @@ const PurchaseListInformation = <
         <thead>
           <tr>
             <th className={"!text-right"}>No.</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Due</th>
+            <th>Ảnh</th>
+            <th>Tên</th>
+            <th>Số Lượng</th>
+            <th>Giá (VND)</th>
+            <th>Thành Tiền</th>
             {removable && <th />}
           </tr>
         </thead>

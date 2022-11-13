@@ -15,6 +15,7 @@ import { invoiceItemTypeSchema } from "../../../../validation/invoice.schema";
 import ViewBillingItem from "./_partial/_view-billing-item";
 import { InvoiceItemsCreateEntity } from "../../../../model/invoice.model";
 import FormErrorMessage from "../../../../components/form-error-message";
+import SaleStaffInvoiceAction from "../../../_shared/invoice/_partial/detail/sale_staff.action";
 
 const SaleStaffInvoiceCreate: AppPageInterface = () => {
   const router = useRouter();
@@ -154,7 +155,11 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
             <SearchBillingItems onChange={onNewItemAdded} />
           </>
         )}
-        action={() => <></>}
+        action={() => (
+          <>
+            <SaleStaffInvoiceAction status={"create"} />
+          </>
+        )}
       />
     </div>
   );

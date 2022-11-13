@@ -12,18 +12,18 @@ const TimeInvoiceInformation = ({ data }: TimeInvoiceProps) => {
   const copyHook = useClipboard({ timeout: 500 });
 
   function copyFormat(dateRaw?: string) {
-    if (!dateRaw) return "not available";
+    if (!dateRaw) return "Không có sẵn";
     return dayjs(dateRaw).format("DD/MM/YYYY - HH:mm:ss");
   }
 
   return (
-    <Tooltip label={data?.createdDate ? "click to copy" : undefined}>
+    <Tooltip label={data?.createdDate ? "Click để copy" : undefined}>
       <div className="flex select-none space-x-4 rounded-lg bg-pink-500 p-4">
         <div
           onClick={() => copyHook.copy(copyFormat(data?.createdDate))}
           className="flex flex-1 cursor-pointer flex-col"
         >
-          <h4 className={"text-md font-thin text-white"}>Issued at</h4>
+          <h4 className={"text-md font-thin text-white"}>Được xuất đơn lúc</h4>
           <Text color={"white"} size={"lg"} weight={"bolder"}>
             {data?.createdDate && timeToDate(data?.createdDate)}
           </Text>
@@ -38,7 +38,9 @@ const TimeInvoiceInformation = ({ data }: TimeInvoiceProps) => {
           onClick={() => copyHook.copy(copyFormat(data?.approvedDate))}
           className="flex flex-1 cursor-pointer flex-col items-end"
         >
-          <h4 className={"text-md font-thin text-white"}>Approved At</h4>
+          <h4 className={"text-md font-thin text-white"}>
+            Được hoàn thành lúc
+          </h4>
           <Text color={"white"} size={"lg"} weight={"bolder"}>
             {data?.approvedDate && timeToDate(data?.approvedDate)}
           </Text>

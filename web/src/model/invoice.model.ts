@@ -11,6 +11,8 @@ import { CourseModel } from "./course.model";
 import { z } from "zod";
 import { invoiceItemTypeSchema } from "../validation/invoice.schema";
 
+export type InvoiceStatus = "pending" | "approved" | "discarded";
+
 type BillingItemBase = {
   quantity: number;
 };
@@ -42,7 +44,7 @@ export interface InvoiceModel {
   branch: number;
   customer: number;
   staff: number;
-  status: string;
+  status: InvoiceStatus;
   createdDate: string;
   approvedDate: string;
   priceBeforeTax: number;
@@ -56,7 +58,7 @@ export type InvoiceItemsCreateEntity = Omit<InvoiceItemsModel, "item"> & {
 
 export type InvoiceCreateEntity = Omit<
   InvoiceModel,
-  "id" | "branch" | "staff" | "createdDate" | "items"
+  "id" | "branch" | "staff" | "createdDate" | "items" | "status"
 > & {
   items: InvoiceItemsCreateEntity[];
 };

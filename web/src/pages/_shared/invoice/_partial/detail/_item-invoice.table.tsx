@@ -76,7 +76,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
             {invoiceItem?.price && formatPrice(invoiceItem?.price)}
           </p>
           <Text size={"xs"} color={"dimmed"}>
-            per product
+            / sản phẩm
           </Text>
         </td>
         <td className={"align-top"}>
@@ -90,7 +90,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
           <td className={"!pt-1 !pr-0"} colSpan={5}>
             <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">
-                Applied Discount!
+                Áp dụng giảm giá!
               </small>
               <Badge
                 variant={"filled"}

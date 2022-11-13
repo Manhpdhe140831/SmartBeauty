@@ -13,6 +13,7 @@ import PurchaseListInformation from "../../../_shared/invoice/_partial/detail/pu
 import StaffInformation from "../../../_shared/invoice/_partial/detail/staff-information";
 import PricingInformation from "../../../_shared/invoice/_partial/detail/pricing-information";
 import ItemInvoiceTable from "../../../_shared/invoice/_partial/detail/_item-invoice.table";
+import ManagerInvoiceAction from "../../../_shared/invoice/_partial/detail/manager.action";
 
 const ManageInvoiceDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -61,10 +62,10 @@ const ManageInvoiceDetail: AppPageInterface = () => {
             )
           }
         >
-          Back
+          Quay lại
         </Button>
         <h1 className={"flex flex-1 items-center space-x-4"}>
-          <span>Invoice Details</span>
+          <span>Chi tiết Hóa Đơn</span>
           <Text className={"inline select-none"} color={"dimmed"}>
             #{data?.id ?? "-"}
           </Text>
@@ -74,9 +75,9 @@ const ManageInvoiceDetail: AppPageInterface = () => {
       <Divider my={16} />
 
       {isLoading ? (
-        <Text>Loading...</Text>
+        <Text>Đang tải...</Text>
       ) : !data ? (
-        <Text>No Invoice found...</Text>
+        <Text>Không thể tìm thấy hóa đơn...</Text>
       ) : (
         <InvoiceDetail
           invoice={data}
@@ -106,6 +107,8 @@ const ManageInvoiceDetail: AppPageInterface = () => {
               <StaffInformation staffId={invoice?.staff} />
 
               <PricingInformation data={invoice} />
+
+              <ManagerInvoiceAction status={invoice?.status} />
             </>
           )}
         />
