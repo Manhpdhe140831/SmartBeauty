@@ -1,18 +1,21 @@
 import { Divider, Table } from "@mantine/core";
 import { BillCreateEntity } from "../../../../../model/invoice.model";
-import { FC } from "react";
-import ItemInvoiceTable from "./_item-invoice.table";
+import { ElementType, FC } from "react";
+import ItemInvoiceTable, { ItemTableProps } from "./_item-invoice.table";
+import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
 
-type BillItemsInformationProps = {
-  data: BillCreateEntity["items"];
+type BillItemsInformationProps<T extends number | ItemTableViewData> = {
+  data: T;
   onQuantityUpdate?: (quantity?: number) => void;
   removable?: boolean;
+  useComponent?: ElementType<ItemTableProps>;
 };
 
 const PurchaseListInformation: FC<BillItemsInformationProps> = ({
   data,
   onQuantityUpdate,
   removable,
+  useComponent,
 }) => {
   return (
     <div className="flex flex-col">

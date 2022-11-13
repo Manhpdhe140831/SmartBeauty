@@ -26,7 +26,7 @@ type itemModel = {
   name: string;
 } & BasePriceModel;
 
-type ItemTableProps = {
+export type ItemTableProps = {
   no: number;
   data?: number;
   type: z.infer<typeof invoiceItemTypeSchema>;
