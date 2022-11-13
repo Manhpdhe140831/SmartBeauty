@@ -9,19 +9,24 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { ScheduleModel, ScheduleStatus } from "../../../model/schedule.model";
 import { slotWorkConst } from "../../../const/slot-work.const";
 import { USER_ROLE } from "../../../const/user-role.const";
+import { DatePicker } from "@mantine/dates";
 import { useAuthUser } from "../../../store/auth-user.state";
+import { Beds } from "../../../mock/bed";
 
-const BookingInfo = () => {
+const BookingSchedule = () => {
   const [active, setActive] = useState(0);
   const [saveBtn, showSave] = useState(false);
-  const [data, setData] = useState<ScheduleModel | null>(null);
   const [customerData, setCustomer] = useState<any>(null);
   const [serviceData, setService] = useState<any>(null);
+  const [datePicked, setDatePicked] = useState<Date>(new Date());
+  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [loadingStep1, setLoadingStep1] = useState<boolean>(false);
+  const [loadingStep2, setLoadingStep2] = useState<boolean>(false);
 
-  const userRole = useAuthUser((s) => s.user?.role);
+  // const userRole = useAuthUser((s) => s.user?.role);
+  const userRole = USER_ROLE.sale_staff;
 
   const router = useRouter();
 
@@ -45,7 +50,7 @@ const BookingInfo = () => {
         expired: "06/08/2023",
       });
 
-      setActive(2);
+      setActive(3);
     } else {
       if (userRole !== USER_ROLE.sale_staff) {
         void router.push("/");
@@ -54,13 +59,20 @@ const BookingInfo = () => {
   }, [router, router.query.scheduleId, userRole]);
 
   const stepByStep = (step: number) => {
+    console.log(step);
     switch (step) {
       case 0:
         setCustomer(null);
         setService(null);
+        setSelectedSlot(null);
+        setLoadingStep1(false);
+        setLoadingStep2(false);
         showSave(false);
         break;
       case 1:
+        //set loading
+        setLoadingStep1(true);
+
         // call API lấy thông tin customer
         const customerInfo = {
           customer_name: "Tôn Ngộ Không",
@@ -73,15 +85,29 @@ const BookingInfo = () => {
         // Gán customer vào biến customerData
         setCustomer(customerInfo);
         showSave(false);
+
+        //set loading
+        setLoadingStep1(false);
         break;
       case 2:
+        //set loading
+        setLoadingStep2(true);
+
+        // Todo: Call API with datePicked
+        console.log(datePicked);
+
+        //set loading
+        setLoadingStep2(false);
+        break;
+      case 3:
         // call API lấy thông tin service
         const serviceInfo = {
-          service_code: "LT-062022",
           service_name: "Liệu trình trị mụn",
-          date_count: "5/10",
-          buy_day: "06/10/2022",
-          expired: "06/08/2023",
+          sale_staff: "Tôn Hành Giả",
+          tech_staff: "Naruto",
+          slot: "Slot 1",
+          bed: "Giường số 1",
+          time: "13/11/2022 12:12",
         };
 
         // Gán service vào biến serviceData
@@ -91,12 +117,16 @@ const BookingInfo = () => {
 
     // set button show/hide
     setActive(step);
-    if (step === 2) {
+    if (step === 3) {
       showSave(true);
     } else {
       showSave(false);
     }
   };
+
+  useEffect(() => {
+    console.log(selectedSlot);
+  }, [selectedSlot]);
 
   return (
     <div className={"h-max w-full p-12"}>
@@ -106,7 +136,8 @@ const BookingInfo = () => {
             <Stepper.Step
               label="Tìm kiếm khách hàng"
               description="Tìm kiếm theo tên"
-              allowStepSelect={userRole === USER_ROLE.sale_staff}
+              allowStepSelect={false}
+              loading={loadingStep1}
             >
               <div className={"flex flex-row items-center gap-3"}>
                 <span className={"min-w-48"}>Tìm kiếm khách hàng</span>
@@ -124,74 +155,21 @@ const BookingInfo = () => {
               </Group>
             </Stepper.Step>
             <Stepper.Step
-              label="Tìm kiếm dịch vụ"
-              description="Tìm kiếm theo tên/mã dịch vụ"
-              allowStepSelect={userRole === USER_ROLE.sale_staff}
+              label="Chọn ngày"
+              description="Chọn ngày khách đến"
+              allowStepSelect={false}
+              loading={loadingStep2}
             >
               <div className={"flex flex-row gap-3"}>
-                <span className={"min-w-48"}>Dịch vụ</span>
+                <span className={"min-w-48"}>Chọn ngày</span>
                 <div className={"flex w-full flex-col gap-4"}>
-                  <div className={"flex justify-between gap-4"}>
-                    <Input
-                      className={"w-full"}
-                      component={"select"}
-                      placeholder="Service"
-                      disabled={userRole !== USER_ROLE.sale_staff}
-                    >
-                      <option value="0">Something 1</option>
-                      <option value="1">Something 2</option>
-                      <option value="2">Something 3</option>
-                      <option value="3">Something 4</option>
-                    </Input>
-                    <Input
-                      className={"w-full"}
-                      placeholder="Service code/ service name"
-                      disabled={userRole !== USER_ROLE.sale_staff}
-                    />
-                  </div>
-                  <div className={"flex justify-between gap-4"}>
-                    <Input
-                      className={"w-full"}
-                      component={"select"}
-                      placeholder="Customer status"
-                      disabled={userRole !== USER_ROLE.sale_staff}
-                    >
-                      {Object.keys(ScheduleStatus).map((status: any, i) => {
-                        if (isNaN(status)) {
-                          return (
-                            <option key={i} value={ScheduleStatus[status]}>
-                              {status}
-                            </option>
-                          );
-                        }
-                      })}
-                    </Input>
-                    <Input
-                      className={"w-full"}
-                      component={"select"}
-                      placeholder="Bed number"
-                      disabled={userRole !== USER_ROLE.sale_staff}
-                    >
-                      <option value="1">Bed 1</option>
-                      <option value="2">Bed 2</option>
-                      <option value="3">Bed 3</option>
-                      <option value="4">Bed 4</option>
-                    </Input>
-                    <Input
-                      className={"w-full"}
-                      component={"select"}
-                      placeholder="Slot"
-                      disabled={userRole !== USER_ROLE.sale_staff}
-                    >
-                      {Object.keys(slotWorkConst).map((slot, i) => {
-                        return (
-                          <option key={i} value="1">
-                            {slotWorkConst[slot].name}
-                          </option>
-                        );
-                      })}
-                    </Input>
-                  </div>
+                  <DatePicker
+                    placeholder="Pick date"
+                    value={datePicked}
+                    withAsterisk
+                    onChange={(date: Date) => setDatePicked(date)}
+                    disabled={userRole !== USER_ROLE.sale_staff}
+                  />
                 </div>
               </div>
               <Group className={"mt-4"} position={"center"}>
@@ -199,6 +177,77 @@ const BookingInfo = () => {
                   Trở lại
                 </Button>
                 <Button onClick={() => stepByStep(2)}>Tìm kiếm</Button>
+              </Group>
+            </Stepper.Step>
+            <Stepper.Step
+              label="Tìm kiếm dịch vụ"
+              description="Tìm kiếm theo tên/mã dịch vụ"
+              allowStepSelect={false}
+            >
+              <div className={"flex flex-row gap-3"}>
+                <span className={"min-w-48"}>Dịch vụ</span>
+                <div className={"flex w-full flex-col gap-4"}>
+                  {/*<div className={"flex justify-between gap-4"}>*/}
+                  {/*  <Input*/}
+                  {/*    className={"w-full"}*/}
+                  {/*    component={"select"}*/}
+                  {/*    placeholder="Service"*/}
+                  {/*    disabled={userRole !== USER_ROLE.sale_staff}*/}
+                  {/*  >*/}
+                  {/*    <option value="0">Something 1</option>*/}
+                  {/*    <option value="1">Something 2</option>*/}
+                  {/*    <option value="2">Something 3</option>*/}
+                  {/*    <option value="3">Something 4</option>*/}
+                  {/*  </Input>*/}
+                  {/*  <Input*/}
+                  {/*    className={"w-full"}*/}
+                  {/*    placeholder="Service code/ service name"*/}
+                  {/*    disabled={userRole !== USER_ROLE.sale_staff}*/}
+                  {/*  />*/}
+                  {/*</div>*/}
+                  <div className={"flex justify-between gap-4"}>
+                    <Select
+                      className={"w-full"}
+                      placeholder="Slot"
+                      searchable
+                      nothingFound="No options"
+                      data={Object.keys(slotWorkConst).map((slot) => {
+                        return {
+                          value: slot,
+                          label: slotWorkConst[slot].name,
+                        };
+                      })}
+                      onChange={setSelectedSlot}
+                      disabled={userRole !== USER_ROLE.sale_staff}
+                    />
+                    <Select
+                      className={"w-full"}
+                      placeholder="NV kỹ thuật"
+                      searchable
+                      nothingFound="No options"
+                      data={["React", "Angular", "Svelte", "Vue"]}
+                      disabled={
+                        userRole !== USER_ROLE.sale_staff || !selectedSlot
+                      }
+                    />
+                    <Select
+                      className={"w-full"}
+                      placeholder="Giường"
+                      searchable
+                      nothingFound="Trống"
+                      data={Beds.map((bed) => bed.name)}
+                      disabled={
+                        userRole !== USER_ROLE.sale_staff || !selectedSlot
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              <Group className={"mt-4"} position={"center"}>
+                <Button onClick={() => stepByStep(0)} color={"gray"}>
+                  Trở lại
+                </Button>
+                <Button onClick={() => stepByStep(3)}>Tìm kiếm</Button>
               </Group>
             </Stepper.Step>
             <Stepper.Completed>
@@ -240,24 +289,28 @@ const BookingInfo = () => {
                       }
                     >
                       <div className={"flex justify-between gap-2"}>
-                        <span className={"font-bold"}>Mã dịch vụ</span>
-                        <span>{serviceData.service_code}</span>
-                      </div>
-                      <div className={"flex justify-between gap-2"}>
                         <span className={"font-bold"}>Dịch vụ</span>
                         <span>{serviceData.service_name}</span>
                       </div>
                       <div className={"flex justify-between gap-2"}>
-                        <span className={"font-bold"}>Số lần</span>
-                        <span>{serviceData.date_count}</span>
+                        <span className={"font-bold"}>NV bán hàng</span>
+                        <span>{serviceData.sale_staff}</span>
                       </div>
                       <div className={"flex justify-between gap-2"}>
-                        <span className={"font-bold"}>Ngày mua</span>
-                        <span>{serviceData.buy_day}</span>
+                        <span className={"font-bold"}>NV kỹ thuật</span>
+                        <span>{serviceData.tech_staff}</span>
                       </div>
                       <div className={"flex justify-between gap-2"}>
-                        <span className={"font-bold"}>Ngày hết hạn</span>
-                        <span>{serviceData.expired}</span>
+                        <span className={"font-bold"}>Slot</span>
+                        <span>{serviceData.slot}</span>
+                      </div>
+                      <div className={"flex justify-between gap-2"}>
+                        <span className={"font-bold"}>Giường</span>
+                        <span>{serviceData.bed}</span>
+                      </div>
+                      <div className={"flex justify-between gap-2"}>
+                        <span className={"font-bold"}>Thời gian</span>
+                        <span>{serviceData.time}</span>
                       </div>
                     </div>
                   )}
@@ -274,25 +327,21 @@ const BookingInfo = () => {
           </Stepper>
           <Divider my="xs" variant="dashed" />
           <div className={"flex flex-row items-center gap-3"}>
-            <span className={"min-w-48"}>NV kỹ thuật</span>
+            <span className={"min-w-48"}>Dịch vụ</span>
             <Select
               className={"w-full"}
-              placeholder="Pick one"
+              placeholder="Liệu trình/ Dịch vụ"
               searchable
-              nothingFound="No options"
-              data={["React", "Angular", "Svelte", "Vue"]}
-              disabled={userRole !== USER_ROLE.sale_staff}
+              nothingFound="Trống"
+              data={["Dịch vụ làm mặt", "Tẩy trắng", "Cắt tóc", "Yểm bùa"]}
             />
           </div>
           <div className={"flex flex-row items-center gap-3"}>
             <span className={"min-w-48"}>NV kinh doanh</span>
-            <Select
+            <Input
               className={"w-full"}
-              placeholder="Pick one"
-              searchable
-              nothingFound="No options"
-              data={["React", "Angular", "Svelte", "Vue"]}
-              disabled={userRole !== USER_ROLE.sale_staff}
+              disabled
+              value={useAuthUser((s) => s.user?.name)}
             />
           </div>
           <div className={"flex flex-row gap-3"}>
@@ -318,4 +367,4 @@ const BookingInfo = () => {
   );
 };
 
-export default BookingInfo;
+export default BookingSchedule;

@@ -1,3 +1,7 @@
+import { StaffModel } from "./staff.model";
+import { UserModel } from "./user.model";
+import { SpaBedModel } from "./spa-bed.model";
+
 export interface BookingModel {
   id: number;
   slot: number;
@@ -6,11 +10,10 @@ export interface BookingModel {
 
 export interface ScheduleModel {
   id: number;
-  bed_name: string;
-  sale_name: string;
-  technical_name: string;
-  customer_name: string;
-  customer_phone: string;
+  bedInfo: SpaBedModel | undefined;
+  saleStaffInfo: StaffModel | undefined;
+  techStaffInfo: StaffModel | undefined;
+  customerInfo: UserModel | undefined;
   services: string;
   status: ScheduleStatus;
   note: string;

@@ -1,14 +1,20 @@
-export const Beds = [
+import { SpaBedModel } from "../model/spa-bed.model";
+
+export const Beds: SpaBedModel[] = [
   {
-    name: "Bed 1"
+    id: 1,
+    name: "Giường số 1",
   },
   {
-    name: "Bed 2"
+    id: 2,
+    name: "Giường số 2",
   },
   {
-    name: "Bed 3"
+    id: 3,
+    name: "Giường số 3",
   },
   {
-    name: "Bed 4"
+    id: 4,
+    name: "Giường sốBe 4",
   },
-]
+];
