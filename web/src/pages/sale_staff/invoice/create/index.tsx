@@ -7,6 +7,11 @@ import InvoiceDetail from "../../../_shared/invoice/invoice-detail";
 import CustomerInformationBlock from "../../../_shared/invoice/_partial/detail/customer-information";
 import PurchaseListInformation from "../../../_shared/invoice/_partial/detail/purchase-list-information";
 import SearchBillingItems from "./_partial/search-billing-items";
+import { z } from "zod";
+import { idDbSchema, priceSchema } from "../../../../validation/field.schema";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { invoiceItemTypeSchema } from "../../../../validation/invoice.schema";
 
 const SaleStaffInvoiceCreate: AppPageInterface = () => {
   const router = useRouter();
@@ -23,6 +28,38 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
         : undefined,
     });
   }
+
+  const invoiceItemSchema = z.object({
+    quantity: z.number().min(1).max(100),
+    item: idDbSchema,
+    type: invoiceItemTypeSchema,
+  });
+
+  const schemaCreate = z.object({
+    customer: idDbSchema,
+    priceBeforeTax: priceSchema,
+    priceAfterTax: priceSchema,
+    items: z.array(invoiceItemSchema).min(1),
+  });
+
+  const {
+    control,
+    register,
+    formState: { errors, dirtyFields, isValid },
+    handleSubmit,
+  } = useForm<z.infer<typeof schemaCreate>>({
+    resolver: zodResolver(schemaCreate),
+    mode: "onBlur",
+  });
+
+  const {
+    fields: itemsArray,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "items",
+  });
 
   return (
     <div className={"flex min-h-full flex-col bg-gray-100 p-4"}>
@@ -55,12 +92,7 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
               customerId={customerId ? Number(customerId as string) : undefined}
             />
             {/*   Invoice purchased items */}
-            <PurchaseListInformation
-              data={[]}
-              render={(item, index) => {
-                return <></>;
-              }}
-            />
+            <PurchaseListInformation data={itemsArray} />
 
             <SearchBillingItems />
           </>

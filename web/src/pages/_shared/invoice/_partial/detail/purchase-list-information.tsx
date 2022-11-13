@@ -1,16 +1,17 @@
 import { Divider, Table } from "@mantine/core";
-import { BillItemsModel } from "../../../../../model/invoice.model";
+import { BillCreateEntity } from "../../../../../model/invoice.model";
 import { FC } from "react";
+import ItemInvoiceTable from "./_item-invoice.table";
 
 type BillItemsInformationProps = {
-  data: BillItemsModel[];
-  render: (item: BillItemsModel, index: number) => JSX.Element;
+  data: BillCreateEntity["items"];
+  onQuantityUpdate?: (quantity?: number) => void;
   removable?: boolean;
 };
 
 const PurchaseListInformation: FC<BillItemsInformationProps> = ({
   data,
-  render,
+  onQuantityUpdate,
   removable,
 }) => {
   return (
@@ -46,7 +47,29 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({
             {removable && <th />}
           </tr>
         </thead>
-        <tbody>{data.map((item, index) => render(item, index))}</tbody>
+        <tbody>
+          {data.map((item, index) => {
+            let categoryClass: string;
+            if (item.type === "product") {
+              categoryClass = "border-blue-600";
+            } else if (item.type === "service") {
+              categoryClass = "border-red-600";
+            } else {
+              categoryClass = "border-green-600";
+            }
+            return (
+              <ItemInvoiceTable
+                key={`${item.type}-${index}`}
+                no={index}
+                data={item.item}
+                type={item.type}
+                quantity={item.quantity}
+                categoryClass={categoryClass}
+                onQuantityChange={onQuantityUpdate}
+              />
+            );
+          })}
+        </tbody>
       </Table>
     </div>
   );

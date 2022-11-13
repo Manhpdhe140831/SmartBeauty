@@ -61,7 +61,7 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
   ) => {
     const newBillingData = {
       type,
-      item: data,
+      item: data.id,
       quantity: 1,
     } as BillItemsModel;
     onChange && onChange(newBillingData);
