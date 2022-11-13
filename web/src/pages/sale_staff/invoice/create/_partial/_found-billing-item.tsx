@@ -7,7 +7,7 @@ import {
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
-import { BillItemsModel } from "../../../../../model/invoice.model";
+import { InvoiceItemsModel } from "../../../../../model/invoice.model";
 
 export type BillingItemData = {
   id: number;
@@ -18,11 +18,11 @@ export type BillingItemData = {
 
 type BillingItemProps = {
   data: BillingItemData;
-  type: BillItemsModel["type"];
-  onSelected?: (data: BillingItemData, type: BillItemsModel["type"]) => void;
+  type: InvoiceItemsModel["type"];
+  onSelected?: (data: BillingItemData, type: InvoiceItemsModel["type"]) => void;
 };
 
-const BillingItem: FC<BillingItemProps> = ({ data, onSelected, type }) => {
+const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected, type }) => {
   return (
     <div className="mb-2 flex space-x-4 rounded border p-4">
       <Image
@@ -89,4 +89,4 @@ const BillingItem: FC<BillingItemProps> = ({ data, onSelected, type }) => {
   );
 };
 
-export default BillingItem;
+export default FoundBillingItem;

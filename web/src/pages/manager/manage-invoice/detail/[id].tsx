@@ -87,7 +87,18 @@ const ManageInvoiceDetail: AppPageInterface = () => {
               {/*   Invoice Datetime        */}
               <TimeInvoiceInformation data={invoice} />
               {/*   Invoice purchased items */}
-              <PurchaseListInformation data={invoice?.items ?? []} />
+              <PurchaseListInformation
+                renderItem={(item, index) => (
+                  <ItemInvoiceTable
+                    key={`${item.type}-${index}`}
+                    no={index}
+                    data={item.item}
+                    type={item.type}
+                    quantity={item.quantity}
+                  />
+                )}
+                data={invoice?.items ?? []}
+              />
             </>
           )}
           action={(invoice) => (

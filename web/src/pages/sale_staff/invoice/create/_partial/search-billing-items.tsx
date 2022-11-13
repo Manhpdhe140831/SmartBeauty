@@ -1,18 +1,21 @@
-import { BillItemsModel } from "../../../../../model/invoice.model";
+import {
+  InvoiceItemsCreateEntity,
+  InvoiceItemsModel,
+} from "../../../../../model/invoice.model";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button, Text, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import mockProduct from "../../../../../mock/product";
-import BillingItem, { BillingItemData } from "./_billing-item";
+import FoundBillingItem, { BillingItemData } from "./_found-billing-item";
 import mockService from "../../../../../mock/service";
 import mockCourse from "../../../../../mock/course";
 import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type props = {
-  onChange?: (item: BillItemsModel) => void;
+  onChange?: (item: InvoiceItemsCreateEntity) => void;
 };
 
 const SearchBillingItems: FC<props> = ({ onChange }) => {
@@ -57,13 +60,13 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
 
   const onBillingItem = (
     data: BillingItemData,
-    type: BillItemsModel["type"]
+    type: InvoiceItemsModel["type"]
   ) => {
     const newBillingData = {
       type,
       item: data.id,
       quantity: 1,
-    } as BillItemsModel;
+    } as InvoiceItemsCreateEntity;
     onChange && onChange(newBillingData);
     reset();
     setSearchString("");
@@ -97,7 +100,7 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
         {foundItems && (
           <>
             {foundItems.products?.map((i, index) => (
-              <BillingItem
+              <FoundBillingItem
                 onSelected={onBillingItem}
                 key={`${i.id}-${index}`}
                 data={i}
@@ -105,7 +108,7 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
               />
             ))}
             {foundItems.services?.map((i, index) => (
-              <BillingItem
+              <FoundBillingItem
                 onSelected={onBillingItem}
                 key={`${i.id}-${index}`}
                 data={i}
@@ -113,7 +116,7 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
               />
             ))}
             {foundItems.courses?.map((i, index) => (
-              <BillingItem
+              <FoundBillingItem
                 onSelected={onBillingItem}
                 key={`${i.id}-${index}`}
                 data={i}

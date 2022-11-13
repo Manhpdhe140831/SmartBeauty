@@ -1,6 +1,6 @@
 import InformationBlock from "./_information-block";
 import { CustomerModel } from "../../../../../model/customer.model";
-import { FC, ReactNode, useState } from "react";
+import { FC, FocusEventHandler, ReactNode, useState } from "react";
 import { formatDate } from "../../../../../utilities/time.helper";
 import DatabaseSearchSelect from "../../../../../components/database-search.select";
 import {
@@ -19,6 +19,7 @@ import { IconFileInvoice } from "@tabler/icons";
 type InformationProps = {
   customerId?: number;
   onChange?: (id: number | null) => void;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   readOnly?: boolean;
   error?: JSX.Element | ReactNode | string;
 };
@@ -26,6 +27,7 @@ type InformationProps = {
 const CustomerInformationBlock: FC<InformationProps> = ({
   customerId,
   onChange,
+  onBlur,
   error,
 }) => {
   const [id, setId] = useState<number | undefined>(customerId);
@@ -73,6 +75,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({
               setId(Number(id));
               onChange && onChange(Number(id));
             }}
+            onBlur={onBlur}
             {...stateInputProps("Customer", onChange === undefined, {
               required: true,
             })}

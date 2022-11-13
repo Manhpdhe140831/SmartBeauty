@@ -9,9 +9,12 @@ import PurchaseListInformation from "../../../_shared/invoice/_partial/detail/pu
 import SearchBillingItems from "./_partial/search-billing-items";
 import { z } from "zod";
 import { idDbSchema, priceSchema } from "../../../../validation/field.schema";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { invoiceItemTypeSchema } from "../../../../validation/invoice.schema";
+import ViewBillingItem from "./_partial/_view-billing-item";
+import { InvoiceItemsCreateEntity } from "../../../../model/invoice.model";
+import FormErrorMessage from "../../../../components/form-error-message";
 
 const SaleStaffInvoiceCreate: AppPageInterface = () => {
   const router = useRouter();
@@ -44,12 +47,19 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
 
   const {
     control,
-    register,
     formState: { errors, dirtyFields, isValid },
     handleSubmit,
+    watch,
   } = useForm<z.infer<typeof schemaCreate>>({
     resolver: zodResolver(schemaCreate),
     mode: "onBlur",
+    defaultValues: {
+      customer: !customerId
+        ? undefined
+        : isNaN(Number(customerId))
+        ? undefined
+        : Number(customerId),
+    },
   });
 
   const {
@@ -60,6 +70,12 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
     control,
     name: "items",
   });
+
+  const onNewItemAdded = (item: InvoiceItemsCreateEntity) => append(item);
+
+  const onRemoveBillingItem = (index: number) => remove(index);
+
+  console.log(watch());
 
   return (
     <div className={"flex min-h-full flex-col bg-gray-100 p-4"}>
@@ -86,15 +102,45 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
         context={() => (
           <>
             {/*   Customer section        */}
-            <CustomerInformationBlock
-              readOnly={false}
-              onChange={(id) => console.log(id)}
-              customerId={customerId ? Number(customerId as string) : undefined}
+            <Controller
+              control={control}
+              name={"customer"}
+              render={({ field }) => (
+                <CustomerInformationBlock
+                  readOnly={false}
+                  onChange={(id) => {
+                    field.onChange(id);
+                    field.onBlur();
+                  }}
+                  onBlur={field.onBlur}
+                  customerId={
+                    customerId ? Number(customerId as string) : undefined
+                  }
+                />
+              )}
+            />
+            <FormErrorMessage
+              className={"pl-14"}
+              name={"customer"}
+              errors={errors}
             />
             {/*   Invoice purchased items */}
-            <PurchaseListInformation data={itemsArray} />
+            <PurchaseListInformation
+              removable
+              data={itemsArray}
+              renderItem={(item, index) => (
+                <ViewBillingItem
+                  itemNo={index}
+                  itemId={item.item}
+                  itemQuantity={item.quantity}
+                  itemType={item.type}
+                  key={`${item.type}-${index}`}
+                  onRemove={(index) => onRemoveBillingItem(index)}
+                />
+              )}
+            />
 
-            <SearchBillingItems />
+            <SearchBillingItems onChange={onNewItemAdded} />
           </>
         )}
         action={() => <></>}

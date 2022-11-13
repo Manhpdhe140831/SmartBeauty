@@ -11,28 +11,31 @@ import { CourseModel } from "./course.model";
 import { z } from "zod";
 import { invoiceItemTypeSchema } from "../validation/invoice.schema";
 
-export type BillItem = {
+type BillingItemBase = {
   quantity: number;
 };
 
-export type BillItemType = z.infer<typeof invoiceItemTypeSchema>;
+export type BillingItemType = z.infer<typeof invoiceItemTypeSchema>;
 
-export type BillProductItem = BillItem & {
-  type: Extract<BillItemType, "product">;
+export type BillingProductItem = BillingItemBase & {
+  type: Extract<BillingItemType, "product">;
   item: ProductModel;
 };
 
-export type BillServiceItem = BillItem & {
-  type: Extract<BillItemType, "service">;
+export type BillingServiceItem = BillingItemBase & {
+  type: Extract<BillingItemType, "service">;
   item: ServiceModel;
 };
 
-export type BillCourseItem = BillItem & {
-  type: Extract<BillItemType, "course">;
+export type BillingCourseItem = BillingItemBase & {
+  type: Extract<BillingItemType, "course">;
   item: CourseModel;
 };
 
-export type BillItemsModel = BillCourseItem | BillServiceItem | BillProductItem;
+export type InvoiceItemsModel =
+  | BillingCourseItem
+  | BillingServiceItem
+  | BillingProductItem;
 
 export interface InvoiceModel {
   id: number;
@@ -44,24 +47,18 @@ export interface InvoiceModel {
   approvedDate: string;
   priceBeforeTax: number;
   priceAfterTax: number;
-  items: BillItemsModel[];
+  items: InvoiceItemsModel[];
 }
 
-export type BillProductEntity = Omit<BillProductItem, "item"> & {
-  item: number;
-};
-export type BillServiceEntity = Omit<BillServiceItem, "item"> & {
-  item: number;
-};
-export type BillCourseEntity = Omit<BillCourseItem, "item"> & {
+export type InvoiceItemsCreateEntity = Omit<InvoiceItemsModel, "item"> & {
   item: number;
 };
 
-export type BillCreateEntity = Omit<
+export type InvoiceCreateEntity = Omit<
   InvoiceModel,
   "id" | "branch" | "staff" | "createdDate" | "items"
 > & {
-  items: (BillProductEntity | BillServiceEntity | BillCourseEntity)[];
+  items: InvoiceItemsCreateEntity[];
 };
 
 export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status">;

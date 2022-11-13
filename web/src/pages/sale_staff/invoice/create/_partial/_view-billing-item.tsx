@@ -1,42 +1,77 @@
+import { useQuery } from "@tanstack/react-query";
+import mockProduct from "../../../../../mock/product";
+import mockService from "../../../../../mock/service";
+import mockCourse from "../../../../../mock/course";
+import { z } from "zod";
+import { invoiceItemTypeSchema } from "../../../../../validation/invoice.schema";
 import { FC, useEffect, useMemo, useState } from "react";
-import { Badge, Image, Text, Tooltip } from "@mantine/core";
-import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
+import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
 import {
   discountedAmount,
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
-import { z } from "zod";
-import { invoiceItemTypeSchema } from "../../../../../validation/invoice.schema";
-import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
+import {
+  ActionIcon,
+  Badge,
+  Image,
+  NumberInput,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
+import { stateInputProps } from "../../../../../utilities/mantine.helper";
 
-export type ItemTableProps = {
-  no: number;
-  data?: ItemTableViewData;
-  type: z.infer<typeof invoiceItemTypeSchema>;
-  quantity: number;
+type props = {
+  itemNo: number;
+  itemId: number;
+  itemType: z.infer<typeof invoiceItemTypeSchema>;
+  itemQuantity: number;
+  onRemove?: (
+    index: number,
+    item: ItemTableViewData,
+    type: props["itemType"]
+  ) => void;
+  onQuantityChange?: (quantity?: number) => void;
 };
 
-const ItemInvoiceTable: FC<ItemTableProps> = ({
-  data: invoiceItem,
-  type,
-  no,
-  quantity,
+const ViewBillingItem: FC<props> = ({
+  itemNo,
+  itemId,
+  itemType,
+  itemQuantity,
+  onQuantityChange,
+  onRemove,
 }) => {
+  const { data: invoiceItem, isLoading } = useQuery(
+    ["invoice-item-detail", itemId, itemType],
+    async () => {
+      let item: ItemTableViewData | undefined;
+      if (itemType === "product") {
+        item = (await mockProduct()).find((i) => i.id === itemId);
+      } else if (itemType === "service") {
+        item = (await mockService()).find((i) => i.id === itemId);
+      } else {
+        item = (await mockCourse()).find((i) => i.id === itemId);
+      }
+      return item;
+    }
+  );
+
   const isSaleOff = useMemo(() => isBetweenSale(invoiceItem), [invoiceItem]);
   const [categoryClass, setCategoryClass] = useState("border-transparent");
 
   useEffect(() => {
     let cc: string;
-    if (type === "product") {
+    if (itemType === "product") {
       cc = "border-blue-600";
-    } else if (type === "service") {
+    } else if (itemType === "service") {
       cc = "border-red-600";
     } else {
       cc = "border-green-600";
     }
     setCategoryClass(cc);
-  }, [type]);
+  }, [itemType]);
 
   return (
     <>
@@ -45,7 +80,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
           !isSaleOff ? "" : "[&>td]:!border-b-transparent"
         }`}
       >
-        <td className={"text-center align-top"}>{no}</td>
+        <td className={"text-center align-top"}>{itemNo}</td>
         <td className={"align-top"}>
           {invoiceItem?.image && (
             <Image
@@ -67,7 +102,19 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
         </td>
         <td className={"overflow-hidden text-right align-top"}>
           <div className="flex items-center justify-end space-x-2">
-            <Text>{quantity}</Text>
+            <NumberInput
+              placeholder={"amount..."}
+              defaultValue={itemQuantity}
+              hideControls
+              onChange={(v) => onQuantityChange && onQuantityChange(v)}
+              {...stateInputProps(undefined, itemType !== "product", {
+                required: true,
+                variant: "default",
+                size: "sm",
+                weight: 400,
+                textAlign: "center",
+              })}
+            />
             <IconX className={"mt-[2px]"} size={14} />
           </div>
         </td>
@@ -81,8 +128,21 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
         </td>
         <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
-            {formatPrice((invoiceItem?.price ?? 0) * (quantity ?? 1))}
+            {formatPrice((invoiceItem?.price ?? 0) * (itemQuantity ?? 1))}
           </p>
+        </td>
+        <td className={"align-top"}>
+          {invoiceItem && (
+            <ActionIcon
+              type={"button"}
+              onClick={() =>
+                onRemove && onRemove(itemNo, invoiceItem, itemType)
+              }
+              color={"red"}
+            >
+              <IconX />
+            </ActionIcon>
+          )}
         </td>
       </tr>
       {isSaleOff && (
@@ -107,9 +167,9 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
               </Text>
             </div>
           </td>
-          <td className={"!pt-1"}>
+          <td className={"!pt-1"} colSpan={2}>
             <Text color={"dimmed"}>
-              {formatPrice(discountedAmount(invoiceItem, quantity))}
+              {formatPrice(discountedAmount(invoiceItem, itemQuantity))}
             </Text>
           </td>
         </tr>
@@ -118,4 +178,4 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
   );
 };
 
-export default ItemInvoiceTable;
+export default ViewBillingItem;

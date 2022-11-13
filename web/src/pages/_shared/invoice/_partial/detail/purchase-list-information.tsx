@@ -1,22 +1,24 @@
 import { Divider, Table } from "@mantine/core";
-import { BillCreateEntity } from "../../../../../model/invoice.model";
-import { ElementType, FC } from "react";
-import ItemInvoiceTable, { ItemTableProps } from "./_item-invoice.table";
-import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
+import {
+  InvoiceItemsCreateEntity,
+  InvoiceItemsModel,
+} from "../../../../../model/invoice.model";
 
-type BillItemsInformationProps<T extends number | ItemTableViewData> = {
-  data: T;
-  onQuantityUpdate?: (quantity?: number) => void;
+type BillItemsInformationProps<
+  T extends InvoiceItemsModel | InvoiceItemsCreateEntity
+> = {
+  data: T[];
   removable?: boolean;
-  useComponent?: ElementType<ItemTableProps>;
+  renderItem: (item: T, index: number) => JSX.Element;
 };
 
-const PurchaseListInformation: FC<BillItemsInformationProps> = ({
+const PurchaseListInformation = <
+  T extends InvoiceItemsModel | InvoiceItemsCreateEntity
+>({
   data,
-  onQuantityUpdate,
   removable,
-  useComponent,
-}) => {
+  renderItem,
+}: BillItemsInformationProps<T>) => {
   return (
     <div className="flex flex-col">
       <h1 className="text-lg font-semibold">Purchased Items</h1>
@@ -37,7 +39,7 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({
           <col className={"w-20"} />
           <col className={"w-28"} />
           <col className={"w-24"} />
-          {removable && <col className={"w-14"} />}
+          {removable && <col className={"w-12"} />}
         </colgroup>
         <thead>
           <tr>
@@ -50,29 +52,7 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({
             {removable && <th />}
           </tr>
         </thead>
-        <tbody>
-          {data.map((item, index) => {
-            let categoryClass: string;
-            if (item.type === "product") {
-              categoryClass = "border-blue-600";
-            } else if (item.type === "service") {
-              categoryClass = "border-red-600";
-            } else {
-              categoryClass = "border-green-600";
-            }
-            return (
-              <ItemInvoiceTable
-                key={`${item.type}-${index}`}
-                no={index}
-                data={item.item}
-                type={item.type}
-                quantity={item.quantity}
-                categoryClass={categoryClass}
-                onQuantityChange={onQuantityUpdate}
-              />
-            );
-          })}
-        </tbody>
+        <tbody>{data.map((item, index) => renderItem(item, index))}</tbody>
       </Table>
     </div>
   );
