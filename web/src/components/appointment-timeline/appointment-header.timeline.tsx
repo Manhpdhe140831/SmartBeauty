@@ -5,17 +5,20 @@ import { BookingModel, ScheduleModel } from "../../model/schedule.model";
 import { Beds } from "../../mock/bed";
 import { mapStatusHelper } from "../../utilities/map-status.helper";
 import { useRouter } from "next/router";
+import { USER_ROLE } from "../../const/user-role.const";
 
 type SlotProps = {
   title: string;
   timeFrame: string;
   bedSchedule?: BookingModel;
+  userRole: string;
 };
 
 const AppointmentHeaderTimeline: FC<SlotProps> = ({
   title,
   timeFrame,
   bedSchedule,
+  userRole,
 }) => {
   const router = useRouter();
   const moreInfo = (data: ScheduleModel) => {
@@ -40,7 +43,7 @@ const AppointmentHeaderTimeline: FC<SlotProps> = ({
 
       {Beds.map((bed, i) => {
         const appointed = bedSchedule?.schedule.find(
-          (s) => s.bed_name === bed.name
+          (s) => s.bedInfo?.id === bed.id
         );
         if (appointed) {
           return (
@@ -53,12 +56,18 @@ const AppointmentHeaderTimeline: FC<SlotProps> = ({
               >
                 <div className={"flex justify-between pb-1"}>
                   <span>Tên khách hàng</span>
-                  <span>{appointed.customer_name}</span>
+                  <span>{appointed.customerInfo?.name}</span>
                 </div>
                 <div className={"flex justify-between pb-1"}>
                   <span>NV kỹ thuật</span>
-                  <span>{appointed.technical_name}</span>
+                  <span>{appointed.techStaffInfo?.name}</span>
                 </div>
+                {userRole === USER_ROLE.manager && (
+                  <div className={"flex justify-between pb-1"}>
+                    <span>NV bán hàng</span>
+                    <span>{appointed.saleStaffInfo?.name}</span>
+                  </div>
+                )}
                 <div className={"flex justify-between pb-1"}>
                   <span>Dịch vụ</span>
                   <span>{appointed.services}</span>

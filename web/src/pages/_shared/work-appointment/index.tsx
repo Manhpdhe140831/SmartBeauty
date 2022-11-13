@@ -49,7 +49,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
       <div className="flex-1 pl-4">
         <div className="flex h-24 flex-row items-center justify-between border-b">
           {userRole === USER_ROLE.sale_staff && (
-            <Button onClick={goToBooking}>Create</Button>
+            <Button onClick={goToBooking}>Đặt lịch</Button>
           )}
           <CalendarController
             dateData={selectedDate}
@@ -68,6 +68,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
               return (
                 <AppointmentHeaderTimeline
                   key={slotWorkConst[slot].id}
+                  userRole={userRole}
                   title={slotWorkConst[slot].name}
                   timeFrame={slotWorkConst[slot].timeline}
                   bedSchedule={allSchedule?.find(
