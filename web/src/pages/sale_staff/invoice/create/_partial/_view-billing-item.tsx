@@ -25,6 +25,7 @@ import { stateInputProps } from "../../../../../utilities/mantine.helper";
 type props = {
   itemNo: number;
   itemId: number;
+  itemKey: string;
   itemType: z.infer<typeof invoiceItemTypeSchema>;
   itemQuantity: number;
   onRemove?: (
@@ -36,6 +37,7 @@ type props = {
 };
 
 const ViewBillingItem: FC<props> = ({
+  itemKey,
   itemNo,
   itemId,
   itemType,
@@ -73,15 +75,20 @@ const ViewBillingItem: FC<props> = ({
     setCategoryClass(cc);
   }, [itemType]);
 
-  return (
+  return isLoading ? (
+    <tr>
+      <td colSpan={7}>Loading...</td>
+    </tr>
+  ) : (
     <>
       <tr
+        key={itemKey}
         className={`border-l-4 ${categoryClass} ${
           !isSaleOff ? "" : "[&>td]:!border-b-transparent"
         }`}
       >
-        <td className={"text-center align-top"}>{itemNo}</td>
-        <td className={"align-top"}>
+        <td className={"text-center"}>{itemNo}</td>
+        <td>
           {invoiceItem?.image && (
             <Image
               alt={invoiceItem.name}
@@ -93,7 +100,7 @@ const ViewBillingItem: FC<props> = ({
             />
           )}
         </td>
-        <td className={"align-top"}>
+        <td>
           <Tooltip label={invoiceItem?.name}>
             <Text className={"overflow-hidden text-ellipsis"} size={"xs"}>
               {invoiceItem?.name}
@@ -106,11 +113,13 @@ const ViewBillingItem: FC<props> = ({
               placeholder={"amount..."}
               defaultValue={itemQuantity}
               hideControls
+              min={1}
+              max={100}
               onChange={(v) => onQuantityChange && onQuantityChange(v)}
               {...stateInputProps(undefined, itemType !== "product", {
                 required: true,
                 variant: "default",
-                size: "sm",
+                size: "xs",
                 weight: 400,
                 textAlign: "center",
               })}
@@ -146,7 +155,10 @@ const ViewBillingItem: FC<props> = ({
         </td>
       </tr>
       {isSaleOff && (
-        <tr className={`border-l-4 ${categoryClass}`}>
+        <tr
+          key={`${itemKey}-discount`}
+          className={`border-l-4 ${categoryClass}`}
+        >
           <td className={"!pt-1 !pr-0"} colSpan={5}>
             <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">

@@ -36,7 +36,7 @@ const PurchaseListInformation = <
           <col className={"w-12"} />
           <col className={"w-14"} />
           <col />
-          <col className={"w-20"} />
+          <col className={"w-[88px]"} />
           <col className={"w-28"} />
           <col className={"w-24"} />
           {removable && <col className={"w-12"} />}
@@ -46,7 +46,7 @@ const PurchaseListInformation = <
             <th className={"!text-right"}>No.</th>
             <th>Image</th>
             <th>Name</th>
-            <th className={"!text-right"}>Quantity</th>
+            <th>Quantity</th>
             <th>Price</th>
             <th>Due</th>
             {removable && <th />}

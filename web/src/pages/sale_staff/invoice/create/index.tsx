@@ -129,13 +129,24 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
               removable
               data={itemsArray}
               renderItem={(item, index) => (
-                <ViewBillingItem
-                  itemNo={index}
-                  itemId={item.item}
-                  itemQuantity={item.quantity}
-                  itemType={item.type}
-                  key={`${item.type}-${index}`}
-                  onRemove={(index) => onRemoveBillingItem(index)}
+                <Controller
+                  key={`${item.id}-container`}
+                  control={control}
+                  render={({ field }) => (
+                    <ViewBillingItem
+                      itemNo={index}
+                      itemId={item.item}
+                      itemQuantity={item.quantity}
+                      itemType={item.type}
+                      itemKey={item.id}
+                      onRemove={(index) => onRemoveBillingItem(index)}
+                      onQuantityChange={(q) => {
+                        field.onChange(q);
+                        field.onBlur();
+                      }}
+                    />
+                  )}
+                  name={`items.${index}.quantity`}
                 />
               )}
             />

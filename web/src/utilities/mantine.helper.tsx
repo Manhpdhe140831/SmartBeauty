@@ -11,6 +11,7 @@ export const stateInputProps = (
     variant?: InputVariant;
     weight?: number;
     textAlign?: React.CSSProperties["textAlign"];
+    width?: React.CSSProperties["width"];
   }
 ) => ({
   label: label ? (
@@ -35,11 +36,13 @@ export const stateInputProps = (
             color: "#000",
             opacity: 1,
             textAlign: otp?.textAlign,
+            width: otp?.width,
           } as CSSObject,
           textarea: {
             fontWeight: otp?.weight ?? 500,
             padding: 0,
             opacity: 1,
+            width: otp?.width,
           } as CSSObject,
         }
       : undefined,
