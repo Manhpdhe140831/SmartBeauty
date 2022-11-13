@@ -5,30 +5,16 @@
  * - By default, it's the id of the associated manager.
  * -
  */
-import { ProductModel } from "./product.model";
-import { ServiceModel } from "./service.model";
-import { CourseModel } from "./course.model";
+import { z } from "zod";
+import { invoiceItemTypeSchema } from "../validation/invoice.schema";
 
-export type BillItem = {
+export type BillItemType = z.infer<typeof invoiceItemTypeSchema>;
+
+export type BillItemsModel = {
   quantity: number;
+  type: BillItemType;
+  item: number;
 };
-
-export type BillProductItem = BillItem & {
-  type: "product";
-  item: ProductModel;
-};
-
-export type BillServiceItem = BillItem & {
-  type: "service";
-  item: ServiceModel;
-};
-
-export type BillCourseItem = BillItem & {
-  type: "course";
-  item: CourseModel;
-};
-
-export type BillItemsModel = BillCourseItem | BillServiceItem | BillProductItem;
 
 export interface InvoiceModel {
   id: number;
@@ -43,21 +29,9 @@ export interface InvoiceModel {
   items: BillItemsModel[];
 }
 
-export type BillProductEntity = Omit<BillProductItem, "item"> & {
-  item: number;
-};
-export type BillServiceEntity = Omit<BillServiceItem, "item"> & {
-  item: number;
-};
-export type BillCourseEntity = Omit<BillCourseItem, "item"> & {
-  item: number;
-};
-
 export type BillCreateEntity = Omit<
   InvoiceModel,
-  "id" | "branch" | "staff" | "createdDate" | "items"
-> & {
-  items: (BillProductEntity | BillServiceEntity | BillCourseEntity)[];
-};
+  "id" | "branch" | "staff" | "createdDate"
+>;
 
 export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status">;

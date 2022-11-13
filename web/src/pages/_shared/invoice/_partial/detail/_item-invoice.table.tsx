@@ -14,13 +14,22 @@ import {
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
 import { BasePriceModel } from "../../../../../model/_price.model";
+import { z } from "zod";
+import { invoiceItemTypeSchema } from "../../../../../validation/invoice.schema";
+import { useQuery } from "@tanstack/react-query";
+import mockProduct from "../../../../../mock/product";
+import mockService from "../../../../../mock/service";
+import mockCourse from "../../../../../mock/course";
+
+type itemModel = {
+  image?: string;
+  name: string;
+} & BasePriceModel;
 
 type ItemTableProps = {
   no: number;
-  data?: {
-    image?: string;
-    name: string;
-  } & BasePriceModel;
+  data?: number;
+  type: z.infer<typeof invoiceItemTypeSchema>;
   quantity: number;
   categoryClass: string;
   onRemove?: (index: number, item: ItemTableProps["data"]) => void;
@@ -30,6 +39,7 @@ type ItemTableProps = {
 
 const ItemInvoiceTable: FC<ItemTableProps> = ({
   data,
+  type,
   no,
   quantity,
   categoryClass,
@@ -37,7 +47,22 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
   onQuantityChange,
   quantityDisabled,
 }) => {
-  const isSaleOff = useMemo(() => isBetweenSale(data), [data]);
+  const { data: invoiceItem, isLoading } = useQuery(
+    ["invoice-item-detail", data, type],
+    async () => {
+      let item: itemModel | undefined;
+      if (type === "product") {
+        item = (await mockProduct()).find((i) => i.id === data);
+      } else if (type === "service") {
+        item = (await mockService()).find((i) => i.id === data);
+      } else {
+        item = (await mockCourse()).find((i) => i.id === data);
+      }
+      return item;
+    }
+  );
+
+  const isSaleOff = useMemo(() => isBetweenSale(invoiceItem), [invoiceItem]);
 
   return (
     <>
@@ -48,10 +73,10 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
       >
         <td className={"text-center align-top"}>{no}</td>
         <td className={"align-top"}>
-          {data?.image && (
+          {invoiceItem?.image && (
             <Image
-              alt={data.name}
-              src={data.image}
+              alt={invoiceItem.name}
+              src={invoiceItem.image}
               width={32}
               height={32}
               fit={"cover"}
@@ -60,9 +85,9 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
           )}
         </td>
         <td className={"align-top"}>
-          <Tooltip label={data?.name}>
+          <Tooltip label={invoiceItem?.name}>
             <Text className={"overflow-hidden text-ellipsis"} size={"xs"}>
-              {data?.name}
+              {invoiceItem?.name}
             </Text>
           </Tooltip>
         </td>
@@ -83,7 +108,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
         </td>
         <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
-            {data?.price && formatPrice(data?.price)}
+            {invoiceItem?.price && formatPrice(invoiceItem?.price)}
           </p>
           <Text size={"xs"} color={"dimmed"}>
             per product
@@ -91,7 +116,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
         </td>
         <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
-            {formatPrice((data?.price ?? 0) * (quantity ?? 1))}
+            {formatPrice((invoiceItem?.price ?? 0) * (quantity ?? 1))}
           </p>
         </td>
         {onRemove && (
@@ -116,7 +141,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
                 mt={2}
                 leftSection={<IconArrowDown size={12} />}
               >
-                {data?.discountPercent}%
+                {invoiceItem?.discountPercent}%
               </Badge>
               <IconArrowRight className={"mt-[2px]"} size={14} />
               <Text className={"leading-none"} color={"dimmed"}>
@@ -126,7 +151,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
           </td>
           <td className={"!pt-1"}>
             <Text color={"dimmed"}>
-              {formatPrice(discountedAmount(data, quantity))}
+              {formatPrice(discountedAmount(invoiceItem, quantity))}
             </Text>
           </td>
         </tr>

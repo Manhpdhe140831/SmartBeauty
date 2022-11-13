@@ -87,41 +87,7 @@ const ManageInvoiceDetail: AppPageInterface = () => {
               {/*   Invoice Datetime        */}
               <TimeInvoiceInformation data={invoice} />
               {/*   Invoice purchased items */}
-              <PurchaseListInformation
-                data={invoice?.items ?? []}
-                render={(item, index) => {
-                  if (item.type === "product") {
-                    return (
-                      <ItemInvoiceTable
-                        key={`${item.type}-${index}`}
-                        no={index}
-                        data={item.item}
-                        quantity={item.quantity}
-                        categoryClass={"border-blue-600"}
-                      />
-                    );
-                  } else if (item.type === "service") {
-                    return (
-                      <ItemInvoiceTable
-                        key={`${item.type}-${index}`}
-                        no={index}
-                        data={item.item}
-                        quantity={item.quantity}
-                        categoryClass={"border-red-600"}
-                      />
-                    );
-                  }
-                  return (
-                    <ItemInvoiceTable
-                      key={`${item.type}-${index}`}
-                      no={index}
-                      data={item.item}
-                      quantity={item.quantity}
-                      categoryClass={"border-green-600"}
-                    />
-                  );
-                }}
-              />
+              <PurchaseListInformation data={invoice?.items ?? []} />
             </>
           )}
           action={(invoice) => (
