@@ -8,10 +8,10 @@ const Home: AppPageInterface = () => {
         "flex min-h-full w-full select-none flex-col items-center justify-center space-y-2 text-gray-800"
       }
     >
-      <h1 className={"text-center"}>Welcome</h1>
+      <h1 className={"text-center"}>Xin Chào!</h1>
       <div className="flex items-center space-x-2 text-gray-500">
         <IconArrowLeft />
-        <span className={"mb-1 leading-none"}>Access the menu</span>
+        <span className={"mb-1 leading-none"}>Truy cập thư mục làm việc</span>
       </div>
     </div>
   );

@@ -110,7 +110,7 @@ const Login: AppPageInterface = () => {
         </label>
         <Input
           id={"email"}
-          placeholder="your registered email address..."
+          placeholder="nhập địa chỉ email..."
           {...register("email")}
         />
         <ErrorMessage
@@ -125,7 +125,7 @@ const Login: AppPageInterface = () => {
           Password
         </label>
         <Input
-          placeholder={"registered password..."}
+          placeholder={"nhập mật khẩu..."}
           type={"password"}
           id={"password"}
           {...register("password")}
@@ -150,14 +150,14 @@ const Login: AppPageInterface = () => {
           variant="filled"
           className="mt-4 mb-2"
         >
-          Login
+          Đăng Nhập
         </Button>
 
         <Link
           className="mt-2 mb-4 text-center text-xs text-blue-500"
           href={"/forgot-password"}
         >
-          Forgot your password?
+          Quên mật khẩu?
         </Link>
       </form>
     </div>

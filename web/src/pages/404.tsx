@@ -20,11 +20,11 @@ const NotFoundPage: AppPageInterface = () => {
       <div className={className.text}>
         <span>Ooops...</span>
         <br />
-        page not found
+        không tìm thấy trang
       </div>
       <Link href={"/"} passHref>
         <Button component={"a"} className={"mt-8"} variant={"outline"}>
-          Back to homepage
+          Quay lại trang chủ
         </Button>
       </Link>
     </div>
