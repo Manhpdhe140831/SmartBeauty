@@ -16,19 +16,19 @@ import {staffRoleSchema} from "../const/user-role.const";
  * base validation schema for user model.
  */
 export const baseUserSchema = z.object({
-  name: nameSchema,
-  phone: phoneSchema,
-  email: emailSchema,
-  dateOfBirth: ageSchemaFn(),
-  gender: genderSchema,
-  address: addressSchema,
-  image: fileUploadSchema
-    .and(imageTypeSchema)
-    // or the avatar field can be url src of the image.
-    .or(z.string().url())
-    // this field is not required.
-    .nullable()
-    .optional(),
+    name: nameSchema,
+    phone: phoneSchema,
+    email: emailSchema,
+    dateOfBirth: ageSchemaFn(),
+    gender: genderSchema,
+    address: addressSchema,
+    image: fileUploadSchema
+        .and(imageTypeSchema)
+        // or the avatar field can be url src of the image.
+        .or(z.string().url())
+        // this field is not required.
+        .nullable()
+        .optional(),
 });
 
 /**
@@ -42,9 +42,9 @@ export const managerModelSchema = baseUserSchema;
  * It extends from the baseUserSchema with role fixed to be 'employee'
  */
 export const employeeModelSchema = baseUserSchema.merge(
-  z.object({
-    role: z.literal(USER_ROLE.sale_staff),
-  })
+    z.object({
+        role: staffRoleSchema,
+    })
 );
 
 /**

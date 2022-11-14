@@ -10,6 +10,8 @@
  * For other default roles (`admin`, `manager` and `employee`),
  * it will be restricted to that role only.
  */
+import {z} from "zod";
+
 export enum USER_ROLE {
   all = "all",
   anonymous = "unauthenticated",
@@ -19,3 +21,14 @@ export enum USER_ROLE {
   sale_staff = "sale_staff",
   technical_staff = "technical_staff",
 }
+
+export enum STAFF_USER_ROLE {
+  sale_staff = "sale_staff",
+  technical_staff = "technical_staff",
+}
+
+export const userRoleSchema = z.nativeEnum(USER_ROLE);
+
+export const staffRoleSchema = z.nativeEnum(
+    STAFF_USER_ROLE
+)
