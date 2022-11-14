@@ -13,7 +13,7 @@ const StaffInformation: FC<InformationProps> = ({ staffId }) => {
   const clipboard = useClipboard({ timeout: 500 });
 
   return !data ? (
-    <Text>Loading...</Text>
+    <Text>Đang tải...</Text>
   ) : (
     <div className="rounded-lg bg-white p-4 shadow">
       <div className="flex items-center space-x-2">
@@ -26,7 +26,7 @@ const StaffInformation: FC<InformationProps> = ({ staffId }) => {
         />
         <div className="flex-1">
           <label className="text-[14px] font-[500] text-[#868e96]">
-            Sale Staff <span className="text-red-500">*</span>
+            Nhân Viên Sale <span className="text-red-500">*</span>
           </label>
 
           <h2 className={"text-[18px] font-semibold leading-[2rem]"}>
@@ -50,7 +50,7 @@ const StaffInformation: FC<InformationProps> = ({ staffId }) => {
             className={"cursor-pointer select-none"}
             onClick={() => clipboard.copy(data.phone)}
           >
-            <td className={"font-semibold"}>Phone</td>
+            <td className={"font-semibold"}>SĐT</td>
             <td className={"overflow-hidden text-ellipsis"}>{data.phone}</td>
           </tr>
           <tr
@@ -63,14 +63,14 @@ const StaffInformation: FC<InformationProps> = ({ staffId }) => {
           <tr>
             <td colSpan={2} className={"!p-0"}>
               <Button variant={"subtle"} fullWidth>
-                View Detail
+                Xem Chi Tiết
               </Button>
             </td>
           </tr>
         </tbody>
       </Table>
       <Text size={"xs"} color={"dimmed"}>
-        Click information to copy
+        Click để sao chép
       </Text>
     </div>
   );

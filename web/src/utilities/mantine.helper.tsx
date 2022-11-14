@@ -1,4 +1,5 @@
-import { InputVariant, MantineSize, Text } from "@mantine/core";
+import { CSSObject, InputVariant, MantineSize, Text } from "@mantine/core";
+import React from "react";
 
 export const stateInputProps = (
   label?: string,
@@ -8,6 +9,9 @@ export const stateInputProps = (
     required?: boolean;
     size?: MantineSize;
     variant?: InputVariant;
+    weight?: number;
+    textAlign?: React.CSSProperties["textAlign"];
+    width?: React.CSSProperties["width"];
   }
 ) => ({
   label: label ? (
@@ -28,13 +32,18 @@ export const stateInputProps = (
           input: {
             height: 32,
             lineHeight: 32,
-            fontWeight: 500,
+            fontWeight: otp?.weight ?? 500,
             color: "#000",
             opacity: 1,
-          },
+            textAlign: otp?.textAlign,
+            width: otp?.width,
+          } as CSSObject,
           textarea: {
+            fontWeight: otp?.weight ?? 500,
             padding: 0,
-          },
+            opacity: 1,
+            width: otp?.width,
+          } as CSSObject,
         }
       : undefined,
   width: "100%",

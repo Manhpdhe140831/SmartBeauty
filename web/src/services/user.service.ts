@@ -3,6 +3,7 @@ import {
   IErrorResponse,
   ILoginResponse,
   PaginatedResponse,
+  SearchParamUrl,
 } from "../interfaces/api.interface";
 import {
   UserCreateEntity,
@@ -33,16 +34,19 @@ export async function loginApi(
  * Get all the account based on the user role.
  * @param page
  * @param size
+ * @param searchParams
  */
 export async function getAllAccount<modelType extends UserModel>(
   page: number,
-  size = 10
+  size = 10,
+  searchParams?: SearchParamUrl
 ) {
   try {
     const apiResult = await axios.get<PaginatedResponse<modelType>>(`/user`, {
       params: {
         page,
         pageSize: size,
+        ...(searchParams ?? {}),
       },
     });
 

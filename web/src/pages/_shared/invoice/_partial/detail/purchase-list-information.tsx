@@ -1,22 +1,27 @@
 import { Divider, Table } from "@mantine/core";
-import { BillCreateEntity } from "../../../../../model/invoice.model";
-import { FC } from "react";
-import ItemInvoiceTable from "./_item-invoice.table";
+import {
+  InvoiceItemsCreateEntity,
+  InvoiceItemsModel,
+} from "../../../../../model/invoice.model";
 
-type BillItemsInformationProps = {
-  data: BillCreateEntity["items"];
-  onQuantityUpdate?: (quantity?: number) => void;
+type BillItemsInformationProps<
+  T extends InvoiceItemsModel | InvoiceItemsCreateEntity
+> = {
+  data: T[];
   removable?: boolean;
+  renderItem: (item: T, index: number) => JSX.Element;
 };
 
-const PurchaseListInformation: FC<BillItemsInformationProps> = ({
+const PurchaseListInformation = <
+  T extends InvoiceItemsModel | InvoiceItemsCreateEntity
+>({
   data,
-  onQuantityUpdate,
   removable,
-}) => {
+  renderItem,
+}: BillItemsInformationProps<T>) => {
   return (
     <div className="flex flex-col">
-      <h1 className="text-lg font-semibold">Purchased Items</h1>
+      <h1 className="text-lg font-semibold capitalize">Sản phẩm đã mua</h1>
 
       <Divider my={8} />
 
@@ -31,45 +36,23 @@ const PurchaseListInformation: FC<BillItemsInformationProps> = ({
           <col className={"w-12"} />
           <col className={"w-14"} />
           <col />
-          <col className={"w-20"} />
+          <col className={"w-[88px]"} />
           <col className={"w-28"} />
           <col className={"w-24"} />
-          {removable && <col className={"w-14"} />}
+          {removable && <col className={"w-12"} />}
         </colgroup>
         <thead>
           <tr>
             <th className={"!text-right"}>No.</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th className={"!text-right"}>Quantity</th>
-            <th>Price</th>
-            <th>Due</th>
+            <th>Ảnh</th>
+            <th>Tên</th>
+            <th>Số Lượng</th>
+            <th>Giá (VND)</th>
+            <th>Thành Tiền</th>
             {removable && <th />}
           </tr>
         </thead>
-        <tbody>
-          {data.map((item, index) => {
-            let categoryClass: string;
-            if (item.type === "product") {
-              categoryClass = "border-blue-600";
-            } else if (item.type === "service") {
-              categoryClass = "border-red-600";
-            } else {
-              categoryClass = "border-green-600";
-            }
-            return (
-              <ItemInvoiceTable
-                key={`${item.type}-${index}`}
-                no={index}
-                data={item.item}
-                type={item.type}
-                quantity={item.quantity}
-                categoryClass={categoryClass}
-                onQuantityChange={onQuantityUpdate}
-              />
-            );
-          })}
-        </tbody>
+        <tbody>{data.map((item, index) => renderItem(item, index))}</tbody>
       </Table>
     </div>
   );

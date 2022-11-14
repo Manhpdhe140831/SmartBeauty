@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { CourseModel } from "../../model/course.model";
 import usePaginationHook from "../../hooks/pagination.hook";
-import { PaginatedResponse } from "../../interfaces/api.interface";
+import {
+  PaginatedResponse,
+  SearchParamUrl,
+} from "../../interfaces/api.interface";
 import { BranchModel } from "../../model/branch.model";
 import { ManagerModel } from "../../model/manager.model";
 import { getAllBranch } from "../../services/branch.service";
@@ -17,16 +20,22 @@ import { getListProduct } from "../../services/product.service";
 import { ServiceModel } from "../../model/service.model";
 import { getListSpaServices } from "../../services/spa-service.service";
 import { getListSpaCourses } from "../../services/spa-course.service";
+import { getAllCustomers } from "../../services/customer.service";
 
 type fnUpdatePagination = ReturnType<typeof usePaginationHook>["update"];
 
 export const useListCourseQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<CourseModel<ServiceModel>>>(
-    ["list-course", currentPage],
-    () => getListSpaCourses(currentPage),
+    ["list-course", currentPage, options],
+    () =>
+      getListSpaCourses(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (d) => updatePagination({ total: d.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
@@ -35,11 +44,16 @@ export const useListCourseQuery = (
 
 export const useListServiceQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<ServiceModel>>(
-    ["list-service", currentPage],
-    async () => getListSpaServices(currentPage),
+    ["list-service", currentPage, options],
+    () =>
+      getListSpaServices(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (res) => updatePagination({ total: res.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
@@ -48,11 +62,15 @@ export const useListServiceQuery = (
 
 export const useListProductQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<ProductModel<SupplierModel>>>(
-    ["list-product", currentPage],
-    () => getListProduct(currentPage),
+    ["list-product", currentPage, options],
+    () => getListProduct(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (res) => updatePagination({ total: res.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
@@ -61,14 +79,15 @@ export const useListProductQuery = (
 
 export const useListBranchQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<BranchModel<ManagerModel>>>(
-    // dependencies
-    ["list-branch", currentPage],
-    // API caller
-    () => getAllBranch(currentPage),
-    // once API success
+    ["list-branch", currentPage, options],
+    () => getAllBranch(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (res) => updatePagination({ total: res.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
@@ -78,11 +97,16 @@ export const useListBranchQuery = (
 export const useListUserQuery = <T extends UserModel>(
   type: USER_ROLE | "staff",
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<T>>(
-    [`list-${type}`, currentPage],
-    () => getAllAccount<T>(currentPage),
+    [`list-${type}`, currentPage, options],
+    () =>
+      getAllAccount<T>(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (data) => updatePagination({ total: data.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
@@ -91,23 +115,49 @@ export const useListUserQuery = <T extends UserModel>(
 
 export const useListSupplierQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<SupplierModel>>(
-    ["list-supplier", currentPage],
-    () => getListSupplier(currentPage),
+    ["list-supplier", currentPage, options],
+    () => getListSupplier(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (data) => updatePagination({ total: data.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),
     }
   );
 
+export const useListCustomerQuery = (
+  currentPage: number,
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
+) =>
+  useQuery(
+    ["list-customer", currentPage, options],
+    () => getAllCustomers(currentPage, options?.pageSize, options?.searchQuery),
+    {
+      onSuccess: (data) => updatePagination({ total: data.totalElement }),
+      onError: () => updatePagination({ total: 0, newPage: 1 }),
+    }
+  );
+
+// TODO integrate
 export const useListInvoiceQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination
+  updatePagination: fnUpdatePagination,
+  options?: {
+    pageSize?: number;
+    searchQuery?: SearchParamUrl;
+  }
 ) =>
   useQuery<PaginatedResponse<InvoiceModel>>(
-    ["list-invoice", currentPage],
+    ["list-invoice", currentPage, options],
     async () => {
       const bills = await mockBill();
       return {

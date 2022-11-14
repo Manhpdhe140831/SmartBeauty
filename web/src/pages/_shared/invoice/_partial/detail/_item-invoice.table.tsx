@@ -1,68 +1,42 @@
-import { FC, useMemo } from "react";
-import {
-  ActionIcon,
-  Badge,
-  Image,
-  NumberInput,
-  Text,
-  Tooltip,
-} from "@mantine/core";
+import { FC, useEffect, useMemo, useState } from "react";
+import { Badge, Image, Text, Tooltip } from "@mantine/core";
 import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
 import {
   discountedAmount,
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
-import { BasePriceModel } from "../../../../../model/_price.model";
 import { z } from "zod";
 import { invoiceItemTypeSchema } from "../../../../../validation/invoice.schema";
-import { useQuery } from "@tanstack/react-query";
-import mockProduct from "../../../../../mock/product";
-import mockService from "../../../../../mock/service";
-import mockCourse from "../../../../../mock/course";
+import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
 
-type itemModel = {
-  image?: string;
-  name: string;
-} & BasePriceModel;
-
-type ItemTableProps = {
+export type ItemTableProps = {
   no: number;
-  data?: number;
+  data?: ItemTableViewData;
   type: z.infer<typeof invoiceItemTypeSchema>;
   quantity: number;
-  categoryClass: string;
-  onRemove?: (index: number, item: ItemTableProps["data"]) => void;
-  onQuantityChange?: (quantity?: number) => void;
-  quantityDisabled?: boolean;
 };
 
 const ItemInvoiceTable: FC<ItemTableProps> = ({
-  data,
+  data: invoiceItem,
   type,
   no,
   quantity,
-  categoryClass,
-  onRemove,
-  onQuantityChange,
-  quantityDisabled,
 }) => {
-  const { data: invoiceItem, isLoading } = useQuery(
-    ["invoice-item-detail", data, type],
-    async () => {
-      let item: itemModel | undefined;
-      if (type === "product") {
-        item = (await mockProduct()).find((i) => i.id === data);
-      } else if (type === "service") {
-        item = (await mockService()).find((i) => i.id === data);
-      } else {
-        item = (await mockCourse()).find((i) => i.id === data);
-      }
-      return item;
-    }
-  );
-
   const isSaleOff = useMemo(() => isBetweenSale(invoiceItem), [invoiceItem]);
+  const [categoryClass, setCategoryClass] = useState("border-transparent");
+
+  useEffect(() => {
+    let cc: string;
+    if (type === "product") {
+      cc = "border-blue-600";
+    } else if (type === "service") {
+      cc = "border-red-600";
+    } else {
+      cc = "border-green-600";
+    }
+    setCategoryClass(cc);
+  }, [type]);
 
   return (
     <>
@@ -93,16 +67,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
         </td>
         <td className={"overflow-hidden text-right align-top"}>
           <div className="flex items-center justify-end space-x-2">
-            {onQuantityChange ? (
-              <NumberInput
-                placeholder={"amount..."}
-                defaultValue={quantity}
-                readOnly={quantityDisabled}
-                onChange={(v) => onQuantityChange(v)}
-              />
-            ) : (
-              <Text>{quantity}</Text>
-            )}
+            <Text>{quantity}</Text>
             <IconX className={"mt-[2px]"} size={14} />
           </div>
         </td>
@@ -111,7 +76,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
             {invoiceItem?.price && formatPrice(invoiceItem?.price)}
           </p>
           <Text size={"xs"} color={"dimmed"}>
-            per product
+            / sản phẩm
           </Text>
         </td>
         <td className={"align-top"}>
@@ -119,20 +84,13 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
             {formatPrice((invoiceItem?.price ?? 0) * (quantity ?? 1))}
           </p>
         </td>
-        {onRemove && (
-          <td rowSpan={2}>
-            <ActionIcon onClick={() => onRemove(no, data)} color={"red"}>
-              <IconX />
-            </ActionIcon>
-          </td>
-        )}
       </tr>
       {isSaleOff && (
-        <tr className={"border-l-4 border-blue-600"}>
+        <tr className={`border-l-4 ${categoryClass}`}>
           <td className={"!pt-1 !pr-0"} colSpan={5}>
             <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">
-                Applied Discount!
+                Áp dụng giảm giá!
               </small>
               <Badge
                 variant={"filled"}

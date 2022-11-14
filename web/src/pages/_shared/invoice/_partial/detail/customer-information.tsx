@@ -1,6 +1,6 @@
 import InformationBlock from "./_information-block";
 import { CustomerModel } from "../../../../../model/customer.model";
-import { FC, ReactNode, useState } from "react";
+import { FC, FocusEventHandler, ReactNode, useState } from "react";
 import { formatDate } from "../../../../../utilities/time.helper";
 import DatabaseSearchSelect from "../../../../../components/database-search.select";
 import {
@@ -15,10 +15,12 @@ import { AutoCompleteItemProp } from "../../../../../components/auto-complete-it
 import { StaffModel } from "../../../../../model/staff.model";
 import { useCustomerDetailQuery } from "../../../../../query/model-detail";
 import { IconFileInvoice } from "@tabler/icons";
+import { useQuery } from "@tanstack/react-query";
 
 type InformationProps = {
   customerId?: number;
   onChange?: (id: number | null) => void;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   readOnly?: boolean;
   error?: JSX.Element | ReactNode | string;
 };
@@ -26,10 +28,19 @@ type InformationProps = {
 const CustomerInformationBlock: FC<InformationProps> = ({
   customerId,
   onChange,
+  onBlur,
   error,
 }) => {
   const [id, setId] = useState<number | undefined>(customerId);
-  const { data, isLoading } = useCustomerDetailQuery(id);
+  // TODO: replace
+  // const { data: customerDetail } = useCustomerDetailQuery(props.data?.customer);
+  const { data, isLoading } = useQuery(["customer-detail", id], async () => {
+    if (id === undefined) {
+      return null;
+    }
+    const mc = await mockCustomer();
+    return mc.find((c) => c.id === id) as CustomerModel;
+  });
 
   const parserFn = <T extends CustomerModel | StaffModel>(customer: T) =>
     ({
@@ -73,7 +84,8 @@ const CustomerInformationBlock: FC<InformationProps> = ({
               setId(Number(id));
               onChange && onChange(Number(id));
             }}
-            {...stateInputProps("Customer", onChange === undefined, {
+            onBlur={onBlur}
+            {...stateInputProps("Khách Hàng", onChange === undefined, {
               required: true,
             })}
           />
@@ -87,7 +99,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({
             data={{
               from: data,
               key: "phone",
-              title: "Phone",
+              title: "SĐT",
             }}
           />
 
@@ -95,7 +107,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({
             data={{
               from: data,
               key: "gender",
-              title: "Gender",
+              title: "Giới Tính",
               allowCopy: false,
             }}
           />
@@ -104,7 +116,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({
             data={{
               from: data,
               key: "dateOfBirth",
-              title: "Date of Birth",
+              title: "Ngày Sinh",
               parser: (d) => {
                 if (!d) {
                   return "-";
@@ -129,7 +141,7 @@ const CustomerInformationBlock: FC<InformationProps> = ({
             data={{
               from: data,
               key: "address",
-              title: "Address",
+              title: "Địa Chỉ",
             }}
           />
         </div>

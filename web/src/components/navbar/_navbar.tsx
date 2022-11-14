@@ -64,7 +64,7 @@ const CoreNavbar: FC<{
         <ButtonNavbar
           icon={<IconLogout />}
           onClick={() => logout()}
-          label="Logout"
+          label="Đăng Xuất"
         ></ButtonNavbar>
       </Navbar.Section>
     </Navbar>
