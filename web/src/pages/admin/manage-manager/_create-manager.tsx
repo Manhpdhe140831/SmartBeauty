@@ -17,14 +17,13 @@ import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { DatePicker } from "@mantine/dates";
 import { GENDER } from "../../../const/gender.const";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import dayjs from "dayjs";
 import {
   managerModelSchema,
   userRegisterSchemaFn,
 } from "../../../validation/account-model.schema";
 import DialogDetailAction from "../../../components/dialog-detail-action";
+import ImageUpload from "../../../components/image-upload";
 
 /**
  * Component props
@@ -66,19 +65,19 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
       className={"flex flex-col"}
     >
       <h3 className="my-2 mt-4 select-none border-l-2 pl-4 text-lg uppercase text-gray-500">
-        Personal Information
+        Thông tin cá nhân
       </h3>
       <TextInput
-        label={"Manager Full Name"}
+        label={"Tên Quản Lý"}
         description={
           <small className="mb-2 leading-tight text-gray-500">
-            Please naming according to{" "}
-            <Link href={"/404"}>
-              <a className="inline text-blue-600 underline">the rule</a>
+            Hãy đặt tên theo{" "}
+            <Link className="inline text-blue-600 underline" href={"/404"}>
+              đúng quy định
             </Link>
           </small>
         }
-        placeholder={"full name of the manager"}
+        placeholder={"Tên đầy đủ"}
         required
         {...register("name")}
       />
@@ -88,7 +87,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
         name={"phone"}
         control={control}
         render={({ field }) => (
-          <Input.Wrapper required id={"phone"} label={"Phone Number"}>
+          <Input.Wrapper required id={"phone"} label={"Số Điện Thoại"}>
             <Input
               component={MaskedInput}
               mask={PhoneNumberMask}
@@ -116,7 +115,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
             minDate={dayjs(new Date()).subtract(64, "years").toDate()}
             maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
             placeholder="In range of 18-64 years old"
-            label="Date of Birth"
+            label="Ngày Sinh"
             withAsterisk
             onChange={(e) => {
               field.onChange(e);
@@ -135,7 +134,7 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
         render={({ field }) => (
           <Radio.Group
             name={"gender"}
-            label="Gender"
+            label="Giới Tính"
             onChange={(e) => {
               field.onChange(e);
               field.onBlur();
@@ -144,9 +143,9 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
             defaultValue={field.value}
             withAsterisk
           >
-            <Radio value={GENDER.male} label="Male" />
-            <Radio value={GENDER.female} label="Female" />
-            <Radio value={GENDER.other} label="Other" />
+            <Radio value={GENDER.male} label="Nam" />
+            <Radio value={GENDER.female} label="Nữ" />
+            <Radio value={GENDER.other} label="Khác" />
           </Radio.Group>
         )}
         name={"gender"}
@@ -167,14 +166,14 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
 
       <Divider my={8} />
       <h3 className="my-2 mt-4 select-none border-l-2 pl-4 text-lg uppercase text-gray-500">
-        Account Information
+        Thông tin tài khoản
         <small className="block text-xs normal-case text-gray-500">
-          Use the email above and the password below to login
+          Sử dụng email đăng ký bên trên và mật khẩu dưới để đăng nhập
         </small>
       </h3>
 
       <TextInput
-        label={"Password"}
+        label={"Mật Khẩu"}
         id={"password"}
         type="password"
         placeholder={"3-30 characters"}
@@ -184,10 +183,10 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
       <FormErrorMessage errors={errors} name={"password"} />
 
       <TextInput
-        label={"Confirm Password"}
+        label={"Xác Nhận Mật Khẩu"}
         id={"confirmPassword"}
         type="password"
-        placeholder={"similar to password"}
+        placeholder={"giống mật khẩu..."}
         required
         {...register("confirmPassword")}
       />
@@ -204,28 +203,20 @@ const CreateManager: FC<CreateManagerProp> = ({ onClosed }) => {
         name={"image"}
         control={control}
         render={({ field }) => (
-          <BtnSingleUploader
-            accept={ACCEPTED_IMAGE_TYPES.join(",")}
+          <ImageUpload
             onChange={(f) => {
               field.onChange(f);
               field.onBlur();
             }}
-            btnTitle={"Upload"}
-            btnPosition={"after"}
-            render={(f) =>
-              (f && (
-                <div className={"flex justify-center"}>
-                  <div className="mt-2 rounded-full border-2 border-gray-400 object-cover shadow-xl">
-                    <Avatar
-                      radius={60}
-                      size={120}
-                      src={URL.createObjectURL(f)}
-                      alt="User Avatar"
-                    />
-                  </div>
-                </div>
-              )) ?? <></>
-            }
+            render={(file) => (
+              <Avatar
+                radius={80}
+                size={160}
+                className={"border"}
+                src={file}
+                alt="User Avatar"
+              />
+            )}
           />
         )}
       />
