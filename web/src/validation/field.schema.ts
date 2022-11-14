@@ -57,6 +57,11 @@ export const createPasswordSchema = z.object({
   confirmPassword: passwordSchema,
 });
 
+// for no need confirm
+export const createPassword2Schema = z.object({
+  password: passwordSchema,
+});
+
 export const roleSchema = z.nativeEnum(USER_ROLE, {
   required_error: "The role is required.",
   invalid_type_error: "The role type is invalid",

@@ -1,16 +1,16 @@
-import { z } from "zod";
+import {z} from "zod";
 import {
-  addressSchema,
-  ageSchemaFn,
-  createPasswordSchema,
-  emailSchema,
-  fileUploadSchema,
-  genderSchema,
-  imageTypeSchema,
-  phoneSchema,
-  nameSchema,
+    addressSchema,
+    ageSchemaFn,
+    emailSchema,
+    fileUploadSchema,
+    genderSchema,
+    imageTypeSchema,
+    nameSchema,
+    passwordSchema,
+    phoneSchema,
 } from "./field.schema";
-import { USER_ROLE } from "../const/user-role.const";
+import {staffRoleSchema} from "../const/user-role.const";
 
 /**
  * base validation schema for user model.
@@ -51,30 +51,35 @@ export const employeeModelSchema = baseUserSchema.merge(
  * Zod Validation schema for the form related to user-model
  * with password/confirm password field.
  * @param baseUserModelSchema
+ * @param withConfirmPassword
  */
 export const userRegisterSchemaFn = <T extends typeof baseUserSchema.shape>(
-  baseUserModelSchema: z.ZodObject<T>
+    baseUserModelSchema: z.ZodObject<T>,
+    withConfirmPassword = true
 ) => {
-  return (
-    baseUserModelSchema
-      .merge(createPasswordSchema)
-      // refine to check confirmPassword and password match.
-      .refine(
-        (data) => {
-          /**
-           * Typescript was not able to detect a nested type in merge schema.
-           * So we're manually parsing the type to silent the error.
-           */
-          const safeparseData = data as unknown as {
-            password: string;
-            confirmPassword: string;
-          };
-          return safeparseData.password === safeparseData.confirmPassword;
-        },
-        {
-          message: "Passwords don't match",
-          path: ["confirmPassword"], // path of error,
-        }
-      )
-  );
+    if (withConfirmPassword) {
+        return baseUserModelSchema.merge(z.object({
+            password: passwordSchema,
+            confirmPassword: passwordSchema,
+        })).refine(
+            (data) => {
+                /**
+                 * Typescript was not able to detect a nested type in merge schema.
+                 * So we're manually parsing the type to silent the error.
+                 */
+                const safeparseData = data as unknown as {
+                    password: string;
+                    confirmPassword: string;
+                };
+                return safeparseData.password === safeparseData.confirmPassword;
+            },
+            {
+                message: "Passwords don't match",
+                path: ["confirmPassword"], // path of error,
+            }
+        );
+    }
+    return baseUserModelSchema.merge(z.object({
+        password: passwordSchema,
+    }));
 };
