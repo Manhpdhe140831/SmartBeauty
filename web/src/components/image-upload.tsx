@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { ACCEPTED_IMAGE_TYPES } from "../const/file.const";
 
 type fnRender = (fileSrc?: string) => JSX.Element;
@@ -24,11 +24,12 @@ const ImageUpload = ({
   render,
 }: props) => {
   const [fileSrc, setFileSrc] = useState<string | undefined>(defaultSrc);
+  const renderFn = useCallback(render, [render, defaultSrc]);
 
   function selectedFile(e: ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     e.preventDefault();
-    const file = (e.target.files ?? [])[1] as File | undefined;
+    const file = (e.target.files ?? [])[0] as File | undefined;
     onChange && onChange(file ?? null);
 
     if (file) {
@@ -38,10 +39,10 @@ const ImageUpload = ({
 
   return (
     <label className={className}>
-      {render(fileSrc)}
+      {renderFn(fileSrc)}
       <input
         multiple={multiple}
-        onChange={selectedFile}
+        onChange={(e) => selectedFile(e)}
         type="file"
         hidden
         accept={mime ?? ACCEPTED_IMAGE_TYPES.join(",")}
