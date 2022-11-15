@@ -19,6 +19,7 @@ public class User_Branch_Mapping {
     private long  id_user;
     private long id_branch;
 
+
     public User_Branch_Mapping(){}
 
     public User_Branch_Mapping(long id_user, long id_branch) {

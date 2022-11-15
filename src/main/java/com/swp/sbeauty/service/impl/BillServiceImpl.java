@@ -5,6 +5,7 @@ import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.entity.mapping.*;
 import com.swp.sbeauty.repository.BillDetailRepository;
 import com.swp.sbeauty.repository.BillRepository;
+import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.mappingRepo.*;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.BillService;
@@ -49,6 +50,11 @@ public class BillServiceImpl implements BillService {
     @Autowired
     Customer_Course_Mapping_Repository customer_course_mapping_repository;
 
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    Bill_Product_History_Repository bill_product_history_repository;
 
 
 
@@ -79,10 +85,21 @@ public class BillServiceImpl implements BillService {
                     List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(f.getId());
                     for (BillDetail itemb: billDetailList
                     ) {
-                        ProductDto p = billDetailRepository.getProductByBillDetail(itemb.getId());
+                        Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
+//Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent,  String unit, Integer dose
+                        ProductDto product = new ProductDto(bill_product_history.getProductId(),
+                                                        bill_product_history.getName(),
+                                                        bill_product_history.getPrice(),
+                                                        bill_product_history.getDescription(),
+                                                        bill_product_history.getImage(),
+                                                        bill_product_history.getDiscountStart(),
+                                                        bill_product_history.getDiscountEnd(),
+                                                        bill_product_history.getDiscountPercent(),
+                                                        bill_product_history.getUnit(),
+                                                        bill_product_history.getDose());
                         ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
                         CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
-                        list.add(new BillDetailDto(itemb.getId(), p, s, c, itemb.getQuantity()));
+                        list.add(new BillDetailDto(itemb.getId(), product, s, c, itemb.getQuantity()));
 
                     }
                     f.setItems(list);
@@ -108,14 +125,23 @@ public class BillServiceImpl implements BillService {
         UserDto userDto = new UserDto(bill_user_mapping_repository.getStaffByBill(id));
         BranchDto branchDto = new BranchDto(bill_branch_mapping_repository.getBranchByBill(id));
         List<BillDetailDto> list = new ArrayList<>();
-        BillDetailDto billDetailDto = null;
         List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
         for (BillDetail itemb: billDetailList
              ) {
-            ProductDto p = billDetailRepository.getProductByBillDetail(itemb.getId());
+            Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
+            ProductDto product = new ProductDto(bill_product_history.getProductId(),
+                    bill_product_history.getName(),
+                    bill_product_history.getPrice(),
+                    bill_product_history.getDescription(),
+                    bill_product_history.getImage(),
+                    bill_product_history.getDiscountStart(),
+                    bill_product_history.getDiscountEnd(),
+                    bill_product_history.getDiscountPercent(),
+                    bill_product_history.getUnit(),
+                    bill_product_history.getDose());
             ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
             CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
-            list.add(new BillDetailDto(itemb.getId(), p, s, c, itemb.getQuantity()));
+            list.add(new BillDetailDto(itemb.getId(), product, s, c, itemb.getQuantity()));
 
         }
         if (entity != null){
@@ -141,8 +167,22 @@ public class BillServiceImpl implements BillService {
                 billDetail.setProduct_id(billDetailDto.getType_id());
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetail = billDetailRepository.save(billDetail);
-
-               bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                Bill_Product_history bill_product_history = new Bill_Product_history();
+                Product product = productRepository.getProductById(billDetailDto.getType_id());
+                bill_product_history.setBillDetail_id(billDetail.getId());
+                bill_product_history.setDate(bill.getCreateDate());
+                bill_product_history.setProductId(product.getId());
+                bill_product_history.setName(product.getName());
+                bill_product_history.setPrice(product.getPrice());
+                bill_product_history.setDescription(product.getDescription());
+                bill_product_history.setImage(product.getImage());
+                bill_product_history.setDiscountStart(product.getDiscountStart());
+                bill_product_history.setDiscountEnd(product.getDiscountEnd());
+                bill_product_history.setDiscountPercent(product.getDiscountPercent());
+                bill_product_history.setUnit(product.getUnit());
+                bill_product_history.setDose(product.getDose());
+                bill_product_history_repository.save(bill_product_history);
             }if (billDetailDto.getType().equalsIgnoreCase("service")){
                 BillDetail billDetail = new BillDetail();
                 billDetail.setService_id(billDetailDto.getType_id());
@@ -221,44 +261,53 @@ public class BillServiceImpl implements BillService {
 
 
         bill.setCreateDate(billDto.getCreateDate());
-        bill.setStatus(billDto.getStatus());
-        bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
-        bill.setPriceAfterTax(billDto.getPriceAfterTax());
-        bill = billRepository.save(bill);
-        List<BillDetailDto> billDetailDtos = billDto.getItems();
-        for (BillDetailDto billDetailDto: billDetailDtos) {
-            if (billDetailDto.getType().equalsIgnoreCase("product")){
-                BillDetail billDetail = new BillDetail();
-                billDetail.setProduct_id(billDetailDto.getType_id());
-                billDetail.setQuantity(billDetailDto.getQuantity());
-                billDetail = billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-            }if (billDetailDto.getType().equalsIgnoreCase("service")){
-                BillDetail billDetail = new BillDetail();
-                billDetail.setService_id(billDetailDto.getType_id());
-                billDetail.setQuantity(billDetailDto.getQuantity());
-                billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-            }if (billDetailDto.getType().equalsIgnoreCase("course")){
-                BillDetail billDetail = new BillDetail();
-                billDetail.setCourse_id(billDetailDto.getType_id());
-                billDetail.setQuantity(billDetailDto.getQuantity());
-                billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-            }
-        }
-        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        Long idStaff = Long.parseLong(temp.get("id").toString());
-        Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
-        bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
-        bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
-        bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
 
+        bill.setStatus(billDto.getStatus());
+        if (bill.getStatus().equalsIgnoreCase("dathanhtoan")){
+            return false;
+        }else {
+
+
+            bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
+            bill.setPriceAfterTax(billDto.getPriceAfterTax());
+            bill = billRepository.save(bill);
+            List<BillDetailDto> billDetailDtos = billDto.getItems();
+            for (BillDetailDto billDetailDto : billDetailDtos) {
+                if (billDetailDto.getType().equalsIgnoreCase("product")) {
+                    BillDetail billDetail = new BillDetail();
+                    billDetail.setProduct_id(billDetailDto.getType_id());
+                    billDetail.setQuantity(billDetailDto.getQuantity());
+                    billDetail = billDetailRepository.save(billDetail);
+                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                }
+                if (billDetailDto.getType().equalsIgnoreCase("service")) {
+                    BillDetail billDetail = new BillDetail();
+                    billDetail.setService_id(billDetailDto.getType_id());
+                    billDetail.setQuantity(billDetailDto.getQuantity());
+                    billDetailRepository.save(billDetail);
+                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                }
+                if (billDetailDto.getType().equalsIgnoreCase("course")) {
+                    BillDetail billDetail = new BillDetail();
+                    billDetail.setCourse_id(billDetailDto.getType_id());
+                    billDetail.setQuantity(billDetailDto.getQuantity());
+                    billDetailRepository.save(billDetail);
+                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                }
+            }
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            Long idStaff = Long.parseLong(temp.get("id").toString());
+            Long idBranch = user_branch_mapping_repo.idBranch(idStaff);
+            bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
+            bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
+            bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
+        }
         if (bill != null){
             return true;
         }else {
             return false;
         }
+
 
     }
 

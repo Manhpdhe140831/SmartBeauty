@@ -4,15 +4,13 @@ import com.swp.sbeauty.dto.CourseDto;
 import com.swp.sbeauty.dto.CustomerDto;
 import com.swp.sbeauty.dto.ProductDto;
 import com.swp.sbeauty.dto.ServiceDto;
-import com.swp.sbeauty.entity.BillDetail;
-import com.swp.sbeauty.entity.Course;
-import com.swp.sbeauty.entity.Product;
-import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
 
     @Query(value = "SELECT bd from BillDetail  bd join Bill_BillDetail_Mapping  bbm on bbm.billDetail_id = bd.id where bbm.bill_id = ?1")
@@ -27,12 +25,14 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
     @Query(value = "select c.timeOfUse from Course c where c.id =?1")
     Integer getTimeOfUse(Long id);
 
-    @Query(value = "SELECT p from Product p where p.id = ?1")
-    public Product getProductByBill(Long id);
+//    @Query(value = "SELECT bph from Bill_Product_history bph where bph.productId =?1 and bph.billId =?2")
+//    public Product getProductByBill(Long productId, Long billId);
 
-    @Query(value = "SELECT s from Service s where s.id =?1")
-    public Service getServiceByBill(Long id);
+    @Query(value = "SELECT bsh from Bill_Service_History bsh where bsh.serviceId =?1 and bsh.billId =?2")
+    public Service getServiceByBill(Long serviceId, Long billId);
 
-    @Query(value = "SELECT c from Course c where c.id =?1")
-    public Course getCourseByBill(Long id);
+    @Query(value = "SELECT bch from Bill_Course_History bch where bch.course_id =?1 and bch.billId =?2")
+    public Course getCourseByBill(Long courseId, Long billId);
+    @Query(value = "SELECT bph from Bill_BillDetail_Mapping bbm join Bill_Product_history bph on bbm.billDetail_id = bph.billDetail_id where bph.billDetail_id =?1")
+    public Bill_Product_history getBillProductHistory(Long billId);
 }

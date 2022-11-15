@@ -79,5 +79,18 @@ public class ProductDto {
         this.dose = dose;
         this.supplier = supplier;
     }
+
+    public ProductDto(Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.unit = unit;
+        this.dose = dose;
+    }
 }
 

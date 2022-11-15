@@ -18,7 +18,7 @@ public class Bill_Product_history {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String date;
-    private Long billId;
+    private Long billDetail_id;
     // product
     private Long productId;
     private String name;
@@ -31,11 +31,25 @@ public class Bill_Product_history {
     private String unit;
     private Integer dose;
 
-    public Bill_Product_history(Long id, String date, Long billId, Long productId, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose) {
+    public Bill_Product_history(Long id, String date, Long billDetail_id, Long productId, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose) {
         this.id = id;
         this.date = date;
-        this.billId = billId;
+        this.billDetail_id = billDetail_id;
         this.productId= productId;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.unit = unit;
+        this.dose = dose;
+    }
+
+    public Bill_Product_history(String date, Long billDetail_id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose) {
+        this.date = date;
+        this.billDetail_id = billDetail_id;
         this.name = name;
         this.price = price;
         this.description = description;
