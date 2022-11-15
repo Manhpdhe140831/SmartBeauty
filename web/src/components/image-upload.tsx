@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ACCEPTED_IMAGE_TYPES } from "../const/file.const";
 
 type fnRender = (fileSrc?: string) => JSX.Element;
@@ -24,7 +24,6 @@ const ImageUpload = ({
   render,
 }: props) => {
   const [fileSrc, setFileSrc] = useState<string | undefined>(defaultSrc);
-  const renderFn = useCallback(render, [render, defaultSrc]);
 
   function selectedFile(e: ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -39,7 +38,7 @@ const ImageUpload = ({
 
   return (
     <label className={className}>
-      {renderFn(fileSrc)}
+      {render(fileSrc)}
       <input
         multiple={multiple}
         onChange={(e) => selectedFile(e)}

@@ -3,20 +3,18 @@ const ManagerHeaderTable = () => {
     <>
       <colgroup>
         <col className="w-14" />
-        <col className="w-44" />
-        <col className="w-32" />
-        <col className="w-44" />
+        <col className="w-48" />
+        <col className="w-40" />
+        <col className="w-52" />
         <col />
-        <col className="w-[104px]" />
       </colgroup>
-      <thead className="bg-blue-600 text-sm">
+      <thead className="bg-blue-600">
         <tr>
-          <th className="!py-2 !text-center !text-white">No.</th>
-          <th className="!py-2 !text-center !text-white">Name</th>
-          <th className="!py-2 !text-center !text-white">Phone Number</th>
-          <th className="!py-2 !text-center !text-white">Email</th>
-          <th className="!py-2 !text-center !text-white">Address</th>
-          <th className="!py-2 !text-center !text-white"></th>
+          <th className="!text-white">No.</th>
+          <th className="!text-white">Tên</th>
+          <th className="!text-white">SĐT</th>
+          <th className="!text-white">Email</th>
+          <th className="!text-white">Address</th>
         </tr>
       </thead>
     </>

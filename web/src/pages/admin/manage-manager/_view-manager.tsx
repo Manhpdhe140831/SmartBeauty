@@ -4,8 +4,9 @@ import {
   Divider,
   Image as MantineImage,
   Input,
+  Modal,
+  PasswordInput,
   Radio,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -18,24 +19,25 @@ import {
   ManagerModel,
   ManagerUpdateEntity,
 } from "../../../model/manager.model";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { GENDER } from "../../../const/gender.const";
 import { managerModelSchema } from "../../../validation/account-model.schema";
 import DialogDetailAction from "../../../components/dialog-detail-action";
 import { DialogSubmit } from "../../../utilities/form-data.helper";
+import ImageUpload from "../../../components/image-upload";
+import { DialogViewProps } from "../../../interfaces/dialog-detail-props.interface";
 
-type DialogProps = {
-  manager: ManagerModel;
-  onClosed?: (manager?: ManagerUpdateEntity) => void;
-};
-
-const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
+const ViewManagerDialog: FC<
+  DialogViewProps<ManagerModel, ManagerUpdateEntity>
+> = ({ data, onClosed, opened }) => {
   const updateManagerSchema = managerModelSchema.merge(
     z.object({
-      id: z.literal(manager.id),
+      id: z.literal(data.id),
+      password: z
+        .union([z.string().min(4), z.string().length(0)])
+        .optional()
+        .transform((e) => (e === "" ? undefined : e)),
     })
   );
 
@@ -44,16 +46,18 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors, isValid, isDirty, dirtyFields },
   } = useForm<ManagerUpdateEntity>({
     resolver: zodResolver(updateManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      ...manager,
-      dateOfBirth: manager.dateOfBirth
-        ? dayjs(manager.dateOfBirth).toDate()
+      ...data,
+      dateOfBirth: data.dateOfBirth
+        ? dayjs(data.dateOfBirth).toDate()
         : undefined,
+      password: undefined,
     },
   });
 
@@ -64,167 +68,177 @@ const ViewManagerDialog: FC<DialogProps> = ({ manager, onClosed }) => {
     onClosed && onClosed();
   };
 
+  const submit = (formData: object) => {
+    DialogSubmit("view", dirtyFields, onClosed, data)(formData);
+    reset();
+  };
+
   return (
-    <form
-      onReset={handleReset}
-      onSubmit={handleSubmit(
-        DialogSubmit("view", dirtyFields, onClosed, manager)
-      )}
-      className={"flex w-[500px] space-x-2"}
+    <Modal
+      title={
+        <h1 className="text-center font-thin capitalize">Manager Detail</h1>
+      }
+      opened={opened}
+      size={"auto"}
+      onClose={() => reset()}
+      closeOnClickOutside={false}
+      withCloseButton={false}
     >
-      <div className="flex flex-col">
-        <Controller
-          name={"image"}
-          control={control}
-          render={({ field }) => (
-            <BtnSingleUploader
-              accept={ACCEPTED_IMAGE_TYPES.join(",")}
-              onChange={(f) => {
-                field.onChange(f);
-                field.onBlur();
-              }}
-              btnPosition={"after"}
-              btnTitle={"Update"}
-              render={(f) => (
-                <>
-                  {f && (
-                    <Text size="xs" align="left">
-                      Picked file: {f.name}
-                    </Text>
-                  )}
+      <form
+        onReset={handleReset}
+        onSubmit={handleSubmit(submit)}
+        className={"flex w-[500px] space-x-2"}
+      >
+        <div className="flex flex-col">
+          <Controller
+            name={"image"}
+            control={control}
+            render={({ field }) => (
+              <ImageUpload
+                defaultSrc={field.value as string}
+                render={(file) => (
                   <MantineImage
                     width={128}
                     height={128}
                     radius="md"
-                    src={
-                      f
-                        ? URL.createObjectURL(f)
-                        : (field.value as unknown as string)
-                    }
+                    src={file}
                     alt="Logo image"
                     className="mb-2 select-none rounded-lg border object-cover shadow-xl"
                   />
-                  <small className="mb-1 max-w-32 text-[12px] leading-tight text-gray-400">
-                    The avatar must be less than 5MB, in *.PNG, *.JPEG, or
-                    *.WEBP format.
-                  </small>
-                </>
-              )}
-            />
-          )}
-        />
-        <FormErrorMessage
-          className={"text-sm"}
-          errors={errors}
-          name={"image"}
-        />
-      </div>
+                )}
+              />
+            )}
+          />
+          <FormErrorMessage
+            className={"text-sm"}
+            errors={errors}
+            name={"image"}
+          />
+        </div>
 
-      <div className="flex flex-1 flex-col">
-        <small className={"text-gray-500"}>Manager name</small>
-        {/*<h1 className={"mb-2 text-2xl font-semibold"}>{manager.name}</h1>*/}
-        <TextInput
-          required
-          variant={"unstyled"}
-          size={"xl"}
-          sx={{ input: { fontSize: 28 } }}
-          className={"mb-2 rounded border px-2 font-semibold !leading-normal"}
-          {...register("name")}
-        />
+        <div className="flex flex-1 flex-col">
+          <small className={"text-gray-500"}>Tên Quản Lý</small>
+          <TextInput
+            required
+            variant={"unstyled"}
+            size={"xl"}
+            sx={{ input: { fontSize: 28 } }}
+            className={"mb-2 rounded border px-2 font-semibold !leading-normal"}
+            {...register("name")}
+          />
 
-        {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
-        <Controller
-          name={"phone"}
-          control={control}
-          render={({ field }) => (
-            <Input.Wrapper required id={"phone"} label={"Phone Number"}>
-              <Input
-                component={MaskedInput}
-                mask={PhoneNumberMask}
-                placeholder={"012 774 9999"}
-                onChange={field.onChange}
+          {/* Manual handle Form binding because mask-input does not expose `ref` for hook*/}
+          <Controller
+            name={"phone"}
+            control={control}
+            render={({ field }) => (
+              <Input.Wrapper required id={"phone"} label={"Phone Number"}>
+                <Input
+                  component={MaskedInput}
+                  mask={PhoneNumberMask}
+                  placeholder={"012 774 9999"}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  defaultValue={field.value}
+                />
+              </Input.Wrapper>
+            )}
+          />
+          <FormErrorMessage errors={errors} name={"phone"} />
+
+          <TextInput
+            required
+            type="email"
+            label={"Email"}
+            {...register("email")}
+          />
+          <FormErrorMessage errors={errors} name={"email"} />
+
+          <Controller
+            render={({ field }) => (
+              <DatePicker
+                minDate={dayjs(new Date()).subtract(64, "years").toDate()}
+                maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
+                placeholder="In range of 18-64 years old"
+                label="Date of Birth"
+                withAsterisk
+                onChange={(e) => {
+                  field.onChange(e);
+                  field.onBlur();
+                }}
                 onBlur={field.onBlur}
                 defaultValue={field.value}
               />
-            </Input.Wrapper>
-          )}
-        />
-        <FormErrorMessage errors={errors} name={"phone"} />
-
-        <TextInput
-          required
-          type="email"
-          label={"Email"}
-          {...register("email")}
-        />
-        <FormErrorMessage errors={errors} name={"email"} />
-
-        <Controller
-          render={({ field }) => (
-            <DatePicker
-              minDate={dayjs(new Date()).subtract(64, "years").toDate()}
-              maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
-              placeholder="In range of 18-64 years old"
-              label="Date of Birth"
-              withAsterisk
-              onChange={(e) => {
-                field.onChange(e);
-                field.onBlur();
-              }}
-              onBlur={field.onBlur}
-              defaultValue={field.value}
-            />
-          )}
-          name={"dateOfBirth"}
-          control={control}
-        />
-        <FormErrorMessage errors={errors} name={"dateOfBirth"} />
-
-        <Controller
-          render={({ field }) => (
-            <Radio.Group
-              name={"gender"}
-              label="Gender"
-              onChange={(e) => {
-                field.onChange(e);
-                field.onBlur();
-              }}
-              onBlur={field.onBlur}
-              defaultValue={field.value}
-              withAsterisk
-            >
-              <Radio value={GENDER.male} label="Male" />
-              <Radio value={GENDER.female} label="Female" />
-              <Radio value={GENDER.other} label="Other" />
-            </Radio.Group>
-          )}
-          name={"gender"}
-          control={control}
-        />
-        <FormErrorMessage errors={errors} name={"gender"} />
-
-        <Textarea
-          label={"Address"}
-          autosize={false}
-          rows={4}
-          placeholder={"permanent address..."}
-          id={"address"}
-          required
-          {...register("address")}
-          className={"!text-black"}
-        ></Textarea>
-        <FormErrorMessage errors={errors} name={"address"} />
-
-        <Divider my={8} />
-        <div className="flex justify-end space-x-2">
-          <DialogDetailAction
-            mode={"view"}
-            isDirty={isDirty}
-            isValid={isValid}
+            )}
+            name={"dateOfBirth"}
+            control={control}
           />
+          <FormErrorMessage errors={errors} name={"dateOfBirth"} />
+
+          <Controller
+            render={({ field }) => (
+              <Radio.Group
+                name={"gender"}
+                label="Gender"
+                onChange={(e) => {
+                  field.onChange(e);
+                  field.onBlur();
+                }}
+                onBlur={field.onBlur}
+                defaultValue={field.value}
+                withAsterisk
+              >
+                <Radio value={GENDER.male} label="Male" />
+                <Radio value={GENDER.female} label="Female" />
+                <Radio value={GENDER.other} label="Other" />
+              </Radio.Group>
+            )}
+            name={"gender"}
+            control={control}
+          />
+          <FormErrorMessage errors={errors} name={"gender"} />
+
+          <Textarea
+            label={"Address"}
+            autosize={false}
+            rows={4}
+            placeholder={"permanent address..."}
+            id={"address"}
+            required
+            {...register("address")}
+            className={"!text-black"}
+          ></Textarea>
+          <FormErrorMessage errors={errors} name={"address"} />
+
+          <Divider my={8} />
+          <h3
+            onClick={() => {
+              console.log(updateManagerSchema.safeParse(getValues()));
+            }}
+            className="my-2 mt-4 select-none border-l-2 pl-4 text-lg uppercase text-gray-500"
+          >
+            Reset mật khẩu
+            <small className={"block text-xs normal-case text-gray-500"}>
+              Đặt lại mật khẩu cho tài khoản
+            </small>
+          </h3>
+          <PasswordInput
+            placeholder={"Để trống nếu không thay đổi"}
+            {...register("password")}
+          />
+          <FormErrorMessage errors={errors} name={"password"} />
+
+          <Divider my={8} />
+          <div className="flex justify-end space-x-2">
+            <DialogDetailAction
+              mode={"view"}
+              isDirty={isDirty}
+              isValid={isValid}
+            />
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </Modal>
   );
 };
 

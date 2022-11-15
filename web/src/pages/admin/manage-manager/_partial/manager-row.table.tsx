@@ -5,13 +5,13 @@ import { Tooltip } from "@mantine/core";
 type RecordProps = {
   no: number;
   data: ManagerModel;
-  action: JSX.Element;
+  onClick?: (data: ManagerModel) => void;
 };
 
 const ManageRowTable = (props: RecordProps) => {
   const clipboard = useClipboard({ timeout: 500 });
   return (
-    <tr>
+    <tr onClick={() => props.onClick && props.onClick(props.data)}>
       <td className="text-center">{props.no}</td>
       <td
         className="overflow-hidden text-ellipsis"
@@ -40,7 +40,6 @@ const ManageRowTable = (props: RecordProps) => {
           <span>{props.data.address}</span>
         </Tooltip>
       </td>
-      <td className="text-center">{props.action}</td>
     </tr>
   );
 };
