@@ -1,40 +1,54 @@
 import { NavLinkItemProp } from "../interfaces/nav-item.interface";
+import { USER_ROLE } from "./user-role.const";
 
 // sidebar link config for admin.
 export const branchAdminConfig: NavLinkItemProp[] = [
-  { href: "/admin/manage-branches", label: "Quản Lý Chi Nhánh" },
-  { href: "/admin/manage-manager", label: "Quản Lý Tài Khoản" },
-  { href: "/admin/manage-supplier", label: "Quản Lý Nhà Cung Cấp" },
-  { href: "/admin/manage-products", label: "Quản Lý Sản Phẩm" },
-  { href: "/admin/manage-services", label: "Quản Lý Dịch Vụ" },
+  { href: `/${USER_ROLE.admin}/manage-branches`, label: "Quản Lý Chi Nhánh" },
+  { href: `/${USER_ROLE.admin}/manage-manager`, label: "Quản Lý Tài Khoản" },
   {
-    href: "/admin/manage-treatment-courses",
+    href: `/${USER_ROLE.admin}/manage-supplier`,
+    label: "Quản Lý Nhà Cung Cấp",
+  },
+  { href: `/${USER_ROLE.admin}/manage-products`, label: "Quản Lý Sản Phẩm" },
+  { href: `/${USER_ROLE.admin}/manage-services`, label: "Quản Lý Dịch Vụ" },
+  {
+    href: `/${USER_ROLE.admin}/manage-treatment-courses`,
     label: "Quản Lý Liệu Trình",
   },
-  { href: "/admin/reports", label: "Báo Cáo" },
+  { href: `/${USER_ROLE.admin}/reports`, label: "Báo Cáo" },
 ];
 
 export const branchManagerConfig: NavLinkItemProp[] = [
   {
     label: "Quản Lý Khách Hàng",
-    href: "/manager/manage-customer",
+    href: `/${USER_ROLE.manager}/manage-customer`,
   },
   {
     label: "Quản Lý Lịch Làm Việc",
     nested: [
       {
-        href: "/manager/manage-schedule/work-appointment",
+        href: `/${USER_ROLE.manager}/manage-schedule/work-appointment`,
         label: "Quản Lý Cuộc Hẹn",
       },
     ],
   },
   {
-    href: "/manager/manage-invoice",
+    href: `/${USER_ROLE.manager}/manage-invoice`,
     label: "Quản Lý Hoá Đơn",
   },
   {
-    href: "/manager/manage-staff",
+    href: `/${USER_ROLE.manager}/manage-staff`,
     label: "Quản lý nhân viên",
   },
 ];
-export const branchEmployeeConfig: NavLinkItemProp[] = [];
+
+export const branchSaleStaffConfig: NavLinkItemProp[] = [
+  {
+    href: `/${USER_ROLE.sale_staff}/invoice`,
+    label: "Quản Lý Hoá Đơn",
+  },
+  {
+    href: `/${USER_ROLE.sale_staff}/customer`,
+    label: "Quản Lý Khách Hàng",
+  },
+];

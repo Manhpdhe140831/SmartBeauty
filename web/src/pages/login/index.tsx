@@ -71,7 +71,8 @@ const Login: AppPageInterface = () => {
       let context = "Login failed, please try again.";
 
       if (error.status === 401) {
-        context = "Email or password is incorrect!";
+        context =
+          error.error ?? error.error ?? "Email or password is incorrect!";
       }
       setNotify({
         icon: <IconX size={18} />,
