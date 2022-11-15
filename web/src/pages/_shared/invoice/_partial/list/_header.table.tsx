@@ -12,11 +12,11 @@ const HeaderTable = () => {
       <thead className="bg-blue-600 text-sm">
         <tr>
           <th className="!py-2 !text-center !text-white">No.</th>
-          <th className="!py-2 !text-center !text-white">Customer</th>
-          <th className="!py-2 !text-center !text-white">Staff In-charge</th>
-          <th className="!py-2 !text-center !text-white">Status</th>
-          <th className="!py-2 !text-center !text-white">Time</th>
-          <th className="!py-2 !text-center !text-white">Price</th>
+          <th className="!py-2 !text-center !text-white">Khách Hàng</th>
+          <th className="!py-2 !text-center !text-white">NV Sale</th>
+          <th className="!py-2 !text-center !text-white">Trạng Thái</th>
+          <th className="!py-2 !text-center !text-white">Thời Gian</th>
+          <th className="!py-2 !text-center !text-white">Giá</th>
         </tr>
       </thead>
     </>
