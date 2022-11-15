@@ -35,4 +35,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
             "and b.status IN('dathanhtoan')\n" +
             "and cc.status IN('chuasudung')", nativeQuery = true)
     List<Service> getAllService(Long idBranch, Long idCustomer);
+
+    @Query(value = "select * from service where service.name like %?1%", nativeQuery = true)
+    List<Service> findService(String keyword);
 }

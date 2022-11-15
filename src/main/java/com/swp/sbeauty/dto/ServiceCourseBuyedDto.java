@@ -9,6 +9,7 @@ import java.util.List;
 public class ServiceCourseBuyedDto {
     List<ServiceDto> services;
     List<CourseDto> courses;
+    List<ProductDto> products;
 
     public ServiceCourseBuyedDto() {
     }
@@ -16,5 +17,11 @@ public class ServiceCourseBuyedDto {
     public ServiceCourseBuyedDto(List<ServiceDto> services, List<CourseDto> courses) {
         this.services = services;
         this.courses = courses;
+    }
+
+    public ServiceCourseBuyedDto(List<ServiceDto> services, List<CourseDto> courses, List<ProductDto> products) {
+        this.services = services;
+        this.courses = courses;
+        this.products = products;
     }
 }

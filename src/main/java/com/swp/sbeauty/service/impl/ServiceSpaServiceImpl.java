@@ -7,6 +7,7 @@ import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.BranchRepository;
+import com.swp.sbeauty.repository.CourseRepository;
 import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
 import com.swp.sbeauty.repository.mappingRepo.Bill_Course_History_Repository;
@@ -44,6 +45,9 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
+
+    @Autowired
+    CourseRepository courseRepository;
     @Autowired
     private ModelMapper mapper;
 
@@ -196,6 +200,26 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         }
     }
 
+    @Override
+    public ServiceCourseBuyedDto findProductCourseService(String keyword) {
+        List<Product> products = productRepository.findProduct(keyword);
+        List<ProductDto> productDtos = new ArrayList<>();
+        for (Product product : products){
+            productDtos.add(new ProductDto(product));
+        }
+        List<Service> services = serviceRepository.findService(keyword);
+        List<ServiceDto> serviceDtos = new ArrayList<>();
+        for (Service service : services){
+            serviceDtos.add(new ServiceDto(service));
+        }
+        List<Course> courses = courseRepository.findCourse(keyword);
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Course course : courses){
+            courseDtos.add(new CourseDto(course));
+        }
+        ServiceCourseBuyedDto result = new ServiceCourseBuyedDto(serviceDtos,courseDtos,productDtos);
+        return result;
+    }
 
 
     @Override

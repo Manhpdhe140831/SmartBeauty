@@ -1,6 +1,7 @@
 package com.swp.sbeauty.repository;
 
 import com.swp.sbeauty.entity.Branch;
+import com.swp.sbeauty.entity.Course;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.SpaBed;
 import org.springframework.data.domain.Page;
@@ -19,5 +20,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     public List<Product> getAllProductByServiceId(Long id);
     Product getProductById(Long id);
     Boolean existsByName(String name);
-
+    @Query(value = "select * from product where product.name like %?1%", nativeQuery = true)
+    List<Product> findProduct(String keyword);
 }

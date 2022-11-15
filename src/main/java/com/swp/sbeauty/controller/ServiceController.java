@@ -114,4 +114,11 @@ public class ServiceController {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/service/findServiceCourseProduct")
+    private ResponseEntity<?> getAllService(@RequestParam(value = "keyword") String keyword){
+            ServiceCourseBuyedDto list = service.findProductCourseService(keyword);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+
+    }
 }

@@ -29,4 +29,7 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
             "            and b.status IN ('dathanhtoan')\n" +
             "            and cc.status IN ('chuasudung', 'dangsudung')", nativeQuery = true)
     List<Course> getCourseBuyed(Long idBranch, Long idCustomer);
+
+    @Query(value = "select * from course where course.name like %?1%", nativeQuery = true)
+    List<Course> findCourse(String keyword);
 }
