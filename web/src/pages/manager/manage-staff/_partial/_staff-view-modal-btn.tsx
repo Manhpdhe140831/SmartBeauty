@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IconSettings } from "@tabler/icons";
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
-import StaffInfo from "../_view-staff";
+import ViewStaff from "../_view-staff";
 import { BranchModel } from "../../../../model/branch.model";
 import { ManagerModel } from "../../../../model/manager.model";
 import { StaffModel } from "../../../../model/staff.model";
@@ -35,8 +35,8 @@ const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
           setViewBranch(false);
         }}
       >
-        <StaffInfo
-          onClose={(e) => {
+        <ViewStaff
+          onClosed={(e) => {
             //  TODO: handle API call
             console.log(e);
             // close dialog and update to the list screen

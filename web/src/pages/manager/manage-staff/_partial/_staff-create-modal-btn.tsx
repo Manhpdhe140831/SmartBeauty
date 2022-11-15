@@ -42,11 +42,11 @@ const StaffCreateModalBtn = ({onChanged, userRole}: StaffModalProps) => {
                 <Button onClick={() => setNewStaffModal(true)}
                         color={"green"}
                         leftIcon={<IconPlus/>}>
-                    New Staff
+                    Tạo nhân viên
                 </Button>
             }
             <Modal
-                title={<h1 className="text-center font-thin capitalize">New Staff</h1>}
+                title={<h1 className="text-center font-thin capitalize">Tạo nhân viên mới</h1>}
                 opened={newStaffModal}
                 size={"auto"}
                 onClose={() => {

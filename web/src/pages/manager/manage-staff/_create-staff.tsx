@@ -12,7 +12,7 @@ import BtnSingleUploader from "../../../components/btn-single-uploader";
 import dayjs from "dayjs";
 import {ACCEPTED_IMAGE_TYPES} from "../../../const/file.const";
 import MaskedInput from "react-text-mask";
-import {PasswordInput, Select, Textarea, TextInput, Avatar, Input} from "@mantine/core";
+import {Avatar, Input, PasswordInput, Select, Textarea, TextInput} from "@mantine/core";
 import {DatePicker} from "@mantine/dates";
 import {PhoneNumberMask} from "../../../const/input-masking.const";
 
@@ -20,9 +20,7 @@ type ViewStaffPropsType = {
     onClosed: (staffData?: StaffCreateEntity) => void;
 };
 
-const StaffInfo: FC<ViewStaffPropsType> = ({onClosed}) => {
-
-    console.log(1);
+const CreateStaff: FC<ViewStaffPropsType> = ({onClosed}) => {
     const createStaffSchema = userRegisterSchemaFn(employeeModelSchema, false);
 
     const {
@@ -90,19 +88,30 @@ const StaffInfo: FC<ViewStaffPropsType> = ({onClosed}) => {
                             />
                         </div>
                         <div className={"w-full"}>
-                            <TextInput label={"Full name"} placeholder="Full name" {...register("name")} />
-                            <Input.Wrapper label={"Role"}
-                                           withAsterisk>
-                                <Input component={"select"}
-                                    placeholder="Role"
-                                    {...register("role")}>
-                                    <option value={STAFF_USER_ROLE.sale_staff}>Sale staff</option>
-                                    <option value={STAFF_USER_ROLE.technical_staff}>Technical staff</option>
-                                </Input>
-                            </Input.Wrapper>
+                            <TextInput label={"Tên đầy đủ"} placeholder="Nguyễn Văn A" {...register("name")} />
+                            <Controller
+                                render={({field}) => (
+                                    <Select label={"Chức vụ"}
+                                            placeholder="Chức vụ"
+                                            withAsterisk
+                                            data={[
+                                                {value: STAFF_USER_ROLE.sale_staff, label: "Sale staff"},
+                                                {value: STAFF_USER_ROLE.technical_staff, label: "Technical staff"}
+                                            ]}
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                field.onBlur();
+                                            }}
+                                            onBlur={field.onBlur}
+                                            defaultValue={field.value}>
+                                    </Select>
+                                )}
+                                name={"role"}
+                                control={control}
+                            />
                             <PasswordInput
-                                placeholder="Password"
-                                label="Password"
+                                placeholder="Mật khẩu"
+                                label="Mật khẩu"
                                 withAsterisk
                                 {...register("password")}
                             />
@@ -110,30 +119,39 @@ const StaffInfo: FC<ViewStaffPropsType> = ({onClosed}) => {
                     </div>
                     <div className="flex w-full justify-between gap-5">
                         <div className={"flex w-full flex-col gap-3"}>
-                            <Input.Wrapper label={"Gender"}
-                                           withAsterisk>
-                                <Select
-                                    data={[
-                                        {value: GENDER.male, label: "Nam"},
-                                        {value: GENDER.female, label: "Nữ"},
-                                        {value: GENDER.other, label: "Khác"},
-                                    ]}
-                                ></Select>
-                            </Input.Wrapper>
                             <Controller
                                 render={({field}) => (
-                                    <DatePicker
-                                        minDate={dayjs(new Date()).subtract(64, "years").toDate()}
-                                        maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
-                                        placeholder="In range of 18-64 years old"
-                                        label="Date of Birth"
-                                        withAsterisk
-                                        onChange={(e) => {
-                                            field.onChange(e);
-                                            field.onBlur();
-                                        }}
-                                        onBlur={field.onBlur}
-                                        defaultValue={field.value}
+                                    <Select label={"Giới tính"}
+                                            withAsterisk
+                                            data={[
+                                                {value: GENDER.male, label: "Nam"},
+                                                {value: GENDER.female, label: "Nữ"},
+                                                {value: GENDER.other, label: "Khác"},
+                                            ]}
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                field.onBlur();
+                                            }}
+                                            onBlur={field.onBlur}
+                                            defaultValue={field.value}>
+                                    </Select>
+                                )}
+                                name={"gender"}
+                                control={control}
+                            />
+                            <Controller
+                                render={({field}) => (
+                                    <DatePicker minDate={dayjs(new Date()).subtract(64, "years").toDate()}
+                                                maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
+                                                placeholder="Trong độ tuổi 18-64"
+                                                label="Ngày sinh"
+                                                withAsterisk
+                                                onChange={(e) => {
+                                                    field.onChange(e);
+                                                    field.onBlur();
+                                                }}
+                                                onBlur={field.onBlur}
+                                                defaultValue={field.value}
                                     />
                                 )}
                                 name={"dateOfBirth"}
@@ -145,7 +163,7 @@ const StaffInfo: FC<ViewStaffPropsType> = ({onClosed}) => {
                                 name={"phone"}
                                 control={control}
                                 render={({field}) => (
-                                    <Input.Wrapper required id={"phone"} label={"Phone Number"}>
+                                    <Input.Wrapper required id={"phone"} label={"SĐT"}>
                                         <Input
                                             component={MaskedInput}
                                             mask={PhoneNumberMask}
@@ -170,15 +188,12 @@ const StaffInfo: FC<ViewStaffPropsType> = ({onClosed}) => {
                     <Textarea
                         autosize={false}
                         rows={6}
-                        label={"Address"}
-                        placeholder={"Full address"}
+                        label={"Địa chỉ"}
+                        placeholder={"Địa chỉ"}
                         {...register("address")}
                         withAsterisk
                     ></Textarea>
                     <div className={"flex justify-end mt-3"}>
-                        <button
-                                onClick={() => console.log(createStaffSchema.safeParse(getValues()))}>check
-                        </button>
                         <DialogDetailAction mode={"create"} isDirty={isDirty} isValid={isValid}/>
                     </div>
                 </div>
@@ -187,4 +202,4 @@ const StaffInfo: FC<ViewStaffPropsType> = ({onClosed}) => {
     );
 };
 
-export default StaffInfo;
+export default CreateStaff;

@@ -77,15 +77,26 @@ const Index: AppPageInterface = () => {
                             }
                         />
                     ) : (
-                        staffs &&
-                        staffs.data.map((d, i) => (
-                            <TableRecord
-                                key={d.id}
-                                no={i + 1}
-                                data={d}
-                                action={arrBtn(d)}
+                        staffs && staffs.data.length > 0 ? (
+                            staffs.data.map((d, i) => (
+                                <TableRecord
+                                    key={d.id}
+                                    no={i + 1}
+                                    data={d}
+                                    action={arrBtn(d)}
+                                />
+                            ))
+                        ) : (
+                            <RowPlaceholderTable
+                                colSpan={5}
+                                className={"min-h-12"}
+                                message={
+                                    <div className="text-center font-semibold text-gray-500">
+                                        Không tồn tại
+                                    </div>
+                                }
                             />
-                        ))
+                        )
                     )}
                     </tbody>
                 </Table>
