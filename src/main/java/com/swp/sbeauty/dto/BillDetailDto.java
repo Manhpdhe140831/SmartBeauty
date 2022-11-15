@@ -16,6 +16,7 @@ public class BillDetailDto {
     private Long quantity;
     private String status;
 
+
     public BillDetailDto(){}
 
     public BillDetailDto(String type, Long quantity, Long type_id){

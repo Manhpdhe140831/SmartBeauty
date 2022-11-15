@@ -5,6 +5,9 @@ import com.swp.sbeauty.dto.CustomerDto;
 import com.swp.sbeauty.dto.ProductDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.entity.BillDetail;
+import com.swp.sbeauty.entity.Course;
+import com.swp.sbeauty.entity.Product;
+import com.swp.sbeauty.entity.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -20,4 +23,16 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
     public ServiceDto getServiceByBillDetail(Long id);
     @Query(value = "select c from Course c join BillDetail  bd on c.id = bd.course_id where bd.id = ?1")
     public CourseDto getCourseByBillDetail(Long id);
+
+    @Query(value = "select c.timeOfUse from Course c where c.id =?1")
+    Integer getTimeOfUse(Long id);
+
+    @Query(value = "SELECT p from Product p where p.id = ?1")
+    public Product getProductByBill(Long id);
+
+    @Query(value = "SELECT s from Service s where s.id =?1")
+    public Service getServiceByBill(Long id);
+
+    @Query(value = "SELECT c from Course c where c.id =?1")
+    public Course getCourseByBill(Long id);
 }

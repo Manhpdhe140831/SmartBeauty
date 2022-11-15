@@ -2,16 +2,14 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
-import com.swp.sbeauty.entity.mapping.Bill_BillDetail_Mapping;
-import com.swp.sbeauty.entity.mapping.Bill_Branch_Mapping;
-import com.swp.sbeauty.entity.mapping.Bill_Customer_Mapping;
-import com.swp.sbeauty.entity.mapping.Bill_User_Mapping;
+import com.swp.sbeauty.entity.mapping.*;
 import com.swp.sbeauty.repository.BillDetailRepository;
 import com.swp.sbeauty.repository.BillRepository;
 import com.swp.sbeauty.repository.mappingRepo.*;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.BillService;
 import io.jsonwebtoken.Claims;
+import org.joda.time.format.DateTimeFormat;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.*;
 import java.util.stream.Collectors;
 @Service
 public class BillServiceImpl implements BillService {
@@ -43,6 +45,10 @@ public class BillServiceImpl implements BillService {
     Bill_BillDetail_Mapping_Repository bill_billDetail_mapping_repository;
     @Autowired
     User_Branch_Mapping_Repo user_branch_mapping_repo;
+
+    @Autowired
+    Customer_Course_Mapping_Repository customer_course_mapping_repository;
+
 
 
 
@@ -135,6 +141,7 @@ public class BillServiceImpl implements BillService {
                 billDetail.setProduct_id(billDetailDto.getType_id());
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetail = billDetailRepository.save(billDetail);
+
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
             }if (billDetailDto.getType().equalsIgnoreCase("service")){
                 BillDetail billDetail = new BillDetail();
@@ -144,6 +151,9 @@ public class BillServiceImpl implements BillService {
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
                 // for (i=>billDetailDto.getQuantity())
                 // Customer_Course_Mapping (Long bill_id, Long customer_id, Long service_id, String status "chuasudung")
+                for (int i = 1; i<= billDetailDto.getQuantity(); i++){
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), billDetailDto.getStatus()));
+                }
             }if (billDetailDto.getType().equalsIgnoreCase("course")){
                 BillDetail billDetail = new BillDetail();
                 billDetail.setCourse_id(billDetailDto.getType_id());
@@ -152,6 +162,9 @@ public class BillServiceImpl implements BillService {
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
                 // for (i=>billDetailDto.getQuantity())
                 //Customer_Course_Mapping(Long bill_id, Long customer_id, Long course_id, String endDate, Integer count (0), String status (chuasudung))
+                for (int i = 1; i<= billDetailDto.getQuantity(); i++){
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getTimeOfUse(billDetailDto.getType_id())), 0, billDetailDto.getStatus()));
+                }
             }
         }
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -248,4 +261,15 @@ public class BillServiceImpl implements BillService {
         }
 
     }
+
+    @Override
+    public String getEndDate(String startDate, int duration) {
+        String subStartDate = startDate.substring(0,10);
+        DateTimeFormatter formmat1 = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd").toFormatter();
+        LocalDate localDateTime = LocalDate.parse(subStartDate , formmat1);
+        LocalDate dt = localDateTime.plusDays(duration);
+        String formatter = formmat1.format(dt);
+        return formatter + "T17:00:00.000Z";
+    }
+
 }
