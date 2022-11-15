@@ -7,15 +7,15 @@ import lombok.Setter;
 @Setter
 public class ResponseDto<dataType> {
     private dataType data;
-    private Integer errorCode;
-    private String errorMessage;
+    private Integer status;
+    private String error;
 
     public ResponseDto(dataType data) {
         this.data = data;
     }
 
-    public ResponseDto(Integer errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+    public ResponseDto(Integer status, String error) {
+        this.status = status;
+        this.error = error;
     }
 }

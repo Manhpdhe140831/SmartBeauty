@@ -5,7 +5,9 @@ import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.dto.UserResponse;
 import com.swp.sbeauty.entity.APIResponse;
+import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Users;
+import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.security.jwt.JwtResponse;
 import com.swp.sbeauty.security.jwt.JwtUtils;
@@ -40,6 +42,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    BranchRepository branchRepository;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -99,13 +104,18 @@ public class UserController {
     }
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
+        Branch branch = branchRepository.getBranchByEmail(loginRequest.getEmail());
+        if(branch!=null){
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            return ResponseEntity.ok(new JwtResponse(jwt));
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(401, "Account must be registered with branch"), HttpStatus.UNAUTHORIZED);
+        }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
     @GetMapping("/user/getAll")
