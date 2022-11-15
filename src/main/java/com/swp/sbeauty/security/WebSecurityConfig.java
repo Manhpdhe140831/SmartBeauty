@@ -34,32 +34,7 @@ public class WebSecurityConfig  {
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception{
-//        http.cors().and().csrf().disable().authorizeRequests()
-//                .antMatchers("/api/user/**").permitAll()
-//                .antMatchers("/api/branch/**").permitAll()
-//                .antMatchers("/api/courses/**").permitAll()
-//                .antMatchers("/api/supplier/**").permitAll()
-//                .antMatchers("/api/category/**").permitAll()
-//                .antMatchers("/api/product/**").permitAll()
-//                .antMatchers("/api/bed/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .exceptionHandling();
-//    }
-//
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("*"));
-//        configuration.setAllowedHeaders(Arrays.asList("*"));
-//        configuration.setAllowCredentials(false);
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -94,6 +69,7 @@ public class WebSecurityConfig  {
                 .antMatchers("/api/service/**").permitAll()
                 .antMatchers("/api/bill/**").permitAll()
                 .antMatchers("/api/slot/**").permitAll()
+                .antMatchers("/api/image/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

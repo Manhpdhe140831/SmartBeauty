@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
-                user.setUrlImage(imagePath.resolve(image.getOriginalFilename()).toString());
+                user.setUrlImage(image.getOriginalFilename());
             }
 
             Set<Role> roles = new HashSet<>();
