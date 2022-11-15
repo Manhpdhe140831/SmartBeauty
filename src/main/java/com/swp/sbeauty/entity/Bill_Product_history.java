@@ -20,7 +20,7 @@ public class Bill_Product_history {
     private String date;
     private Long billId;
     // product
-    private Long product_id;
+    private Long productId;
     private String name;
     private Double price;
     private String description;
@@ -31,11 +31,11 @@ public class Bill_Product_history {
     private String unit;
     private Integer dose;
 
-    public Bill_Product_history(Long id, String date, Long billId, Long product_id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose) {
+    public Bill_Product_history(Long id, String date, Long billId, Long productId, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent, String unit, Integer dose) {
         this.id = id;
         this.date = date;
         this.billId = billId;
-        this.product_id = product_id;
+        this.productId= productId;
         this.name = name;
         this.price = price;
         this.description = description;

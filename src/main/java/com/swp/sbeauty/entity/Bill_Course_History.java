@@ -17,7 +17,9 @@ public class Bill_Course_History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long billId;
     private String date;
+
     private long course_id;
     private String code;
     private String name;
@@ -30,8 +32,9 @@ public class Bill_Course_History {
     private String image;
     private String description;
 
-    public Bill_Course_History(Long id, String date, long course_id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
+    public Bill_Course_History(Long id, Long billId ,String date, long course_id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
         this.id = id;
+        this.billId = billId;
         this.date = date;
         this.course_id = course_id;
         this.code = code;
