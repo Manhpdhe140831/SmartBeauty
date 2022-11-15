@@ -5,6 +5,7 @@ import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.CourseRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
+import com.swp.sbeauty.repository.mappingRepo.Bill_Course_History_Repository;
 import com.swp.sbeauty.repository.mappingRepo.Course_Service_Mapping_Repository;
 import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
 import com.swp.sbeauty.service.CourseService;
@@ -43,7 +44,8 @@ public class CourseServiceImpl implements CourseService {
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
     @Autowired
     ModelMapper mapper;
-
+    @Autowired
+    Bill_Course_History_Repository bill_course_history_repository;
     @Override
     public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
         try{
@@ -203,9 +205,9 @@ public class CourseServiceImpl implements CourseService {
             return null;
         } else {
             Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
-            List<Course> allUsers = courseRepository.getCourseBuyed(idBranch,customer);
+            List<Bill_Course_History> allUsers = bill_course_history_repository.getCourseBuyed(idBranch,customer);
             List<CourseDto> courseDtos = new ArrayList<>();
-            for (Course course : allUsers){
+            for (Bill_Course_History course : allUsers){
                 courseDtos.add(new CourseDto(course));
             }
             return courseDtos;

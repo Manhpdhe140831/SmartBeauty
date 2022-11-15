@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
-import com.swp.sbeauty.entity.Product;
-import com.swp.sbeauty.entity.Service;
-import com.swp.sbeauty.entity.Service_Product_mapping;
-import com.swp.sbeauty.entity.Users;
+import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
+import com.swp.sbeauty.repository.mappingRepo.Bill_Course_History_Repository;
+import com.swp.sbeauty.repository.mappingRepo.Bill_Service_History_Repository;
 import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
 import com.swp.sbeauty.repository.mappingRepo.Service_Product_Mapping_Repository;
 import com.swp.sbeauty.service.ServiceSpaService;
@@ -21,9 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,11 +36,14 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
     @Autowired
     ServiceRepository serviceRepository;
-
+    @Autowired
+    Bill_Service_History_Repository bill_service_history_repository;
     @Autowired
     Service_Product_Mapping_Repository service_product_mapping_repository;
     @Autowired
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
+    @Autowired
+    Bill_Course_History_Repository bill_course_history_repository;
     @Autowired
     private ModelMapper mapper;
 
@@ -177,19 +176,27 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     }
 
     @Override
-    public List<ServiceDto> getAllService(Long idCheck, Long customer) {
+    public ServiceCourseBuyedDto getAllService(Long idCheck, Long customer) {
         if(idCheck==null || customer == null){
             return null;
         } else {
             Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
-            List<Service> allUsers = serviceRepository.getAllService(idBranch,customer);
+            List<Bill_Service_History> listService = bill_service_history_repository.getAllServiceBuyed(idBranch,customer);
             List<ServiceDto> serviceDtos = new ArrayList<>();
-            for (Service service : allUsers){
-                serviceDtos.add(new ServiceDto(service));
+            for(Bill_Service_History serviceDto : listService){
+                serviceDtos.add(new ServiceDto(serviceDto));
             }
-            return serviceDtos;
+            List<Bill_Course_History> listCourse = bill_course_history_repository.getCourseBuyed(idBranch,customer);
+            List<CourseDto> courseDtos = new ArrayList<>();
+            for (Bill_Course_History course_history : listCourse){
+                courseDtos.add(new CourseDto(course_history));
+            }
+            ServiceCourseBuyedDto result = new ServiceCourseBuyedDto(serviceDtos,courseDtos);
+            return result;
         }
     }
+
+
 
     @Override
     public Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image, String products) {

@@ -1,6 +1,7 @@
 package com.swp.sbeauty.dto;
 
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
+import com.swp.sbeauty.entity.Bill_Service_History;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
 import com.swp.sbeauty.entity.Service;
@@ -72,6 +73,22 @@ public class ServiceDto {
 
         if (null != service) {
             this.setId(service.getId());
+            this.setName(service.getName());
+            this.setDiscountStart(service.getDiscountStart());
+            this.setDiscountEnd(service.getDiscountEnd());
+            this.setPrice(service.getPrice());
+            this.setDescription(service.getDescription());
+            this.setDuration(service.getDuration());
+            this.setImage(service.getImage());
+
+        }
+
+
+    }
+    public ServiceDto(Bill_Service_History service) {
+
+        if (null != service) {
+            this.setId(service.getServiceId());
             this.setName(service.getName());
             this.setDiscountStart(service.getDiscountStart());
             this.setDiscountEnd(service.getDiscountEnd());

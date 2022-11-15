@@ -1,12 +1,10 @@
 package com.swp.sbeauty.controller;
 
-import com.swp.sbeauty.dto.ResponseDto;
-import com.swp.sbeauty.dto.ServiceDto;
-import com.swp.sbeauty.dto.ServiceResponseDto;
-import com.swp.sbeauty.dto.UserDto;
+import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.APIResponse;
 import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.repository.mappingRepo.Bill_Service_History_Repository;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.CourseService;
 import com.swp.sbeauty.service.ServiceSpaService;
@@ -103,14 +101,14 @@ public class ServiceController {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/service/getServiceBuyed")
+    @GetMapping("/service/getServiceAndCourseBuyed")
     private ResponseEntity<?> getAllService(@RequestHeader("Authorization") String authHeader,
                                            @RequestParam(value = "customer") Long customer){
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
             Long idCheck = Long.parseLong(id);
-            List<ServiceDto> list = service.getAllService(idCheck, customer);
+            ServiceCourseBuyedDto list = service.getAllService(idCheck, customer);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);

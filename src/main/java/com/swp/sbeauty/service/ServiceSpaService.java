@@ -1,5 +1,6 @@
 package com.swp.sbeauty.service;
 
+import com.swp.sbeauty.dto.ServiceCourseBuyedDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.dto.ServiceResponseDto;
 import com.swp.sbeauty.dto.UserDto;
@@ -23,6 +24,6 @@ public interface ServiceSpaService {
 
 
     String validateService(String name, String discountStart, String discountEnd, Double discountPercent);
-    List<ServiceDto> getAllService(Long idCheck, Long customer);
+    ServiceCourseBuyedDto getAllService(Long idCheck, Long customer);
     Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image, String products);
 }

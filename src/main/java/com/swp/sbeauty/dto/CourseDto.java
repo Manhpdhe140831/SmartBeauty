@@ -1,10 +1,7 @@
 package com.swp.sbeauty.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.Course;
-import com.swp.sbeauty.entity.Role;
-import com.swp.sbeauty.entity.Service;
+import com.swp.sbeauty.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +36,19 @@ public class CourseDto {
 
     public CourseDto(Course course) {
         this.setId(course.getId());
+        this.setName(course.getName());
+        this.setPrice(course.getPrice());
+        this.setDuration(course.getDuration());
+        this.setTimeOfUse(course.getTimeOfUse());
+        this.setDiscountStart(course.getDiscountStart());
+        this.setDiscountEnd(course.getDiscountEnd());
+        this.setDiscountPercent(course.getDiscountPercent());
+        this.setImage(course.getImage());
+        this.setDescription(course.getDescription());
+
+    }
+    public CourseDto(Bill_Course_History course) {
+        this.setId(course.getCourse_id());
         this.setName(course.getName());
         this.setPrice(course.getPrice());
         this.setDuration(course.getDuration());
