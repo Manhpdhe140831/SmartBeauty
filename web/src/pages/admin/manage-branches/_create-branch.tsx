@@ -85,9 +85,9 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
         label={"Branch Name"}
         description={
           <small className="mb-2 leading-tight text-gray-500">
-            Please naming the branch according to{" "}
-            <Link href={"/404"}>
-              <a className="inline text-blue-600 underline">the rules</a>
+            Hãy đặt tên chi nhánh theo đúng{" "}
+            <Link className="inline text-blue-600 underline" href={"/404"}>
+              quy định
             </Link>
           </small>
         }

@@ -2,19 +2,8 @@ import { NavLinkItemProp } from "../interfaces/nav-item.interface";
 
 // sidebar link config for admin.
 export const branchAdminConfig: NavLinkItemProp[] = [
-  {
-    label: "Chi Nhánh",
-    nested: [
-      {
-        href: "/admin/manage-branches",
-        label: "Quản Lý Chi Nhánh",
-      },
-      {
-        href: "/admin/manage-manager",
-        label: "Quản Lý Tài Khoản",
-      },
-    ],
-  },
+  { href: "/admin/manage-branches", label: "Quản Lý Chi Nhánh" },
+  { href: "/admin/manage-manager", label: "Quản Lý Tài Khoản" },
   { href: "/admin/manage-supplier", label: "Quản Lý Nhà Cung Cấp" },
   { href: "/admin/manage-products", label: "Quản Lý Sản Phẩm" },
   { href: "/admin/manage-services", label: "Quản Lý Dịch Vụ" },
