@@ -39,6 +39,27 @@ export function isBetweenSale(priceInfo?: BasePriceModel) {
 }
 
 /**
+ * Return true if the sale is in the past, or not available.
+ * @param priceInfo
+ */
+export function isSaleNotViable(priceInfo?: BasePriceModel) {
+  if (
+    (!priceInfo?.discountEnd && !priceInfo?.discountStart) ||
+    !priceInfo?.discountPercent
+  ) {
+    return true;
+  }
+
+  if (priceInfo.discountEnd) {
+    // the current date is after the ending sale.
+    return dayjs().isAfter(new Date(priceInfo.discountEnd), "date");
+  }
+
+  // the current date is either before / within sale.
+  return false;
+}
+
+/**
  * Calculate the discounting price after discount.
  * @param discountData
  */

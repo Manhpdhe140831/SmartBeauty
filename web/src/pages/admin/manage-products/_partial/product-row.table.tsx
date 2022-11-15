@@ -7,6 +7,7 @@ import SalePriceTableCell from "../../../../components/cell-sale-price.table";
 import dayjs from "dayjs";
 import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
 import { SupplierModel } from "../../../../model/supplier.model";
+import { isSaleNotViable } from "../../../../utilities/pricing.helper";
 
 const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
   data,
@@ -48,10 +49,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
         </Tooltip>
       </td>
 
-      <td
-        rowSpan={data.discountPercent !== null ? 1 : 2}
-        className="!pb-0 !pt-1"
-      >
+      <td rowSpan={!isSaleNotViable(data) ? 1 : 2} className="!pb-0 !pt-1">
         <SalePriceTableCell priceModel={data} />
       </td>
 
@@ -75,7 +73,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
       </td>
       {/*Dose col*/}
 
-      {data.discountPercent !== null && (
+      {!isSaleNotViable(data) && (
         <td className="text-center">
           <Tooltip
             label={
