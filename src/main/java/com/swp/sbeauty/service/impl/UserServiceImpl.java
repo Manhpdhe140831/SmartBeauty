@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     @Override
-    public Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password, Long role, String roleAuth, Integer idCheck) {
+    public Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password, String role, String roleAuth, Integer idCheck) {
         try {
             Users user = new Users();
             user.setName(name);
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
                     return false;
                 } else {
                     Role roleRaw = null;
-                    Optional<Role> optional = roleRepository.findById(role);
+                    Optional<Role> optional = roleRepository.findByName(role);
                     if (optional.isPresent()) {
                         roleRaw = optional.get();
                     }

@@ -28,7 +28,7 @@ public interface UserService {
     UserResponse getUserByManager(Integer idCheck, int pageNo, int pageSize);
     UserResponse getAllUser(int pageNo, int pageSize);
 
-    Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password,Long role, String roleCheck, Integer idcheck);
+    Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password,String role, String roleCheck, Integer idcheck);
 
     Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address);
 

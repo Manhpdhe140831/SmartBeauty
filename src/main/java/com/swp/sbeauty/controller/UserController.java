@@ -55,7 +55,7 @@ public class UserController {
                                       @RequestParam(value = "gender") String gender,
                                       @RequestParam(value = "address") String address,
                                       @RequestParam(value = "password") String password,
-                                      @RequestParam(value = "role", required = false) Long role,
+                                      @RequestParam(value = "role", required = false) String role,
                                       @RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String roleCheck = temp.get("role").toString();
