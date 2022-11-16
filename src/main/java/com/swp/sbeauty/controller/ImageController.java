@@ -21,11 +21,15 @@ import java.nio.file.Paths;
 @RequestMapping("/api/image")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ImageController {
+
+//    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
+
     @GetMapping(value = "getImage/{image}")
     public ResponseEntity<ByteArrayResource> getImage(@PathVariable("image") String image){
         if(!image.equals("")||image!=null){
             try{
-                Path fileName = Paths.get("E:\\SWP490G9\\SmartBeauty\\static\\images\\", image);
+                Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
+                Path fileName = Paths.get(CURRENT_FOLDER+ "\\static\\images\\", image);
                 byte[] buffer = Files.readAllBytes(fileName);
                 ByteArrayResource byteArrayResource = new ByteArrayResource(buffer);
                 return ResponseEntity.ok()
