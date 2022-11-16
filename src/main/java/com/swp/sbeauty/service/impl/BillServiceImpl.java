@@ -65,7 +65,7 @@ public class BillServiceImpl implements BillService {
     Bill_Course_History_Repository bill_course_history_repository;
 
 
-    String status = "chuasusung";
+    String status = "chuasudung";
 
     @Override
     public BillResponseDto getBills(int offSet, int pageSize) {
