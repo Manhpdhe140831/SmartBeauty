@@ -14,7 +14,7 @@ public class BillDetailDto {
     private ServiceDto service;
     private CourseDto course;
     private Long quantity;
-    private String status;
+
 
 
     public BillDetailDto(){}
@@ -33,7 +33,7 @@ public class BillDetailDto {
         this.quantity = quantity;
     }
 
-    public BillDetailDto(Long id, String type, Long type_id, ProductDto product, ServiceDto service, CourseDto course, Long quantity, String status) {
+    public BillDetailDto(Long id, String type, Long type_id, ProductDto product, ServiceDto service, CourseDto course, Long quantity) {
         this.id = id;
         this.type = type;
         this.type_id = type_id;
@@ -41,7 +41,6 @@ public class BillDetailDto {
         this.service = service;
         this.course = course;
         this.quantity = quantity;
-        this.status = status;
     }
 
 

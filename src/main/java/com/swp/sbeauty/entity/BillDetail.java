@@ -18,5 +18,5 @@ public class BillDetail {
     private Long service_id;
     private Long product_id;
     private Long quantity;
-    private String status;
+
 }

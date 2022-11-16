@@ -65,6 +65,7 @@ public class BillServiceImpl implements BillService {
     Bill_Course_History_Repository bill_course_history_repository;
 
 
+    String status = "chuasusung";
 
     @Override
     public BillResponseDto getBills(int offSet, int pageSize) {
@@ -307,7 +308,7 @@ public class BillServiceImpl implements BillService {
                 // for (i=>billDetailDto.getQuantity())
                 // Customer_Course_Mapping (Long bill_id, Long customer_id, Long service_id, String status "chuasudung")
                 for (int i = 1; i<= billDetailDto.getQuantity(); i++){
-                    customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), billDetailDto.getStatus()));
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetailDto.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), status));
 
                 }
             }if (billDetailDto.getType().equalsIgnoreCase("course")){
@@ -337,7 +338,7 @@ public class BillServiceImpl implements BillService {
                 // for (i=>billDetailDto.getQuantity())
                 //Customer_Course_Mapping(Long bill_id, Long customer_id, Long course_id, String endDate, Integer count (0), String status (chuasudung))
                 for (int i = 1; i<= billDetailDto.getQuantity(); i++){
-                    customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getTimeOfUse(billDetailDto.getType_id())), 0, billDetailDto.getStatus()));
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getTimeOfUse(billDetailDto.getType_id())), 0, status));
                 }
             }
         }
