@@ -3,9 +3,7 @@ package com.swp.sbeauty.service.impl;
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.entity.mapping.*;
-import com.swp.sbeauty.repository.BillDetailRepository;
-import com.swp.sbeauty.repository.BillRepository;
-import com.swp.sbeauty.repository.ProductRepository;
+import com.swp.sbeauty.repository.*;
 import com.swp.sbeauty.repository.mappingRepo.*;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.BillService;
@@ -56,6 +54,16 @@ public class BillServiceImpl implements BillService {
     @Autowired
     Bill_Product_History_Repository bill_product_history_repository;
 
+    @Autowired
+    ServiceRepository serviceRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
+    @Autowired
+    Bill_Service_History_Repository bill_service_history_repository;
+    @Autowired
+    Bill_Course_History_Repository bill_course_history_repository;
+
 
 
     @Override
@@ -85,21 +93,67 @@ public class BillServiceImpl implements BillService {
                     List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(f.getId());
                     for (BillDetail itemb: billDetailList
                     ) {
-                        Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
-//Long id, String name, Double price, String description, String image, String discountStart, String discountEnd, Double discountPercent,  String unit, Integer dose
-                        ProductDto product = new ProductDto(bill_product_history.getProductId(),
-                                                        bill_product_history.getName(),
-                                                        bill_product_history.getPrice(),
-                                                        bill_product_history.getDescription(),
-                                                        bill_product_history.getImage(),
-                                                        bill_product_history.getDiscountStart(),
-                                                        bill_product_history.getDiscountEnd(),
-                                                        bill_product_history.getDiscountPercent(),
-                                                        bill_product_history.getUnit(),
-                                                        bill_product_history.getDose());
+                        CourseDto course = null;
+                        ProductDto product = null;
+                        ServiceDto service = null;
+                        if (itemb.getProduct_id() != null) {
+                            Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
+
+
+
+                            if (bill_product_history != null) {
+                                product = new ProductDto(bill_product_history.getProductId(),
+                                        bill_product_history.getName(),
+                                        bill_product_history.getPrice(),
+                                        bill_product_history.getDescription(),
+                                        bill_product_history.getImage(),
+                                        bill_product_history.getDiscountStart(),
+                                        bill_product_history.getDiscountEnd(),
+                                        bill_product_history.getDiscountPercent(),
+                                        bill_product_history.getUnit(),
+                                        bill_product_history.getDose());
+                            }
+                        }
+                        if (itemb.getService_id() != null) {
+                            Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
+                            //long id, String name, String discountStart, String discountEnd, Double discountPercent, double price, String description, long duration, String image
+
+                            if (bill_service_history != null) {
+                                service = new ServiceDto(bill_service_history.getServiceId(),
+                                        bill_service_history.getName(),
+                                        bill_service_history.getDiscountStart(),
+                                        bill_service_history.getDiscountEnd(),
+                                        bill_service_history.getDiscountPercent(),
+                                        bill_service_history.getPrice(),
+                                        bill_service_history.getDescription(),
+                                        bill_service_history.getDuration(),
+                                        bill_service_history.getImage());
+                            }
+                        }
+                        if (itemb.getCourse_id() != null) {
+                            Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
+
+                            //  ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
+                            // CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
+
+                            if (bill_course_history != null) {
+
+                                course = new CourseDto(bill_course_history.getCourse_id(),
+                                        bill_course_history.getCode(),
+                                        bill_course_history.getName(),
+                                        bill_course_history.getPrice(),
+                                        bill_course_history.getDuration(),
+                                        bill_course_history.getTimeOfUse(),
+                                        bill_course_history.getDiscountStart(),
+                                        bill_course_history.getDiscountEnd(),
+                                        bill_course_history.getDiscountPercent(),
+                                        bill_course_history.getImage(),
+                                        bill_course_history.getDescription());
+                            }
+                        }
                         ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
                         CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
-                        list.add(new BillDetailDto(itemb.getId(), product, s, c, itemb.getQuantity()));
+                        list.add(new BillDetailDto(itemb.getId(), product, service, course, itemb.getQuantity()));
 
                     }
                     f.setItems(list);
@@ -128,20 +182,67 @@ public class BillServiceImpl implements BillService {
         List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
         for (BillDetail itemb: billDetailList
              ) {
-            Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
-            ProductDto product = new ProductDto(bill_product_history.getProductId(),
-                    bill_product_history.getName(),
-                    bill_product_history.getPrice(),
-                    bill_product_history.getDescription(),
-                    bill_product_history.getImage(),
-                    bill_product_history.getDiscountStart(),
-                    bill_product_history.getDiscountEnd(),
-                    bill_product_history.getDiscountPercent(),
-                    bill_product_history.getUnit(),
-                    bill_product_history.getDose());
+            CourseDto course = null;
+            ProductDto product = null;
+            ServiceDto service = null;
+            if (itemb.getProduct_id() != null) {
+                Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
+
+
+
+                if (bill_product_history != null) {
+                    product = new ProductDto(bill_product_history.getProductId(),
+                            bill_product_history.getName(),
+                            bill_product_history.getPrice(),
+                            bill_product_history.getDescription(),
+                            bill_product_history.getImage(),
+                            bill_product_history.getDiscountStart(),
+                            bill_product_history.getDiscountEnd(),
+                            bill_product_history.getDiscountPercent(),
+                            bill_product_history.getUnit(),
+                            bill_product_history.getDose());
+                }
+            }
+            if (itemb.getService_id() != null) {
+                Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
+                //long id, String name, String discountStart, String discountEnd, Double discountPercent, double price, String description, long duration, String image
+
+                if (bill_service_history != null) {
+                    service = new ServiceDto(bill_service_history.getServiceId(),
+                            bill_service_history.getName(),
+                            bill_service_history.getDiscountStart(),
+                            bill_service_history.getDiscountEnd(),
+                            bill_service_history.getDiscountPercent(),
+                            bill_service_history.getPrice(),
+                            bill_service_history.getDescription(),
+                            bill_service_history.getDuration(),
+                            bill_service_history.getImage());
+                }
+            }
+           if (itemb.getCourse_id() != null) {
+                    Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
+
+               //  ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
+               // CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
+
+               if (bill_course_history != null) {
+
+                   course = new CourseDto(bill_course_history.getCourse_id(),
+                           bill_course_history.getCode(),
+                           bill_course_history.getName(),
+                           bill_course_history.getPrice(),
+                           bill_course_history.getDuration(),
+                           bill_course_history.getTimeOfUse(),
+                           bill_course_history.getDiscountStart(),
+                           bill_course_history.getDiscountEnd(),
+                           bill_course_history.getDiscountPercent(),
+                           bill_course_history.getImage(),
+                           bill_course_history.getDescription());
+               }
+           }
             ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
             CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
-            list.add(new BillDetailDto(itemb.getId(), product, s, c, itemb.getQuantity()));
+            list.add(new BillDetailDto(itemb.getId(), product, service, course, itemb.getQuantity()));
 
         }
         if (entity != null){
@@ -189,10 +290,25 @@ public class BillServiceImpl implements BillService {
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetailRepository.save(billDetail);
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                Bill_Service_History bill_service_history = new Bill_Service_History();
+                com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(billDetailDto.getType_id());
+                //Long billId, Long serviceId, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image
+                bill_service_history.setServiceId(service.getId());
+                bill_service_history.setBillDetail_id(billDetail.getId());
+                bill_service_history.setName(service.getName());
+                bill_service_history.setDiscountStart(service.getDiscountStart());
+                bill_service_history.setDiscountEnd(service.getDiscountEnd());
+                bill_service_history.setDiscountPercent(service.getDiscountPercent());
+                bill_service_history.setPrice(service.getPrice());
+                bill_service_history.setDescription(service.getDescription());
+                bill_service_history.setDescription(service.getDescription());
+                bill_service_history.setImage(service.getImage());
+                bill_service_history_repository.save(bill_service_history);
                 // for (i=>billDetailDto.getQuantity())
                 // Customer_Course_Mapping (Long bill_id, Long customer_id, Long service_id, String status "chuasudung")
                 for (int i = 1; i<= billDetailDto.getQuantity(); i++){
                     customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), billDetailDto.getStatus()));
+
                 }
             }if (billDetailDto.getType().equalsIgnoreCase("course")){
                 BillDetail billDetail = new BillDetail();
@@ -200,6 +316,24 @@ public class BillServiceImpl implements BillService {
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetailRepository.save(billDetail);
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                Course course = courseRepository.getCourseById(billDetailDto.getType_id());
+                Bill_Course_History bill_course_history = new Bill_Course_History();
+                //Long billId, String date, long course_id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description
+                bill_course_history.setBillDetail_id(billDetail.getId());
+                bill_course_history.setDate(bill.getCreateDate());
+                bill_course_history.setCourse_id(course.getId());
+                bill_course_history.setCode(course.getCode());
+                bill_course_history.setName(course.getName());
+                bill_course_history.setPrice(course.getPrice());
+                bill_course_history.setDuration(course.getDuration());
+                bill_course_history.setTimeOfUse(course.getTimeOfUse());
+                bill_course_history.setDiscountStart(course.getDiscountStart());
+                bill_course_history.setDiscountEnd(course.getDiscountEnd());
+                bill_course_history.setDiscountPercent(course.getDiscountPercent());
+                bill_course_history.setImage(course.getImage());
+                bill_course_history.setDescription(course.getDescription());
+                bill_course_history_repository.save(bill_course_history);
+
                 // for (i=>billDetailDto.getQuantity())
                 //Customer_Course_Mapping(Long bill_id, Long customer_id, Long course_id, String endDate, Integer count (0), String status (chuasudung))
                 for (int i = 1; i<= billDetailDto.getQuantity(); i++){

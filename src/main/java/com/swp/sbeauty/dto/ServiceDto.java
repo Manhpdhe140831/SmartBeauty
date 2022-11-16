@@ -26,14 +26,14 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class ServiceDto {
-    private long id;
+    private Long id;
     private String name;
     private String discountStart;
     private String discountEnd;
     private Double discountPercent;
-    private double price;
+    private Double price;
     private String description;
-    private long duration;
+    private Long duration;
     private String image;
 
     private List<Service_Product_MappingDto> products;
@@ -85,7 +85,21 @@ public class ServiceDto {
 
 
     }
+
+    public ServiceDto(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image) {
+        this.id = id;
+        this.name = name;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.price = price;
+        this.description = description;
+        this.duration = duration;
+        this.image = image;
+    }
+
     public ServiceDto(Bill_Service_History service) {
+
 
         if (null != service) {
             this.setId(service.getServiceId());

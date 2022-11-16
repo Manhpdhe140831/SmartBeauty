@@ -13,10 +13,10 @@ import javax.persistence.Id;
 public class BillDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private long course_id;
-    private long service_id;
-    private long product_id;
-    private long quantity;
+    private Long id;
+    private Long course_id;
+    private Long service_id;
+    private Long product_id;
+    private Long quantity;
     private String status;
 }

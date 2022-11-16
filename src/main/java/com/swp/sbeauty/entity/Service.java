@@ -18,14 +18,14 @@ import java.util.Set;
 public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private String discountStart;
     private String discountEnd;
     private Double discountPercent;
-    private double price;
+    private Double price;
     private String description;
-    private long duration;
+    private Long duration;
     private String image;
 
 

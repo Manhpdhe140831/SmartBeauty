@@ -24,7 +24,7 @@ public class CourseDto {
     private String code;
     private String name;
     private Double price;
-    private int duration;
+    private Integer duration;
     private Integer timeOfUse;
     private String discountStart;
     private String discountEnd;
@@ -77,5 +77,19 @@ public class CourseDto {
         }
         this.setServices(listService);
 
+    }
+
+    public CourseDto(long id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.price = price;
+        this.duration = duration;
+        this.timeOfUse = timeOfUse;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.image = image;
+        this.description = description;
     }
 }
