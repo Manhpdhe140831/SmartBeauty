@@ -104,18 +104,17 @@ public class UserController {
     }
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
-        Branch branch = branchRepository.getBranchByEmail(loginRequest.getEmail());
-        if(branch!=null){
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateJwtToken(authentication);
-            return ResponseEntity.ok(new JwtResponse(jwt));
-        } else {
-            return new ResponseEntity<>(new ResponseDto<>(401, "Account must be registered with branch"), HttpStatus.UNAUTHORIZED);
-        }
-
+            String role = authentication.getAuthorities().stream().findFirst().get().toString();
+            Branch branch = branchRepository.getBranchByEmail(loginRequest.getEmail());
+            if(role.equalsIgnoreCase("manager") && branch == null){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Account must be registered with branch"), HttpStatus.UNAUTHORIZED);
+            } else {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String jwt = jwtUtils.generateJwtToken(authentication);
+                return ResponseEntity.ok(new JwtResponse(jwt));
+            }
     }
 
     @GetMapping("/user/getAll")
