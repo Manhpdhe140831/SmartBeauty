@@ -290,9 +290,10 @@ public class BillServiceImpl implements BillService {
                 billDetail.setService_id(billDetailDto.getType_id());
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(billDetail.getId(), billDetail.getId()));
+                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
                 Bill_Service_History bill_service_history = new Bill_Service_History();
                 com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(billDetailDto.getType_id());
+
 
                 bill_service_history.setServiceId(service.getId());
                 bill_service_history.setBillDetail_id(billDetail.getId());
@@ -331,7 +332,7 @@ public class BillServiceImpl implements BillService {
                 bill_course_history.setDescription(course.getDescription());
                 bill_course_history_repository.save(bill_course_history);
                for (int i = 1; i<= billDetailDto.getQuantity(); i++){
-                    customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getTimeOfUse(billDetailDto.getType_id())), 0, status));
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getDuration(billDetailDto.getType_id())), 0, status));
                 }
             }
         }
