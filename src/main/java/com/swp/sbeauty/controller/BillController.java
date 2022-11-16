@@ -45,4 +45,16 @@ public class BillController {
         Boolean result = billService.updateBill(id, billDto, authHeader);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping("/bill/searchbillbycustomer")
+    public ResponseEntity<?> searchByCustomer(
+            @RequestParam(value = "page",required = false,defaultValue = "1") int page
+            , @RequestParam(value = "pageSize",required = false) int pageSize
+            , @RequestParam("id") Long id
+    ){
+        Pageable p = PageRequest.of(page, pageSize);
+        BillResponseDto billResponseDto = billService.getBillsByCustomer(page - 1, pageSize, id);
+        return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
+
+    }
 }

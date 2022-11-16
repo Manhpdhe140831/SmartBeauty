@@ -168,9 +168,106 @@ public class BillServiceImpl implements BillService {
         return billResponseDto;
     }
 
+
     @Override
-    public Page<BillDto> getBillsByBranch(int offSet, int pageSize, Long id) {
-        return null;
+    public BillResponseDto getBillsByCustomer(int offSet, int pageSize, Long id) {
+        ModelMapper mapper = new ModelMapper();
+        BillResponseDto billResponseDto = new BillResponseDto();
+        Pageable pageable = PageRequest.of(offSet, pageSize);
+        Page<Bill> page = billRepository.searchBillByCustomer(id, pageable);
+        List<Bill> bills = page.getContent();
+
+        List<BillDto> dtos = page
+                .stream()
+                .map(bill -> mapper.map(bill,BillDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f->
+                {
+                    Customer customer = bill_cusomter_mapping_repositry.getCustomerByBill(f.getId());
+                    CustomerDto customerDto = new CustomerDto(customer);
+                    Users users = bill_user_mapping_repository.getStaffByBill(f.getId());
+                    UserDto userDto = new UserDto(users);
+                    Branch branch = bill_branch_mapping_repository.getBranchByBill(f.getId());
+                    BranchDto branchDto = new BranchDto(branch);
+                    f.setCustomer(customerDto);
+                    f.setBranch(branchDto);
+                    f.setStaff(userDto);
+                    List<BillDetailDto> list = new ArrayList<>();
+                    List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(f.getId());
+                    for (BillDetail itemb: billDetailList
+                    ) {
+                        CourseDto course = null;
+                        ProductDto product = null;
+                        ServiceDto service = null;
+                        if (itemb.getProduct_id() != null) {
+                            Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
+
+
+
+                            if (bill_product_history != null) {
+                                product = new ProductDto(bill_product_history.getProductId(),
+                                        bill_product_history.getName(),
+                                        bill_product_history.getPrice(),
+                                        bill_product_history.getDescription(),
+                                        bill_product_history.getImage(),
+                                        bill_product_history.getDiscountStart(),
+                                        bill_product_history.getDiscountEnd(),
+                                        bill_product_history.getDiscountPercent(),
+                                        bill_product_history.getUnit(),
+                                        bill_product_history.getDose());
+                            }
+                        }
+                        if (itemb.getService_id() != null) {
+                            Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
+                            //long id, String name, String discountStart, String discountEnd, Double discountPercent, double price, String description, long duration, String image
+
+                            if (bill_service_history != null) {
+                                service = new ServiceDto(bill_service_history.getServiceId(),
+                                        bill_service_history.getName(),
+                                        bill_service_history.getDiscountStart(),
+                                        bill_service_history.getDiscountEnd(),
+                                        bill_service_history.getDiscountPercent(),
+                                        bill_service_history.getPrice(),
+                                        bill_service_history.getDescription(),
+                                        bill_service_history.getDuration(),
+                                        bill_service_history.getImage());
+                            }
+                        }
+                        if (itemb.getCourse_id() != null) {
+                            Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
+
+                            //  ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
+                            // CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
+
+                            if (bill_course_history != null) {
+
+                                course = new CourseDto(bill_course_history.getCourse_id(),
+                                        bill_course_history.getCode(),
+                                        bill_course_history.getName(),
+                                        bill_course_history.getPrice(),
+                                        bill_course_history.getDuration(),
+                                        bill_course_history.getTimeOfUse(),
+                                        bill_course_history.getDiscountStart(),
+                                        bill_course_history.getDiscountEnd(),
+                                        bill_course_history.getDiscountPercent(),
+                                        bill_course_history.getImage(),
+                                        bill_course_history.getDescription());
+                            }
+                        }
+                        ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
+                        CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
+                        list.add(new BillDetailDto(itemb.getId(), product, service, course, itemb.getQuantity()));
+
+                    }
+                    f.setItems(list);
+                }
+        );
+        List<BillDto> pageResult = new ArrayList<>(dtos);
+        billResponseDto.setData(pageResult);
+        billResponseDto.setTotalElement(page.getTotalElements());
+        billResponseDto.setPageIndex(offSet + 1);
+        billResponseDto.setTotalPage(page.getTotalPages());
+        return billResponseDto;
     }
 
     @Override

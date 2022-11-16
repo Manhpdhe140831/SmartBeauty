@@ -10,7 +10,7 @@ public interface BillService {
 
     public BillResponseDto getBills(int offSet, int pageSize);
 
-    public Page<BillDto> getBillsByBranch(int offSet, int pageSize, Long id);
+    public BillResponseDto getBillsByCustomer(int offSet, int pageSize, Long id);
 
     public BillDto getBillById(Long id);
 
