@@ -290,10 +290,10 @@ public class BillServiceImpl implements BillService {
                 billDetail.setService_id(billDetailDto.getType_id());
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(billDetail.getId(), billDetail.getId()));
                 Bill_Service_History bill_service_history = new Bill_Service_History();
                 com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(billDetailDto.getType_id());
-                //Long billId, Long serviceId, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image
+
                 bill_service_history.setServiceId(service.getId());
                 bill_service_history.setBillDetail_id(billDetail.getId());
                 bill_service_history.setName(service.getName());
@@ -305,11 +305,8 @@ public class BillServiceImpl implements BillService {
                 bill_service_history.setDescription(service.getDescription());
                 bill_service_history.setImage(service.getImage());
                 bill_service_history_repository.save(bill_service_history);
-                // for (i=>billDetailDto.getQuantity())
-                // Customer_Course_Mapping (Long bill_id, Long customer_id, Long service_id, String status "chuasudung")
                 for (int i = 1; i<= billDetailDto.getQuantity(); i++){
-                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetailDto.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), status));
-
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), status));
                 }
             }if (billDetailDto.getType().equalsIgnoreCase("course")){
                 BillDetail billDetail = new BillDetail();
@@ -319,7 +316,6 @@ public class BillServiceImpl implements BillService {
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
                 Course course = courseRepository.getCourseById(billDetailDto.getType_id());
                 Bill_Course_History bill_course_history = new Bill_Course_History();
-                //Long billId, String date, long course_id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description
                 bill_course_history.setBillDetail_id(billDetail.getId());
                 bill_course_history.setDate(bill.getCreateDate());
                 bill_course_history.setCourse_id(course.getId());
@@ -334,10 +330,7 @@ public class BillServiceImpl implements BillService {
                 bill_course_history.setImage(course.getImage());
                 bill_course_history.setDescription(course.getDescription());
                 bill_course_history_repository.save(bill_course_history);
-
-                // for (i=>billDetailDto.getQuantity())
-                //Customer_Course_Mapping(Long bill_id, Long customer_id, Long course_id, String endDate, Integer count (0), String status (chuasudung))
-                for (int i = 1; i<= billDetailDto.getQuantity(); i++){
+               for (int i = 1; i<= billDetailDto.getQuantity(); i++){
                     customer_course_mapping_repository.save(new Customer_Course_Mapping(bill.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getTimeOfUse(billDetailDto.getType_id())), 0, status));
                 }
             }
@@ -366,25 +359,21 @@ public class BillServiceImpl implements BillService {
         if (optional.isPresent()) {
             bill = optional.get();
         }
-// xoa bill_billdetail_mapping
         Bill_BillDetail_Mapping bill_billDetail_mapping = bill_billDetail_mapping_repository.getByBillId(id);
         if (null != bill_billDetail_mapping) {
             bill_billDetail_mapping_repository.delete(bill_billDetail_mapping);
         }
 
-        // xoa bill customer mapping
         Bill_Customer_Mapping bill_customer_mapping = bill_cusomter_mapping_repositry.getByBillId(id);
         if (null != bill_customer_mapping){
             bill_cusomter_mapping_repositry.delete(bill_customer_mapping);
     }
-       // xoa bill user mapping
        Bill_User_Mapping bill_user_mapping = bill_user_mapping_repository.getByBillId(id);
        if (null != bill_user_mapping){
            bill_user_mapping_repository.delete(bill_user_mapping);
        }
        // xoa bill branch mapping
        Bill_Branch_Mapping bill_branch_mapping = bill_branch_mapping_repository.getByBillId(id);
-        // xoa bill detail by billid
        if (null != bill_branch_mapping){
            bill_branch_mapping_repository.delete(bill_branch_mapping);
        }
