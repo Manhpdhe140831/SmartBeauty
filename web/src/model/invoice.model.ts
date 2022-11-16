@@ -8,8 +8,6 @@
 import { ProductModel } from "./product.model";
 import { ServiceModel } from "./service.model";
 import { CourseModel } from "./course.model";
-import { z } from "zod";
-import { invoiceItemTypeSchema } from "../validation/invoice.schema";
 
 export type InvoiceStatus = "pending" | "approved" | "discarded";
 
@@ -17,27 +15,9 @@ type BillingItemBase = {
   quantity: number;
 };
 
-export type BillingItemType = z.infer<typeof invoiceItemTypeSchema>;
-
 export type BillingProductItem = BillingItemBase & {
-  type: Extract<BillingItemType, "product">;
   item: ProductModel;
 };
-
-export type BillingServiceItem = BillingItemBase & {
-  type: Extract<BillingItemType, "service">;
-  item: ServiceModel;
-};
-
-export type BillingCourseItem = BillingItemBase & {
-  type: Extract<BillingItemType, "course">;
-  item: CourseModel;
-};
-
-export type InvoiceItemsModel =
-  | BillingCourseItem
-  | BillingServiceItem
-  | BillingProductItem;
 
 export interface InvoiceModel {
   id: number;
@@ -49,10 +29,12 @@ export interface InvoiceModel {
   approvedDate: string;
   priceBeforeTax: number;
   priceAfterTax: number;
-  items: InvoiceItemsModel[];
+  item: ServiceModel | CourseModel;
+  item_type: "service" | "course";
+  addons: BillingProductItem[];
 }
 
-export type InvoiceItemsCreateEntity = Omit<InvoiceItemsModel, "item"> & {
+export type BillingProductCreateEntity = Omit<BillingProductItem, "item"> & {
   item: number;
 };
 
@@ -60,7 +42,7 @@ export type InvoiceCreateEntity = Omit<
   InvoiceModel,
   "id" | "branch" | "staff" | "createdDate" | "items" | "status"
 > & {
-  items: InvoiceItemsCreateEntity[];
+  items: BillingProductCreateEntity[];
 };
 
 export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status">;

@@ -7,7 +7,6 @@ import {
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
-import { InvoiceItemsModel } from "../../../../../model/invoice.model";
 
 export type BillingItemData = {
   id: number;
@@ -18,11 +17,10 @@ export type BillingItemData = {
 
 type BillingItemProps = {
   data: BillingItemData;
-  type: InvoiceItemsModel["type"];
-  onSelected?: (data: BillingItemData, type: InvoiceItemsModel["type"]) => void;
+  onSelected?: (data: BillingItemData) => void;
 };
 
-const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected, type }) => {
+const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected }) => {
   return (
     <div className="mb-2 flex space-x-4 rounded border p-4">
       <Image
@@ -36,13 +34,6 @@ const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected, type }) => {
       />
 
       <div className="flex flex-1 flex-col">
-        <Text
-          className={"uppercase !leading-none"}
-          color={"dimmed"}
-          size={"sm"}
-        >
-          {type}
-        </Text>
         <Text className={"line-clamp-2"} weight={600} size={"xl"}>
           {data.name}
         </Text>
@@ -76,7 +67,7 @@ const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected, type }) => {
 
       <div className={"flex"}>
         <Button
-          onClick={() => onSelected && onSelected(data, type)}
+          onClick={() => onSelected && onSelected(data)}
           type={"button"}
           color={"teal"}
           h={"100%"}

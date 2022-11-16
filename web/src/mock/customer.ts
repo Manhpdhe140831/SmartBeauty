@@ -2,7 +2,7 @@ import { CustomerModel } from "../model/customer.model";
 import { GENDER } from "../const/gender.const";
 import { shuffleArray } from "../utilities/fn.helper";
 
-export const Customer: CustomerModel[] = [
+export const Customers: CustomerModel[] = [
   {
     id: 1,
     name: "Deonne Mixter",
@@ -97,7 +97,7 @@ export const Customer: CustomerModel[] = [
 
 const mockCustomer = () =>
   new Promise<CustomerModel[]>((resolve) =>
-    setTimeout(() => resolve(shuffleArray(Customer)), 500)
+    setTimeout(() => resolve(shuffleArray(Customers)), 500)
   );
 
 export default mockCustomer;

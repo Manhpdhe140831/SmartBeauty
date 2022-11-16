@@ -1,7 +1,6 @@
 import { InvoiceModel } from "../../../../../model/invoice.model";
 import { Divider, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { BasePriceModel } from "../../../../../model/_price.model";
 import { useEffect, useState } from "react";
 import {
   calculateDiscountAmount,
@@ -62,18 +61,10 @@ const PricingInformation = ({ data }: PricingInformationProps) => {
       }
     }
 
-    data.items.forEach((item) => {
-      let buyStuff: BasePriceModel;
-      if (item.type === "product") {
-        buyStuff = item.item;
-      } else if (item.type === "service") {
-        buyStuff = item.item;
-      } else {
-        buyStuff = item.item;
-      }
-      subtotal += buyStuff.price * item.quantity;
-      if (isBetweenSale(buyStuff)) {
-        discount += calculateDiscountAmount(buyStuff) * item.quantity;
+    data.addons.forEach((addon) => {
+      subtotal += addon.item.price * addon.quantity;
+      if (isBetweenSale(addon.item)) {
+        discount += calculateDiscountAmount(addon.item) * addon.quantity;
       }
     });
 

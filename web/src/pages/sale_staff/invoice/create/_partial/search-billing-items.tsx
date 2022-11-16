@@ -1,7 +1,4 @@
-import {
-  InvoiceItemsCreateEntity,
-  InvoiceItemsModel,
-} from "../../../../../model/invoice.model";
+import { BillingProductCreateEntity } from "../../../../../model/invoice.model";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,13 +6,11 @@ import { Button, Text, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import mockProduct from "../../../../../mock/product";
 import FoundBillingItem, { BillingItemData } from "./_found-billing-item";
-import mockService from "../../../../../mock/service";
-import mockCourse from "../../../../../mock/course";
 import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type props = {
-  onChange?: (item: InvoiceItemsCreateEntity) => void;
+  onChange?: (item: BillingProductCreateEntity) => void;
 };
 
 const SearchBillingItems: FC<props> = ({ onChange }) => {
@@ -45,28 +40,17 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
 
   async function searchItem(name?: string) {
     const productResult: BillingItemData[] = await mockProduct(name);
-    const servicesResult: BillingItemData[] = await mockService(name);
-    const coursesResult: BillingItemData[] = await mockCourse(name);
-
-    return {
-      products: productResult.slice(0, 5),
-      services: servicesResult.slice(0, 5),
-      courses: coursesResult.slice(0, 5),
-    };
+    return productResult.slice(0, 5);
   }
 
   const onSubmitSearch = (formData: z.infer<typeof schema>) =>
     setSearchString(formData.name);
 
-  const onBillingItem = (
-    data: BillingItemData,
-    type: InvoiceItemsModel["type"]
-  ) => {
+  const onBillingItem = (data: BillingItemData) => {
     const newBillingData = {
-      type,
       item: data.id,
       quantity: 1,
-    } as InvoiceItemsCreateEntity;
+    } as BillingProductCreateEntity;
     onChange && onChange(newBillingData);
     reset();
     setSearchString("");
@@ -79,7 +63,7 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
         className="flex w-full space-x-2 py-4"
       >
         <TextInput
-          placeholder={"item name, at least 1 character"}
+          placeholder={"tên sản phẩm, ít nhất 1 ký tự"}
           className={"flex-1"}
           {...register("name")}
         />
@@ -91,40 +75,20 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
           variant={"filled"}
           color={"blue"}
         >
-          <Text>Find</Text>
+          <Text>Tìm</Text>
         </Button>
       </form>
 
-      <div className="flex flex-col">
+      <div className="flex max-h-72 flex-col overflow-auto p-2">
         {isLoading && !!searchString ? <>Loading...</> : ""}
-        {foundItems && (
-          <>
-            {foundItems.products?.map((i, index) => (
-              <FoundBillingItem
-                onSelected={onBillingItem}
-                key={`${i.id}-${index}`}
-                data={i}
-                type={"product"}
-              />
-            ))}
-            {foundItems.services?.map((i, index) => (
-              <FoundBillingItem
-                onSelected={onBillingItem}
-                key={`${i.id}-${index}`}
-                data={i}
-                type={"service"}
-              />
-            ))}
-            {foundItems.courses?.map((i, index) => (
-              <FoundBillingItem
-                onSelected={onBillingItem}
-                key={`${i.id}-${index}`}
-                data={i}
-                type={"course"}
-              />
-            ))}
-          </>
-        )}
+        {foundItems &&
+          foundItems?.map((i, index) => (
+            <FoundBillingItem
+              onSelected={onBillingItem}
+              key={`${i.id}-${index}`}
+              data={i}
+            />
+          ))}
       </div>
     </div>
   );

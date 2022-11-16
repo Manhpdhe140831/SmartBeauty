@@ -9,11 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import mockBill from "../../../../mock/bill";
 import CustomerInformationBlock from "../../../_shared/invoice/_partial/detail/customer-information";
 import TimeInvoiceInformation from "../../../_shared/invoice/_partial/detail/time-invoice-information";
-import PurchaseListInformation from "../../../_shared/invoice/_partial/detail/purchase-list-information";
 import StaffInformation from "../../../_shared/invoice/_partial/detail/staff-information";
 import PricingInformation from "../../../_shared/invoice/_partial/detail/pricing-information";
 import ItemInvoiceTable from "../../../_shared/invoice/_partial/detail/_item-invoice.table";
 import ManagerInvoiceAction from "../../../_shared/invoice/_partial/detail/manager.action";
+import PurchaseListInformation from "../../../_shared/invoice/_partial/detail/addon-list-information";
 
 const ManageInvoiceDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -91,14 +91,13 @@ const ManageInvoiceDetail: AppPageInterface = () => {
               <PurchaseListInformation
                 renderItem={(item, index) => (
                   <ItemInvoiceTable
-                    key={`${item.type}-${index}`}
+                    key={`${item.item.id}`}
                     no={index}
                     data={item.item}
-                    type={item.type}
                     quantity={item.quantity}
                   />
                 )}
-                data={invoice?.items ?? []}
+                data={invoice?.addons ?? []}
               />
             </>
           )}

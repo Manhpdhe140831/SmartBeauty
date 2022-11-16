@@ -1,11 +1,11 @@
 import { Divider, Table } from "@mantine/core";
 import {
-  InvoiceItemsCreateEntity,
-  InvoiceItemsModel,
+  BillingProductCreateEntity,
+  BillingProductItem,
 } from "../../../../../model/invoice.model";
 
 type BillItemsInformationProps<
-  T extends InvoiceItemsModel | InvoiceItemsCreateEntity
+  T extends BillingProductItem | BillingProductCreateEntity
 > = {
   data: T[];
   removable?: boolean;
@@ -13,7 +13,7 @@ type BillItemsInformationProps<
 };
 
 const PurchaseListInformation = <
-  T extends InvoiceItemsModel | InvoiceItemsCreateEntity
+  T extends BillingProductItem | BillingProductCreateEntity
 >({
   data,
   removable,
@@ -21,7 +21,9 @@ const PurchaseListInformation = <
 }: BillItemsInformationProps<T>) => {
   return (
     <div className="flex flex-col">
-      <h1 className="text-lg font-semibold capitalize">Sản phẩm đã mua</h1>
+      <h1 className="select-none text-lg font-semibold capitalize text-gray-500">
+        Sản phẩm kèm theo
+      </h1>
 
       <Divider my={8} />
 

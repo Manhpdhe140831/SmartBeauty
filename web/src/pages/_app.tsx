@@ -15,6 +15,7 @@ import axios from "axios";
 import { ApiHostRequestInterceptor } from "../utilities/axios.helper";
 import { URL_ENDPOINT } from "../const/_const";
 import { NotificationsProvider } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 
 // Create a react-query client
 const queryClient = new QueryClient({
@@ -65,13 +66,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             withGlobalStyles
             withNormalizeCSS
           >
-            <NotificationsProvider autoClose={4000}>
-              {clientPassedGuard ? (
-                pageLayout(<Component {...pageProps} />)
-              ) : (
-                <></>
-              )}
-            </NotificationsProvider>
+            <ModalsProvider>
+              <NotificationsProvider autoClose={4000}>
+                {clientPassedGuard ? (
+                  pageLayout(<Component {...pageProps} />)
+                ) : (
+                  <></>
+                )}
+              </NotificationsProvider>
+            </ModalsProvider>
           </MantineProvider>
         </Provider>
       </QueryClientProvider>

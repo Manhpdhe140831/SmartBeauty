@@ -1,10 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import mockProduct from "../../../../../mock/product";
-import mockService from "../../../../../mock/service";
-import mockCourse from "../../../../../mock/course";
-import { z } from "zod";
-import { invoiceItemTypeSchema } from "../../../../../validation/invoice.schema";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo } from "react";
 import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
 import {
   discountedAmount,
@@ -26,13 +22,8 @@ type props = {
   itemNo: number;
   itemId: number;
   itemKey: string;
-  itemType: z.infer<typeof invoiceItemTypeSchema>;
   itemQuantity: number;
-  onRemove?: (
-    index: number,
-    item: ItemTableViewData,
-    type: props["itemType"]
-  ) => void;
+  onRemove?: (index: number, item: ItemTableViewData) => void;
   onQuantityChange?: (quantity?: number) => void;
 };
 
@@ -40,40 +31,15 @@ const ViewBillingItem: FC<props> = ({
   itemKey,
   itemNo,
   itemId,
-  itemType,
   itemQuantity,
   onQuantityChange,
   onRemove,
 }) => {
   const { data: invoiceItem, isLoading } = useQuery(
-    ["invoice-item-detail", itemId, itemType],
-    async () => {
-      let item: ItemTableViewData | undefined;
-      if (itemType === "product") {
-        item = (await mockProduct()).find((i) => i.id === itemId);
-      } else if (itemType === "service") {
-        item = (await mockService()).find((i) => i.id === itemId);
-      } else {
-        item = (await mockCourse()).find((i) => i.id === itemId);
-      }
-      return item;
-    }
+    ["invoice-item-detail", itemId],
+    async () => (await mockProduct()).find((i) => i.id === itemId)
   );
-
   const isSaleOff = useMemo(() => isBetweenSale(invoiceItem), [invoiceItem]);
-  const [categoryClass, setCategoryClass] = useState("border-transparent");
-
-  useEffect(() => {
-    let cc: string;
-    if (itemType === "product") {
-      cc = "border-blue-600";
-    } else if (itemType === "service") {
-      cc = "border-red-600";
-    } else {
-      cc = "border-green-600";
-    }
-    setCategoryClass(cc);
-  }, [itemType]);
 
   return isLoading ? (
     <tr>
@@ -83,9 +49,7 @@ const ViewBillingItem: FC<props> = ({
     <>
       <tr
         key={itemKey}
-        className={`border-l-4 ${categoryClass} ${
-          !isSaleOff ? "" : "[&>td]:!border-b-transparent"
-        }`}
+        className={`${!isSaleOff ? "" : "[&>td]:!border-b-transparent"}`}
       >
         <td className={"text-center"}>{itemNo}</td>
         <td>
@@ -116,7 +80,7 @@ const ViewBillingItem: FC<props> = ({
               min={1}
               max={100}
               onChange={(v) => onQuantityChange && onQuantityChange(v)}
-              {...stateInputProps(undefined, itemType !== "product", {
+              {...stateInputProps(undefined, false, {
                 required: true,
                 variant: "default",
                 size: "xs",
@@ -144,9 +108,7 @@ const ViewBillingItem: FC<props> = ({
           {invoiceItem && (
             <ActionIcon
               type={"button"}
-              onClick={() =>
-                onRemove && onRemove(itemNo, invoiceItem, itemType)
-              }
+              onClick={() => onRemove && onRemove(itemNo, invoiceItem)}
               color={"red"}
             >
               <IconX />
@@ -155,10 +117,7 @@ const ViewBillingItem: FC<props> = ({
         </td>
       </tr>
       {isSaleOff && (
-        <tr
-          key={`${itemKey}-discount`}
-          className={`border-l-4 ${categoryClass}`}
-        >
+        <tr key={`${itemKey}-discount`}>
           <td className={"!pt-1 !pr-0"} colSpan={5}>
             <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">

@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo } from "react";
 import { Badge, Image, Text, Tooltip } from "@mantine/core";
 import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
 import {
@@ -6,45 +6,24 @@ import {
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
-import { z } from "zod";
-import { invoiceItemTypeSchema } from "../../../../../validation/invoice.schema";
 import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
 
 export type ItemTableProps = {
   no: number;
   data?: ItemTableViewData;
-  type: z.infer<typeof invoiceItemTypeSchema>;
   quantity: number;
 };
 
 const ItemInvoiceTable: FC<ItemTableProps> = ({
   data: invoiceItem,
-  type,
   no,
   quantity,
 }) => {
   const isSaleOff = useMemo(() => isBetweenSale(invoiceItem), [invoiceItem]);
-  const [categoryClass, setCategoryClass] = useState("border-transparent");
-
-  useEffect(() => {
-    let cc: string;
-    if (type === "product") {
-      cc = "border-blue-600";
-    } else if (type === "service") {
-      cc = "border-red-600";
-    } else {
-      cc = "border-green-600";
-    }
-    setCategoryClass(cc);
-  }, [type]);
 
   return (
     <>
-      <tr
-        className={`border-l-4 ${categoryClass} ${
-          !isSaleOff ? "" : "[&>td]:!border-b-transparent"
-        }`}
-      >
+      <tr className={!isSaleOff ? "" : "[&>td]:!border-b-transparent"}>
         <td className={"text-center align-top"}>{no}</td>
         <td className={"align-top"}>
           {invoiceItem?.image && (
@@ -86,7 +65,7 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
         </td>
       </tr>
       {isSaleOff && (
-        <tr className={`border-l-4 ${categoryClass}`}>
+        <tr>
           <td className={"!pt-1 !pr-0"} colSpan={5}>
             <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">
