@@ -30,6 +30,8 @@ public class CourseDto {
     private String discountEnd;
     private Double discountPercent;
     private String image;
+    
+    private String status;
     private String description;
     private List<ServiceDto> services;
 
