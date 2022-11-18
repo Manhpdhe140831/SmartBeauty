@@ -18,7 +18,7 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
     Boolean existsByName(String name);
     Course getCourseById(Long id);
 
-    @Query(value = "select s.* from bill_course_history s, bill_detail bd, customer_course_mapping ccm,bill_bill_detail_mapping bbd ,bill b, bill_customer_mapping bcm, customer c,customer_branch_mapping cb\n" +
+ /*   @Query(value = "select s.* from bill_course_history s, bill_detail bd, customer_course_mapping ccm,bill_bill_detail_mapping bbd ,bill b, bill_customer_mapping bcm, customer c,customer_branch_mapping cb\n" +
             "where bd.id = s.bill_detail_id\n" +
             "and ccm.bill_detail_id = bd.id\n" +
             "and bd.id = bbd.bill_detail_id\n" +
@@ -30,8 +30,11 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
             "and c.id =?2\n" +
             "and b.status IN('dathanhtoan')\n" +
             "and ccm.status IN('chuasudung','dangsudung')", nativeQuery = true)
-    List<Course> getCourseBuyed(Long idBranch, Long idCustomer);
+    List<Course> getCourseBuyed(Long idBranch, Long idCustomer);*/
 
-    @Query(value = "select * from course where course.name like %?1%", nativeQuery = true)
-    List<Course> findCourse(String keyword);
+/*    @Query(value = "select * from course where course.name like %?1%", nativeQuery = true)
+    List<Course> findCourse(String keyword);*/
+
+    @Query(value = "select c.* from course c where c.id != ?1 ", nativeQuery = true)
+    List<Course> getCourseExpelId(Long id);
 }

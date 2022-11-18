@@ -6,15 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.*;
+import com.swp.sbeauty.entity.mapping.Customer_Course_Mapping;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.CourseRepository;
 import com.swp.sbeauty.repository.ProductRepository;
 import com.swp.sbeauty.repository.ServiceRepository;
-import com.swp.sbeauty.repository.mappingRepo.Bill_Course_History_Repository;
-import com.swp.sbeauty.repository.mappingRepo.Bill_Service_History_Repository;
-import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
-import com.swp.sbeauty.repository.mappingRepo.Service_Product_Mapping_Repository;
+import com.swp.sbeauty.repository.mappingRepo.*;
 import com.swp.sbeauty.service.ServiceSpaService;
+import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +44,8 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
-
+    @Autowired
+    Customer_Course_Mapping_Repository customer_course_mapping_repository;
     @Autowired
     CourseRepository courseRepository;
     @Autowired
@@ -201,23 +201,32 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     }
 
     @Override
-    public ServiceCourseBuyedDto findProductCourseService(String keyword) {
-        List<Product> products = productRepository.findProduct(keyword);
-        List<ProductDto> productDtos = new ArrayList<>();
-        for (Product product : products){
-            productDtos.add(new ProductDto(product));
+    public ServiceCourseBuyedDto findProductCourseService(String keyword, Long idCustomer) {
+        List<CourseDto> courseDtos = new ArrayList<>();
+        List<Bill_Course_History> list  = bill_course_history_repository.getCourseHistory(keyword);
+        Customer_Course_Mapping ccm = null;
+        for (Bill_Course_History i : list) {
+            ccm = customer_course_mapping_repository.getCustomerCourse(idCustomer, i.getId());
+            if (ccm != null) {
+                break;
+            }
+        }
+        if(ccm != null){
+            Bill_Course_History history = bill_course_history_repository.getBill_Course_HistoriesById(ccm.getCourse_id());
+            CourseDto courseDto = new CourseDto(ccm.getId(), history.getName(), history.getPrice(),history.getDuration(),history.getTimeOfUse(),history.getDiscountStart(),history.getDiscountEnd(),history.getDiscountPercent(),history.getImage(),"dangsudung",history.getDescription());
+            List<Course> courses = courseRepository.getCourseExpelId(history.getCourse_id());
+            courseDtos.add(courseDto);
+            for (Course course : courses){
+                courseDtos.add(new CourseDto("chuasudung",course));
+
+            }
         }
         List<Service> services = serviceRepository.findService(keyword);
         List<ServiceDto> serviceDtos = new ArrayList<>();
         for (Service service : services){
             serviceDtos.add(new ServiceDto(service));
         }
-        List<Course> courses = courseRepository.findCourse(keyword);
-        List<CourseDto> courseDtos = new ArrayList<>();
-        for (Course course : courses){
-            courseDtos.add(new CourseDto(course));
-        }
-        ServiceCourseBuyedDto result = new ServiceCourseBuyedDto(serviceDtos,courseDtos,productDtos);
+        ServiceCourseBuyedDto result = new ServiceCourseBuyedDto(serviceDtos,courseDtos);
         return result;
     }
 

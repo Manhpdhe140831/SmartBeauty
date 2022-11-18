@@ -23,4 +23,15 @@ public interface Bill_Course_History_Repository extends JpaRepository<Bill_Cours
             "and b.status IN('dathanhtoan')\n" +
             "and ccm.status IN('chuasudung','dangsudung')", nativeQuery = true)
     List<Bill_Course_History> getCourseBuyed(Long idBranch, Long idCustomer);
+
+
+    @Query(value = "select b.* from bill_course_history b where b.name like %?1% ", nativeQuery = true)
+    List<Bill_Course_History> getCourseHistory(String keyword);
+
+    /*@Query(value = "select b.* from bill_course_history b where b.id =?1)", nativeQuery = true)
+    Bill_Course_History getById(Long keyword);*/
+    Bill_Course_History getBill_Course_HistoriesById(Long id);
+
+
+
 }
