@@ -9,10 +9,10 @@ import { IconArrowDown } from "@tabler/icons";
 
 type props = {
   item: InvoiceModel["item"];
-  item_type: InvoiceModel["item_type"];
+  itemType: InvoiceModel["itemType"];
 };
 
-const PurchaseItemInformation = ({ item_type, item }: props) => {
+const PurchaseItemInformation = ({ itemType, item }: props) => {
   return (
     <div className={"flex flex-col space-y-2"}>
       <h1
@@ -32,7 +32,7 @@ const PurchaseItemInformation = ({ item_type, item }: props) => {
 
         <div className="flex flex-1 flex-col">
           <b className={"font-semibold uppercase text-gray-400"}>
-            {item_type === "service" ? "Dịch vụ" : "Liệu trình"}
+            {itemType === "service" ? "Dịch vụ" : "Liệu trình"}
           </b>
           <h1
             className={

@@ -1,20 +1,19 @@
-import { BillingProductCreateEntity } from "../../../../../model/invoice.model";
-import { FC, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { FC, useRef, useState } from "react";
 import { Button, Text, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import mockProduct from "../../../../../mock/product";
-import FoundBillingItem, { BillingItemData } from "./_found-billing-item";
+import FoundBillingItem from "./_found-billing-item";
 import { useQuery } from "@tanstack/react-query";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { BillingItemData } from "../../../../../model/_price.model";
 
 type props = {
-  onChange?: (item: BillingProductCreateEntity) => void;
+  onChange?: (item: BillingItemData) => void;
 };
 
 const SearchBillingItems: FC<props> = ({ onChange }) => {
+  const htmlRef = useRef<HTMLInputElement>(null);
   const [searchString, setSearchString] = useState<string>();
+
   const { data: foundItems, isLoading } = useQuery(
     ["search-bill-item", searchString],
     async () => searchItem(searchString),
@@ -23,61 +22,47 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
     }
   );
 
-  const schema = z.object({
-    name: z.string().min(1),
-  });
-
-  const {
-    handleSubmit,
-    register,
-    reset,
-    formState: { isValid },
-  } = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    mode: "onBlur",
-    criteriaMode: "all",
-  });
-
+  // TODO make search product
   async function searchItem(name?: string) {
     const productResult: BillingItemData[] = await mockProduct(name);
     return productResult.slice(0, 5);
   }
 
-  const onSubmitSearch = (formData: z.infer<typeof schema>) =>
-    setSearchString(formData.name);
-
   const onBillingItem = (data: BillingItemData) => {
-    const newBillingData = {
-      item: data.id,
-      quantity: 1,
-    } as BillingProductCreateEntity;
-    onChange && onChange(newBillingData);
-    reset();
-    setSearchString("");
+    onChange && onChange(data);
+    setSearchString(undefined);
+    if (htmlRef.current) {
+      htmlRef.current.value = "";
+    }
   };
+
+  function onCommitSearch() {
+    if (!htmlRef.current?.value) {
+      return;
+    }
+    setSearchString(htmlRef.current?.value);
+  }
 
   return (
     <div className={"flex flex-col space-y-4"}>
-      <form
-        onSubmit={handleSubmit(onSubmitSearch)}
-        className="flex w-full space-x-2 py-4"
-      >
+      <div className="flex w-full space-x-2 py-4">
         <TextInput
           placeholder={"tên sản phẩm, ít nhất 1 ký tự"}
           className={"flex-1"}
-          {...register("name")}
+          defaultValue={searchString}
+          ref={htmlRef}
         />
 
         <Button
-          disabled={!isValid}
-          type={"submit"}
+          onClick={() => onCommitSearch()}
+          type={"button"}
           leftIcon={<IconSearch />}
           variant={"filled"}
           color={"blue"}
         >
           <Text>Tìm</Text>
         </Button>
-      </form>
+      </div>
 
       <div className="flex max-h-72 flex-col overflow-auto p-2">
         {isLoading && !!searchString ? <>Loading...</> : ""}

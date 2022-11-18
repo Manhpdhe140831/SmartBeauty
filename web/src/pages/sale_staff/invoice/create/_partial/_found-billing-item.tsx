@@ -1,19 +1,12 @@
 import { Badge, Button, Divider, Image, Text } from "@mantine/core";
 import { IconArrowDown, IconArrowRight, IconPlus } from "@tabler/icons";
-import { BasePriceModel } from "../../../../../model/_price.model";
+import { BillingItemData } from "../../../../../model/_price.model";
 import { FC } from "react";
 import {
   discountedAmount,
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
-
-export type BillingItemData = {
-  id: number;
-  name: string;
-  image?: string;
-  description?: string;
-} & BasePriceModel;
 
 type BillingItemProps = {
   data: BillingItemData;
@@ -59,7 +52,10 @@ const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected }) => {
                 {data.discountPercent}%
               </Badge>
               <IconArrowRight size={12} />
-              <Text>{discountedAmount()}</Text>
+              <Text size={"xs"}>
+                -{formatPrice(Math.floor(discountedAmount(data, 1)))} VND / sản
+                phẩm
+              </Text>
             </div>
           </>
         )}

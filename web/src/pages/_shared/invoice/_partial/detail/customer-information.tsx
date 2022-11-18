@@ -13,7 +13,6 @@ import { Divider, ThemeIcon } from "@mantine/core";
 import mockCustomer from "../../../../../mock/customer";
 import { AutoCompleteItemProp } from "../../../../../components/auto-complete-item";
 import { StaffModel } from "../../../../../model/staff.model";
-import { useCustomerDetailQuery } from "../../../../../query/model-detail";
 import { IconFileInvoice } from "@tabler/icons";
 import { useQuery } from "@tanstack/react-query";
 
@@ -21,7 +20,6 @@ type InformationProps = {
   customerId?: number;
   onChange?: (id: number | null) => void;
   onBlur?: FocusEventHandler<HTMLInputElement>;
-  readOnly?: boolean;
   error?: JSX.Element | ReactNode | string;
 };
 

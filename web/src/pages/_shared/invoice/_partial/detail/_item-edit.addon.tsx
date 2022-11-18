@@ -1,7 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import mockProduct from "../../../../../mock/product";
 import { FC, useMemo } from "react";
-import { ItemTableViewData } from "../../../../../interfaces/invoice-props.interface";
 import {
   discountedAmount,
   formatPrice,
@@ -17,46 +14,38 @@ import {
 } from "@mantine/core";
 import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
 import { stateInputProps } from "../../../../../utilities/mantine.helper";
+import { BillingProductItem } from "../../../../../model/invoice.model";
 
 type props = {
   itemNo: number;
-  itemId: number;
-  itemKey: string;
-  itemQuantity: number;
-  onRemove?: (index: number, item: ItemTableViewData) => void;
+  addon?: BillingProductItem;
+  onRemove?: (index: number) => void;
   onQuantityChange?: (quantity?: number) => void;
 };
 
-const ViewBillingItem: FC<props> = ({
-  itemKey,
+const ItemAddonEdit: FC<props> = ({
   itemNo,
-  itemId,
-  itemQuantity,
+  addon,
   onQuantityChange,
   onRemove,
 }) => {
-  const { data: invoiceItem, isLoading } = useQuery(
-    ["invoice-item-detail", itemId],
-    async () => (await mockProduct()).find((i) => i.id === itemId)
-  );
-  const isSaleOff = useMemo(() => isBetweenSale(invoiceItem), [invoiceItem]);
+  const isSaleOff = useMemo(() => isBetweenSale(addon?.item), [addon?.item]);
 
-  return isLoading ? (
-    <tr>
-      <td colSpan={7}>Loading...</td>
-    </tr>
+  return !addon ? (
+    <>
+      <tr>
+        <td colSpan={7}>Loading...</td>
+      </tr>
+    </>
   ) : (
     <>
-      <tr
-        key={itemKey}
-        className={`${!isSaleOff ? "" : "[&>td]:!border-b-transparent"}`}
-      >
+      <tr className={`${!isSaleOff ? "" : "[&>td]:!border-b-transparent"}`}>
         <td className={"text-center"}>{itemNo}</td>
         <td>
-          {invoiceItem?.image && (
+          {addon.item.image && (
             <Image
-              alt={invoiceItem.name}
-              src={invoiceItem.image}
+              alt={addon.item.name}
+              src={addon.item.image}
               width={32}
               height={32}
               fit={"cover"}
@@ -65,9 +54,9 @@ const ViewBillingItem: FC<props> = ({
           )}
         </td>
         <td>
-          <Tooltip label={invoiceItem?.name}>
+          <Tooltip label={addon.item.name}>
             <Text className={"overflow-hidden text-ellipsis"} size={"xs"}>
-              {invoiceItem?.name}
+              {addon.item.name}
             </Text>
           </Tooltip>
         </td>
@@ -75,7 +64,7 @@ const ViewBillingItem: FC<props> = ({
           <div className="flex items-center justify-end space-x-2">
             <NumberInput
               placeholder={"amount..."}
-              defaultValue={itemQuantity}
+              defaultValue={addon.quantity}
               hideControls
               min={1}
               max={100}
@@ -93,7 +82,7 @@ const ViewBillingItem: FC<props> = ({
         </td>
         <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
-            {invoiceItem?.price && formatPrice(invoiceItem?.price)}
+            {addon.item.price && formatPrice(addon.item.price)}
           </p>
           <Text size={"xs"} color={"dimmed"}>
             per product
@@ -101,14 +90,14 @@ const ViewBillingItem: FC<props> = ({
         </td>
         <td className={"align-top"}>
           <p className={"overflow-hidden text-ellipsis"}>
-            {formatPrice((invoiceItem?.price ?? 0) * (itemQuantity ?? 1))}
+            {formatPrice((addon.item.price ?? 0) * (addon.quantity ?? 1))}
           </p>
         </td>
         <td className={"align-top"}>
-          {invoiceItem && (
+          {addon && (
             <ActionIcon
               type={"button"}
-              onClick={() => onRemove && onRemove(itemNo, invoiceItem)}
+              onClick={() => onRemove && onRemove(itemNo)}
               color={"red"}
             >
               <IconX />
@@ -117,7 +106,7 @@ const ViewBillingItem: FC<props> = ({
         </td>
       </tr>
       {isSaleOff && (
-        <tr key={`${itemKey}-discount`}>
+        <tr>
           <td className={"!pt-1 !pr-0"} colSpan={5}>
             <div className="flex items-center justify-end space-x-2">
               <small className="font-semibold leading-none">
@@ -130,7 +119,7 @@ const ViewBillingItem: FC<props> = ({
                 mt={2}
                 leftSection={<IconArrowDown size={12} />}
               >
-                {invoiceItem?.discountPercent}%
+                {addon.item.discountPercent}%
               </Badge>
               <IconArrowRight className={"mt-[2px]"} size={14} />
               <Text className={"leading-none"} color={"dimmed"}>
@@ -140,7 +129,7 @@ const ViewBillingItem: FC<props> = ({
           </td>
           <td className={"!pt-1"} colSpan={2}>
             <Text color={"dimmed"}>
-              {formatPrice(discountedAmount(invoiceItem, itemQuantity))}
+              {formatPrice(discountedAmount(addon.item, addon.quantity))}
             </Text>
           </td>
         </tr>
@@ -149,4 +138,4 @@ const ViewBillingItem: FC<props> = ({
   );
 };
 
-export default ViewBillingItem;
+export default ItemAddonEdit;

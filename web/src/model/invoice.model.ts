@@ -5,18 +5,15 @@
  * - By default, it's the id of the associated manager.
  * -
  */
-import { ProductModel } from "./product.model";
 import { ServiceModel } from "./service.model";
 import { CourseModel } from "./course.model";
+import { BillingItemData } from "./_price.model";
 
 export type InvoiceStatus = "pending" | "approved" | "discarded";
 
-type BillingItemBase = {
+export type BillingProductItem = {
   quantity: number;
-};
-
-export type BillingProductItem = BillingItemBase & {
-  item: ProductModel;
+  item: BillingItemData;
 };
 
 export interface InvoiceModel {
@@ -30,7 +27,7 @@ export interface InvoiceModel {
   priceBeforeTax: number;
   priceAfterTax: number;
   item: ServiceModel | CourseModel;
-  item_type: "service" | "course";
+  itemType: "service" | "course";
   addons: BillingProductItem[];
 }
 
@@ -40,9 +37,17 @@ export type BillingProductCreateEntity = Omit<BillingProductItem, "item"> & {
 
 export type InvoiceCreateEntity = Omit<
   InvoiceModel,
-  "id" | "branch" | "staff" | "createdDate" | "items" | "status"
+  | "id"
+  | "branch"
+  | "staff"
+  | "createdDate"
+  | "item"
+  | "addons"
+  | "status"
+  | "approvedDate"
 > & {
-  items: BillingProductCreateEntity[];
+  item: number;
+  addons: BillingProductCreateEntity[];
 };
 
 export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status">;

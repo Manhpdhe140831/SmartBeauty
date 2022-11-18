@@ -1,8 +1,9 @@
 import { InvoiceModel } from "../model/invoice.model";
 import { products } from "./product";
-import { services } from "./service";
+import { RawServices } from "./service";
+import { RawCourses } from "./course";
 
-const Bill: InvoiceModel[] = [
+const Invoices: InvoiceModel[] = [
   {
     id: 1,
     customer: 1,
@@ -13,22 +14,23 @@ const Bill: InvoiceModel[] = [
     approvedDate: "2022-10-11T05:49:08Z",
     priceBeforeTax: 40000,
     priceAfterTax: 35775,
-    items: [
-      { type: "product", item: products[0]!, quantity: 20 },
-      { type: "service", item: services[0]!, quantity: 1 },
-    ],
+    item: RawServices[0]!,
+    itemType: "service",
+    addons: [{ item: products[0]!, quantity: 20 }],
   },
   {
     id: 2,
     customer: 2,
     staff: 2,
     branch: 2,
-    status: "discarded",
+    status: "approved",
     createdDate: "2022-07-24T20:32:31Z",
     approvedDate: "2022-10-24T20:32:31Z",
     priceBeforeTax: 21655,
     priceAfterTax: 21655,
-    items: [],
+    item: RawCourses[0]!,
+    itemType: "course",
+    addons: [{ item: products[2]!, quantity: 5 }],
   },
   {
     id: 3,
@@ -40,7 +42,9 @@ const Bill: InvoiceModel[] = [
     approvedDate: "2022-10-18T16:42:52Z",
     priceBeforeTax: 59649,
     priceAfterTax: 59649,
-    items: [],
+    item: RawCourses[2]!,
+    itemType: "course",
+    addons: [],
   },
   {
     id: 4,
@@ -52,7 +56,9 @@ const Bill: InvoiceModel[] = [
     approvedDate: "2022-10-07T06:49:16Z",
     priceBeforeTax: 67898,
     priceAfterTax: 67898,
-    items: [],
+    item: RawServices[2]!,
+    itemType: "service",
+    addons: [],
   },
   {
     id: 5,
@@ -64,13 +70,15 @@ const Bill: InvoiceModel[] = [
     approvedDate: "2022-10-03T04:44:14Z",
     priceBeforeTax: 94495,
     priceAfterTax: 94495,
-    items: [],
+    item: RawServices[1]!,
+    itemType: "service",
+    addons: [],
   },
 ];
 
 const mockBill = () =>
   new Promise<InvoiceModel[]>((resolve) =>
-    setTimeout(() => resolve(Bill), 500)
+    setTimeout(() => resolve(Invoices), 500)
   );
 
 // export const mockBranchWithManager = () =>

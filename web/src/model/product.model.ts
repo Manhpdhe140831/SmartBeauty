@@ -1,12 +1,9 @@
 import { SupplierModel } from "./supplier.model";
-import { BasePriceModel } from "./_price.model";
+import { BillingItemData } from "./_price.model";
 
 export interface ProductModel<
   supplierModel extends number | SupplierModel = number
-> extends BasePriceModel {
-  id: number;
-  name: string;
-  description: string;
+> extends BillingItemData {
   image?: string;
   supplier: supplierModel;
   unit: string;

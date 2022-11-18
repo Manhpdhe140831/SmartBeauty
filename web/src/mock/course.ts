@@ -1,7 +1,7 @@
 import { CourseModel } from "../model/course.model";
 import { shuffleArray } from "../utilities/fn.helper";
 
-const course: CourseModel[] = [
+export const RawCourses: CourseModel[] = [
   {
     id: 1,
     name: "Kali",
@@ -143,10 +143,10 @@ const course: CourseModel[] = [
 const mockCourse = (name?: string) =>
   new Promise<CourseModel[]>((resolve) =>
     setTimeout(() => {
-      if (!name) return resolve(shuffleArray(course));
+      if (!name) return resolve(shuffleArray(RawCourses));
 
       return resolve(
-        shuffleArray(course).filter((s) =>
+        shuffleArray(RawCourses).filter((s) =>
           s.name.toLowerCase().includes(name.toLowerCase())
         )
       );

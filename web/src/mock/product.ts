@@ -11,7 +11,7 @@ export const products: ProductModel[] = [
     image: "http://dummyimage.com/170x204.png/ff4444/ffffff",
     discountStart: "2022-09-02T19:40:42Z",
     discountEnd: "2022-12-22T02:24:11Z",
-    discountPercent: 50,
+    discountPercent: 40,
     supplier: Supplier[0]!.id,
     unit: "gram",
     dose: 12,

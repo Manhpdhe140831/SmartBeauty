@@ -15,7 +15,6 @@ type BreadCrumbsInfo = {
 const BreadcrumbsLayout = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const childrenArray = Children.toArray(children);
-  console.log(childrenArray);
 
   const childrenWithSeparate = childrenArray.map((child, index) => {
     if (index !== childrenArray.length - 1) {

@@ -4,3 +4,10 @@ export interface BasePriceModel {
   discountStart: string | null;
   discountEnd: string | null;
 }
+
+export type BillingItemData = {
+  id: number;
+  name: string;
+  image?: string;
+  description?: string;
+} & BasePriceModel;

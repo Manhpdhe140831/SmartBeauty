@@ -2,7 +2,7 @@ import { ServiceModel } from "../model/service.model";
 import { shuffleArray } from "../utilities/fn.helper";
 import { Supplier } from "./supplier";
 
-export const services: ServiceModel[] = [
+export const RawServices: ServiceModel[] = [
   {
     id: 1,
     name: "SENNOSIDES",
@@ -148,10 +148,10 @@ export const services: ServiceModel[] = [
 const mockService = (name?: string) =>
   new Promise<ServiceModel[]>((resolve) =>
     setTimeout(() => {
-      if (!name) return resolve(shuffleArray(services));
+      if (!name) return resolve(shuffleArray(RawServices));
 
       return resolve(
-        shuffleArray(services).filter((s) =>
+        shuffleArray(RawServices).filter((s) =>
           s.name.toLowerCase().includes(name.toLowerCase())
         )
       );

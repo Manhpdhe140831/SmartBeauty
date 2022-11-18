@@ -1,11 +1,8 @@
 import { InvoiceStatus } from "../../../../../model/invoice.model";
 import { Button, Text } from "@mantine/core";
-import { useState } from "react";
-import DiscardInvoiceModal from "./_discard-invoice.modal";
 
 type props = {
   status?: InvoiceStatus | "create";
-  onConfirm?: () => void;
   onReject?: () => void;
   disable?: boolean;
   loading?: boolean;
@@ -14,12 +11,9 @@ type props = {
 const SaleStaffInvoiceAction = ({
   status,
   onReject,
-  onConfirm,
   loading,
   disable,
 }: props) => {
-  const [opened, setOpened] = useState(false);
-
   if (!status) {
     return <></>;
   }
@@ -37,7 +31,7 @@ const SaleStaffInvoiceAction = ({
         loading={loading}
         disabled={disable}
         title={"Xác nhận hóa đơn"}
-        onClick={onConfirm}
+        type={"submit"}
         size={"lg"}
         fullWidth
       >
@@ -49,27 +43,20 @@ const SaleStaffInvoiceAction = ({
   return (
     <div className={"flex flex-col space-y-2"}>
       <Text className={"select-none text-justify"} color={"dimmed"} size={"xs"}>
-        Bạn có thể hủy hóa đơn này nếu có sai sót. Một khi hủy, hành động không
-        thể đảo ngược.
+        Bạn có thể xác nhận hóa đơn đã được thanh toán. Một khi xác nhận, hành
+        động không thể đảo ngược và hóa đơn sẽ không được chỉnh sửa nữa.
       </Text>
       <Button
         disabled={disable}
         loading={loading}
         title={"Hủy hóa đơn"}
-        onClick={() => setOpened(true)}
         fullWidth
         size={"lg"}
-        color={"red"}
+        color={"teal"}
+        type={"submit"}
       >
-        Hủy Hóa Đơn
+        Xác nhận hóa đơn
       </Button>
-
-      <DiscardInvoiceModal
-        opened={opened}
-        setOpened={setOpened}
-        loading={loading}
-        onReject={onReject}
-      />
     </div>
   );
 };

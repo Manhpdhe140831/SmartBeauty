@@ -14,7 +14,7 @@ export type ItemTableProps = {
   quantity: number;
 };
 
-const ItemInvoiceTable: FC<ItemTableProps> = ({
+const ItemAddonReadonly: FC<ItemTableProps> = ({
   data: invoiceItem,
   no,
   quantity,
@@ -97,4 +97,4 @@ const ItemInvoiceTable: FC<ItemTableProps> = ({
   );
 };
 
-export default ItemInvoiceTable;
+export default ItemAddonReadonly;

@@ -12,7 +12,7 @@ type BillItemsInformationProps<
   renderItem: (item: T, index: number) => JSX.Element;
 };
 
-const PurchaseListInformation = <
+const AddonsListInformation = <
   T extends BillingProductItem | BillingProductCreateEntity
 >({
   data,
@@ -60,4 +60,4 @@ const PurchaseListInformation = <
   );
 };
 
-export default PurchaseListInformation;
+export default AddonsListInformation;

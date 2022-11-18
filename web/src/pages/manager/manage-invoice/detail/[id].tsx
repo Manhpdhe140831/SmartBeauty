@@ -1,7 +1,7 @@
 import { AppPageInterface } from "../../../../interfaces/app-page.interface";
 import { useRouter } from "next/router";
 import useWindowPathname from "../../../../hooks/window-pathname.hook";
-import InvoiceDetail from "../../../_shared/invoice/invoice-detail";
+import InvoiceDetailLayout from "../../../_shared/invoice/_partial/detail/invoice-detail.layout";
 import { USER_ROLE } from "../../../../const/user-role.const";
 import { Button, Divider, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons";
@@ -11,9 +11,9 @@ import CustomerInformationBlock from "../../../_shared/invoice/_partial/detail/c
 import TimeInvoiceInformation from "../../../_shared/invoice/_partial/detail/time-invoice-information";
 import StaffInformation from "../../../_shared/invoice/_partial/detail/staff-information";
 import PricingInformation from "../../../_shared/invoice/_partial/detail/pricing-information";
-import ItemInvoiceTable from "../../../_shared/invoice/_partial/detail/_item-invoice.table";
+import ItemAddonReadonly from "../../../_shared/invoice/_partial/detail/_item-readonly.addon";
 import ManagerInvoiceAction from "../../../_shared/invoice/_partial/detail/manager.action";
-import PurchaseListInformation from "../../../_shared/invoice/_partial/detail/addon-list-information";
+import AddonsListInformation from "../../../_shared/invoice/_partial/detail/addon-list-information";
 
 const ManageInvoiceDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -79,7 +79,7 @@ const ManageInvoiceDetail: AppPageInterface = () => {
       ) : !data ? (
         <Text>Không thể tìm thấy hóa đơn...</Text>
       ) : (
-        <InvoiceDetail
+        <InvoiceDetailLayout
           invoice={data}
           context={(invoice) => (
             <>
@@ -88,9 +88,9 @@ const ManageInvoiceDetail: AppPageInterface = () => {
               {/*   Invoice Datetime        */}
               <TimeInvoiceInformation data={invoice} />
               {/*   Invoice purchased items */}
-              <PurchaseListInformation
+              <AddonsListInformation
                 renderItem={(item, index) => (
-                  <ItemInvoiceTable
+                  <ItemAddonReadonly
                     key={`${item.item.id}`}
                     no={index}
                     data={item.item}

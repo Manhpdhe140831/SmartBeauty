@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { InvoiceModel } from "../../../model/invoice.model";
+import { InvoiceModel } from "../../../../../model/invoice.model";
 
 type InvoiceDetailProps = {
   invoice?: InvoiceModel;
@@ -7,7 +7,7 @@ type InvoiceDetailProps = {
   action: (invoice?: InvoiceModel) => ReactNode | JSX.Element;
 };
 
-const InvoiceDetail: FC<InvoiceDetailProps> = ({
+const InvoiceDetailLayout: FC<InvoiceDetailProps> = ({
   invoice,
   context,
   action,
@@ -23,4 +23,4 @@ const InvoiceDetail: FC<InvoiceDetailProps> = ({
   );
 };
 
-export default InvoiceDetail;
+export default InvoiceDetailLayout;
