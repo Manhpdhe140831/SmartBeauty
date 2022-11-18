@@ -115,9 +115,10 @@ public class ServiceController {
         }
     }
 
-    @GetMapping("/service/findServiceCourseProduct")
-    private ResponseEntity<?> getAllService(@RequestParam(value = "keyword") String keyword){
-            ServiceCourseBuyedDto list = service.findProductCourseService(keyword);
+    @GetMapping("/service/findServiceCourse")
+    private ResponseEntity<?> getAllServiceCourse(  @RequestParam(value = "idCustomer") Long idCustomer,
+                                                    @RequestParam(value = "keyword") String keyword){
+            ServiceCourseBuyedDto list = service.findProductCourseService(keyword,idCustomer);
             return new ResponseEntity<>(list, HttpStatus.OK);
 
     }

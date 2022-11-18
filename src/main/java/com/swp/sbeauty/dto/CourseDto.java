@@ -94,4 +94,32 @@ public class CourseDto {
         this.image = image;
         this.description = description;
     }
+
+    public CourseDto(long id, String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String status, String description) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.duration = duration;
+        this.timeOfUse = timeOfUse;
+        this.discountStart = discountStart;
+        this.discountEnd = discountEnd;
+        this.discountPercent = discountPercent;
+        this.image = image;
+        this.status = status;
+        this.description = description;
+    }
+
+    public CourseDto(String status, Course course) {
+        this.status = status;
+        this.id = course.getId();
+        this.name = course.getName();
+        this.price = course.getPrice();
+        this.duration = course.getDuration();
+        this.timeOfUse = course.getTimeOfUse();
+        this.discountStart = course.getDiscountStart();
+        this.discountEnd = course.getDiscountEnd();
+        this.discountPercent = course.getDiscountPercent();
+        this.image = course.getImage();
+        this.description = course.getDescription();
+    }
 }

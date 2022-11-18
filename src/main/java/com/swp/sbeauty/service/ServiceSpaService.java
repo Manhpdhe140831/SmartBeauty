@@ -26,6 +26,6 @@ public interface ServiceSpaService {
     String validateService(String name, String discountStart, String discountEnd, Double discountPercent);
     ServiceCourseBuyedDto getAllService(Long idCheck, Long customer);
 
-    ServiceCourseBuyedDto findProductCourseService(String keyword);
+    ServiceCourseBuyedDto findProductCourseService(String keyword, Long idCustomer);
     Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image, String products);
 }
