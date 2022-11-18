@@ -70,6 +70,7 @@ public class WebSecurityConfig  {
                 .antMatchers("/api/bill/**").permitAll()
                 .antMatchers("/api/slot/**").permitAll()
                 .antMatchers("/api/image/**").permitAll()
+                .antMatchers("/api/schedule/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

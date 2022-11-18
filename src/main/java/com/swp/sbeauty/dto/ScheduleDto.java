@@ -1,7 +1,13 @@
 package com.swp.sbeauty.dto;
 
 import com.swp.sbeauty.entity.mapping.Customer_Course_Mapping;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class ScheduleDto {
     private Long id;
     private String date;
