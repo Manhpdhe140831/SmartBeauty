@@ -1,5 +1,6 @@
 package com.swp.sbeauty.controller;
 
+import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ScheduleDto;
 import com.swp.sbeauty.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,11 @@ public class ScheduleController {
     @PostMapping("/schedule/updatecount")
     public ResponseEntity<?> updateCount(@RequestBody ScheduleDto scheduleDto){
         boolean check = scheduleService.updateCount(scheduleDto);
-        return new ResponseEntity<>(false, HttpStatus.OK);
+        if (check == true) {
+            return new ResponseEntity<>(check, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new ResponseDto<>(400, "Liệu trình đã sử dụng hết"), HttpStatus.BAD_REQUEST);
+        }
     }
 
 

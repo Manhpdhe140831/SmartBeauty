@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    @Query(value = "select ccm from Customer_Course_Mapping ccm join Schedule s on s.courseHistoryId = ccm.course_id where s.id = ?1")
+    @Query(value = "select ccm from Customer_Course_Mapping ccm where ccm.course_id =?1")
     public Customer_Course_Mapping getCustomerCourseBySchedule(Long id);
 
     @Query(value = "select bch from Bill_Course_History bch join Customer_Course_Mapping ccm on ccm.course_id = bch.course_id where ccm.id = ?1")
     public Bill_Course_History getBill_Course_HistoriesBySchedule(Long id);
+
+
 }
