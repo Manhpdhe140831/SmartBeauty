@@ -1,7 +1,4 @@
-import {
-  BillingProductCreateEntity,
-  InvoiceModel,
-} from "../../../model/invoice.model";
+import { BillingProductItem, InvoiceModel } from "../../../model/invoice.model";
 import CustomerInformationBlock from "./_partial/detail/customer-information";
 import PurchaseItemInformation from "./_partial/detail/purchase-item-information";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -10,15 +7,27 @@ import SearchBillingItems from "../../sale_staff/invoice/create/_partial/search-
 import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  invoiceCreateSchema,
-  invoiceItemSchema,
+  invoiceCreateItemSchema,
+  invoiceStatusSchema,
 } from "../../../validation/invoice.schema";
 import { z } from "zod";
-import { FormEventHandler } from "react";
+import { FormEventHandler, useState } from "react";
 import { Divider } from "@mantine/core";
+import { BillingItemData } from "../../../model/_price.model";
+import { idDbSchema, priceSchema } from "../../../validation/field.schema";
+import ItemAddonReadonly from "./_partial/detail/_item-readonly.addon";
+import PricingInformation from "./_partial/detail/pricing-information";
+
+const editSchema = z.object({
+  id: idDbSchema,
+  addons: z.array(invoiceCreateItemSchema).min(1),
+  priceBeforeTax: priceSchema,
+  priceAfterTax: priceSchema,
+  status: invoiceStatusSchema,
+});
 
 type props = {
-  onClose?: (data?: BillingProductCreateEntity[]) => void;
+  onAction?: (data?: z.infer<typeof editSchema>) => void;
   data: InvoiceModel;
 
   footerSection: (
@@ -26,21 +35,31 @@ type props = {
   ) => JSX.Element;
 };
 
-const InvoiceCreate = ({ onClose, data, footerSection }: props) => {
-  const editSchema = z.object({
-    addons: z.array(invoiceItemSchema).min(1),
-  });
+const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
+  const [addons, setAddons] = useState<BillingProductItem[]>([]);
 
-  const { reset, control, formState, handleSubmit, getValues } = useForm<
+  const { reset, control, formState, handleSubmit, setValue } = useForm<
     z.infer<typeof editSchema>
   >({
     resolver: zodResolver(editSchema),
     mode: "onBlur",
     defaultValues: {
-      addons: data.addons.map((i) => ({
-        item: i.item.id,
-        quantity: i.quantity,
-      })),
+      id: data.id,
+      priceBeforeTax: data.priceBeforeTax,
+      priceAfterTax: data.priceAfterTax,
+      status: data.status,
+      addons: (function () {
+        const newSetData: BillingProductItem[] = [];
+        const parsedData = data.addons.map((i) => {
+          newSetData.push(i);
+          return {
+            item: i.item.id,
+            quantity: i.quantity,
+          };
+        });
+        setAddons(newSetData);
+        return parsedData;
+      })(),
     },
   });
 
@@ -53,18 +72,54 @@ const InvoiceCreate = ({ onClose, data, footerSection }: props) => {
     name: "addons",
   });
 
-  const onNewItemAdded = (item: BillingProductCreateEntity) => append(item);
+  const onNewItemAdded = (item: BillingItemData) => {
+    const data = {
+      item: item.id,
+      quantity: 1,
+    };
+    append(data);
+    setAddons((i) => [
+      ...i,
+      {
+        item: item,
+        quantity: 1,
+      },
+    ]);
+  };
 
-  const onRemoveBillingItem = (index: number) => remove(index);
+  const onRemoveBillingItem = (index: number) => {
+    remove(index);
+    setAddons((i) => {
+      const cloneArr = [...i];
+      // remove the item at position
+      cloneArr.splice(index, 1);
+      return cloneArr;
+    });
+  };
 
   const onReset: FormEventHandler<HTMLFormElement> = (e) => {
     e.stopPropagation();
     e.preventDefault();
     reset();
+    onAction && onAction();
   };
 
   const onSubmit = (data: z.infer<typeof editSchema>) => {
-    onClose && onClose(data.addons);
+    onAction && onAction(data);
+  };
+
+  const onPriceCalculation = ({
+    priceAfterTax,
+    priceBeforeTax,
+  }: Pick<InvoiceModel, "priceAfterTax" | "priceBeforeTax">) => {
+    setValue("priceBeforeTax", priceBeforeTax, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("priceAfterTax", priceAfterTax, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   return (
@@ -78,42 +133,57 @@ const InvoiceCreate = ({ onClose, data, footerSection }: props) => {
 
       <PurchaseItemInformation item={data.item} itemType={data.itemType} />
 
-      <div className="flex flex-col space-y-4">
-        <AddonsListInformation
-          removable
-          data={itemsArray}
-          renderItem={(item, index) => (
-            <Controller
-              key={`${item.id}-container`}
-              control={control}
-              render={({ field }) => (
+      <AddonsListInformation
+        removable={data.status === "pending"}
+        data={itemsArray}
+        renderItem={(item, index) => (
+          <Controller
+            control={control}
+            name={`addons.${index}.quantity`}
+            render={({ field }) =>
+              data.status === "pending" ? (
                 <ItemAddonEdit
+                  addon={addons[index]}
                   itemNo={index}
-                  itemId={item.item}
-                  itemQuantity={item.quantity}
-                  onRemove={(index) => onRemoveBillingItem(index)}
-                  onQuantityChange={(q) => {
-                    field.onChange(q);
+                  onRemove={onRemoveBillingItem}
+                  onQuantityChange={(quantity) => {
+                    field.onChange(quantity);
                     field.onBlur();
+                    setAddons((s) => {
+                      const clone = [...s];
+                      const itemToChange = clone.at(index);
+                      if (itemToChange) {
+                        itemToChange.quantity = quantity ?? 1;
+                      }
+                      return clone;
+                    });
                   }}
                 />
-              )}
-              name={`addons.${index}.quantity`}
-            />
-          )}
-        />
+              ) : (
+                <ItemAddonReadonly data={addons[index]!} no={index} />
+              )
+            }
+            key={item.id}
+          />
+        )}
+      />
 
-        <SearchBillingItems onChange={onNewItemAdded} />
+      <div className="flex flex-col space-y-4">
+        {data.status === "pending" && (
+          <SearchBillingItems onChange={onNewItemAdded} />
+        )}
 
         <Divider my={16} />
 
-        {/*<PricingInformation addons={watch("addons")} />*/}
+        <PricingInformation
+          item={data.item}
+          addons={addons}
+          onChange={onPriceCalculation}
+        />
       </div>
-      {JSON.stringify(invoiceCreateSchema.safeParse(getValues()))}
-
       {footerSection && footerSection(formState)}
     </form>
   );
 };
 
-export default InvoiceCreate;
+export default InvoiceEdit;

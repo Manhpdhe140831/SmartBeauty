@@ -17,8 +17,8 @@ import { BillingItemData } from "../../../model/_price.model";
 import AddonsListInformation from "./_partial/detail/addon-list-information";
 import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
 
-type props = {
-  onClose?: (data?: z.infer<typeof invoiceCreateSchema>) => void;
+type InvoiceCreateProps = {
+  onAction?: (data?: z.infer<typeof invoiceCreateSchema>) => void;
   customerId: number;
   itemId: number;
   itemType: InvoiceModel["itemType"];
@@ -29,12 +29,12 @@ type props = {
 };
 
 const InvoiceCreate = ({
-  onClose,
+  onAction,
   itemId,
   itemType,
   customerId,
   footerSection,
-}: props) => {
+}: InvoiceCreateProps) => {
   const [addons, setAddons] = useState<BillingProductItem[]>([]);
   const { reset, control, formState, handleSubmit, setValue } = useForm<
     z.infer<typeof invoiceCreateSchema>
@@ -90,11 +90,11 @@ const InvoiceCreate = ({
     e.stopPropagation();
     e.preventDefault();
     reset();
-    onClose && onClose();
+    onAction && onAction();
   };
 
   const onSubmit = (data: z.infer<typeof invoiceCreateSchema>) => {
-    onClose && onClose(data);
+    onAction && onAction(data);
   };
 
   const onPriceCalculation = ({

@@ -3,7 +3,7 @@ import { products } from "./product";
 import { RawServices } from "./service";
 import { RawCourses } from "./course";
 
-const Invoices: InvoiceModel[] = [
+export const Invoices: InvoiceModel[] = [
   {
     id: 1,
     customer: 1,

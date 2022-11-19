@@ -8,8 +8,10 @@
 import { ServiceModel } from "./service.model";
 import { CourseModel } from "./course.model";
 import { BillingItemData } from "./_price.model";
+import { z } from "zod";
+import { invoiceStatusSchema } from "../validation/invoice.schema";
 
-export type InvoiceStatus = "pending" | "approved" | "discarded";
+export type InvoiceStatus = z.infer<typeof invoiceStatusSchema>;
 
 export type BillingProductItem = {
   quantity: number;
@@ -50,4 +52,5 @@ export type InvoiceCreateEntity = Omit<
   addons: BillingProductCreateEntity[];
 };
 
-export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status">;
+export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status"> &
+  Pick<InvoiceCreateEntity, "addons" | "priceBeforeTax" | "priceAfterTax">;

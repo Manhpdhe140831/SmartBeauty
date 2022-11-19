@@ -42,7 +42,7 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
       </div>
 
       <InvoiceCreate
-        onClose={onInvoiceClose}
+        onAction={onInvoiceClose}
         customerId={mockCustomer.id}
         itemId={mockPurchaseItem.id}
         itemType={"service"}
