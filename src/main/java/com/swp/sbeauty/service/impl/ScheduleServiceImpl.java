@@ -30,7 +30,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 String customerCourseStatus = customer_course_mapping.getStatus();
                 Bill_Course_History bill_course_history = scheduleRepository.getBill_Course_HistoriesBySchedule(customer_course_mapping.getId());
                 if (count < bill_course_history.getTimeOfUse()) {
-                    if (customerCourseStatus.equalsIgnoreCase("dangsudung")) {
+                    if (customerCourseStatus.equalsIgnoreCase("dangsudung")||customerCourseStatus.equalsIgnoreCase("chuasudung")) {
                         count++;
                         if (count == bill_course_history.getTimeOfUse()) {
                             customer_course_mapping.setStatus("dahoanthanh");
@@ -50,5 +50,36 @@ public class ScheduleServiceImpl implements ScheduleService {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public boolean save(ScheduleDto scheduleDto) {
+        Schedule schedule = new Schedule();
+        String status = "khachchuaden";
+        schedule.setDate(scheduleDto.getDate());
+        schedule.setSlotId(scheduleDto.getSlot().getId());
+        schedule.setBedId(scheduleDto.getBed().getId());
+        schedule.setSaleStaffId(scheduleDto.getSale_staff().getId());
+        schedule.setTechnicalStaffId(scheduleDto.getTech_staff().getId());
+        schedule.setCustomerId(scheduleDto.getCustomer().getId());
+        schedule.setStatus(status);
+        schedule.setNote(scheduleDto.getNote());
+        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
+        String customerCourseStatus = customer_course_mapping.getStatus();
+        if ("chuasudung".equalsIgnoreCase(customerCourseStatus)){
+            schedule.setCourseId(scheduleDto.getCourse().getId());
+        }else if ("dangsudung".equalsIgnoreCase(customerCourseStatus)){
+            schedule.setCourseHistoryId(scheduleDto.getCourse().getId());
+        }else{
+           schedule.setCourseHistoryId(null);
+           schedule.setCourseId(null);
+        }
+        if (null != schedule){
+            scheduleRepository.save(schedule);
+            return true;
+        }else{
+            return false;
+        }
+
     }
 }

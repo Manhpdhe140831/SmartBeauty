@@ -27,4 +27,15 @@ public class ScheduleController {
     }
 
 
+    @PostMapping("/schedule/create")
+    public ResponseEntity<?> saveSchedule(@RequestBody ScheduleDto scheduleDto){
+        boolean result = scheduleService.save(scheduleDto);
+        if (result == true) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new ResponseDto<>(400, "khog them duoc"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }
