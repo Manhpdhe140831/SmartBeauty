@@ -20,4 +20,18 @@ public class ScheduleDto {
     private ServiceDto service;
     private String status;
     private String note;
+
+    public ScheduleDto(Long id, String date, SlotDto slot, SpaBedDto bed, UserDto sale_staff, UserDto tech_staff, CustomerDto customer, CourseDto course, ServiceDto service, String status, String note) {
+        this.id = id;
+        this.date = date;
+        this.slot = slot;
+        this.bed = bed;
+        this.sale_staff = sale_staff;
+        this.tech_staff = tech_staff;
+        this.customer = customer;
+        this.course = course;
+        this.service = service;
+        this.status = status;
+        this.note = note;
+    }
 }

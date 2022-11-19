@@ -37,5 +37,11 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/schedule/getbyid")
+    public ResponseEntity<?> getScheduleById(@RequestParam("id") Long id){
+        ScheduleDto scheduleDto = scheduleService.getScheduleById(id);
+        return new ResponseEntity<>(scheduleDto, HttpStatus.OK);
+    }
+
 
 }

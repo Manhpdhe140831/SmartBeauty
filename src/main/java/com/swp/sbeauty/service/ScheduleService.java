@@ -7,4 +7,8 @@ public interface ScheduleService {
 
     boolean save(ScheduleDto scheduleDto);
 
+    ScheduleDto getScheduleById(Long id);
+
+
+
 }
