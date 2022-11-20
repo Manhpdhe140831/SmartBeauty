@@ -1,27 +1,53 @@
 import { InvoiceStatus } from "../../../../../model/invoice.model";
 import { Button, Text } from "@mantine/core";
+import TimeInvoiceInformation from "./time-invoice-information";
 
 type props = {
-  status?: InvoiceStatus | "create";
   onReject?: () => void;
   disable?: boolean;
   loading?: boolean;
-};
+  approvedDate?: string;
+} & (
+  | {
+      status?: InvoiceStatus;
+      createdDate: string;
+    }
+  | {
+      status?: "create";
+      createdDate?: string;
+    }
+);
 
 const SaleStaffInvoiceAction = ({
   status,
   onReject,
   loading,
   disable,
+  createdDate,
+  approvedDate,
 }: props) => {
   if (!status) {
     return <></>;
   }
   if (status === "discarded" || status === "approved") {
     return (
-      <Text size={"xs"} color={"dimmed"}>
-        Trạng thái của hóa đơn không thể thay đổi.
-      </Text>
+      <div className={"mt-2 flex flex-col"}>
+        <Text align={"center"} size={"lg"} color={"dimmed"}>
+          {status === "discarded"
+            ? "Hóa đơn đã bị hủy"
+            : "Hóa đơn đã được xác nhận."}
+        </Text>
+        <Text align={"center"} size={"xs"} mb={16} color={"dimmed"}>
+          Trạng thái của hóa đơn không thể thay đổi.
+        </Text>
+
+        {status === "approved" && (
+          <TimeInvoiceInformation
+            createdDate={createdDate}
+            approvedDate={approvedDate}
+          />
+        )}
+      </div>
     );
   }
 

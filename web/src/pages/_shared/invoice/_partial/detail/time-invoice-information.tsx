@@ -1,14 +1,14 @@
 import { Divider, Text, Tooltip } from "@mantine/core";
 import { timeToDate, timeToHours } from "../../../../../utilities/time.helper";
-import { InvoiceModel } from "../../../../../model/invoice.model";
 import { useClipboard } from "@mantine/hooks";
 import dayjs from "dayjs";
 
 type TimeInvoiceProps = {
-  data?: InvoiceModel;
+  createdDate?: string;
+  approvedDate?: string;
 };
 
-const TimeInvoiceInformation = ({ data }: TimeInvoiceProps) => {
+const TimeInvoiceInformation = (data?: TimeInvoiceProps) => {
   const copyHook = useClipboard({ timeout: 500 });
 
   function copyFormat(dateRaw?: string) {

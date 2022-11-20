@@ -5,6 +5,7 @@ import InvoiceList from "../../_shared/invoice/invoice-list";
 import { useRouter } from "next/router";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { useListInvoiceQuery } from "../../../query/model-list";
+import { USER_ROLE } from "../../../const/user-role.const";
 
 const Index: AppPageInterface = () => {
   const router = useRouter();
@@ -71,5 +72,6 @@ const Index: AppPageInterface = () => {
 };
 
 Index.routerName = "List of Bill";
+Index.guarded = USER_ROLE.manager;
 
 export default Index;

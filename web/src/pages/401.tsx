@@ -1,7 +1,6 @@
 import className from "./../styles/UnAuthorizedPage.module.scss";
 import { AppPageInterface } from "../interfaces/app-page.interface";
 import { USER_ROLE } from "../const/user-role.const";
-import { Button } from "@mantine/core";
 import { useAuthUser } from "../store/auth-user.state";
 import Link from "next/link";
 
@@ -21,10 +20,13 @@ const PageUnauthenticated: AppPageInterface = () => {
 
       <small className={"select-none text-gray-500"}>(error 401)</small>
 
-      <Link href={authState.user ? "/" : "/login"} passHref>
-        <Button sx={{ width: "200px" }} variant={"outline"} component={"a"}>
-          {authState.user ? "Back to Home" : "To Login"}
-        </Button>
+      <Link
+        className={
+          "rounded border border-blue-400 p-4 text-xl font-semibold text-blue-500 hover:border-blue-500 hover:bg-blue-500 hover:text-white"
+        }
+        href={authState.user ? "/" : "/login"}
+      >
+        {authState.user ? "Back to Home" : "To Login"}
       </Link>
     </div>
   );

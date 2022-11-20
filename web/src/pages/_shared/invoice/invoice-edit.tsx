@@ -11,12 +11,14 @@ import {
   invoiceStatusSchema,
 } from "../../../validation/invoice.schema";
 import { z } from "zod";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { Divider } from "@mantine/core";
 import { BillingItemData } from "../../../model/_price.model";
 import { idDbSchema, priceSchema } from "../../../validation/field.schema";
 import ItemAddonReadonly from "./_partial/detail/_item-readonly.addon";
 import PricingInformation from "./_partial/detail/pricing-information";
+import { useAuthUser } from "../../../store/auth-user.state";
+import { USER_ROLE } from "../../../const/user-role.const";
 
 const editSchema = z.object({
   id: idDbSchema,
@@ -37,6 +39,7 @@ type props = {
 
 const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
   const [addons, setAddons] = useState<BillingProductItem[]>([]);
+  const userRole = useAuthUser((s) => s.user?.role);
 
   const { reset, control, formState, handleSubmit, setValue } = useForm<
     z.infer<typeof editSchema>
@@ -48,18 +51,6 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
       priceBeforeTax: data.priceBeforeTax,
       priceAfterTax: data.priceAfterTax,
       status: data.status,
-      addons: (function () {
-        const newSetData: BillingProductItem[] = [];
-        const parsedData = data.addons.map((i) => {
-          newSetData.push(i);
-          return {
-            item: i.item.id,
-            quantity: i.quantity,
-          };
-        });
-        setAddons(newSetData);
-        return parsedData;
-      })(),
     },
   });
 
@@ -67,10 +58,24 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
     fields: itemsArray,
     append,
     remove,
+    replace,
   } = useFieldArray({
     control,
     name: "addons",
   });
+
+  useEffect(() => {
+    const newSetData: BillingProductItem[] = [];
+    const parsedData = data.addons.map((i) => {
+      newSetData.push(i);
+      return {
+        item: i.item.id,
+        quantity: i.quantity,
+      };
+    });
+    setAddons(newSetData);
+    replace(parsedData);
+  }, [data.addons]);
 
   const onNewItemAdded = (item: BillingItemData) => {
     const data = {
@@ -141,7 +146,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
             control={control}
             name={`addons.${index}.quantity`}
             render={({ field }) =>
-              data.status === "pending" ? (
+              data.status === "pending" && userRole === USER_ROLE.sale_staff ? (
                 <ItemAddonEdit
                   addon={addons[index]}
                   itemNo={index}

@@ -1,26 +1,39 @@
 import { AppPageInterface } from "../../../../interfaces/app-page.interface";
 import InvoiceEdit from "../../../_shared/invoice/invoice-edit";
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons";
 import SaleStaffInvoiceAction from "../../../_shared/invoice/_partial/detail/action.sale_staff";
 import { USER_ROLE } from "../../../../const/user-role.const";
 import { useRouter } from "next/router";
-import {
-  BillUpdateEntity,
-  InvoiceModel,
-} from "../../../../model/invoice.model";
-import { Invoices } from "../../../../mock/bill";
+import { BillUpdateEntity } from "../../../../model/invoice.model";
+import { useInvoiceDetailQuery } from "../../../../query/model-detail";
+import useWindowPathname from "../../../../hooks/window-pathname.hook";
 
 const SaleStaffInvoiceDetail: AppPageInterface = () => {
   const router = useRouter();
-  const { previousUrl } = router.query;
+  const { paths } = useWindowPathname();
+  const { previousUrl, page } = router.query;
 
-  const mockInvoice = Invoices[0] as InvoiceModel;
+  const id = Number(paths.at(-1));
+
+  const { data, isLoading } = useInvoiceDetailQuery(id, {
+    enabled: id !== undefined && !isNaN(id),
+  });
+
+  if (isNaN(id) || id <= 0 || (!isLoading && !data)) {
+    void router.replace("/404");
+    return <>redirecting</>;
+  }
 
   function navigatePreviousPage(previousUrl?: string): void {
     const mainPath = previousUrl ?? `/${USER_ROLE.sale_staff}/invoice`;
     void router.push({
       pathname: mainPath,
+      query: page
+        ? {
+            page: String(page),
+          }
+        : undefined,
     });
   }
 
@@ -37,16 +50,28 @@ const SaleStaffInvoiceDetail: AppPageInterface = () => {
         >
           Quay lại
         </Button>
-        <h1 className={"flex-1"}>Tạo thông tin hóa đơn</h1>
+        <h1 className={"flex-1"}>
+          <span>Chi tiết Hóa Đơn</span>
+          <Text className={"inline select-none"} color={"dimmed"}>
+            #{data?.id ?? "-"}
+          </Text>
+        </h1>
       </div>
 
-      <InvoiceEdit
-        onAction={onInvoiceClose}
-        data={mockInvoice}
-        footerSection={(a) => (
-          <SaleStaffInvoiceAction status={"create"} disable={!a.isValid} />
-        )}
-      />
+      {data && (
+        <InvoiceEdit
+          onAction={onInvoiceClose}
+          data={data}
+          footerSection={(a) => (
+            <SaleStaffInvoiceAction
+              status={data.status}
+              disable={!a.isValid}
+              createdDate={data.createdDate}
+              approvedDate={data.approvedDate}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

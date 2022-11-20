@@ -6,6 +6,8 @@ import mockCourse from "../../mock/course";
 import { CourseModel } from "../../model/course.model";
 import mockService from "../../mock/service";
 import { ServiceModel } from "../../model/service.model";
+import mockBill from "../../mock/bill";
+import { InvoiceModel } from "../../model/invoice.model";
 
 export const useCustomerDetailQuery = (customerId?: number) =>
   useQuery(["customer-detail", customerId], () => {
@@ -44,3 +46,16 @@ export const useServiceDetailQuery = (serviceId?: number) =>
     const ms = await mockService();
     return ms.find((s) => s.id === serviceId) as ServiceModel;
   });
+
+export const useInvoiceDetailQuery = (
+  invoiceId?: number,
+  options?: Parameters<typeof useQuery<InvoiceModel>>[2]
+) =>
+  useQuery<InvoiceModel>(
+    ["invoice-detail", invoiceId],
+    async () => {
+      const mockInvoice = await mockBill();
+      return mockInvoice.find((s) => s.id === invoiceId)!;
+    },
+    options
+  );
