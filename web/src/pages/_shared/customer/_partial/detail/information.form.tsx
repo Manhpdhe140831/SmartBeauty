@@ -1,5 +1,6 @@
 import { CustomerModel } from "../../../../../model/customer.model";
 import {
+  Avatar,
   Button,
   Input,
   Select,
@@ -31,7 +32,7 @@ import { stateInputProps } from "../../../../../utilities/mantine.helper";
 import { ageTilToday } from "../../../../../utilities/time.helper";
 
 type FormProps = {
-  data: CustomerModel;
+  data?: CustomerModel;
   readonly?: boolean;
   onChanged?: (mutatedData?: unknown) => void;
   mode: "view" | "create";
@@ -80,8 +81,20 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
   };
 
   return (
-    <form onReset={handleReset} onSubmit={handleSubmit(submitData)}>
-      <fieldset disabled={readonly} className={"flex w-80 flex-col"}>
+    <form
+      className={"container mx-auto flex flex-wrap space-x-4 p-8"}
+      onReset={handleReset}
+      onSubmit={handleSubmit(submitData)}
+    >
+      <Avatar
+        size="xl"
+        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
+      />
+
+      <fieldset
+        disabled={readonly}
+        className={"flex w-full flex-col md:flex-1"}
+      >
         <TextInput
           {...stateInputProps("Customer Name", readonly, { required: true })}
           {...register("name")}

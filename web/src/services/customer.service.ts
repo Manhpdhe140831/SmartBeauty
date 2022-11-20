@@ -5,6 +5,7 @@ import {
   SearchParamUrl,
 } from "../interfaces/api.interface";
 import { CustomerCreateEntity, CustomerModel } from "../model/customer.model";
+import mockCustomer, { Customers } from "../mock/customer";
 
 /**
  * Get all customers in the branch.
@@ -51,13 +52,15 @@ export async function createCustomer(raw: CustomerCreateEntity) {
 
 export async function getCustomerById(id: number) {
   try {
-    const apiResult = await axios.get<CustomerModel>("/customer/getById", {
-      params: {
-        id,
-      },
-    });
-
-    return apiResult.data;
+    // TODO implement
+    // const apiResult = await axios.get<CustomerModel>("/customer/getById", {
+    //   params: {
+    //     id,
+    //   },
+    // });
+    //
+    // return apiResult.data;
+    return Customers[id];
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;
     if (error.status === 400 || error.status === 404) {

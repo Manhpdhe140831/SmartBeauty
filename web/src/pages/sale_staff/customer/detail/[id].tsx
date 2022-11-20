@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import useWindowPathname from "../../../../hooks/window-pathname.hook";
 import CustomerDetail from "../../../_shared/customer/customer-detail";
 import { USER_ROLE } from "../../../../const/user-role.const";
+import { useCustomerDetailQuery } from "../../../../query/model-detail";
 
 const SaleStaffCustomerDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -11,7 +12,10 @@ const SaleStaffCustomerDetail: AppPageInterface = () => {
 
   const id = Number(paths.at(-1));
 
-  if (isNaN(id) || id <= 0) {
+  // TODO integrate API get user by id
+  const { data, isLoading } = useCustomerDetailQuery(id);
+
+  if (isNaN(id) || id <= 0 || (!isLoading && !data)) {
     void router.replace("/404");
     return <>redirecting</>;
   }
@@ -29,16 +33,20 @@ const SaleStaffCustomerDetail: AppPageInterface = () => {
   }
 
   return (
-    <CustomerDetail
-      id={id}
-      role={USER_ROLE.sale_staff}
-      onBackBtnClicked={() =>
-        navigatePreviousPage(
-          previousUrl as string,
-          page ? Number(page as string) : undefined
-        )
-      }
-    />
+    <>
+      {data && (
+        <CustomerDetail
+          data={data}
+          mode={"view"}
+          onBackBtnClicked={() =>
+            navigatePreviousPage(
+              previousUrl as string,
+              page ? Number(page as string) : undefined
+            )
+          }
+        />
+      )}
+    </>
   );
 };
 
