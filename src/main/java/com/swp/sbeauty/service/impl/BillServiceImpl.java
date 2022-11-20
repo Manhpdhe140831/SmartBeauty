@@ -390,8 +390,6 @@ public class BillServiceImpl implements BillService {
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
                 Bill_Service_History bill_service_history = new Bill_Service_History();
                 com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(billDetailDto.getType_id());
-
-
                 bill_service_history.setServiceId(service.getId());
                 bill_service_history.setBillDetail_id(billDetail.getId());
                 bill_service_history.setName(service.getName());
@@ -488,8 +486,6 @@ public class BillServiceImpl implements BillService {
         if (bill.getStatus().equalsIgnoreCase("dathanhtoan")){
             return false;
         }else {
-
-
             bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
             bill.setPriceAfterTax(billDto.getPriceAfterTax());
             bill = billRepository.save(bill);

@@ -35,6 +35,6 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
 /*    @Query(value = "select * from course where course.name like %?1%", nativeQuery = true)
     List<Course> findCourse(String keyword);*/
 
-    @Query(value = "select c.* from course c where c.id != ?1 ", nativeQuery = true)
-    List<Course> getCourseExpelId(Long id);
+    @Query(value = "select c.* from course c where c.id != ?1 and c.name like %?2% ", nativeQuery = true)
+    List<Course> getCourseExpelId(Long id, String keyword);
 }

@@ -214,7 +214,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         if(ccm != null){
             Bill_Course_History history = bill_course_history_repository.getBill_Course_HistoriesById(ccm.getCourse_id());
             CourseDto courseDto = new CourseDto(ccm.getId(), history.getName(), history.getPrice(),history.getDuration(),history.getTimeOfUse(),history.getDiscountStart(),history.getDiscountEnd(),history.getDiscountPercent(),history.getImage(),"dangsudung",history.getDescription());
-            List<Course> courses = courseRepository.getCourseExpelId(history.getCourse_id());
+            List<Course> courses = courseRepository.getCourseExpelId(history.getCourse_id(),keyword);
             courseDtos.add(courseDto);
             for (Course course : courses){
                 courseDtos.add(new CourseDto("chuasudung",course));
