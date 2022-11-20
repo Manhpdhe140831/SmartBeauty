@@ -39,7 +39,8 @@ type FormProps = {
 };
 
 const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
-  const idSchema = mode === "create" ? idDbSchema.nullable() : idDbSchema;
+  const idSchema =
+    mode === "create" ? idDbSchema.optional().nullable() : idDbSchema;
   const schema = z.object({
     id: idSchema,
     name: nameSchema,
@@ -55,6 +56,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
     control,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -166,11 +168,11 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               <Input
                 component={MaskedInput}
                 mask={PhoneNumberMask}
-                placeholder={"012 774 9999"}
+                placeholder={"0127749999"}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 defaultValue={field.value}
-                {...stateInputProps("Phone Number", readonly, {
+                {...stateInputProps(undefined, readonly, {
                   required: true,
                 })}
               />
@@ -199,16 +201,15 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
 
       {isDirty && (
         <div className="flex w-full justify-end space-x-4">
-          <Button type={"reset"} variant={"light"} color={"red"}>
-            Cancel
-          </Button>
           <Button
             disabled={!isValid}
             type={"submit"}
             variant={"filled"}
-            color={"orange"}
+            color={mode === "create" ? "teal" : "orange"}
           >
-            Update
+            {mode === "create"
+              ? "Tạo thông tin khách hàng"
+              : "Cập nhật thông tin"}
           </Button>
         </div>
       )}

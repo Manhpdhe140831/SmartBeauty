@@ -19,9 +19,12 @@ const CreatePage: AppPageInterface = () => {
     });
   }
 
+  function mutateCustomer(data: unknown) {}
+
   return (
     <CustomerDetail
       mode={"create"}
+      onInfoChanged={mutateCustomer}
       onBackBtnClicked={() =>
         navigatePreviousPage(
           previousUrl as string,
