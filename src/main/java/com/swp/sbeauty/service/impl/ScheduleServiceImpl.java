@@ -82,11 +82,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = new Schedule();
         String status = "khachchuaden";
         schedule.setDate(scheduleDto.getDate());
-        schedule.setSlotId(scheduleDto.getSlot().getId());
-        schedule.setBedId(scheduleDto.getBed().getId());
-        schedule.setSaleStaffId(scheduleDto.getSale_staff().getId());
-        schedule.setTechnicalStaffId(scheduleDto.getTech_staff().getId());
-        schedule.setCustomerId(scheduleDto.getCustomer().getId());
+//
+//        schedule.setSlotId(scheduleDto.getSlot().getId());
+//        schedule.setBedId(scheduleDto.getBed().getId());
+//        schedule.setSaleStaffId(scheduleDto.getSale_staff().getId());
+//        schedule.setTechnicalStaffId(scheduleDto.getTech_staff().getId());
+//        schedule.setCustomerId(scheduleDto.getCustomer().getId());
+
+        schedule.setSlotId(scheduleDto.getSlotId());
+        schedule.setBedId(scheduleDto.getBedId());
+        schedule.setSaleStaffId(scheduleDto.getSaleStaffId());
+        schedule.setTechnicalStaffId(scheduleDto.getTechStaffId());
+        schedule.setCustomerId(scheduleDto.getCustomerId());
+
         schedule.setStatus(status);
         schedule.setNote(scheduleDto.getNote());
         com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getService().getId());
@@ -207,11 +215,13 @@ public class ScheduleServiceImpl implements ScheduleService {
        bed_slot_mapping_repository.delete(bed_slot_mapping);
         String status = "khachchuaden";
         schedule.setDate(scheduleDto.getDate());
-        schedule.setSlotId(scheduleDto.getSlot().getId());
-        schedule.setBedId(scheduleDto.getBed().getId());
-        schedule.setSaleStaffId(scheduleDto.getSale_staff().getId());
-        schedule.setTechnicalStaffId(scheduleDto.getTech_staff().getId());
-        schedule.setCustomerId(scheduleDto.getCustomer().getId());
+
+        schedule.setSlotId(scheduleDto.getSlotId());
+        schedule.setBedId(scheduleDto.getBedId());
+        schedule.setSaleStaffId(scheduleDto.getSaleStaffId());
+        schedule.setTechnicalStaffId(scheduleDto.getTechStaffId());
+        schedule.setCustomerId(scheduleDto.getCustomerId());
+
         schedule.setStatus(status);
         schedule.setNote(scheduleDto.getNote());
 
