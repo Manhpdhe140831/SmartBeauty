@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -85,6 +87,19 @@ public class CustomerController {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
 
+    }
+    @GetMapping("/customer/search")
+    private ResponseEntity<?> getAlCustomer(@RequestHeader("Authorization") String authHeader,
+                                            @RequestParam(value = "keyword") String keyword){
+        if(authHeader != null){
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            String id = temp.get("id").toString();
+            Long idCheck = Long.parseLong(id);
+            List<CustomerDto> list = customerService.getCustomerByKeyword(idCheck,keyword);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
+        }
     }
 
 

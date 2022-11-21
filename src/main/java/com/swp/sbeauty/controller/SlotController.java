@@ -22,7 +22,7 @@ public class SlotController {
     @Autowired
     SlotService service;
     @GetMapping("/slot")
-    private ResponseEntity<?> getAllService(@RequestHeader("Authorization") String authHeader){
+    private ResponseEntity<?> getAllSlot(@RequestHeader("Authorization") String authHeader){
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
