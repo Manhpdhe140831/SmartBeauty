@@ -7,10 +7,14 @@ import com.swp.sbeauty.dto.SupplierResponseDto;
 import com.swp.sbeauty.entity.Customer;
 import com.swp.sbeauty.entity.Slot;
 import com.swp.sbeauty.entity.Supplier;
+import com.swp.sbeauty.entity.mapping.Customer_Branch_Mapping;
 import com.swp.sbeauty.repository.CustomerRepository;
 import com.swp.sbeauty.repository.mappingRepo.Customer_Branch_Mapping_Repo;
 import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
+import com.swp.sbeauty.repository.mappingRepo.User_Branch_Mapping_Repo;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.CustomerService;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,12 @@ public class CustomerServiceImpl implements CustomerService {
     private Customer_Branch_Mapping_Repo customer_branch_mapping_repo;
     @Autowired
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
+
+    @Autowired
+    User_Branch_Mapping_Repo user_branch_mapping_repo;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     @Override
     public CustomerDto getById(Long id) {
@@ -65,7 +75,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Boolean saveCustomer(String name, String phone, String email, String gender, String dateOfBirth, String address) {
+    public Boolean saveCustomer(String name, String phone, String email, String gender, String dateOfBirth, String address, String authHeader) {
         try {
 
             Customer customer = new Customer();
@@ -77,7 +87,12 @@ public class CustomerServiceImpl implements CustomerService {
             //Date dob = df.parse(dateOfBirth);
             customer.setDateOfBirth(dateOfBirth);
             customer.setAddress(address);
-            customerRepository.save(customer);
+            customer = customerRepository.save(customer);
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            Long idStaff = Long.parseLong(temp.get("id").toString());
+            Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
+            customer_branch_mapping_repo.save(new Customer_Branch_Mapping(customer.getId(), idBranch));
+
             return true;
         } catch (Exception e) {
             return false;

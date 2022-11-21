@@ -9,7 +9,7 @@ public interface CustomerService {
     CustomerDto getById(Long id);
 
     String validateCustomer(String name, String email, String phone);
-    Boolean saveCustomer(String name, String phone,String email,String gender,String dateOfBirth, String address);
+    Boolean saveCustomer(String name, String phone, String email, String gender, String dateOfBirth, String address, String authHeader);
     Boolean updateCustomer(Long id,String name, String phone,String email,String gender,String dateOfBirth, String address);
     CustomerResponseDto getAllCustomer(Long idCheck,int pageNo, int pageSize);
     CustomerResponseDto getCustomerAndSearch(Long idCheck,String name, String phone, int pageNo, int pageSize);

@@ -30,7 +30,8 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/customer/create")
-    public ResponseEntity<?> saveCustomer(@RequestParam(value = "name") String name,
+    public ResponseEntity<?> saveCustomer(@RequestHeader("Authorization") String authHeader,
+                                          @RequestParam(value = "name") String name,
                                           @RequestParam(value = "phone") String phone,
                                           @RequestParam(value = "email") String email,
                                           @RequestParam(value = "gender") String gender,
@@ -38,7 +39,7 @@ public class CustomerController {
                                           @RequestParam(value = "address") String address){
         String check = customerService.validateCustomer(name, email, phone);
         if(check == ""){
-            Boolean result = customerService.saveCustomer(name, phone, email, gender, dateOfBith,address);
+            Boolean result = customerService.saveCustomer(name, phone, email, gender, dateOfBith,address, authHeader);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -47,7 +48,7 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/customer/update")
-    public ResponseEntity<?> updateSupplier(@RequestParam(value = "id") Long id,
+    public ResponseEntity<?> updateCustomer(@RequestParam(value = "id") Long id,
                                             @RequestParam(value = "name", required = false) String name,
                                             @RequestParam(value = "phone",required = false) String phone,
                                             @RequestParam(value = "email",required = false) String email,
