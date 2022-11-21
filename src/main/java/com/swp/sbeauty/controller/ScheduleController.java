@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -43,5 +45,16 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleDto, HttpStatus.OK);
     }
 
+    @GetMapping("/schedule")
+    public ResponseEntity<?> getAllSchedule(){
+        List<ScheduleDto> result = scheduleService.getAll();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("schedule/update")
+    public ResponseEntity<?> updateSchedule(@RequestParam("id") Long id, @RequestBody ScheduleDto scheduleDto){
+        boolean result = scheduleService.update(id, scheduleDto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 }

@@ -2,6 +2,8 @@ package com.swp.sbeauty.service;
 
 import com.swp.sbeauty.dto.ScheduleDto;
 
+import java.util.List;
+
 public interface ScheduleService {
     boolean updateCount(ScheduleDto scheduleDto);
 
@@ -9,7 +11,9 @@ public interface ScheduleService {
 
     ScheduleDto getScheduleById(Long id);
 
-    boolean update(ScheduleDto scheduleDto);
+    boolean update(Long id, ScheduleDto scheduleDto);
+
+    List<ScheduleDto> getAll();
 
 
 }
