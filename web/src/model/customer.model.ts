@@ -4,7 +4,7 @@ export type CustomerModel = {
   id: number;
   name: string;
   phone: string;
-  email?: string;
+  email: string;
   gender: GENDER;
   // ISO format
   dateOfBirth?: string;

@@ -41,10 +41,10 @@ export const managerModelSchema = baseUserSchema;
  * Validation schema for the employee model.
  * It extends from the baseUserSchema with role fixed to be 'employee'
  */
-export const employeeModelSchema = baseUserSchema.merge(
-    z.object({
+export const employeeModelSchema = baseUserSchema.extend(
+    {
         role: staffRoleSchema,
-    })
+    }
 );
 
 /**

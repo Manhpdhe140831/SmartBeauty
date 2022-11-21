@@ -14,7 +14,7 @@ type ModalProps = {
 const StaffViewModalBtn = ({ onChanged, staffData }: ModalProps) => {
   const [viewBranch, setViewBranch] = useState<boolean>(false);
 
-  return (
+    return (
     <>
       {/* Button view branch -> trigger modal*/}
       <Tooltip onClick={() => setViewBranch(true)} label={"View / Edit"}>

@@ -17,7 +17,7 @@ import {GENDER} from "../../../const/gender.const";
 import {DialogSubmit} from "../../../utilities/form-data.helper";
 import BtnSingleUploader from "../../../components/btn-single-uploader";
 import {ACCEPTED_IMAGE_TYPES} from "../../../const/file.const";
-import {STAFF_USER_ROLE} from "../../../const/user-role.const";
+import {STAFF_USER_ROLE, USER_ROLE} from "../../../const/user-role.const";
 import DialogDetailAction from "../../../components/dialog-detail-action";
 
 type ViewStaffPropsType = {
@@ -43,7 +43,11 @@ const ViewStaff: FC<ViewStaffPropsType> = ({onClosed, staffData}) => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      gender: GENDER.other,
+        ...staffData,
+        dateOfBirth: staffData.dateOfBirth
+            ? dayjs(staffData.dateOfBirth).toDate()
+            : undefined,
+        role: staffData.role as unknown as STAFF_USER_ROLE.sale_staff | STAFF_USER_ROLE.technical_staff
     },
   });
 
@@ -115,16 +119,26 @@ const ViewStaff: FC<ViewStaffPropsType> = ({onClosed, staffData}) => {
             </div>
             <div className="flex w-full justify-between gap-5">
               <div className={"flex w-full flex-col gap-3"}>
-                <Input.Wrapper label={"Gender"}
-                               withAsterisk>
-                  <Select
-                      data={[
-                        {value: GENDER.male, label: "Nam"},
-                        {value: GENDER.female, label: "Nữ"},
-                        {value: GENDER.other, label: "Khác"},
-                      ]}
-                  ></Select>
-                </Input.Wrapper>
+                  <Controller
+                      render={({field}) => (
+                          <Select label={"Giới tính"}
+                                  withAsterisk
+                                  data={[
+                                      {value: GENDER.male, label: "Nam"},
+                                      {value: GENDER.female, label: "Nữ"},
+                                      {value: GENDER.other, label: "Khác"},
+                                  ]}
+                                  onChange={(e) => {
+                                      field.onChange(e);
+                                      field.onBlur();
+                                  }}
+                                  onBlur={field.onBlur}
+                                  defaultValue={field.value}>
+                          </Select>
+                      )}
+                      name={"gender"}
+                      control={control}
+                  />
                 <Controller
                     render={({field}) => (
                         <DatePicker
@@ -181,10 +195,7 @@ const ViewStaff: FC<ViewStaffPropsType> = ({onClosed, staffData}) => {
                 withAsterisk
             ></Textarea>
             <div className={"flex justify-end mt-3"}>
-              <button type={"button"}
-                  onClick={() => console.log(createStaffSchema.safeParse(getValues()))}>check
-              </button>
-              <DialogDetailAction mode={"create"} isDirty={isDirty} isValid={isValid}/>
+              <DialogDetailAction mode={"view"} isDirty={isDirty} isValid={isValid}/>
             </div>
           </div>
         </form>

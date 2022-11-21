@@ -23,8 +23,7 @@ const DialogDetailAction: FC<DialogDetailActionProps> = ({
           sx={{ width: "160px" }}
           color={"orange"}
           type={"submit"}
-          disabled={!isValid}
-        >
+          disabled={!isValid}>
           Update
         </Button>
       </div>

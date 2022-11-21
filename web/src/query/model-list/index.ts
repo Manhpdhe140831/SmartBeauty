@@ -132,7 +132,7 @@ export const useListSupplierQuery = (
 
 export const useListCustomerQuery = (
   currentPage: number,
-  updatePagination: fnUpdatePagination,
+  updatePagination?: fnUpdatePagination,
   options?: {
     pageSize?: number;
     searchQuery?: SearchParamUrl;
@@ -142,8 +142,8 @@ export const useListCustomerQuery = (
     ["list-customer", currentPage, options],
     () => getAllCustomers(currentPage, options?.pageSize, options?.searchQuery),
     {
-      onSuccess: (data) => updatePagination({ total: data.totalElement }),
-      onError: () => updatePagination({ total: 0, newPage: 1 }),
+      onSuccess: (data) => updatePagination && updatePagination({ total: data.totalElement }),
+      onError: () => updatePagination && updatePagination({ total: 0, newPage: 1 }),
     }
   );
 

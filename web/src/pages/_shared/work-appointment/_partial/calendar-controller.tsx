@@ -41,20 +41,20 @@ const CalendarController = ({ dateData, onChange }: calendarProps) => {
 
   return (
     <div className="flex items-center gap-4">
-      <Select
-        label={"Viewing Staff"}
-        data={staffLoading || !listStaff ? [] : listStaff}
-        placeholder={"select the staff"}
-        searchable
-        itemComponent={AutoCompleteItem}
-        nothingFound={staffLoading ? "loading..." : "No result found"}
-        maxDropdownHeight={200}
-        required={true}
-        defaultValue={staffId !== null ? String(staffId) : null}
-        onChange={fnOnChange}
-      />
+      {/*<Select*/}
+      {/*  label={"Viewing Staff"}*/}
+      {/*  data={staffLoading || !listStaff ? [] : listStaff}*/}
+      {/*  placeholder={"select the staff"}*/}
+      {/*  searchable*/}
+      {/*  itemComponent={AutoCompleteItem}*/}
+      {/*  nothingFound={staffLoading ? "loading..." : "No result found"}*/}
+      {/*  maxDropdownHeight={200}*/}
+      {/*  required={true}*/}
+      {/*  defaultValue={staffId !== null ? String(staffId) : null}*/}
+      {/*  onChange={fnOnChange}*/}
+      {/*/>*/}
 
-      <Divider orientation={"vertical"} />
+      {/*<Divider orientation={"vertical"} />*/}
 
       <DatePicker
         placeholder="Pick date"

@@ -24,11 +24,13 @@ const StaffCreateModalBtn = ({onChanged, userRole}: StaffModalProps) => {
         StaffCreateEntity
         >((v: StaffCreateEntity) => createUser(v), {
         onSuccess: (result) => {
-            setNewStaffModal(false)
-            console.log(result);
+            if (result) {
+                setNewStaffModal(false);
+                return onChanged(true);
+            }
+            onChanged(false);
         },
         onError: (error) => {
-            setNewStaffModal(false)
             console.warn(error);
             // TODO better error system
             alert(error.message);
