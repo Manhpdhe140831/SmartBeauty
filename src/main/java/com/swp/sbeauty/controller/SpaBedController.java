@@ -35,7 +35,7 @@ public class SpaBedController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/bed/getBedFree")
+    @GetMapping("/bed/getStaffAndBedFree")
     private ResponseEntity<?> getBedFree(@RequestHeader("Authorization") String authHeader,
                                            @RequestParam(value = "date") String date,
                                            @RequestParam(value = "slot") Long slot){
@@ -43,7 +43,7 @@ public class SpaBedController {
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
             Long idCheck = Long.parseLong(id);
-            List<SpaBedDto> list = spaBedService.getBedFree(idCheck, date, slot);
+            StaffBedDto list = spaBedService.findStaffAndBedFree(idCheck, date, slot);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);

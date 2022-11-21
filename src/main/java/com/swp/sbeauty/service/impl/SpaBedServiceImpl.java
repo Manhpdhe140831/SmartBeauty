@@ -192,4 +192,64 @@ public class SpaBedServiceImpl implements SpaBedService {
             return listDto;
         }
     }
+
+    @Override
+    public StaffBedDto findStaffAndBedFree(Long idCheck, String date, Long idSlot) {
+        if(idCheck==null || date == null || idSlot == null){
+            return null;
+        } else {
+
+            Long idBranch = spaBed_branch_repository.idBranch(idCheck);
+            List<SpaBed> allBeds = spaBedRepository.getAllBed(idBranch);
+            List<SpaBed> listDupBed = spaBedRepository.getBedFree(idBranch, date, idSlot);
+            List<SpaBed> listResultBed = new ArrayList<>();
+            for(SpaBed spaBeds : allBeds){
+                if(listDupBed!=null){
+                    Boolean check = false;
+                    for(SpaBed spaBed: listDupBed){
+                        if(spaBeds.getId() == spaBed.getId()){
+                            check = true;
+                        }
+                    }
+                    if(check == false){
+                        listResultBed.add(spaBeds);
+                    }
+                } else{
+                    listResultBed.add(spaBeds);
+                }
+            }
+            List<SpaBedDto> listDto = new ArrayList<>();
+            if(listResultBed!=null){
+                for(SpaBed spaBed : listResultBed){
+                    listDto.add(new SpaBedDto(spaBed));
+                }
+            }
+            List<Users> allUsers = userRepository.getAllTechStaff(idBranch);
+            List<Users> listDupStaff = userRepository.getStaffFree(idBranch, date, idSlot);
+            List<Users> listResultStaff = new ArrayList<>();
+            for(Users users : allUsers){
+                if(listDupStaff!=null){
+                    Boolean check = false;
+                    for(Users user: listDupStaff){
+                        if(users.getId() == user.getId()){
+                            check = true;
+                        }
+                    }
+                    if(check == false){
+                        listResultStaff.add(users);
+                    }
+                } else{
+                    listResultStaff.add(users);
+                }
+            }
+            List<UserDto> userDtos = new ArrayList<>();
+            if(listResultStaff!=null){
+                for(Users user : listResultStaff){
+                    userDtos.add(new UserDto(user));
+                }
+            }
+            StaffBedDto result = new StaffBedDto(userDtos,listDto);
+            return result;
+        }
+    }
 }

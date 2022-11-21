@@ -16,4 +16,6 @@ public interface SpaBedService {
     Boolean saveSpaBed(String name, Long branch);
     Boolean updateSpaBed(Long id, String name, Long branch);
     List<SpaBedDto> getBedFree(Long idCheck, String date, Long slot);
+
+    StaffBedDto findStaffAndBedFree(Long idCheck,String date, Long idSlot);
 }

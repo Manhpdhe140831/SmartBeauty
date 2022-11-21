@@ -25,5 +25,5 @@ public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
     List<SpaBed> getBedFree(Long id_branch, String date, Long slot);
 
     @Query(value = "select a.* from spa_bed a, bed_branch_mapping b where a.id = b.id_spa_bed  and b.id_branch =?1", nativeQuery = true)
-    List<SpaBed> getAllBed(Long idBranch);
+    List<SpaBed>getAllBed(Long idBranch);
 }

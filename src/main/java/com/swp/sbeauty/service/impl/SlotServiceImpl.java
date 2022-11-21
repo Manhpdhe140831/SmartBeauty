@@ -1,6 +1,7 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.SlotDto;
+import com.swp.sbeauty.dto.StaffBedDto;
 import com.swp.sbeauty.entity.Slot;
 import com.swp.sbeauty.repository.SlotRepository;
 import com.swp.sbeauty.repository.mappingRepo.Service_Branch_Mapping_Repo;
@@ -36,4 +37,6 @@ public class SlotServiceImpl implements SlotService {
             return slotDtos;
         }
     }
+
+
 }
