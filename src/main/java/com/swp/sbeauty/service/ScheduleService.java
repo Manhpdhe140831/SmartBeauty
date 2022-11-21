@@ -9,6 +9,7 @@ public interface ScheduleService {
 
     ScheduleDto getScheduleById(Long id);
 
+    boolean update(ScheduleDto scheduleDto);
 
 
 }

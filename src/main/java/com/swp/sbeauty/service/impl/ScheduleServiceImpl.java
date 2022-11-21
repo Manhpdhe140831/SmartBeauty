@@ -2,13 +2,16 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
+import com.swp.sbeauty.entity.mapping.Bed_Slot_Mapping;
 import com.swp.sbeauty.entity.mapping.Customer_Course_Mapping;
+import com.swp.sbeauty.entity.mapping.User_Slot_Mapping;
 import com.swp.sbeauty.repository.*;
-import com.swp.sbeauty.repository.mappingRepo.Customer_Course_Mapping_Repository;
+import com.swp.sbeauty.repository.mappingRepo.*;
 import com.swp.sbeauty.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -30,12 +33,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     CourseRepository courseRepository;
     @Autowired
     ServiceRepository serviceRepository;
+    @Autowired
+    Bill_Course_History_Repository bill_course_history_repository;
+    @Autowired
+    Bill_Service_History_Repository bill_service_history_repository;
+    @Autowired
+    User_Slot_Mapping_Repository user_slot_mapping_repository;
+
+    @Autowired
+    Bed_Slot_Mapping_Repository bed_slot_mapping_repository;
 
     @Override
     public boolean updateCount(ScheduleDto scheduleDto) {
-
-//        Long id = scheduleDto.getId();
-//        Schedule schedule = scheduleRepository.findById(id).orElse(null);
         if (scheduleDto.getStatus().equalsIgnoreCase("dahoanthanh")) {
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
             if (customer_course_mapping != null) {
@@ -77,18 +86,56 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setCustomerId(scheduleDto.getCustomer().getId());
         schedule.setStatus(status);
         schedule.setNote(scheduleDto.getNote());
-        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
-        String customerCourseStatus = customer_course_mapping.getStatus();
-        if ("chuasudung".equalsIgnoreCase(customerCourseStatus)){
-            schedule.setCourseId(scheduleDto.getCourse().getId());
-        }else if ("dangsudung".equalsIgnoreCase(customerCourseStatus)){
-            schedule.setCourseHistoryId(scheduleDto.getCourse().getId());
+        com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getService().getId());
+        Bill_Service_History bill_service_history = new Bill_Service_History();
+        bill_service_history.setServiceId(service.getId());
+        bill_service_history.setName(service.getName());
+        bill_service_history.setDiscountStart(service.getDiscountStart());
+        bill_service_history.setDiscountEnd(service.getDiscountEnd());
+        bill_service_history.setDiscountPercent(service.getDiscountPercent());
+        bill_service_history.setPrice(service.getPrice());
+        bill_service_history.setDescription(service.getDescription());
+        bill_service_history.setDuration(service.getDuration());
+        bill_service_history.setImage(service.getImage());
+        bill_service_history = bill_service_history_repository.save(bill_service_history);
+        Long serviceId = bill_service_history.getId();
+        schedule.setServiceId(serviceId);
+
+        if (scheduleDto.getCourse() != null){
+            String statusCourse = scheduleDto.getCourse().getStatus();
+        if ("chuasudung".equalsIgnoreCase(statusCourse)){
+            Course course = courseRepository.getCourseById(scheduleDto.getCourse().getId());
+            Bill_Course_History bill_course_history = new Bill_Course_History();
+            bill_course_history.setCourse_id(course.getId());
+            bill_course_history.setCode(course.getCode());
+            bill_course_history.setName(course.getName());
+            bill_course_history.setPrice(course.getPrice());
+            bill_course_history.setDuration(course.getDuration());
+            bill_course_history.setTimeOfUse(course.getTimeOfUse());
+            bill_course_history.setDiscountStart(course.getDiscountStart());
+            bill_course_history.setDiscountEnd(course.getDiscountEnd());
+            bill_course_history.setDiscountPercent(course.getDiscountPercent());
+            bill_course_history.setImage(course.getImage());
+            bill_course_history.setDescription(course.getDescription());
+            bill_course_history = bill_course_history_repository.save(bill_course_history);
+            Long courseHistory = bill_course_history.getId();
+            schedule.setCourseId(courseHistory);
+
+        }else if ("dangsudung".equalsIgnoreCase(statusCourse)) {
+            Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
+            if (customer_course_mapping != null) {
+                schedule.setCourseHistoryId(customer_course_mapping.getId());
+            }
+        }
+
         }else{
            schedule.setCourseHistoryId(null);
            schedule.setCourseId(null);
         }
         if (null != schedule){
-            scheduleRepository.save(schedule);
+            schedule = scheduleRepository.save(schedule);
+            user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
+            bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
             return true;
         }else{
             return false;
@@ -118,28 +165,43 @@ public class ScheduleServiceImpl implements ScheduleService {
         CourseDto courseDto = null;
         if (customerCourseHistory != null){
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseHistoryId()).orElse(null);
+            Integer count = customer_course_mapping.getCount() + 1;
+
             Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
-            courseDto = new CourseDto(course);
+            courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(),course.getDescription(), count);
+
+
         }
         if (courseId != null){
-            // temp
-            Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseId()).orElse(null);
-            Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
-            courseDto = new CourseDto(course);
+
+
+            Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(courseId);
+
+            courseDto = new CourseDto(bill_course_history.getId(), bill_course_history.getCode(), bill_course_history.getName(), bill_course_history.getPrice(), bill_course_history.getDuration(), bill_course_history.getTimeOfUse(), bill_course_history.getDiscountStart(), bill_course_history.getDiscountEnd(), bill_course_history.getDiscountPercent(), bill_course_history.getImage(), bill_course_history.getDescription());
         }
-        com.swp.sbeauty.entity.Service service = serviceRepository.findById(schedule.getServiceId()).orElse(null);
         ServiceDto serviceDto = null;
-        if (service != null){
-            serviceDto = new ServiceDto(service);
-        }
+            if (schedule.getServiceId() != null){
+                Bill_Service_History bill_service_history = bill_service_history_repository.findById(schedule.getServiceId()).orElse(null);
+                if (bill_service_history != null){
+                    serviceDto = new ServiceDto(bill_service_history.getId(), bill_service_history.getName(), bill_service_history.getDiscountStart(), bill_service_history.getDiscountEnd() , bill_service_history.getDiscountPercent(), bill_service_history.getPrice(), bill_service_history.getDescription(), bill_service_history.getDuration(), bill_service_history.getImage());
 
-
+                }
+            }
         ScheduleDto scheduleDto = new ScheduleDto(idSchedule, date, slotDto, bedDto, saleStaffDto, techStaffDto, customerDto, courseDto, serviceDto, status, note);
         if (scheduleDto != null){
             return scheduleDto;
         }else{
             return null;
         }
-
     }
+
+    @Override
+    public boolean update(ScheduleDto scheduleDto) {
+        Schedule schedule = scheduleRepository.findById(scheduleDto.getId()).orElse(null);
+        
+
+        return false;
+    }
+
+
 }
