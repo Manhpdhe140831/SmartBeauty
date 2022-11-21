@@ -29,7 +29,7 @@ public class CustomerController {
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/customer/create", headers="Content-Type=multipart/form-data")
+    @PostMapping(value = "/customer/create")
     public ResponseEntity<?> saveCustomer(@RequestParam(value = "name") String name,
                                           @RequestParam(value = "phone") String phone,
                                           @RequestParam(value = "email") String email,
@@ -46,7 +46,7 @@ public class CustomerController {
 
     }
 
-    @PutMapping(value = "/customer/update", headers="Content-Type=multipart/form-data")
+    @PutMapping(value = "/customer/update")
     public ResponseEntity<?> updateSupplier(@RequestParam(value = "id") Long id,
                                             @RequestParam(value = "name", required = false) String name,
                                             @RequestParam(value = "phone",required = false) String phone,
