@@ -10,4 +10,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     @Query(value = "select b from Bill b join Bill_Customer_Mapping bcm on bcm.bill_id = b.id where bcm.customer_id =?1")
     public Page<Bill> searchBillByCustomer(Long customerId, Pageable pageable);
+
+    Bill getBillById(Long id);
 }

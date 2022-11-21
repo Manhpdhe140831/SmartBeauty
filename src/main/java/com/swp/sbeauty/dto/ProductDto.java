@@ -1,6 +1,7 @@
 package com.swp.sbeauty.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.swp.sbeauty.entity.Bill_Product_history;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Product;
 import lombok.Getter;
@@ -46,7 +47,6 @@ public class ProductDto {
             this.setDiscountPercent(product.getDiscountPercent());
             this.setUnit(product.getUnit());
             this.setDose(product.getDose());
-
         }
 
 
@@ -91,6 +91,21 @@ public class ProductDto {
         this.discountPercent = discountPercent;
         this.unit = unit;
         this.dose = dose;
+    }
+
+    public ProductDto(Bill_Product_history history){
+        if(history!=null){
+            this.setId(history.getId());
+            this.setName(history.getName());
+            this.setPrice(history.getPrice());
+            this.setDescription(history.getDescription());
+            this.setImage(history.getImage());
+            this.setDiscountStart(history.getDiscountStart());
+            this.setDiscountEnd(history.getDiscountEnd());
+            this.setDiscountPercent(history.getDiscountPercent());
+            this.setUnit(history.getUnit());
+            this.setDose(history.getDose());
+        }
     }
 }
 
