@@ -19,6 +19,5 @@ export type CustomerUpdateEntity = Omit<
   Partial<CustomerModel>,
   "dateOfBirth"
 > & {
-  id: number;
   dateOfBirth?: Date;
 };

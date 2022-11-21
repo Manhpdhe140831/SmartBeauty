@@ -4,7 +4,11 @@ import {
   PaginatedResponse,
   SearchParamUrl,
 } from "../interfaces/api.interface";
-import { CustomerCreateEntity, CustomerModel } from "../model/customer.model";
+import {
+  CustomerCreateEntity,
+  CustomerModel,
+  CustomerUpdateEntity,
+} from "../model/customer.model";
 import mockCustomer, { Customers } from "../mock/customer";
 
 /**
@@ -50,17 +54,26 @@ export async function createCustomer(raw: CustomerCreateEntity) {
   }
 }
 
+export async function updateCustomer(payload: CustomerUpdateEntity) {
+  try {
+    const apiResult = await axios.put<boolean>("/customer/update", payload);
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
+
 export async function getCustomerById(id: number) {
   try {
-    // TODO implement
-    // const apiResult = await axios.get<CustomerModel>("/customer/getById", {
-    //   params: {
-    //     id,
-    //   },
-    // });
-    //
-    // return apiResult.data;
-    return Customers[id];
+    const apiResult = await axios.get<CustomerModel>("/customer/getById", {
+      params: {
+        id,
+      },
+    });
+
+    return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;
     if (error.status === 400 || error.status === 404) {

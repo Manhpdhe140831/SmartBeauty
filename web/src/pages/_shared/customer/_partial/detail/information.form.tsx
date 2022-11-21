@@ -56,7 +56,6 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
     control,
     handleSubmit,
     reset,
-    getValues,
     formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
