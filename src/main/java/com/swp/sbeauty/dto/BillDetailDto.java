@@ -14,6 +14,7 @@ public class BillDetailDto {
     private ServiceDto service;
     private CourseDto course;
     private Long quantity;
+    private Long item;
 
 
 

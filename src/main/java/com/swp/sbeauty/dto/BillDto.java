@@ -13,6 +13,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class BillDto {
+//    "customer": 1,
+//            "priceBeforeTax": 767972,
+//            "priceAfterTax": 732757,
+//            "item": 5,
+//            "itemType": "service", // 'service' or 'course'
+//            "addons": [
+//    {
+//        "quantity": 1, // min 1, max 100
+//            "item": 1 // id product
+//    }
+//    ]
     private Long id;
     private String code;
     private BranchDto branch;
@@ -22,6 +33,9 @@ public class BillDto {
     private String createDate;
     private Double priceBeforeTax;
     private Double priceAfterTax;
+    private Long item;
+    private String itemType;
+    private List<BillDetailDto> addons;
 
     private List<BillDetailDto> items;
 

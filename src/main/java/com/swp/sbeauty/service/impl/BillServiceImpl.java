@@ -359,18 +359,17 @@ public class BillServiceImpl implements BillService {
        bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
        bill.setPriceAfterTax(billDto.getPriceAfterTax());
        bill = billRepository.save(bill);
-       List<BillDetailDto> billDetailDtos = billDto.getItems();
-        for (BillDetailDto billDetailDto: billDetailDtos) {
-            if (billDetailDto.getType().equalsIgnoreCase("product")){
+        if(billDto.getAddons()!=null){
+            for(BillDetailDto billDetailDto : billDto.getAddons()){
                 BillDetail billDetail = new BillDetail();
-                billDetail.setProduct_id(billDetailDto.getType_id());
+                billDetail.setProduct_id(billDetailDto.getItem());//id product
                 billDetail.setQuantity(billDetailDto.getQuantity());
                 billDetail = billDetailRepository.save(billDetail);
                 bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
                 Bill_Product_history bill_product_history = new Bill_Product_history();
-                Product product = productRepository.getProductById(billDetailDto.getType_id());
+                Product product = productRepository.getProductById(billDetailDto.getItem());
+                bill_product_history.setDate(billDto.getCreateDate());
                 bill_product_history.setBillDetail_id(billDetail.getId());
-                bill_product_history.setDate(bill.getCreateDate());
                 bill_product_history.setProductId(product.getId());
                 bill_product_history.setName(product.getName());
                 bill_product_history.setPrice(product.getPrice());
@@ -382,70 +381,42 @@ public class BillServiceImpl implements BillService {
                 bill_product_history.setUnit(product.getUnit());
                 bill_product_history.setDose(product.getDose());
                 bill_product_history_repository.save(bill_product_history);
-            }if (billDetailDto.getType().equalsIgnoreCase("service")){
-                BillDetail billDetail = new BillDetail();
-                billDetail.setService_id(billDetailDto.getType_id());
-                billDetail.setQuantity(billDetailDto.getQuantity());
-                billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-                Bill_Service_History bill_service_history = new Bill_Service_History();
-                com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(billDetailDto.getType_id());
-                bill_service_history.setServiceId(service.getId());
-                bill_service_history.setBillDetail_id(billDetail.getId());
-                bill_service_history.setName(service.getName());
-                bill_service_history.setDiscountStart(service.getDiscountStart());
-                bill_service_history.setDiscountEnd(service.getDiscountEnd());
-                bill_service_history.setDiscountPercent(service.getDiscountPercent());
-                bill_service_history.setPrice(service.getPrice());
-                bill_service_history.setDescription(service.getDescription());
-                bill_service_history.setDescription(service.getDescription());
-                bill_service_history.setImage(service.getImage());
-                bill_service_history_repository.save(bill_service_history);
-                for (int i = 1; i<= billDetailDto.getQuantity(); i++){
-                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), status));
-                }
-            }if (billDetailDto.getType().equalsIgnoreCase("course")){
-                BillDetail billDetail = new BillDetail();
-                billDetail.setCourse_id(billDetailDto.getType_id());
-                billDetail.setQuantity(billDetailDto.getQuantity());
-                billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-                Course course = courseRepository.getCourseById(billDetailDto.getType_id());
-                Bill_Course_History bill_course_history = new Bill_Course_History();
-                bill_course_history.setBillDetail_id(billDetail.getId());
-                bill_course_history.setDate(bill.getCreateDate());
-                bill_course_history.setCourse_id(course.getId());
-                bill_course_history.setCode(course.getCode());
-                bill_course_history.setName(course.getName());
-                bill_course_history.setPrice(course.getPrice());
-                bill_course_history.setDuration(course.getDuration());
-                bill_course_history.setTimeOfUse(course.getTimeOfUse());
-                bill_course_history.setDiscountStart(course.getDiscountStart());
-                bill_course_history.setDiscountEnd(course.getDiscountEnd());
-                bill_course_history.setDiscountPercent(course.getDiscountPercent());
-                bill_course_history.setImage(course.getImage());
-                bill_course_history.setDescription(course.getDescription());
-                bill_course_history_repository.save(bill_course_history);
-               for (int i = 1; i<= billDetailDto.getQuantity(); i++){
-                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDetailDto.getType_id(), getEndDate(bill.getCreateDate(), billDetailRepository.getDuration(billDetailDto.getType_id())), 0, status));
-                }
             }
         }
-        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        Long idStaff = Long.parseLong(temp.get("id").toString());
-        Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
-        if (idBranch != null){
-            bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
-        }
+       if(billDto.getItem()!=null && billDto.getItemType()!=null){
+           if(billDto.getItemType().equalsIgnoreCase("service")){
+               BillDetail billDetail = new BillDetail();
+               billDetail.setService_id(billDto.getItem());//id service history
+               billDetail.setQuantity(Long.parseLong("1"));
+               billDetail = billDetailRepository.save(billDetail);
+               bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), status));
+           } else if(billDto.getItemType().equalsIgnoreCase("course")){
+               BillDetail billDetail = new BillDetail();
+               billDetail.setCourse_id(billDto.getItem());
+               billDetail.setQuantity(Long.parseLong("1"));
+               billDetail = billDetailRepository.save(billDetail);
+               Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(billDto.getItem());
+               Integer duration = bill_course_history.getDuration();
+               bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, status));
+           }
+       }
+       Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+       Long idStaff = Long.parseLong(temp.get("id").toString());
+       Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
+       if (idBranch != null){
+           bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
+       }
 
-        bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
-        bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
+       bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
+       bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
 
-        if (bill != null){
-            return true;
-        }else {
-            return false;
-        }
+       if (bill != null){
+           return true;
+       }else {
+           return false;
+       }
     }
 
     @Override
