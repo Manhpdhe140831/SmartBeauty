@@ -12,7 +12,7 @@ import {
 } from "../../../model/product.model";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
-import ProductDetailDialog from "./_product-detail-dialog";
+import ProductDetailDialog from "../../_shared/products/_product-detail-dialog";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import {
   createProduct,

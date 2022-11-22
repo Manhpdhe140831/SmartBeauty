@@ -97,8 +97,8 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
         className={"flex w-full flex-col md:flex-1"}
       >
         <TextInput
-          {...stateInputProps("Customer Name", readonly, { required: true })}
           {...register("name")}
+          {...stateInputProps("Tên khách hàng", readonly, { required: true })}
         />
         <FormErrorMessage name={"name"} errors={errors} />
 
@@ -116,7 +116,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               }}
               onBlur={field.onBlur}
               defaultValue={field.value}
-              {...stateInputProps("Gender", readonly, { required: true })}
+              {...stateInputProps("Giới Tính", readonly, { required: true })}
             />
           )}
           name={"gender"}
@@ -129,7 +129,6 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
             <DatePicker
               minDate={dayjs(new Date()).subtract(64, "years").toDate()}
               maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
-              placeholder="In range of 18-64 years old"
               onChange={(e) => {
                 field.onChange(e);
                 field.onBlur();
@@ -142,8 +141,9 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
                   {field.value ? `(${ageTilToday(field.value)} old)` : "-"}
                 </Text>
               }
-              {...stateInputProps("Date of Birth", readonly, {
+              {...stateInputProps("Ngày sinh", readonly, {
                 required: true,
+                placeholder: "In range of 18-64 years old",
               })}
             />
           )}
@@ -167,12 +167,12 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               <Input
                 component={MaskedInput}
                 mask={PhoneNumberMask}
-                placeholder={"0127749999"}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 defaultValue={field.value}
                 {...stateInputProps(undefined, readonly, {
                   required: true,
+                  placeholder: "0127749999",
                 })}
               />
             </Input.Wrapper>
@@ -182,18 +182,20 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
 
         <TextInput
           type="email"
-          placeholder={"john_smith@domain.com"}
-          {...stateInputProps("Email", readonly)}
           {...register("email")}
+          {...stateInputProps("Email", readonly, {
+            placeholder: "john_smith@domain.com",
+          })}
         />
         <FormErrorMessage errors={errors} name={"email"} />
 
         <Textarea
           autosize={false}
           rows={4}
-          placeholder={"the address of the customer..."}
-          {...stateInputProps("Address", readonly)}
           {...register("address")}
+          {...stateInputProps("Địa Chỉ", readonly, {
+            placeholder: "the address of the customer...",
+          })}
         ></Textarea>
         <FormErrorMessage errors={errors} name={"address"} />
       </fieldset>

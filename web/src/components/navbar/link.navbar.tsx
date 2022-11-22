@@ -1,4 +1,4 @@
-import { NavLink, useMantineTheme } from "@mantine/core";
+import { Divider, NavLink, useMantineTheme } from "@mantine/core";
 import { useRouter } from "next/router";
 import React, { FC, useEffect, useState } from "react";
 import {
@@ -116,6 +116,10 @@ const NavNested = (props: NavLinkItemNestedProp) => {
 };
 
 const LinkNavbar: FC<NavLinkItemProp> = (item) => {
+  if (Object.hasOwn(item, "isDivider")) {
+    return <Divider my={12} />;
+  }
+
   return Object.hasOwn(item, "href") ? (
     <NavWithHref {...(item as NavLinkItemBaseProp)} />
   ) : (

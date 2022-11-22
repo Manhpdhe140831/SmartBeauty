@@ -3,46 +3,52 @@ import { FC } from "react";
 
 type DialogDetailActionProps = {
   mode: "view" | "create";
+  readonly?: boolean;
   isDirty: boolean;
   isValid: boolean;
-  onClosed?: () => void;
 };
 
 const DialogDetailAction: FC<DialogDetailActionProps> = ({
   mode,
   isDirty,
   isValid,
+  readonly,
 }) => {
   return mode === "view" ? (
     isDirty ? (
       <div className={"flex space-x-2"}>
         <Button variant={"subtle"} type={"reset"}>
-          Cancel
+          Hủy
         </Button>
-        <Button
-          sx={{ width: "160px" }}
-          color={"orange"}
-          type={"submit"}
-          disabled={!isValid}>
-          Update
-        </Button>
+        {!readonly && (
+          <Button
+            sx={{ width: "160px" }}
+            color={"orange"}
+            type={"submit"}
+            disabled={!isValid}
+          >
+            Cập Nhật
+          </Button>
+        )}
       </div>
     ) : (
-      <Button type={"reset"}>Close</Button>
+      <Button type={"reset"}>Hủy</Button>
     )
   ) : (
     <div className="flex space-x-2">
       <Button variant={"subtle"} type={"reset"}>
-        Cancel
+        Hủy
       </Button>
-      <Button
-        sx={{ width: "160px" }}
-        type={"submit"}
-        color={"teal"}
-        disabled={!isValid}
-      >
-        Create
-      </Button>
+      {!readonly && (
+        <Button
+          sx={{ width: "160px" }}
+          type={"submit"}
+          color={"teal"}
+          disabled={!isValid}
+        >
+          Tạo
+        </Button>
+      )}
     </div>
   );
 };

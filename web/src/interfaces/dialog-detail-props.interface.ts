@@ -2,10 +2,12 @@ export type DialogTypeMode<dataType> =
   | {
       mode: "view";
       data: dataType;
+      readonly?: boolean;
     }
   | {
       mode: "create";
       data?: dataType;
+      readonly?: boolean;
     };
 
 export type DialogViewProps<dataType, updatedType> = {

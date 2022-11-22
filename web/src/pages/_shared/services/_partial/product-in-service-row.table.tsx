@@ -141,7 +141,6 @@ const ProductInServiceRowTable = ({
           control={control}
           render={({ field }) => (
             <NumberInput
-              placeholder={"amount of quantity per use"}
               defaultValue={field.value}
               onChange={(v) => field.onChange(v)}
               onBlur={field.onBlur}
@@ -150,6 +149,7 @@ const ProductInServiceRowTable = ({
                 required: true,
                 variant: "default",
                 size: "sm",
+                placeholder: "amount of quantity per use",
               })}
             />
           )}

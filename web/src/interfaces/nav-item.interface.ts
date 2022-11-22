@@ -18,4 +18,11 @@ export type NavLinkItemNestedProp = Omit<NavLinkItemBaseProp, "href"> & {
   nested: NavLinkItemBaseProp[];
 };
 
-export type NavLinkItemProp = NavLinkItemBaseProp | NavLinkItemNestedProp;
+export type NavDivider = {
+  isDivider: boolean;
+};
+
+export type NavLinkItemProp =
+  | NavDivider
+  | NavLinkItemBaseProp
+  | NavLinkItemNestedProp;

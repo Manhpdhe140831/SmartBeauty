@@ -12,6 +12,7 @@ export const stateInputProps = (
     weight?: number;
     textAlign?: React.CSSProperties["textAlign"];
     width?: React.CSSProperties["width"];
+    placeholder?: string;
   }
 ) => ({
   label: label ? (
@@ -26,6 +27,7 @@ export const stateInputProps = (
   ) : undefined,
   variant: (readonly ? "unstyled" : otp?.variant ?? "filled") as InputVariant,
   readOnly: readonly,
+  placeholder: readonly ? "N/A" : otp?.placeholder,
   sx:
     readonly && otp?.withStyle !== false
       ? {

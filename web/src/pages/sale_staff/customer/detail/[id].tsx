@@ -33,7 +33,7 @@ const SaleStaffCustomerDetail: AppPageInterface = () => {
             color: "teal",
             icon: <IconCheck />,
           });
-          navigatePreviousPage();
+          return navigatePreviousPage();
         }
         showNotification({
           title: "Thất Bại!",

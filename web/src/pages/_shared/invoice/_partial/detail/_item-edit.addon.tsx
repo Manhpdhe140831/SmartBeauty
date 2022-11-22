@@ -63,7 +63,6 @@ const ItemAddonEdit: FC<props> = ({
         <td className={"overflow-hidden text-right align-top"}>
           <div className="flex items-center justify-end space-x-2">
             <NumberInput
-              placeholder={"amount..."}
               defaultValue={addon.quantity}
               hideControls
               min={1}
@@ -75,6 +74,7 @@ const ItemAddonEdit: FC<props> = ({
                 size: "xs",
                 weight: 400,
                 textAlign: "center",
+                placeholder: "amount...",
               })}
             />
             <IconX className={"mt-[2px]"} size={14} />

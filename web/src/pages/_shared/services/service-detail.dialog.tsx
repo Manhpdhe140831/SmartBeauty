@@ -108,24 +108,24 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
               "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
             }
           >
-            Information
+            Thông Tin
           </h2>
           <TextInput
-            {...stateInputProps("Service Name", readOnly, {
+            {...register("name")}
+            {...stateInputProps("Tên dịch vụ", readOnly, {
               required: true,
               variant: "default",
             })}
-            {...register("name")}
           />
           <FormErrorMessage errors={errors} name={"name"} />
 
           <Textarea
-            {...stateInputProps("Description", readOnly, {
+            {...register("description")}
+            {...stateInputProps("Miêu tả", readOnly, {
               required: true,
               variant: "default",
               size: "sm",
             })}
-            {...register("description")}
           />
           <FormErrorMessage errors={errors} name={"description"} />
 
@@ -134,7 +134,6 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             control={control}
             render={({ field }) => (
               <NumberInput
-                placeholder={"perform duration (1 - 90 minutes)..."}
                 hideControls
                 min={1}
                 precision={0}
@@ -149,10 +148,11 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
                     minutes
                   </Text>
                 }
-                {...stateInputProps("Service Duration", readOnly, {
+                {...stateInputProps("Thời gian", readOnly, {
                   required: true,
                   variant: "default",
                   size: "sm",
+                  placeholder: "perform duration (1 - 90 minutes)...",
                 })}
               />
             )}
@@ -166,9 +166,9 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
               "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
             }
           >
-            Discount Event
+            Sự kiện khuyến mãi
             <small className={"block w-full text-xs text-gray-400"}>
-              Optional section
+              Phần tùy chọn
             </small>
           </h2>
 
@@ -176,16 +176,16 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             render={({ field }) => (
               <DatePicker
                 minDate={dayjs(new Date()).toDate()}
-                placeholder={"must after today"}
                 onChange={(e) => {
                   field.onChange(e);
                   field.onBlur();
                 }}
                 defaultValue={field.value}
                 onBlur={field.onBlur}
-                {...stateInputProps("Discount start at", readOnly, {
+                {...stateInputProps("Khuyến mãi bắt đầu", readOnly, {
                   variant: "default",
                   size: "sm",
+                  placeholder: "Phải sau hiện tại",
                 })}
               />
             )}
@@ -198,16 +198,16 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             render={({ field }) => (
               <DatePicker
                 minDate={dayjs(new Date()).toDate()}
-                placeholder={"must after discount start date"}
                 onChange={(e) => {
                   field.onChange(e);
                   field.onBlur();
                 }}
                 defaultValue={field.value}
                 onBlur={field.onBlur}
-                {...stateInputProps("Discount End at", readOnly, {
+                {...stateInputProps("Khuyến mãi kết thúc", readOnly, {
                   variant: "default",
                   size: "sm",
+                  placeholder: "phải sau ngày bắt đầu khuyến mãi",
                 })}
               />
             )}
@@ -222,7 +222,6 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             render={({ field }) => (
               <NumberInput
                 disabled={!watch("discountStart") && !watch("discountEnd")}
-                placeholder={"sale percentage..."}
                 hideControls
                 min={0}
                 precision={2}
@@ -234,10 +233,11 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
                 rightSection={
                   <IconPercentage color={"#939393"} className={"mr-2"} />
                 }
-                {...stateInputProps("Discount Percent", readOnly, {
+                {...stateInputProps("% Khuyến Mãi", readOnly, {
                   required: true,
                   variant: "default",
                   size: "sm",
+                  placeholder: "5%, 10%...",
                 })}
               />
             )}
@@ -252,7 +252,7 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             htmlFor="file"
             className="text-[14px] font-[500] text-gray-900"
           >
-            Service Image <span className="text-red-500">*</span>
+            Minh họa dịch vụ <span className="text-red-500">*</span>
           </label>
           <small className="mb-1 text-[12px] leading-tight text-gray-400">
             The image must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP format.
@@ -300,7 +300,6 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
             control={control}
             render={({ field }) => (
               <NumberInput
-                placeholder={"price of the product..."}
                 hideControls
                 min={0}
                 max={MAX_PRICE}
@@ -313,6 +312,7 @@ const ServiceDetailDialog: FC<DetailDialogProps> = ({
                 {...stateInputProps("Product Price", readOnly, {
                   required: true,
                   variant: "default",
+                  placeholder: "price of the product...",
                 })}
               />
             )}

@@ -40,6 +40,13 @@ export const branchManagerConfig: NavLinkItemProp[] = [
     href: `/${USER_ROLE.manager}/manage-staff`,
     label: "Quản lý nhân viên",
   },
+  {
+    isDivider: true,
+  },
+  {
+    href: `/${USER_ROLE.manager}/manage-product`,
+    label: "Danh sách Sản Phẩm",
+  },
 ];
 
 export const branchSaleStaffConfig: NavLinkItemProp[] = [
@@ -50,5 +57,12 @@ export const branchSaleStaffConfig: NavLinkItemProp[] = [
   {
     href: `/${USER_ROLE.sale_staff}/customer`,
     label: "Quản Lý Khách Hàng",
+  },
+  {
+    isDivider: true,
+  },
+  {
+    href: `/${USER_ROLE.sale_staff}/product`,
+    label: "Danh sách Sản Phẩm",
   },
 ];

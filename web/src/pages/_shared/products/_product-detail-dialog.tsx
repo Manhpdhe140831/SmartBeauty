@@ -6,10 +6,9 @@ import {
 import { FormEvent, useState } from "react";
 import {
   Divider,
-  Image as MantineImage,
+  Image,
   Modal,
   NumberInput,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -28,8 +27,6 @@ import {
   unitProductSchema,
 } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import { IconPercentage } from "@tabler/icons";
@@ -50,12 +47,15 @@ import {
   getSupplierById,
 } from "../../../services/supplier.service";
 import { DialogSubmit } from "../../../utilities/form-data.helper";
+import { stateInputProps } from "../../../utilities/mantine.helper";
+import ImageUpload from "../../../components/image-upload";
 
 const ProductDetailDialog = ({
   data,
   opened,
   onClosed,
   mode,
+  readonly,
 }: DialogProps<
   ProductModel<SupplierModel>,
   ProductUpdateEntity,
@@ -153,7 +153,8 @@ const ProductDetailDialog = ({
       size={"auto"}
       padding={0}
     >
-      <div
+      <fieldset
+        disabled={readonly}
         className={`rounded-[4px] border-2 ${
           mode === "view" && isDirty
             ? "border-yellow-600"
@@ -161,7 +162,7 @@ const ProductDetailDialog = ({
         }`}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
-          {mode === "view" ? "Product Detail" : "Create Product"}
+          {mode === "view" ? "Chi tiết sản phẩm" : "Tạo sản phẩm"}
         </h2>
         <form
           onReset={handleReset}
@@ -176,15 +177,23 @@ const ProductDetailDialog = ({
                 "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
               }
             >
-              Information
+              Thông tin
             </h2>
-            <TextInput required label={"Product Name"} {...register("name")} />
+            <TextInput
+              {...register("name")}
+              {...stateInputProps("Tên sản phẩm", readonly, {
+                required: true,
+                size: "sm",
+              })}
+            />
             <FormErrorMessage errors={errors} name={"name"} />
 
             <Textarea
-              required
-              label={"Description"}
               {...register("description")}
+              {...stateInputProps("Miêu tả", readonly, {
+                required: true,
+                size: "sm",
+              })}
             />
             <FormErrorMessage errors={errors} name={"description"} />
 
@@ -195,12 +204,15 @@ const ProductDetailDialog = ({
                   control={control}
                   render={({ field }) => (
                     <NumberInput
-                      placeholder={"amount of quantity per unit"}
                       defaultValue={field.value}
-                      label={"Product Dose"}
                       onChange={(v) => field.onChange(v)}
                       onBlur={field.onBlur}
                       hideControls
+                      {...stateInputProps("Liều Lượng", readonly, {
+                        required: true,
+                        size: "sm",
+                        placeholder: "trên mỗi đơn vị...",
+                      })}
                     />
                   )}
                 ></Controller>
@@ -209,10 +221,12 @@ const ProductDetailDialog = ({
 
               <div className="w-50">
                 <TextInput
-                  required
-                  label={"Unit Type"}
-                  placeholder={"g, ml, etc..."}
                   {...register("unit")}
+                  {...stateInputProps("Đơn vị/lượng", readonly, {
+                    required: true,
+                    size: "sm",
+                    placeholder: "g, ml, etc...",
+                  })}
                 />
                 <FormErrorMessage errors={errors} name={"unit"} />
               </div>
@@ -222,7 +236,7 @@ const ProductDetailDialog = ({
               htmlFor="supplier"
               className="text-[14px] font-[500] text-gray-900"
             >
-              Product Supplier <span className="text-red-500">*</span>
+              Đơn vị cung ứng<span className="text-red-500">*</span>
             </label>
             {viewLoading ? (
               <>loading...</>
@@ -245,6 +259,10 @@ const ProductDetailDialog = ({
                       ControlledField.onChange(id);
                       setSelectedSupplier(id);
                     }}
+                    {...stateInputProps(undefined, readonly, {
+                      required: true,
+                      size: "sm",
+                    })}
                   />
                 )}
                 control={control}
@@ -260,9 +278,9 @@ const ProductDetailDialog = ({
                 "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
               }
             >
-              Discount Event
+              Sự kiện khuyến mãi
               <small className={"block w-full text-xs text-gray-400"}>
-                Optional section
+                Không bắt buộc
               </small>
             </h2>
 
@@ -270,14 +288,16 @@ const ProductDetailDialog = ({
               render={({ field }) => (
                 <DatePicker
                   minDate={dayjs(new Date()).toDate()}
-                  placeholder={"must after today"}
-                  label={"Discount start at"}
                   onChange={(e) => {
                     field.onChange(e);
                     field.onBlur();
                   }}
                   defaultValue={field.value}
                   onBlur={field.onBlur}
+                  {...stateInputProps("Ngày bắt đầu khuyến mãi", readonly, {
+                    size: "sm",
+                    placeholder: "Phải sau hôm nay",
+                  })}
                 />
               )}
               name={"discountStart"}
@@ -289,14 +309,16 @@ const ProductDetailDialog = ({
               render={({ field }) => (
                 <DatePicker
                   minDate={dayjs(new Date()).toDate()}
-                  placeholder={"must after discount start date"}
-                  label={"Discount End at"}
                   onChange={(e) => {
                     field.onChange(e);
                     field.onBlur();
                   }}
                   defaultValue={field.value}
                   onBlur={field.onBlur}
+                  {...stateInputProps("Ngày kết thúc khuyến mãi", readonly, {
+                    size: "sm",
+                    placeholder: "phải sau ngày bắt đầu",
+                  })}
                 />
               )}
               name={"discountEnd"}
@@ -310,20 +332,22 @@ const ProductDetailDialog = ({
               render={({ field }) => (
                 <NumberInput
                   disabled={!watch("discountStart") && !watch("discountEnd")}
-                  placeholder={"sale percentage..."}
-                  withAsterisk
                   hideControls
                   min={0}
                   precision={2}
                   step={0.05}
                   max={100}
-                  label={"Discount Percent"}
                   defaultValue={field.value ?? undefined}
                   onChange={(v) => field.onChange(v ?? null)}
                   onBlur={field.onBlur}
                   rightSection={
                     <IconPercentage color={"#939393"} className={"mr-2"} />
                   }
+                  {...stateInputProps("% Giảm giá", readonly, {
+                    required: true,
+                    size: "sm",
+                    placeholder: "5%, 10%...",
+                  })}
                 />
               )}
             ></Controller>
@@ -337,42 +361,30 @@ const ProductDetailDialog = ({
               htmlFor="file"
               className="text-[14px] font-[500] text-gray-900"
             >
-              Product Image <span className="text-red-500">*</span>
+              Ảnh sản phẩm <span className="text-red-500">*</span>
             </label>
             <small className="mb-1 text-[12px] leading-tight text-gray-400">
-              The image must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP
-              format.
+              Ảnh ít hơn 5mb, định dạng PNG, JPEG, WEBG
             </small>
             <Controller
               name={"image"}
               control={control}
               render={({ field }) => (
-                <BtnSingleUploader
-                  accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                <ImageUpload
                   onChange={(f) => {
                     field.onChange(f);
                     field.onBlur();
                   }}
-                  btnPosition={"after"}
-                  btnTitle={"Upload Image"}
-                  render={(f) => (
-                    <>
-                      {f && (
-                        <Text size="xs" align="left">
-                          Picked file: {f.name}
-                        </Text>
-                      )}
-                      <MantineImage
-                        width={128}
-                        height={128}
-                        radius="md"
-                        src={
-                          f ? URL.createObjectURL(f) : (field.value as string)
-                        }
-                        alt="Product image"
-                        className="mb-2 select-none rounded-lg border object-cover shadow-xl"
-                      />
-                    </>
+                  render={(file) => (
+                    <Image
+                      radius={4}
+                      width={160}
+                      height={160}
+                      fit={"cover"}
+                      className={"rounded border"}
+                      src={file}
+                      alt="product image"
+                    />
                   )}
                 />
               )}
@@ -388,25 +400,20 @@ const ProductDetailDialog = ({
               control={control}
               render={({ field }) => (
                 <NumberInput
-                  placeholder={"price of the product..."}
                   hideControls
                   min={0}
                   max={MAX_PRICE}
-                  label={
-                    <label
-                      htmlFor="file"
-                      className="text-[14px] font-[500] text-gray-900"
-                    >
-                      Product Price <span className="text-red-500">*</span>
-                    </label>
-                  }
                   defaultValue={field.value}
                   onChange={(v) => field.onChange(v)}
                   onBlur={field.onBlur}
-                  size={"lg"}
                   parser={parserNumberInput}
                   formatter={formatterNumberInput}
                   rightSection={<span className={"text-xs"}>VND</span>}
+                  {...stateInputProps("Giá sản phẩm", readonly, {
+                    required: true,
+                    size: "lg",
+                    placeholder: "xxxxxx",
+                  })}
                 />
               )}
             ></Controller>
@@ -414,14 +421,26 @@ const ProductDetailDialog = ({
           </div>
 
           <div className="mt-4 flex w-full justify-end">
-            <DialogDetailAction
-              mode={mode}
-              isDirty={isDirty}
-              isValid={isValid}
-            />
+            {!readonly ? (
+              <DialogDetailAction
+                mode={mode}
+                isDirty={isDirty}
+                isValid={isValid}
+                readonly={readonly}
+              />
+            ) : (
+              <div
+                className={
+                  "cursor-pointer rounded bg-blue-500 px-6 py-2 font-semibold text-white hover:bg-blue-600"
+                }
+                onClick={() => onClosed()}
+              >
+                Hủy
+              </div>
+            )}
           </div>
         </form>
-      </div>
+      </fieldset>
     </Modal>
   );
 };
