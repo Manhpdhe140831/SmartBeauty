@@ -8,9 +8,9 @@ import java.util.List;
 public interface CustomerService {
     CustomerDto getById(Long id);
 
-    String validateCustomer(String name, String email, String phone);
-    Boolean saveCustomer(String name, String phone, String email, String gender, String dateOfBirth, String address, String authHeader);
-    Boolean updateCustomer(Long id,String name, String phone,String email,String gender,String dateOfBirth, String address);
+    String validateCustomer(String phone);
+    Boolean saveCustomer(CustomerDto customerDto, String authHeader);
+    Boolean updateCustomer(CustomerDto customerDto);
     CustomerResponseDto getAllCustomer(Long idCheck,int pageNo, int pageSize);
     CustomerResponseDto getCustomerAndSearch(Long idCheck,String name, String phone, int pageNo, int pageSize);
 

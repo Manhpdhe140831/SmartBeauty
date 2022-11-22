@@ -60,39 +60,35 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String validateCustomer(String name, String email, String phone) {
+    public String validateCustomer(String phone) {
         String result = "";
-        if (customerRepository.existsByname(name)) {
-            result += "Name already exists in data, ";
-        }
         if (customerRepository.existsByPhone(phone)) {
             result += "Phone already exists in data, ";
-        }
-        if (customerRepository.existsByEmail(email)) {
-            result += "Email already exists in data, ";
         }
         return result;
     }
 
     @Override
-    public Boolean saveCustomer(String name, String phone, String email, String gender, String dateOfBirth, String address, String authHeader) {
+    public Boolean saveCustomer(CustomerDto customerDto, String authHeader) {
         try {
 
             Customer customer = new Customer();
-            customer.setName(name);
-            customer.setPhone(phone);
-            customer.setEmail(email);
-            customer.setGender(gender);
-            //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            //Date dob = df.parse(dateOfBirth);
-            customer.setDateOfBirth(dateOfBirth);
-            customer.setAddress(address);
+
+                if (customerDto.getName() != null) {
+                    customer.setName(customerDto.getName() );
+                }
+                if (customerDto.getPhone() != null) {
+                    customer.setPhone(customerDto.getPhone());
+                }
+            customer.setEmail(customerDto.getEmail());
+            customer.setGender(customerDto.getGender());
+            customer.setDateOfBirth(customerDto.getDateOfBirth());
+            customer.setAddress(customerDto.getAddress());
             customer = customerRepository.save(customer);
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             Long idStaff = Long.parseLong(temp.get("id").toString());
             Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
             customer_branch_mapping_repo.save(new Customer_Branch_Mapping(customer.getId(), idBranch));
-
             return true;
         } catch (Exception e) {
             return false;
@@ -100,30 +96,28 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Boolean updateCustomer(Long id, String name, String phone, String email, String gender, String dateOfBirth, String address) {
+    public Boolean updateCustomer(CustomerDto customerDto) {
         try {
 
-            Customer customer = customerRepository.getCustomerById(id);
+            Customer customer = customerRepository.getCustomerById(customerDto.getId());
             if (customer != null) {
-                if (name != null) {
-                    customer.setName(name);
+                if (customerDto.getName() != null) {
+                    customer.setName(customerDto.getName() );
                 }
-                if (phone != null) {
-                    customer.setPhone(phone);
+                if (customerDto.getPhone() != null) {
+                    customer.setPhone(customerDto.getPhone());
                 }
-                if (email != null) {
-                    customer.setEmail(email);
+                if (customerDto.getEmail() != null) {
+                    customer.setEmail(customerDto.getEmail());
                 }
-                if (gender != null) {
-                    customer.setGender(gender);
+                if (customerDto.getGender() != null) {
+                    customer.setGender(customerDto.getGender());
                 }
-                if (dateOfBirth != null) {
-                    //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    //Date dob = df.parse(dateOfBirth);
-                    customer.setDateOfBirth(dateOfBirth);
+                if (customerDto.getDateOfBirth() != null) {
+                    customer.setDateOfBirth(customerDto.getDateOfBirth());
                 }
-                if (address != null) {
-                    customer.setAddress(address);
+                if (customerDto.getAddress() != null) {
+                    customer.setAddress(customerDto.getAddress());
                 }
                 customerRepository.save(customer);
                 return true;

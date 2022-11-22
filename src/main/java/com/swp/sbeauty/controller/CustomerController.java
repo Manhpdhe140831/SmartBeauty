@@ -31,15 +31,10 @@ public class CustomerController {
 
     @PostMapping(value = "/customer/create")
     public ResponseEntity<?> saveCustomer(@RequestHeader("Authorization") String authHeader,
-                                          @RequestParam(value = "name") String name,
-                                          @RequestParam(value = "phone") String phone,
-                                          @RequestParam(value = "email") String email,
-                                          @RequestParam(value = "gender") String gender,
-                                          @RequestParam(value = "dateOfBirth") String dateOfBith,
-                                          @RequestParam(value = "address") String address){
-        String check = customerService.validateCustomer(name, email, phone);
+                                            @RequestBody CustomerDto customerDto){
+        String check = customerService.validateCustomer(customerDto.getPhone());
         if(check == ""){
-            Boolean result = customerService.saveCustomer(name, phone, email, gender, dateOfBith,address, authHeader);
+            Boolean result = customerService.saveCustomer(customerDto, authHeader);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
@@ -47,22 +42,34 @@ public class CustomerController {
 
     }
 
-    @PutMapping(value = "/customer/update")
-    public ResponseEntity<?> updateCustomer(@RequestParam(value = "id") Long id,
-                                            @RequestParam(value = "name", required = false) String name,
-                                            @RequestParam(value = "phone",required = false) String phone,
-                                            @RequestParam(value = "email",required = false) String email,
-                                            @RequestParam(value = "gender",required = false) String gender,
-                                            @RequestParam(value = "dateOfBirth",required = false) String dateOfBith,
-                                            @RequestParam(value = "address",required = false) String address) {
-        String check = customerService.validateCustomer(name, email, phone);
-        if (check == "") {
-            Boolean result = customerService.updateCustomer(id,name, phone, email, gender, dateOfBith, address);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
-        }
+//    @PutMapping(value = "/customer/update")
+//    public ResponseEntity<?> updateCustomer(@RequestParam(value = "id") Long id,
+//                                            @RequestParam(value = "name", required = false) String name,
+//                                            @RequestParam(value = "phone",required = false) String phone,
+//                                            @RequestParam(value = "email",required = false) String email,
+//                                            @RequestParam(value = "gender",required = false) String gender,
+//                                            @RequestParam(value = "dateOfBirth",required = false) String dateOfBith,
+//                                            @RequestParam(value = "address",required = false) String address) {
+//        String check = customerService.validateCustomer(name, email, phone);
+//        if (check == "") {
+//            Boolean result = customerService.updateCustomer(id,name, phone, email, gender, dateOfBith, address);
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+//        }
+//    }
+@PutMapping(value = "/customer/update")
+public ResponseEntity<?> updateCustomer(
+                                        @RequestBody CustomerDto customerDto) {
+    String check = customerService.validateCustomer(customerDto.getPhone());
+    if (check == "") {
+        Boolean result = customerService.updateCustomer(customerDto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    } else {
+        return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
     }
+}
+
 
     @GetMapping("/customer")
     private ResponseEntity<?> getCustomerPagination(@RequestHeader("Authorization") String authHeader,
