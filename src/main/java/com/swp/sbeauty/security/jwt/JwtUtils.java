@@ -24,7 +24,7 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getId().toString()))
+                .setSubject((userPrincipal.getEmail()))
                 .claim("id", userPrincipal.getId())
                 .claim("name", userPrincipal.getName())
                 .claim("email", userPrincipal.getEmail())
