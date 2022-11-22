@@ -65,7 +65,7 @@ public class BillServiceImpl implements BillService {
     Bill_Course_History_Repository bill_course_history_repository;
 
 
-    String status = "chuasudung";
+    String notYetStatus = "not yet";
 
     @Override
     public BillResponseDto getBills(int offSet, int pageSize) {
@@ -323,7 +323,7 @@ public class BillServiceImpl implements BillService {
                billDetail.setQuantity(Long.parseLong("1"));
                billDetail = billDetailRepository.save(billDetail);
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), status));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), notYetStatus));
            } else if(billDto.getItemType().equalsIgnoreCase("course")){
                BillDetail billDetail = new BillDetail();
                billDetail.setCourse_id(billDto.getItem());
@@ -332,7 +332,7 @@ public class BillServiceImpl implements BillService {
                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(billDto.getItem());
                Integer duration = bill_course_history.getDuration();
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, status));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, notYetStatus));
            }
        }
        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -387,7 +387,7 @@ public class BillServiceImpl implements BillService {
         bill.setCreateDate(billDto.getCreateDate());
 
         bill.setStatus(billDto.getStatus());
-        if (bill.getStatus().equalsIgnoreCase("dathanhtoan")){
+        if (bill.getStatus().equalsIgnoreCase("completed")){
             return false;
         }else {
             bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
