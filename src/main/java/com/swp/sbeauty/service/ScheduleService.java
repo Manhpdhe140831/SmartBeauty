@@ -13,7 +13,7 @@ public interface ScheduleService {
 
     boolean update(Long id, ScheduleDto scheduleDto);
 
-    List<ScheduleDto> getAll();
+    List<ScheduleDto> getAllByDate(String dateRes);
 
 
 }

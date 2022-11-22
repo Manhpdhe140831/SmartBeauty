@@ -46,8 +46,8 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule")
-    public ResponseEntity<?> getAllSchedule(){
-        List<ScheduleDto> result = scheduleService.getAll();
+    public ResponseEntity<?> getAllSchedule(@RequestParam(value = "date", required = false) String date){
+        List<ScheduleDto> result = scheduleService.getAllByDate(date);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

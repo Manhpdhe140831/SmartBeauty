@@ -48,17 +48,17 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public boolean updateCount(ScheduleDto scheduleDto) {
-        if (scheduleDto.getStatus().equalsIgnoreCase("dahoanthanh")) {
+        if (scheduleDto.getStatus().equalsIgnoreCase("completed")) {
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
             if (customer_course_mapping != null) {
                 Integer count = customer_course_mapping.getCount();
                 String customerCourseStatus = customer_course_mapping.getStatus();
                 Bill_Course_History bill_course_history = scheduleRepository.getBill_Course_HistoriesBySchedule(customer_course_mapping.getId());
                 if (count < bill_course_history.getTimeOfUse()) {
-                    if (customerCourseStatus.equalsIgnoreCase("dangsudung")||customerCourseStatus.equalsIgnoreCase("chuasudung")) {
+                    if (customerCourseStatus.equalsIgnoreCase("using")||customerCourseStatus.equalsIgnoreCase("not yet")) {
                         count++;
                         if (count == bill_course_history.getTimeOfUse()) {
-                            customer_course_mapping.setStatus("dahoanthanh");
+                            customer_course_mapping.setStatus("completed");
                             customer_course_mapping.setCount(count);
                             customer_course_mapping_repository.save(customer_course_mapping);
                             return true;
@@ -80,15 +80,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public boolean save(ScheduleDto scheduleDto) {
         Schedule schedule = new Schedule();
-        String status = "khachchuaden";
+        String status = "not yet";
         schedule.setDate(scheduleDto.getDate());
-//
-//        schedule.setSlotId(scheduleDto.getSlot().getId());
-//        schedule.setBedId(scheduleDto.getBed().getId());
-//        schedule.setSaleStaffId(scheduleDto.getSale_staff().getId());
-//        schedule.setTechnicalStaffId(scheduleDto.getTech_staff().getId());
-//        schedule.setCustomerId(scheduleDto.getCustomer().getId());
-
         schedule.setSlotId(scheduleDto.getSlotId());
         schedule.setBedId(scheduleDto.getBedId());
         schedule.setSaleStaffId(scheduleDto.getSaleStaffId());
@@ -114,7 +107,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         if (scheduleDto.getCourse() != null){
             String statusCourse = scheduleDto.getCourse().getStatus();
-        if ("chuasudung".equalsIgnoreCase(statusCourse)){
+        if ("not yet".equalsIgnoreCase(statusCourse)){
             Course course = courseRepository.getCourseById(scheduleDto.getCourse().getId());
             Bill_Course_History bill_course_history = new Bill_Course_History();
             bill_course_history.setCourse_id(course.getId());
@@ -132,7 +125,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             Long courseHistory = bill_course_history.getId();
             schedule.setCourseId(courseHistory);
 
-        }else if ("dangsudung".equalsIgnoreCase(statusCourse)) {
+        }else if ("using".equalsIgnoreCase(statusCourse)) {
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
             if (customer_course_mapping != null) {
                 schedule.setCourseHistoryId(customer_course_mapping.getId());
@@ -213,7 +206,7 @@ public class ScheduleServiceImpl implements ScheduleService {
        Bed_Slot_Mapping bed_slot_mapping = bed_slot_mapping_repository.getBed_Slot_MappingBySchedule(schedule.getBedId(), schedule.getSlotId(), schedule.getDate());
        user_slot_mapping_repository.delete(user_slot_mapping);
        bed_slot_mapping_repository.delete(bed_slot_mapping);
-        String status = "khachchuaden";
+        String status = "not yet";
         schedule.setDate(scheduleDto.getDate());
 
         schedule.setSlotId(scheduleDto.getSlotId());
@@ -241,7 +234,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         if (scheduleDto.getCourse() != null){
             String statusCourse = scheduleDto.getCourse().getStatus();
-            if ("chuasudung".equalsIgnoreCase(statusCourse)){
+            if ("not yet".equalsIgnoreCase(statusCourse)){
                 Course course = courseRepository.getCourseById(scheduleDto.getCourse().getId());
                 Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(schedule.getCourseId());
                 bill_course_history.setCourse_id(course.getId());
@@ -257,7 +250,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 bill_course_history.setDescription(course.getDescription());
                 bill_course_history = bill_course_history_repository.save(bill_course_history);
 
-            }else if ("dangsudung".equalsIgnoreCase(statusCourse)) {
+            }else if ("using".equalsIgnoreCase(statusCourse)) {
                 Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
                 if (customer_course_mapping != null) {
                     schedule.setCourseHistoryId(customer_course_mapping.getId());
@@ -280,11 +273,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleDto> getAll() {
+    public List<ScheduleDto> getAllByDate(String dateRes) {
         List<ScheduleDto> result = new ArrayList<>();
-        List<Schedule> list = scheduleRepository.findAll();
+        List<Schedule> list = new ArrayList<>();
+        if (dateRes != null){
+            list = scheduleRepository.getAllByDate(dateRes);
+        }if (dateRes == null){
+            list = scheduleRepository.findAll();
+        }
         for (Schedule itemS:list
              ) {
+
             Long scheduleId = itemS.getId();
             String date = itemS.getDate();
             SlotDto slot = new SlotDto(slotRepository.findById(itemS.getSlotId()).orElse(null));
