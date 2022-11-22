@@ -3,7 +3,7 @@ import CalendarController from "./_partial/calendar-controller";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import AppointmentTimeline from "../../../components/appointment-timeline/appointment.timeline";
-import { slotWorkConst } from "../../../const/slot-work.const";
+import { slotWorkConst } from "../../../mock/slot-work.const";
 import AppointmentHeaderTimeline from "../../../components/appointment-timeline/appointment-header.timeline";
 import mockSchedule from "../../../mock/schedule";
 import { AppPageInterface } from "../../../interfaces/app-page.interface";

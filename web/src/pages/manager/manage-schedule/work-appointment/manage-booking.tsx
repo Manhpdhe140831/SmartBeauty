@@ -3,6 +3,9 @@ import {getAllCustomers} from "../../../../services/customer.service";
 import {AutoCompleteItemProp} from "../../../../components/auto-complete-item";
 import {rawToAutoItem} from "../../../../utilities/fn.helper";
 import {CustomerModel} from "../../../../model/customer.model";
+import {Customers} from "../../../../mock/customer";
+import {slotWork} from "../../../../mock/slot-work.const";
+import {slotModal} from "../../../../model/slot.model";
 
 const ManageBooking = () => {
     const fnHelper = (s: CustomerModel) => ({
@@ -15,12 +18,18 @@ const ManageBooking = () => {
         const paginateProducts = await getAllCustomers(1, 50, {
             name: searchCustomerName,
         });
-        return paginateProducts.data.map((i) =>
+        // return paginateProducts.data.map((i) =>
+        //     rawToAutoItem({...i}, fnHelper)
+        // );
+        return Customers.map((i) =>
             rawToAutoItem({...i}, fnHelper)
         );
     }
 
-    return <BookingSchedule searchCustomer={searchCustomer}/>;
+    const getSlot = (): slotModal[] => {
+        return slotWork
+    }
+    return <BookingSchedule searchCustomer={searchCustomer} getSlot={getSlot()}/>;
 };
 
 export default ManageBooking;
