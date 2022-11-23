@@ -88,6 +88,6 @@ const ListProducts: AppPageInterface = () => {
   );
 };
 
-ListProducts.guarded = USER_ROLE.manager;
+ListProducts.guarded = USER_ROLE.technical_staff;
 
 export default ListProducts;

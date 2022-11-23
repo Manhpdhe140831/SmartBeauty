@@ -9,8 +9,10 @@ import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import { SupplierModel } from "../../../model/supplier.model";
 import { useListProductQuery } from "../../../query/model-list";
+import { USER_ROLE } from "../../../const/user-role.const";
+import { AppPageInterface } from "../../../interfaces/app-page.interface";
 
-const ListProducts = () => {
+const ListProducts: AppPageInterface = () => {
   const { modal, openModal, resetModal } =
     useDialogDetailRow<ProductModel<SupplierModel>>();
 
@@ -36,7 +38,9 @@ const ListProducts = () => {
           className="w-56"
         />
       </div>
+
       <Divider my={8} />
+
       <div className="flex-1">
         <Table withBorder className="table-fixed">
           <ProductHeaderTable />
@@ -85,5 +89,7 @@ const ListProducts = () => {
     </div>
   );
 };
+
+ListProducts.guarded = USER_ROLE.sale_staff;
 
 export default ListProducts;

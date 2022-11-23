@@ -11,12 +11,12 @@ import {
 import { IconPlus } from "@tabler/icons";
 import ServiceList from "../../_shared/services/service-list";
 import { useListServiceQuery } from "../../../query/model-list";
-import AdminServiceDetailDialog from "./_detail.dialog";
 import { useMutation } from "@tanstack/react-query";
 import {
   createSpaService,
   updateSpaService,
 } from "../../../services/spa-service.service";
+import ServiceDetailDialog from "../../_shared/services/service-detail.dialog";
 
 const Index: AppPageInterface = () => {
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
@@ -74,7 +74,7 @@ const Index: AppPageInterface = () => {
           onRowClick={(d) => openModal("view", d)}
         />
         {modal && (
-          <AdminServiceDetailDialog
+          <ServiceDetailDialog
             mode={modal.mode as never} // silent the TS-error
             data={modal.data}
             opened={!!modal}

@@ -3,8 +3,9 @@ import { NavLinkItemProp } from "../interfaces/nav-item.interface";
 import { USER_ROLE } from "../const/user-role.const";
 import {
   branchAdminConfig,
-  branchSaleStaffConfig,
   branchManagerConfig,
+  branchSaleStaffConfig,
+  branchTechStaffConfig,
 } from "../const/sidebar-navigation.const";
 
 type SidebarNavState = {
@@ -20,9 +21,9 @@ function decidingConfigByRole(userRole: USER_ROLE) {
     case USER_ROLE.manager:
       return branchManagerConfig;
     case USER_ROLE.sale_staff:
-    // TODO create new menu for employee_tech
-    case USER_ROLE.technical_staff:
       return branchSaleStaffConfig;
+    case USER_ROLE.technical_staff:
+      return branchTechStaffConfig;
   }
   console.warn(
     "Navigation config for this role cannot be found. Role:",
