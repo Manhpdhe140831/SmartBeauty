@@ -31,7 +31,7 @@ public class CourseDto {
     private Double discountPercent;
     private String image;
     
-    private String status;
+    private Boolean isBilled;
     private String description;
     private List<ServiceDto> services;
     private Integer count;
@@ -110,7 +110,7 @@ public class CourseDto {
         this.count = count;
     }
 
-    public CourseDto(long id, String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String status, String description) {
+    public CourseDto(long id, String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, Boolean isBilled, String description) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -120,12 +120,12 @@ public class CourseDto {
         this.discountEnd = discountEnd;
         this.discountPercent = discountPercent;
         this.image = image;
-        this.status = status;
+        this.isBilled = isBilled;
         this.description = description;
     }
 
-    public CourseDto(String status, Course course) {
-        this.status = status;
+    public CourseDto(Boolean isBilled, Course course) {
+        this.isBilled = isBilled;
         this.id = course.getId();
         this.name = course.getName();
         this.price = course.getPrice();

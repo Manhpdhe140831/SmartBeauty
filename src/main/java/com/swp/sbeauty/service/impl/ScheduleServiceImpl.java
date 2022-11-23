@@ -259,8 +259,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
         if (scheduleDto.getCourse() != null) {
-            String statusCourse = scheduleDto.getCourse().getStatus();
-            if ("not yet".equalsIgnoreCase(statusCourse)) {
+            Boolean statusCourse = scheduleDto.getCourse().getIsBilled();
+            if (statusCourse == false) {
                 Course course = courseRepository.getCourseById(scheduleDto.getCourse().getId());
                 Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(schedule.getCourseId());
                 bill_course_history.setCourse_id(course.getId());
@@ -276,7 +276,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 bill_course_history.setDescription(course.getDescription());
                 bill_course_history = bill_course_history_repository.save(bill_course_history);
 
-            } else if ("using".equalsIgnoreCase(statusCourse)) {
+            } else if (statusCourse == true) {
                 Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
                 if (customer_course_mapping != null) {
                     schedule.setCourseHistoryId(customer_course_mapping.getId());
