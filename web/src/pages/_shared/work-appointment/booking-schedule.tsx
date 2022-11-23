@@ -14,7 +14,9 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {UserModel} from "../../../model/user.model";
 import {slotModal} from "../../../model/slot.model";
-import {RawServices} from "../../../mock/service";
+import {getServicesAndCourse} from "../../../services/schedule.service";
+import {ServiceModel} from "../../../model/service.model";
+import {formatDate} from "../../../utilities/time.helper";
 
 type searchFn<dataType extends object> = (
     key: string
@@ -22,10 +24,15 @@ type searchFn<dataType extends object> = (
 
 type BookingSchedule = {
     searchCustomer: searchFn<CustomerModel>,
-    getSlot: slotModal[]
+    slotList: slotModal[] | [],
+    customerList: UserModel[],
 }
 
-const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
+const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedule) => {
+    // const userRole = useAuthUser((s) => s.user?.role);
+    const userRole = USER_ROLE.sale_staff;
+
+    // State
     const [active, setActive] = useState(0);
     const [saveBtn, showSave] = useState(false);
 
@@ -33,8 +40,11 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
     const [loadingStep2, setLoadingStep2] = useState<boolean>(false);
 
     const [selectedCustomer, setSelectedCustomer] = useState<UserModel | null>(null);
-    const [serviceData, setService] = useState<any>(null);
+    const [selectedService, setSelectedService] = useState<ServiceModel | null>(null);
+    const [serviceList, setServiceList] = useState<any>([]);
 
+
+    // Function
     const {
         control,
         register,
@@ -52,45 +62,12 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
         },
     });
 
-    // const userRole = useAuthUser((s) => s.user?.role);
-    const userRole = USER_ROLE.sale_staff;
-
-    const router = useRouter();
-
-    useEffect(() => {
-        if (router.query.scheduleId) {
-            // query data with dataId
-
-            // set data
-            // setSelectedCustomer({
-            //     customer_name: "Tôn Ngộ Không",
-            //     gender: "Nam",
-            //     age: "1000",
-            //     address: "369 Hoa Quả sơn",
-            //     phone_number: "0987654321",
-            // });
-            // setService({
-            //     service_code: "LT-062022",
-            //     service_name: "Liệu trình trị mụn",
-            //     date_count: "5/10",
-            //     buy_day: "06/10/2022",
-            //     expired: "06/08/2023",
-            // });
-
-            setActive(3);
-        } else {
-            if (userRole !== USER_ROLE.sale_staff) {
-                void router.push("/");
-            }
-        }
-    }, [router, router.query.scheduleId, userRole]);
-
     const stepByStep = (step: number) => {
         console.log(step);
         switch (step) {
             case 0:
                 setSelectedCustomer(null);
-                setService(null);
+                setSelectedService(null);
                 setLoadingStep1(false);
                 setLoadingStep2(false);
                 showSave(false);
@@ -126,17 +103,17 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                 break;
             case 3:
                 // call API lấy thông tin service
-                const serviceInfo = {
-                    service_name: "Liệu trình trị mụn",
-                    sale_staff: "Tôn Hành Giả",
-                    tech_staff: "Naruto",
-                    slot: "Slot 1",
-                    bed: "Giường số 1",
-                    time: "13/11/2022 12:12",
-                };
+                // const serviceInfo = {
+                //     service_name: "Liệu trình trị mụn",
+                //     sale_staff: "Tôn Hành Giả",
+                //     tech_staff: "Naruto",
+                //     slot: "Slot 1",
+                //     bed: "Giường số 1",
+                //     time: "13/11/2022 12:12",
+                // };
 
                 // Gán service vào biến serviceData
-                setService(serviceInfo);
+                // setSelectedService(serviceInfo);
                 showSave(true);
         }
 
@@ -148,6 +125,59 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
             showSave(false);
         }
     };
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (router.query.scheduleId) {
+            // query data with dataId
+
+            // set data
+            // setSelectedCustomer({
+            //     customer_name: "Tôn Ngộ Không",
+            //     gender: "Nam",
+            //     age: "1000",
+            //     address: "369 Hoa Quả sơn",
+            //     phone_number: "0987654321",
+            // });
+            // setService({
+            //     service_code: "LT-062022",
+            //     service_name: "Liệu trình trị mụn",
+            //     date_count: "5/10",
+            //     buy_day: "06/10/2022",
+            //     expired: "06/08/2023",
+            // });
+
+            setActive(3);
+        } else {
+            if (userRole !== USER_ROLE.sale_staff) {
+                void router.push("/");
+            }
+        }
+    }, [router, router.query.scheduleId, userRole]);
+
+    const searchService = async (keyword = '') => {
+        if (selectedCustomer) {
+            const serviceList = await getServicesAndCourse(selectedCustomer.id, keyword)
+            const servicesCustomArr: any = []
+
+            Object.keys(serviceList).forEach(key => {
+                if (serviceList[key]) {
+                    servicesCustomArr.concat(serviceList[key].map((s: ServiceModel) => {
+                        return {
+                            value: s.id.toString(),
+                            label: s.name,
+                            group: key
+                        }
+                    }))
+                }
+            })
+
+            setServiceList(servicesCustomArr)
+        }
+    }
+
+    const slotInfo = slotList.find((s) => s.id === getValues().slotId)
 
     return (
         <div className={"h-max w-full p-12"}>
@@ -163,28 +193,58 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                             allowStepSelect={false}
                             loading={loadingStep1}
                         >
-                            <div className={"flex flex-row items-center gap-3"}>
-                                <span className={"min-w-48"}>Tìm kiếm khách hàng</span>
-                                <Controller
-                                    render={({field: ControlledField}) =>
-                                        <DatabaseSearchSelect
-                                            className={"w-full"}
-                                            value={null}
-                                            displayValue={null}
-                                            onSearching={searchCustomer}
-                                            onSelected={(_id) => {
-                                                console.log(_id);
-                                                const id = _id ? Number(_id) : null;
-                                                ControlledField.onChange(id);
+                            <div className={"flex w-full flex-col gap-4"}>
+                                <div className={"flex flex-row items-center gap-3"}>
+                                    <span className={"min-w-48"}>Tìm kiếm khách hàng</span>
+                                    <Controller
+                                        render={({field: ControlledField}) =>
+                                            <DatabaseSearchSelect
+                                                className={"w-full"}
+                                                value={null}
+                                                displayValue={null}
+                                                onSearching={searchCustomer}
+                                                onSelected={(_id) => {
+                                                    const id = _id ? Number(_id) : null;
+                                                    ControlledField.onChange(id);
 
-                                                // Gán customer selected to state
-                                                // setSelectedCustomer(customer);
-                                            }}
-                                        />
-                                    }
-                                    control={control}
-                                    name={"customerId"}
-                                />
+                                                    // Gán customer selected to state
+                                                    const user = customerList.find(user => user.id === Number(_id))
+                                                    if (user) {
+                                                        setSelectedCustomer(user);
+                                                    }
+                                                }}
+                                            />
+                                        }
+                                        control={control}
+                                        name={"customerId"}
+                                    />
+                                </div>
+
+                                <div className={"flex flex-row items-center gap-3"}>
+                                    <span className={"min-w-48"}>Dịch vụ</span>
+                                    <Controller
+                                        render={({field}) => (
+                                            <Select className={"w-full"}
+                                                    placeholder="Liệu trình/ Dịch vụ"
+                                                    searchable
+                                                    nothingFound="Trống"
+                                                    data={serviceList}
+                                                    onSearchChange={(s) => {
+                                                        void searchService(s)
+                                                    }}
+                                                    onChange={(e) => {
+                                                        console.log(e);
+                                                        field.onChange(e);
+                                                        field.onBlur();
+                                                    }}
+                                                    onBlur={field.onBlur}
+                                                    disabled={!selectedCustomer}>
+                                            </Select>
+                                        )}
+                                        name={"services"}
+                                        control={control}
+                                    />
+                                </div>
                             </div>
                             <Group className={"mt-4"} position={"center"}>
                                 <Button type={"button"} onClick={() => stepByStep(1)}>Xác nhận khách hàng</Button>
@@ -226,12 +286,12 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                             </Group>
                         </Stepper.Step>
                         <Stepper.Step
-                            label="Tìm kiếm dịch vụ"
-                            description="Tìm kiếm theo tên/mã dịch vụ"
+                            label="Booking"
+                            description="Đặt giường và thời gian"
                             allowStepSelect={false}
                         >
                             <div className={"flex flex-row gap-3"}>
-                                <span className={"min-w-48"}>Dịch vụ</span>
+                                <span className={"min-w-48"}>Booking</span>
                                 <div className={"flex w-full flex-col gap-4"}>
                                     <div className={"flex justify-between gap-4"}>
                                         <Controller
@@ -240,7 +300,7 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                                                         placeholder="Slot"
                                                         searchable
                                                         nothingFound="Trống"
-                                                        data={getSlot.map((slot) => {
+                                                        data={slotList.map((slot) => {
                                                             return {
                                                                 value: slot.id.toString(),
                                                                 label: slot.name,
@@ -260,24 +320,6 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                                         <Controller
                                             render={({field}) => (
                                                 <Select className={"w-full"}
-                                                        placeholder="NV kỹ thuật"
-                                                        searchable
-                                                        nothingFound="Trống"
-                                                        data={["React", "Angular", "Svelte", "Vue"]}
-                                                        onChange={(e) => {
-                                                            field.onChange(e);
-                                                            field.onBlur();
-                                                        }}
-                                                        onBlur={field.onBlur}
-                                                        disabled={userRole !== USER_ROLE.sale_staff || !getValues().slotId}>
-                                                </Select>
-                                            )}
-                                            name={"techStaffId"}
-                                            control={control}
-                                        />
-                                        <Controller
-                                            render={({field}) => (
-                                                <Select className={"w-full"}
                                                         placeholder="Giường"
                                                         searchable
                                                         nothingFound="Trống"
@@ -291,6 +333,24 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                                                 </Select>
                                             )}
                                             name={"bedId"}
+                                            control={control}
+                                        />
+                                        <Controller
+                                            render={({field}) => (
+                                                <Select className={"w-full"}
+                                                        placeholder="NV kỹ thuật"
+                                                        searchable
+                                                        nothingFound="Trống"
+                                                        data={["React", "Angular", "Svelte", "Vue"]}
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            field.onBlur();
+                                                        }}
+                                                        onBlur={field.onBlur}
+                                                        disabled={userRole !== USER_ROLE.sale_staff || !getValues().slotId}>
+                                                </Select>
+                                            )}
+                                            name={"techStaffId"}
                                             control={control}
                                         />
                                     </div>
@@ -333,9 +393,13 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                                                 <span className={"font-bold"}>SĐT</span>
                                                 <span>{selectedCustomer.phone}</span>
                                             </div>
+                                            <div className={"flex justify-between gap-2"}>
+                                                <span className={"font-bold"}>Email</span>
+                                                <span>{selectedCustomer.email}</span>
+                                            </div>
                                         </div>
                                     )}
-                                    {serviceData && (
+                                    {selectedService && (
                                         <div
                                             className={
                                                 "w-full rounded-xl border p-4 text-sm shadow-md"
@@ -343,27 +407,25 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                                         >
                                             <div className={"flex justify-between gap-2"}>
                                                 <span className={"font-bold"}>Dịch vụ</span>
-                                                <span>{serviceData.service_name}</span>
+                                                <span>{selectedService.name}</span>
                                             </div>
                                             <div className={"flex justify-between gap-2"}>
-                                                <span className={"font-bold"}>NV bán hàng</span>
-                                                <span>{serviceData.sale_staff}</span>
+                                                <span className={"font-bold"}>Liệu trình</span>
+                                                <span>{selectedService.duration}</span>
                                             </div>
-                                            <div className={"flex justify-between gap-2"}>
-                                                <span className={"font-bold"}>NV kỹ thuật</span>
-                                                <span>{serviceData.tech_staff}</span>
-                                            </div>
-                                            <div className={"flex justify-between gap-2"}>
-                                                <span className={"font-bold"}>Slot</span>
-                                                <span>{serviceData.slot}</span>
-                                            </div>
+                                            {
+                                                slotInfo && <div className={"flex justify-between gap-2"}>
+                                                    <span className={"font-bold"}>Slot</span>
+                                                    <span>{slotInfo.name}</span>
+                                                </div>
+                                            }
                                             <div className={"flex justify-between gap-2"}>
                                                 <span className={"font-bold"}>Giường</span>
-                                                <span>{serviceData.bed}</span>
+                                                <span>{getValues().bedId}</span>
                                             </div>
                                             <div className={"flex justify-between gap-2"}>
                                                 <span className={"font-bold"}>Thời gian</span>
-                                                <span>{serviceData.time}</span>
+                                                <span>{formatDate(getValues().date.toDateString())}</span>
                                             </div>
                                         </div>
                                     )}
@@ -379,31 +441,6 @@ const BookingSchedule = ({searchCustomer, getSlot}: BookingSchedule) => {
                         </Stepper.Completed>
                     </Stepper>
                     <Divider my="xs" variant="dashed"/>
-                    <div className={"flex flex-row items-center gap-3"}>
-                        <span className={"min-w-48"}>Dịch vụ</span>
-                        <Controller
-                            render={({field}) => (
-                                <Select className={"w-full"}
-                                        placeholder="Liệu trình/ Dịch vụ"
-                                        searchable
-                                        nothingFound="Trống"
-                                        data={RawServices.map(s => {
-                                            return {
-                                                value: s.id.toString(),
-                                                label: s.name
-                                            }
-                                        })}
-                                        onChange={(e) => {
-                                            field.onChange(e);
-                                            field.onBlur();
-                                        }}
-                                        onBlur={field.onBlur}>
-                                </Select>
-                            )}
-                            name={"services"}
-                            control={control}
-                        />
-                    </div>
                     <div className={"flex flex-row items-center gap-3"}>
                         <span className={"min-w-48"}>NV kinh doanh</span>
                         <Input
