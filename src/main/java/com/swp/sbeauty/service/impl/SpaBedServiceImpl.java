@@ -1,16 +1,17 @@
 package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.*;
-import com.swp.sbeauty.entity.Branch;
-import com.swp.sbeauty.entity.Category;
-import com.swp.sbeauty.entity.SpaBed;
-import com.swp.sbeauty.entity.Users;
+import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.entity.mapping.Bed_Branch_Mapping;
+import com.swp.sbeauty.entity.mapping.Slot_Branch_Mapping;
 import com.swp.sbeauty.repository.BranchRepository;
 import com.swp.sbeauty.repository.SpaBedRepository;
 import com.swp.sbeauty.repository.UserRepository;
 import com.swp.sbeauty.repository.mappingRepo.SpaBed_Branch_Repository;
+import com.swp.sbeauty.repository.mappingRepo.User_Branch_Mapping_Repo;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.SpaBedService;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,10 @@ public class SpaBedServiceImpl implements SpaBedService {
     private SpaBed_Branch_Repository spaBed_branch_repository;
     @Autowired
     private UserRepository userRepository;
-
-
+    @Autowired
+    private User_Branch_Mapping_Repo user_branch_mapping_repo;
+    @Autowired
+    JwtUtils jwtUtils;
     @Override
     public List<SpaBedDto> getBeds() {
         List<SpaBed> list = spaBedRepository.findAll();
@@ -250,6 +253,26 @@ public class SpaBedServiceImpl implements SpaBedService {
             }
             StaffBedDto result = new StaffBedDto(userDtos,listDto);
             return result;
+        }
+    }
+
+    @Override
+    public Boolean saveBed(SpaBedDto spaBedDto, String authHeader) {
+        try {
+
+            SpaBed spaBed = new SpaBed();
+
+            if (spaBedDto.getName() != null) {
+                spaBed.setName(spaBedDto.getName() );
+            }
+            spaBed = spaBedRepository.save(spaBed);
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            Long idStaff = Long.parseLong(temp.get("id").toString());
+            Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
+            spaBed_branch_repository.save(new Bed_Branch_Mapping(spaBed.getId(), idBranch));
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

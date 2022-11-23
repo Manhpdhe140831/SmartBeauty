@@ -1,5 +1,6 @@
 package com.swp.sbeauty.controller;
 
+import com.swp.sbeauty.dto.CustomerDto;
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ServiceDto;
 import com.swp.sbeauty.dto.SlotDto;
@@ -33,4 +34,13 @@ public class SlotController {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping(value = "/slot/create")
+    public ResponseEntity<?> saveSlot(@RequestHeader("Authorization") String authHeader,
+                                          @RequestBody SlotDto slotDto){
+            Boolean result = service.saveSlot(slotDto, authHeader);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+
+
 }

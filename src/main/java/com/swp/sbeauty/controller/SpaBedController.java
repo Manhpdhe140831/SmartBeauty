@@ -65,7 +65,7 @@ public class SpaBedController {
             return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
         }
     }
-    @PostMapping(value = "/bed/create", headers="Content-Type=multipart/form-data")
+    /*@PostMapping(value = "/bed/create", headers="Content-Type=multipart/form-data")
     public ResponseEntity<?> saveBed(@RequestParam(value = "name") String name,
                                         @RequestParam(value = "branch") Long branch){
         String check = spaBedService.validateSpaBed(name);
@@ -76,6 +76,12 @@ public class SpaBedController {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
 
+    }*/
+    @PostMapping(value = "/bed/create")
+    public ResponseEntity<?> saveSlot(@RequestHeader("Authorization") String authHeader,
+                                      @RequestBody SpaBedDto spaBedDto){
+        Boolean result = spaBedService.saveBed(spaBedDto, authHeader);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PutMapping ("/bed/update")
     public ResponseEntity<?> updateBed(@RequestParam(value = "id") Long id,
