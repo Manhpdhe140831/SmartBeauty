@@ -90,25 +90,28 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         schedule.setStatus(status);
         schedule.setNote(scheduleDto.getNote());
-        com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getService().getId());
+        com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getServiceId());
         Bill_Service_History bill_service_history = new Bill_Service_History();
-        bill_service_history.setServiceId(service.getId());
-        bill_service_history.setName(service.getName());
-        bill_service_history.setDiscountStart(service.getDiscountStart());
-        bill_service_history.setDiscountEnd(service.getDiscountEnd());
-        bill_service_history.setDiscountPercent(service.getDiscountPercent());
-        bill_service_history.setPrice(service.getPrice());
-        bill_service_history.setDescription(service.getDescription());
-        bill_service_history.setDuration(service.getDuration());
-        bill_service_history.setImage(service.getImage());
-        bill_service_history = bill_service_history_repository.save(bill_service_history);
-        Long serviceId = bill_service_history.getId();
-        schedule.setServiceId(serviceId);
+        if (service != null) {
+            bill_service_history.setServiceId(service.getId());
+            bill_service_history.setName(service.getName());
+            bill_service_history.setDiscountStart(service.getDiscountStart());
+            bill_service_history.setDiscountEnd(service.getDiscountEnd());
+            bill_service_history.setDiscountPercent(service.getDiscountPercent());
+            bill_service_history.setPrice(service.getPrice());
+            bill_service_history.setDescription(service.getDescription());
+            bill_service_history.setDuration(service.getDuration());
+            bill_service_history.setImage(service.getImage());
+            bill_service_history = bill_service_history_repository.save(bill_service_history);
+            Long serviceId = bill_service_history.getId();
+            schedule.setServiceId(serviceId);
 
-        if (scheduleDto.getCourse() != null){
-            String statusCourse = scheduleDto.getCourse().getStatus();
-        if ("not yet".equalsIgnoreCase(statusCourse)){
-            Course course = courseRepository.getCourseById(scheduleDto.getCourse().getId());
+       }
+        Customer_Course_Mapping customer_course_mapping_check = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
+
+        if (scheduleDto.getCourseId() != null){
+        if (customer_course_mapping_check == null){
+            Course course = courseRepository.getCourseById(scheduleDto.getCourseId());
             Bill_Course_History bill_course_history = new Bill_Course_History();
             bill_course_history.setCourse_id(course.getId());
             bill_course_history.setCode(course.getCode());
@@ -125,8 +128,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             Long courseHistory = bill_course_history.getId();
             schedule.setCourseId(courseHistory);
 
-        }else if ("using".equalsIgnoreCase(statusCourse)) {
-            Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourse().getId()).orElse(null);
+        }else if (customer_course_mapping_check != null) {
+            Customer_Course_Mapping customer_course_mapping = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
             if (customer_course_mapping != null) {
                 schedule.setCourseHistoryId(customer_course_mapping.getId());
             }
@@ -136,10 +139,23 @@ public class ScheduleServiceImpl implements ScheduleService {
            schedule.setCourseHistoryId(null);
            schedule.setCourseId(null);
         }
+
+
+
         if (null != schedule){
             schedule = scheduleRepository.save(schedule);
             user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
             bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
+            if (schedule.getServiceId() != null){
+                Bill_Service_History bill_service_history1 = bill_service_history_repository.findById(schedule.getServiceId()).orElse(null);
+                bill_service_history1.setScheduleId(schedule.getId());
+                bill_service_history_repository.save(bill_service_history1);
+            }
+            if (schedule.getCourseId() != null){
+                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(schedule.getCourseId());
+                bill_course_history.setScheduleId(schedule.getId());
+                bill_course_history_repository.save(bill_course_history);
+            }
             return true;
         }else{
             return false;

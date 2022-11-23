@@ -35,11 +35,11 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
 //    public Course getCourseByBill(Long courseId, Long billId);
     @Query(value = "SELECT bph from Bill_BillDetail_Mapping bbm join Bill_Product_history bph on bbm.billDetail_id = bph.billDetail_id where bph.billDetail_id =?1")
     public Bill_Product_history getBillProductHistory(Long billId);
-    @Query(value = "SELECT bsh from Bill_BillDetail_Mapping bbm join Bill_Service_History bsh on bbm.billDetail_id = bsh.billDetail_id where bsh.billDetail_id =?1")
-    public Bill_Service_History getBillServiceHistory(Long billId);
+//    @Query(value = "SELECT bsh from Bill_BillDetail_Mapping bbm join Bill_Service_History bsh on bbm.billDetail_id = bsh.billDetail_id where bsh.billDetail_id =?1")
+//    public Bill_Service_History getBillServiceHistory(Long billId);
 
 
-    @Query(value = "SELECT bch from Bill_BillDetail_Mapping bbm join Bill_Course_History bch on bbm.billDetail_id = bch.billDetail_id where bch.billDetail_id =?1")
-    public Bill_Course_History getBillCourseHistory(Long billId);
+//    @Query(value = "SELECT bch from Bill_BillDetail_Mapping bbm join Bill_Course_History bch on bbm.billDetail_id = bch.billDetail_id where bch.billDetail_id =?1")
+//    public Bill_Course_History getBillCourseHistory(Long billId);
 
 }

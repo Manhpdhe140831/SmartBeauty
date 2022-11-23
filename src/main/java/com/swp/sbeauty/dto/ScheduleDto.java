@@ -26,6 +26,8 @@ public class ScheduleDto {
     private Long saleStaffId;
     private Long techStaffId;
     private Long customerId;
+    private Long serviceId;
+    private Long courseId;
 
     public ScheduleDto(Long id, String date, SlotDto slot, SpaBedDto bed, UserDto sale_staff, UserDto tech_staff, CustomerDto customer, CourseDto course, ServiceDto service, String status, String note) {
         this.id = id;

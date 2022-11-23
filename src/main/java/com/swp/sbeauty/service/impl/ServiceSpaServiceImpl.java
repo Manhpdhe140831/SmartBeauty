@@ -179,26 +179,26 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         return result;
     }
 
-    @Override
-    public ServiceCourseBuyedDto getAllService(Long idCheck, Long customer) {
-        if(idCheck==null || customer == null){
-            return null;
-        } else {
-            Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
-            List<Bill_Service_History> listService = bill_service_history_repository.getAllServiceBuyed(idBranch,customer);
-            List<ServiceDto> serviceDtos = new ArrayList<>();
-            for(Bill_Service_History serviceDto : listService){
-                serviceDtos.add(new ServiceDto(serviceDto));
-            }
-            List<Bill_Course_History> listCourse = bill_course_history_repository.getCourseBuyed(idBranch,customer);
-            List<CourseDto> courseDtos = new ArrayList<>();
-            for (Bill_Course_History course_history : listCourse){
-                courseDtos.add(new CourseDto(course_history));
-            }
-            ServiceCourseBuyedDto result = new ServiceCourseBuyedDto(serviceDtos,courseDtos);
-            return result;
-        }
-    }
+//    @Override
+//    public ServiceCourseBuyedDto getAllService(Long idCheck, Long customer) {
+//        if(idCheck==null || customer == null){
+//            return null;
+//        } else {
+//            Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
+//            List<Bill_Service_History> listService = bill_service_history_repository.getAllServiceBuyed(idBranch,customer);
+//            List<ServiceDto> serviceDtos = new ArrayList<>();
+//            for(Bill_Service_History serviceDto : listService){
+//                serviceDtos.add(new ServiceDto(serviceDto));
+//            }
+//            List<Bill_Course_History> listCourse = bill_course_history_repository.getCourseBuyed(idBranch,customer);
+//            List<CourseDto> courseDtos = new ArrayList<>();
+//            for (Bill_Course_History course_history : listCourse){
+//                courseDtos.add(new CourseDto(course_history));
+//            }
+//            ServiceCourseBuyedDto result = new ServiceCourseBuyedDto(serviceDtos,courseDtos);
+//            return result;
+//        }
+//    }
 
     @Override
     public ServiceCourseBuyedDto findProductCourseService(String keyword, Long idCustomer) {

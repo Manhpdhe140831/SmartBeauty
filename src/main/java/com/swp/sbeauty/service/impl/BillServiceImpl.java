@@ -111,36 +111,36 @@ public class BillServiceImpl implements BillService {
                                         bill_product_history.getDose());
                             }
                         }
-                        if (itemb.getService_id() != null) {
-                            Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
-                            if (bill_service_history != null) {
-                                service = new ServiceDto(bill_service_history.getServiceId(),
-                                        bill_service_history.getName(),
-                                        bill_service_history.getDiscountStart(),
-                                        bill_service_history.getDiscountEnd(),
-                                        bill_service_history.getDiscountPercent(),
-                                        bill_service_history.getPrice(),
-                                        bill_service_history.getDescription(),
-                                        bill_service_history.getDuration(),
-                                        bill_service_history.getImage());
-                            }
-                        }
-                        if (itemb.getCourse_id() != null) {
-                            Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
-                            if (bill_course_history != null) {
-                                course = new CourseDto(bill_course_history.getCourse_id(),
-                                        bill_course_history.getCode(),
-                                        bill_course_history.getName(),
-                                        bill_course_history.getPrice(),
-                                        bill_course_history.getDuration(),
-                                        bill_course_history.getTimeOfUse(),
-                                        bill_course_history.getDiscountStart(),
-                                        bill_course_history.getDiscountEnd(),
-                                        bill_course_history.getDiscountPercent(),
-                                        bill_course_history.getImage(),
-                                        bill_course_history.getDescription());
-                            }
-                        }
+//                        if (itemb.getService_id() != null) {
+//                            Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
+//                            if (bill_service_history != null) {
+//                                service = new ServiceDto(bill_service_history.getServiceId(),
+//                                        bill_service_history.getName(),
+//                                        bill_service_history.getDiscountStart(),
+//                                        bill_service_history.getDiscountEnd(),
+//                                        bill_service_history.getDiscountPercent(),
+//                                        bill_service_history.getPrice(),
+//                                        bill_service_history.getDescription(),
+//                                        bill_service_history.getDuration(),
+//                                        bill_service_history.getImage());
+//                            }
+//                        }
+//                        if (itemb.getCourse_id() != null) {
+//                            Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
+//                            if (bill_course_history != null) {
+//                                course = new CourseDto(bill_course_history.getCourse_id(),
+//                                        bill_course_history.getCode(),
+//                                        bill_course_history.getName(),
+//                                        bill_course_history.getPrice(),
+//                                        bill_course_history.getDuration(),
+//                                        bill_course_history.getTimeOfUse(),
+//                                        bill_course_history.getDiscountStart(),
+//                                        bill_course_history.getDiscountEnd(),
+//                                        bill_course_history.getDiscountPercent(),
+//                                        bill_course_history.getImage(),
+//                                        bill_course_history.getDescription());
+//                            }
+//                        }
                         list.add(new BillDetailDto(itemb.getId(), product, service, course, itemb.getQuantity()));
                     }
                     f.setItems(list);
@@ -200,37 +200,37 @@ public class BillServiceImpl implements BillService {
                                         bill_product_history.getDose());
                             }
                         }
-                        if (itemb.getService_id() != null) {
-                            Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
-                            if (bill_service_history != null) {
-                                service = new ServiceDto(bill_service_history.getServiceId(),
-                                        bill_service_history.getName(),
-                                        bill_service_history.getDiscountStart(),
-                                        bill_service_history.getDiscountEnd(),
-                                        bill_service_history.getDiscountPercent(),
-                                        bill_service_history.getPrice(),
-                                        bill_service_history.getDescription(),
-                                        bill_service_history.getDuration(),
-                                        bill_service_history.getImage());
-                            }
-                        }
-                        if (itemb.getCourse_id() != null) {
-                            Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
-                            if (bill_course_history != null) {
-
-                                course = new CourseDto(bill_course_history.getCourse_id(),
-                                        bill_course_history.getCode(),
-                                        bill_course_history.getName(),
-                                        bill_course_history.getPrice(),
-                                        bill_course_history.getDuration(),
-                                        bill_course_history.getTimeOfUse(),
-                                        bill_course_history.getDiscountStart(),
-                                        bill_course_history.getDiscountEnd(),
-                                        bill_course_history.getDiscountPercent(),
-                                        bill_course_history.getImage(),
-                                        bill_course_history.getDescription());
-                            }
-                        }
+//                        if (itemb.getService_id() != null) {
+//                            Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
+//                            if (bill_service_history != null) {
+//                                service = new ServiceDto(bill_service_history.getServiceId(),
+//                                        bill_service_history.getName(),
+//                                        bill_service_history.getDiscountStart(),
+//                                        bill_service_history.getDiscountEnd(),
+//                                        bill_service_history.getDiscountPercent(),
+//                                        bill_service_history.getPrice(),
+//                                        bill_service_history.getDescription(),
+//                                        bill_service_history.getDuration(),
+//                                        bill_service_history.getImage());
+//                            }
+//                        }
+//                        if (itemb.getCourse_id() != null) {
+//                            Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
+//                            if (bill_course_history != null) {
+//
+//                                course = new CourseDto(bill_course_history.getCourse_id(),
+//                                        bill_course_history.getCode(),
+//                                        bill_course_history.getName(),
+//                                        bill_course_history.getPrice(),
+//                                        bill_course_history.getDuration(),
+//                                        bill_course_history.getTimeOfUse(),
+//                                        bill_course_history.getDiscountStart(),
+//                                        bill_course_history.getDiscountEnd(),
+//                                        bill_course_history.getDiscountPercent(),
+//                                        bill_course_history.getImage(),
+//                                        bill_course_history.getDescription());
+//                            }
+//                        }
                         ServiceDto s = billDetailRepository.getServiceByBillDetail(itemb.getId());
                         CourseDto c = billDetailRepository.getCourseByBillDetail(itemb.getId());
                         list.add(new BillDetailDto(itemb.getId(), product, service, course, itemb.getQuantity()));
@@ -265,14 +265,14 @@ public class BillServiceImpl implements BillService {
                         Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
                         product = new ProductDto(bill_product_history);
                     }
-                    if(itemb.getService_id()!=null){
-                        Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
-                        service = new ServiceDto(bill_service_history);
-                    }
-                    if(itemb.getCourse_id()!=null){
-                        Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
-                        course = new CourseDto(bill_course_history);
-                    }
+//                    if(itemb.getService_id()!=null){
+//                        Bill_Service_History bill_service_history = billDetailRepository.getBillServiceHistory(itemb.getId());
+//                        service = new ServiceDto(bill_service_history);
+//                    }
+//                    if(itemb.getCourse_id()!=null){
+//                        Bill_Course_History bill_course_history = billDetailRepository.getBillCourseHistory(itemb.getId());
+//                        course = new CourseDto(bill_course_history);
+//                    }
                     list.add(new BillDetailDto(itemb.getId(), product, service, course, itemb.getQuantity()));
                 }
                 if (entity != null){

@@ -17,7 +17,7 @@ public class Bill_Course_History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long billDetail_id;
+    private Long scheduleId;
     private String date;
 
     private Long course_id;
@@ -32,9 +32,9 @@ public class Bill_Course_History {
     private String image;
     private String description;
 
-    public Bill_Course_History(Long id, Long billDetail_id ,String date, Long course_id, String code, String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
+    public Bill_Course_History(Long id, Long scheduleId ,String date, Long course_id, String code, String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
         this.id = id;
-        this.billDetail_id = billDetail_id;
+        this.scheduleId = scheduleId;
         this.date = date;
         this.course_id = course_id;
         this.code = code;
@@ -49,8 +49,8 @@ public class Bill_Course_History {
         this.description = description;
     }
 
-    public Bill_Course_History(Long billDetail_id, String date, long course_id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
-        this.billDetail_id = billDetail_id;
+    public Bill_Course_History(Long scheduleId, String date, long course_id, String code, String name, Double price, int duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
+        this.scheduleId = scheduleId;
         this.date = date;
         this.course_id = course_id;
         this.code = code;

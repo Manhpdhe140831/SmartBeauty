@@ -18,7 +18,7 @@ public class Bill_Service_History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long billDetail_id;
+    private Long scheduleId;
     private Long serviceId;
     private String name;
     private String discountStart;
@@ -29,9 +29,9 @@ public class Bill_Service_History {
     private Long duration;
     private String image;
 
-    public Bill_Service_History(Long id, Long billDetail_id,Long serviceId, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image) {
+    public Bill_Service_History(Long id, Long scheduleId,Long serviceId, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image) {
         this.id = id;
-        this.billDetail_id = billDetail_id;
+        this.scheduleId = scheduleId;
         this.serviceId = serviceId;
         this.name = name;
         this.discountStart = discountStart;
@@ -43,8 +43,8 @@ public class Bill_Service_History {
         this.image = image;
     }
 
-    public Bill_Service_History(Long billDetail_id, Long serviceId, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image) {
-        this.billDetail_id = billDetail_id;
+    public Bill_Service_History(Long scheduleId, Long serviceId, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image) {
+        this.scheduleId = scheduleId;
         this.serviceId = serviceId;
         this.name = name;
         this.discountStart = discountStart;
