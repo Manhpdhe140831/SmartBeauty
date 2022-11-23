@@ -32,6 +32,8 @@ public interface Bill_Course_History_Repository extends JpaRepository<Bill_Cours
     Bill_Course_History getById(Long keyword);*/
     Bill_Course_History getBill_Course_HistoriesById(Long id);
 
+    @Query(value = "select bch from Bill_Course_History bch join Customer_Course_Mapping ccm on ccm.course_id = bch.course_id where ccm.id = ?1")
+    public Bill_Course_History getBill_Course_HistoriesBySchedule(Long id);
 
 
 }
