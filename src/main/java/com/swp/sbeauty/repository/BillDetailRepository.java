@@ -22,6 +22,8 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
     @Query(value = "select c from Course c join BillDetail  bd on c.id = bd.course_id where bd.id = ?1")
     public CourseDto getCourseByBillDetail(Long id);
 
+    BillDetail getBillDetailById(Long id);
+
     @Query(value = "select c.duration from Course c where c.id =?1")
     Integer getDuration(Long id);
 
