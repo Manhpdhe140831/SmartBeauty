@@ -3,7 +3,7 @@ import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import { CourseModel, CourseUpdateEntity } from "../../../model/course.model";
 import {
   Divider,
-  Image as MantineImage,
+  Image,
   Modal,
   NumberInput,
   Text,
@@ -19,8 +19,6 @@ import { IconPercentage } from "@tabler/icons";
 import { getCourseModelSchema } from "../../../validation/course.schema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import { MAX_PRICE } from "../../../const/_const";
 import {
   formatterNumberInput,
@@ -30,10 +28,12 @@ import ServiceInCourseTable from "./_partial/service-in-course.table";
 import { formatTime } from "../../../utilities/time.helper";
 import { DialogSubmit } from "../../../utilities/form-data.helper";
 import { ServiceModel } from "../../../model/service.model";
+import { stateInputProps } from "../../../utilities/mantine.helper";
+import ImageUpload from "../../../components/image-upload";
 
 const CourseDetailDialog: FC<
   DialogProps<CourseModel<ServiceModel>, CourseUpdateEntity, CourseUpdateEntity>
-> = ({ data, opened, onClosed, mode }) => {
+> = ({ data, opened, onClosed, mode, readonly }) => {
   const validateSchema = getCourseModelSchema(mode);
 
   const {
@@ -85,7 +85,8 @@ const CourseDetailDialog: FC<
       size={"auto"}
       padding={0}
     >
-      <div
+      <fieldset
+        disabled={readonly}
         className={`rounded-[4px] border-2 ${
           mode === "view" && isDirty
             ? "border-yellow-600"
@@ -93,9 +94,7 @@ const CourseDetailDialog: FC<
         }`}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
-          {mode === "view"
-            ? "Treatment Course Detail"
-            : "Treatment Course Product"}
+          {mode === "view" ? "Chi tiết Liệu Trình" : "Tạo Liệu Trình"}
         </h2>
 
         <form
@@ -109,15 +108,23 @@ const CourseDetailDialog: FC<
                 "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
               }
             >
-              Information
+              Thông Tin
             </h2>
-            <TextInput required label={"Course Name"} {...register("name")} />
+            <TextInput
+              {...register("name")}
+              {...stateInputProps("Tên liệu trình", readonly, {
+                required: true,
+                size: "sm",
+              })}
+            />
             <FormErrorMessage errors={errors} name={"name"} />
 
             <Textarea
-              required
-              label={"Description"}
               {...register("description")}
+              {...stateInputProps("Miêu tả", readonly, {
+                required: true,
+                size: "sm",
+              })}
             />
             <FormErrorMessage errors={errors} name={"description"} />
 
@@ -127,25 +134,28 @@ const CourseDetailDialog: FC<
                   htmlFor="timeOfUse"
                   className="text-[14px] font-[500] text-gray-900"
                 >
-                  Time of use <span className="text-red-500">*</span>
+                  Số lần <span className="text-red-500">*</span>
                 </label>
                 <small className="mb-1 text-[12px] leading-[1.2] text-gray-400">
-                  amount of treatment in the course
+                  Số lịch hẹn có thể với một liệu trình
                 </small>
                 <Controller
                   name={"timeOfUse"}
                   control={control}
                   render={({ field }) => (
                     <NumberInput
-                      placeholder={"2,3 times..."}
                       hideControls
                       min={0}
                       max={99}
-                      required
                       defaultValue={field.value}
                       onChange={(v) => field.onChange(v)}
                       onBlur={field.onBlur}
                       step={1}
+                      {...stateInputProps(undefined, readonly, {
+                        required: true,
+                        size: "sm",
+                        placeholder: "1, 2, ...",
+                      })}
                     />
                   )}
                 ></Controller>
@@ -157,40 +167,40 @@ const CourseDetailDialog: FC<
                   htmlFor="duration"
                   className="text-[14px] font-[500] text-gray-900"
                 >
-                  Course Duration <span className="text-red-500">*</span>
+                  Thời lượng <span className="text-red-500">*</span>
                 </label>
                 <small className="mb-1 text-[12px] leading-[1.2] text-gray-400">
-                  treatment process in days
+                  số ngày liệu trình sẽ kéo dài
                 </small>
                 <Controller
                   name={"duration"}
                   control={control}
                   render={({ field }) => (
-                    <div
-                      className={
-                        "flex items-center space-x-2 rounded border border-solid border-[#ced4da] px-2"
+                    <NumberInput
+                      hideControls
+                      min={0}
+                      max={9999}
+                      defaultValue={field.value}
+                      onChange={(v) => field.onChange(v)}
+                      onBlur={field.onBlur}
+                      step={1}
+                      className={"flex-1"}
+                      {...stateInputProps(undefined, readonly, {
+                        required: true,
+                        size: "sm",
+                        placeholder: "31, 60 days...",
+                      })}
+                      rightSection={
+                        field.value && (
+                          <div className={"w-full px-4 text-right"}>
+                            <Text size={"xs"} color={"dimmed"}>
+                              ~ {formatTime(field.value, "day")}
+                            </Text>
+                          </div>
+                        )
                       }
-                    >
-                      <NumberInput
-                        placeholder={"31, 60 days..."}
-                        hideControls
-                        min={0}
-                        max={9999}
-                        required
-                        defaultValue={field.value}
-                        onChange={(v) => field.onChange(v)}
-                        onBlur={field.onBlur}
-                        step={1}
-                        variant={"unstyled"}
-                        className={"flex-1"}
-                        sx={{ input: { height: 34 } }}
-                      />
-                      {field.value && (
-                        <Text size={"xs"} color={"dimmed"}>
-                          ~ {formatTime(field.value, "day")}
-                        </Text>
-                      )}
-                    </div>
+                      rightSectionWidth={150}
+                    />
                   )}
                 ></Controller>
                 <FormErrorMessage errors={errors} name={"duration"} />
@@ -204,9 +214,9 @@ const CourseDetailDialog: FC<
                 "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
               }
             >
-              Discount Event
+              Sự kiện khuyến mãi
               <small className={"block w-full text-xs text-gray-400"}>
-                Optional section
+                mục tùy chọn
               </small>
             </h2>
 
@@ -214,14 +224,17 @@ const CourseDetailDialog: FC<
               render={({ field }) => (
                 <DatePicker
                   minDate={dayjs(new Date()).toDate()}
-                  placeholder={"must after today"}
-                  label={"Discount start at"}
                   onChange={(e) => {
                     field.onChange(e);
                     field.onBlur();
                   }}
                   defaultValue={field.value}
                   onBlur={field.onBlur}
+                  {...stateInputProps("Thời gian bắt đầu", readonly, {
+                    required: true,
+                    size: "sm",
+                    placeholder: "phải sau hiện tại",
+                  })}
                 />
               )}
               name={"discountStart"}
@@ -233,14 +246,17 @@ const CourseDetailDialog: FC<
               render={({ field }) => (
                 <DatePicker
                   minDate={dayjs(new Date()).toDate()}
-                  placeholder={"must after discount start date"}
-                  label={"Discount End at"}
                   onChange={(e) => {
                     field.onChange(e);
                     field.onBlur();
                   }}
                   defaultValue={field.value}
                   onBlur={field.onBlur}
+                  {...stateInputProps("Thời gian kết thúc", readonly, {
+                    required: true,
+                    size: "sm",
+                    placeholder: "phải sau ngày bắt đầu...",
+                  })}
                 />
               )}
               name={"discountEnd"}
@@ -254,20 +270,22 @@ const CourseDetailDialog: FC<
               render={({ field }) => (
                 <NumberInput
                   disabled={!watch("discountStart") && !watch("discountEnd")}
-                  placeholder={"sale percentage..."}
-                  withAsterisk
                   hideControls
                   min={0}
                   precision={2}
                   step={0.05}
                   max={100}
-                  label={"Discount Percent"}
                   defaultValue={field.value ?? undefined}
                   onChange={(v) => field.onChange(v ?? null)}
                   onBlur={field.onBlur}
                   rightSection={
                     <IconPercentage color={"#939393"} className={"mr-2"} />
                   }
+                  {...stateInputProps("% Giảm giá", readonly, {
+                    required: true,
+                    size: "sm",
+                    placeholder: "5, 10, ...",
+                  })}
                 />
               )}
             ></Controller>
@@ -281,42 +299,30 @@ const CourseDetailDialog: FC<
               htmlFor="file"
               className="text-[14px] font-[500] text-gray-900"
             >
-              Course Image <span className="text-red-500">*</span>
+              Ảnh minh họa <span className="text-red-500">*</span>
             </label>
             <small className="mb-1 text-[12px] leading-tight text-gray-400">
-              The image must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP
-              format.
+              Ảnh ít hơn 5mb, định dạng PNG, JPEG, WEBG
             </small>
             <Controller
               name={"image"}
               control={control}
               render={({ field }) => (
-                <BtnSingleUploader
-                  accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                <ImageUpload
                   onChange={(f) => {
                     field.onChange(f);
                     field.onBlur();
                   }}
-                  btnPosition={"after"}
-                  btnTitle={"Upload Image"}
-                  render={(f) => (
-                    <>
-                      {f && (
-                        <Text size="xs" align="left">
-                          Picked file: {f.name}
-                        </Text>
-                      )}
-                      <MantineImage
-                        width={128}
-                        height={128}
-                        radius="md"
-                        src={
-                          f ? URL.createObjectURL(f) : (field.value as string)
-                        }
-                        alt="Course image"
-                        className="mb-2 select-none rounded-lg border object-cover shadow-xl"
-                      />
-                    </>
+                  render={(file) => (
+                    <Image
+                      radius={4}
+                      width={160}
+                      height={160}
+                      fit={"cover"}
+                      className={"rounded border"}
+                      src={file}
+                      alt="course image"
+                    />
                   )}
                 />
               )}
@@ -332,25 +338,19 @@ const CourseDetailDialog: FC<
               control={control}
               render={({ field }) => (
                 <NumberInput
-                  placeholder={"price of the course..."}
                   hideControls
                   min={0}
                   max={MAX_PRICE}
-                  label={
-                    <label
-                      htmlFor="file"
-                      className="text-[14px] font-[500] text-gray-900"
-                    >
-                      Course Price <span className="text-red-500">*</span>
-                    </label>
-                  }
                   defaultValue={field.value}
                   onChange={(v) => field.onChange(v)}
                   onBlur={field.onBlur}
-                  size={"lg"}
                   parser={parserNumberInput}
                   formatter={formatterNumberInput}
                   rightSection={<span className={"text-xs"}>VND</span>}
+                  {...stateInputProps("Giá tiền", readonly, {
+                    required: true,
+                    size: "lg",
+                  })}
                 />
               )}
             ></Controller>
@@ -366,7 +366,7 @@ const CourseDetailDialog: FC<
             >
               Products
               <small className={"block w-full text-xs text-gray-400"}>
-                Product included in the service
+                Sản phẩm đi kèm
               </small>
             </h2>
 
@@ -378,6 +378,7 @@ const CourseDetailDialog: FC<
                     field.onChange(e);
                     field.onBlur();
                   }}
+                  readonly={readonly === true}
                 />
               )}
               name={"services"}
@@ -386,14 +387,26 @@ const CourseDetailDialog: FC<
           </div>
 
           <div className="mt-4 flex w-full justify-end">
-            <DialogDetailAction
-              mode={mode}
-              isDirty={isDirty}
-              isValid={isValid}
-            />
+            {!readonly ? (
+              <DialogDetailAction
+                mode={mode}
+                isDirty={isDirty}
+                isValid={isValid}
+                readonly={readonly}
+              />
+            ) : (
+              <div
+                className={
+                  "cursor-pointer rounded bg-blue-500 px-6 py-2 font-semibold text-white hover:bg-blue-600"
+                }
+                onClick={() => onClosed()}
+              >
+                Hủy
+              </div>
+            )}
           </div>
         </form>
-      </div>
+      </fieldset>
     </Modal>
   );
 };

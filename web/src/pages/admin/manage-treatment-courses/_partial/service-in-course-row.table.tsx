@@ -1,4 +1,4 @@
-import { ActionIcon, Image } from "@mantine/core";
+import { Text, ActionIcon, Image } from "@mantine/core";
 import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { IconX } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
@@ -18,6 +18,7 @@ type rowProps = {
   serviceId: number | null;
   onSelected: (id: number | null) => void;
   onRemoved: (index: number) => void;
+  readonly: boolean;
 };
 
 const ServiceInCourseRowTable = ({
@@ -26,6 +27,7 @@ const ServiceInCourseRowTable = ({
   onSelected,
   onRemoved,
   disableServices,
+  readonly,
 }: rowProps) => {
   const fnHelper = (s: ServiceModel) => ({
     id: s.id,
@@ -68,36 +70,42 @@ const ServiceInCourseRowTable = ({
         </div>
       </td>
       <td>
-        {viewLoading ? (
-          <>loading...</>
+        {!readonly ? (
+          viewLoading ? (
+            <>loading...</>
+          ) : (
+            <DatabaseSearchSelect
+              value={serviceId ? String(serviceId) : null}
+              displayValue={
+                viewingService
+                  ? {
+                      ...rawToAutoItem(viewingService, fnHelper),
+                      disabled: true,
+                    }
+                  : null
+              }
+              onSearching={(k) => searchService(k, disableServices ?? [])}
+              onSelected={(_id) => {
+                const id = _id ? Number(_id) : null;
+                onSelected(id);
+              }}
+            />
+          )
         ) : (
-          <DatabaseSearchSelect
-            value={serviceId ? String(serviceId) : null}
-            displayValue={
-              viewingService
-                ? {
-                    ...rawToAutoItem(viewingService, fnHelper),
-                    disabled: true,
-                  }
-                : null
-            }
-            onSearching={(k) => searchService(k, disableServices ?? [])}
-            onSelected={(_id) => {
-              const id = _id ? Number(_id) : null;
-              onSelected(id);
-            }}
-          />
+          <Text>{viewingService?.name}</Text>
         )}
       </td>
       <td>
         {viewingService && formatTime(viewingService.duration, "minutes")}
       </td>
       <td>{viewingService?.price && formatPrice(viewingService.price)}</td>
-      <td>
-        <ActionIcon onClick={() => onRemoved(no)} color={"red"}>
-          <IconX size={18} />
-        </ActionIcon>
-      </td>
+      {!readonly && (
+        <td>
+          <ActionIcon onClick={() => onRemoved(no)} color={"red"}>
+            <IconX size={18} />
+          </ActionIcon>
+        </td>
+      )}
     </tr>
   );
 };

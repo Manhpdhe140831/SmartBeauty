@@ -44,6 +44,10 @@ export const branchManagerConfig: NavLinkItemProp[] = [
     isDivider: true,
   },
   {
+    href: `/${USER_ROLE.manager}/manage-course`,
+    label: "Danh sách Liệu Trình",
+  },
+  {
     href: `/${USER_ROLE.manager}/manage-service`,
     label: "Danh sách Dịch Vụ",
   },
@@ -70,6 +74,10 @@ export const branchSaleStaffConfig: NavLinkItemProp[] = [
     isDivider: true,
   },
   {
+    href: `/${USER_ROLE.sale_staff}/course`,
+    label: "Danh sách Liệu Trình",
+  },
+  {
     href: `/${USER_ROLE.sale_staff}/service`,
     label: "Danh sách Dịch Vụ",
   },
@@ -80,6 +88,17 @@ export const branchSaleStaffConfig: NavLinkItemProp[] = [
 ];
 
 export const branchTechStaffConfig: NavLinkItemProp[] = [
+  {
+    href: `/${USER_ROLE.technical_staff}/schedule`,
+    label: "Lịch Hẹn",
+  },
+  {
+    isDivider: true,
+  },
+  {
+    href: `/${USER_ROLE.technical_staff}/course`,
+    label: "Danh sách Liệu Trình",
+  },
   {
     href: `/${USER_ROLE.technical_staff}/service`,
     label: "Danh sách Dịch Vụ",

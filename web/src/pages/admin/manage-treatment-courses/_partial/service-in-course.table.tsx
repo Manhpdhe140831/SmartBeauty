@@ -6,9 +6,14 @@ import ServiceInCourseRowTable from "./service-in-course-row.table";
 type TableProps = {
   services?: number[];
   onChange: (serviceId: (number | null)[]) => void;
+  readonly: boolean;
 };
 
-const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
+const ServiceInCourseTable: FC<TableProps> = ({
+  services,
+  onChange,
+  readonly,
+}) => {
   const [serviceIds, setServiceIds] = useState<(number | null)[]>(
     services ?? []
   );
@@ -41,7 +46,7 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
         <col />
         <col className={"w-32"} />
         <col className={"w-32"} />
-        <col className={"w-14"} />
+        {!readonly && <col className={"w-14"} />}
       </colgroup>
       <thead>
         <tr>
@@ -60,7 +65,7 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
               (VND)
             </Text>
           </th>
-          <th></th>
+          {!readonly ?? <th></th>}
         </tr>
       </thead>
       <tbody>
@@ -72,20 +77,23 @@ const ServiceInCourseTable: FC<TableProps> = ({ services, onChange }) => {
             onSelected={(i) => onServiceChanged(index, i)}
             serviceId={item}
             disableServices={services}
+            readonly={readonly}
           />
         ))}
-        <tr className={"border-b"}>
-          <td colSpan={6}>
-            <Button
-              onClick={() => addingService()}
-              leftIcon={<IconPlus />}
-              color={"green"}
-              fullWidth
-            >
-              Product
-            </Button>
-          </td>
-        </tr>
+        {!readonly && (
+          <tr className={"border-b"}>
+            <td colSpan={6}>
+              <Button
+                onClick={() => addingService()}
+                leftIcon={<IconPlus />}
+                color={"green"}
+                fullWidth
+              >
+                Product
+              </Button>
+            </td>
+          </tr>
+        )}
       </tbody>
     </Table>
   );
