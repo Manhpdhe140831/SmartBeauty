@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +32,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-@Service @Transactional @Slf4j
+@Service
+@Transactional
+@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     @Autowired
@@ -52,29 +56,26 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
+
     @Override
     public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services) {
-        try{
+        try {
             Course course = new Course();
             course.setCode("code");
             course.setName(name);
             course.setPrice(price);
             course.setDuration(duration);
             course.setTimeOfUse(timeOfUse);
-            if(discountStart != null){
-                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                //Date startDate = df.parse(discountStart);
+            if (discountStart != null) {
                 course.setDiscountStart(discountStart);
             }
-            if(discountEnd != null){
-                //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                //Date endDate = df.parse(discountEnd);
+            if (discountEnd != null) {
                 course.setDiscountEnd(discountEnd);
             }
-            if(discountPercent!=null){
+            if (discountPercent != null) {
                 course.setDiscountPercent(discountPercent);
             }
-            if(image!=null){
+            if (image != null) {
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
                 if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
@@ -87,19 +88,19 @@ public class CourseServiceImpl implements CourseService {
                 }
                 course.setImage(image.getOriginalFilename());
             }
-            if(description!=null){
+            if (description != null) {
                 course.setDescription(description);
             }
             course = courseRepository.save(course);
-            if (services!=null){
-                for (int i =0; i < services.length; i++
+            if (services != null) {
+                for (int i = 0; i < services.length; i++
                 ) {
                     Course_Service_Mapping course_service_mapping = new Course_Service_Mapping(course.getId(), Long.parseLong(services[i]));
                     course_service_mapping_repository.save(course_service_mapping);
                 }
             }
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -114,10 +115,10 @@ public class CourseServiceImpl implements CourseService {
                 .stream()
                 .map(course -> mapper.map(course, CourseDto.class))
                 .collect(Collectors.toList());
-        for(CourseDto courseDto : courseDtos){
+        for (CourseDto courseDto : courseDtos) {
             List<Long> listIdService = course_service_mapping_repository.getMappingByIdCourse(courseDto.getId());
             List<ServiceDto> list = new ArrayList<>();
-            for(Long id : listIdService){
+            for (Long id : listIdService) {
                 list.add(new ServiceDto(serviceRepository.getServiceById(id)));
             }
             courseDto.setServices(list);
@@ -138,10 +139,10 @@ public class CourseServiceImpl implements CourseService {
                 .stream()
                 .map(course -> mapper.map(course, CourseDto.class))
                 .collect(Collectors.toList());
-        for(CourseDto courseDto : courseDtos){
+        for (CourseDto courseDto : courseDtos) {
             List<Long> listIdService = course_service_mapping_repository.getMappingByIdCourse(courseDto.getId());
             List<ServiceDto> list = new ArrayList<>();
-            for(Long id : listIdService){
+            for (Long id : listIdService) {
                 list.add(new ServiceDto(serviceRepository.getServiceById(id)));
             }
             courseDto.setServices(list);
@@ -156,8 +157,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services) {
         try {
-            Course course = null;
-            course = courseRepository.getCourseById(id);
+            Course course = courseRepository.getCourseById(id);
             if (name != null) {
                 course.setName(name);
             }
@@ -187,13 +187,21 @@ public class CourseServiceImpl implements CourseService {
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
+                //remove old image
+                Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(course.getImage());
+
+                File fileOld = new File(pathOld.toString());
+                if (!fileOld.delete()) {
+                    throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                }
                 course.setImage(image.getOriginalFilename());
             }
             if (description != null) {
                 course.setDescription(description);
             }
             List<Course_Service_Mapping> listMapping = course_service_mapping_repository.getMappingById(id);
-            for(Course_Service_Mapping mapping : listMapping){
+            for (Course_Service_Mapping mapping : listMapping) {
                 course_service_mapping_repository.deleteById(mapping.getId());
             }
             if (services != null) {
@@ -203,7 +211,7 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -212,13 +220,13 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto getCourseById(Long id) {
         Course course = null;
         Optional<Course> optional = courseRepository.findById(id);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             course = optional.get();
         }
         List<com.swp.sbeauty.entity.Service> services = serviceRepository.getServiceByCourseId(course.getId());
         List<ServiceDto> serviceDtos = new ArrayList<>();
-        for (com.swp.sbeauty.entity.Service s: services
-             ) {
+        for (com.swp.sbeauty.entity.Service s : services
+        ) {
             serviceDtos.add(new ServiceDto(s));
         }
         CourseDto courseDto = new CourseDto(course, serviceDtos);
@@ -227,13 +235,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDto> getServiceBuyed(Long idCheck, Long customer) {
-        if(idCheck==null || customer == null){
+        if (idCheck == null || customer == null) {
             return null;
         } else {
             Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
-            List<Bill_Course_History> allUsers = bill_course_history_repository.getCourseBuyed(idBranch,customer);
+            List<Bill_Course_History> allUsers = bill_course_history_repository.getCourseBuyed(idBranch, customer);
             List<CourseDto> courseDtos = new ArrayList<>();
-            for (Bill_Course_History course : allUsers){
+            for (Bill_Course_History course : allUsers) {
                 courseDtos.add(new CourseDto(course));
             }
             return courseDtos;
@@ -243,12 +251,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public String validateCourse(String name, String discountStart, String discountEnd, Double discountPercent) {
         String result = "";
-        if(discountStart!=null || discountEnd!=null){
-            if(discountPercent == null){
+        if (discountStart != null || discountEnd != null) {
+            if (discountPercent == null) {
                 result += "Discount percent cannot be null. ";
             }
         }
-        if(courseRepository.existsByName(name)){
+        if (courseRepository.existsByName(name)) {
             result += "Name already exists in data. ";
         }
         return result;

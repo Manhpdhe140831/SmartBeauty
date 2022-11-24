@@ -3,6 +3,8 @@ package com.swp.sbeauty.service.impl;
 
 import com.swp.sbeauty.dto.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +40,9 @@ import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service @Transactional @Slf4j
+@Service
+@Transactional
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
@@ -72,7 +76,7 @@ public class UserServiceImpl implements UserService {
             user.setAddress(address);
             user.setPassword(encoder.encode(password));
 
-            if(image != null){
+            if (image != null) {
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
                 if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
@@ -101,7 +105,7 @@ public class UserServiceImpl implements UserService {
                 return true;
             } else if (roleAuth.equalsIgnoreCase("manager")) {
                 Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
-                if(idBranch == null){
+                if (idBranch == null) {
                     return false;
                 } else {
                     Role roleRaw = null;
@@ -120,7 +124,7 @@ public class UserServiceImpl implements UserService {
                     return true;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
         return false;
@@ -129,13 +133,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllUsersByManager(Integer idCheck, int offset, int pageSize) {
         Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
-        Page<Users> users = userRepository.getAllUserByManager(idBranch,PageRequest.of(offset,pageSize));
+        Page<Users> users = userRepository.getAllUserByManager(idBranch, PageRequest.of(offset, pageSize));
         ModelMapper mapper = new ModelMapper();
         List<UserDto> dtos = users
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
-        dtos.stream().forEach(f->
+        dtos.stream().forEach(f ->
                 {
                     f.setPassword("");
                     f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
@@ -148,16 +152,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address) {
-        try{
+        try {
             Users user = null;
-            if(id !=null){
-                Optional<Users> optional =userRepository.findById(id);
-                if(optional.isPresent()){
+            if (id != null) {
+                Optional<Users> optional = userRepository.findById(id);
+                if (optional.isPresent()) {
                     user = optional.get();
                 }
             }
-            if(user != null){
-                if(image != null){
+            if (user != null) {
+                if (image != null) {
                     Path staticPath = Paths.get("static");
                     Path imagePath = Paths.get("images");
                     if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
@@ -168,27 +172,35 @@ public class UserServiceImpl implements UserService {
                     try (OutputStream os = Files.newOutputStream(file)) {
                         os.write(image.getBytes());
                     }
+                    //remove old image
+                    Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                            .resolve(imagePath).resolve(user.getUrlImage());
+
+                    File fileOld = new File(pathOld.toString());
+                    if (!fileOld.delete()) {
+                        throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                    }
                     user.setUrlImage(image.getOriginalFilename());
                 }
-                if(name!=null){
+                if (name != null) {
                     user.setName(name);
                 }
-                if(email!=null){
+                if (email != null) {
                     user.setEmail(email);
                 }
-                if(phone!=null){
+                if (phone != null) {
                     user.setPhone(phone);
                 }
-                if(dateOfBirth!=null){
+                if (dateOfBirth != null) {
                     Date birthDate = new DateTime(dateOfBirth).toDate();
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     Date dob = df.parse(dateOfBirth);
                     user.setDateOfBirth(birthDate);
                 }
-                if(gender!=null){
+                if (gender != null) {
                     user.setGender(gender);
                 }
-                if(address!=null){
+                if (address != null) {
                     user.setAddress(address);
                 }
                 userRepository.save(user);
@@ -196,14 +208,14 @@ public class UserServiceImpl implements UserService {
             } else {
                 return false;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
     @Override
     public List<UserDto> getStaffFree(Long idCheck, String date, Long slot) {
-        if(idCheck==null || date == null || slot == null){
+        if (idCheck == null || date == null || slot == null) {
             return null;
         } else {
 
@@ -211,24 +223,24 @@ public class UserServiceImpl implements UserService {
             List<Users> allUsers = userRepository.getAllTechStaff(idBranch);
             List<Users> listDup = userRepository.getStaffFree(idBranch, date, slot);
             List<Users> listResult = new ArrayList<>();
-            for(Users users : allUsers){
-                if(listDup!=null){
+            for (Users users : allUsers) {
+                if (listDup != null) {
                     Boolean check = false;
-                    for(Users user: listDup){
-                        if(users.getId() == user.getId()){
+                    for (Users user : listDup) {
+                        if (users.getId() == user.getId()) {
                             check = true;
                         }
                     }
-                    if(check == false){
+                    if (check == false) {
                         listResult.add(users);
                     }
-                } else{
+                } else {
                     listResult.add(users);
                 }
             }
             List<UserDto> listDto = new ArrayList<>();
-            if(listResult!=null){
-                for(Users user : listResult){
+            if (listResult != null) {
+                for (Users user : listResult) {
                     listDto.add(new UserDto(user));
                 }
             }
@@ -250,10 +262,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String validateUser(String email, String phone) {
         String result = "";
-        if(userRepository.existsByEmail(email)){
+        if (userRepository.existsByEmail(email)) {
             result += "Email already exists in data, ";
         }
-        if(userRepository.existsByPhone(phone)){
+        if (userRepository.existsByPhone(phone)) {
             result += "phone already exists in data";
         }
         return result;
@@ -261,13 +273,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> getAllUsers(int offset, int pageSize) {
-        Page<Users> users = userRepository.findAll(PageRequest.of(offset,pageSize));
+        Page<Users> users = userRepository.findAll(PageRequest.of(offset, pageSize));
         ModelMapper mapper = new ModelMapper();
         List<UserDto> dtos = users
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
-        dtos.stream().forEach(f->
+        dtos.stream().forEach(f ->
                 {
                     f.setPassword("");
                     f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
@@ -281,13 +293,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllUsersByAdmin(int offset, int pageSize) {
 
-        Page<Users> users = userRepository.getAllUserByAdmin(PageRequest.of(offset,pageSize));
+        Page<Users> users = userRepository.getAllUserByAdmin(PageRequest.of(offset, pageSize));
         ModelMapper mapper = new ModelMapper();
         List<UserDto> dtos = users
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
-        dtos.stream().forEach(f->
+        dtos.stream().forEach(f ->
                 {
                     f.setPassword("");
                     f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
@@ -301,9 +313,9 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getUsersByBranch(String id) {
         List<Users> list = userRepository.getListByBranch(Long.parseLong(id));
         List<UserDto> listDto = new ArrayList<>();
-        for (Users itemU: list
-             ) {
-            listDto.add(new UserDto(itemU.getId(), itemU.getName(),itemU.getEmail(), itemU.getPhone(), itemU.getDateOfBirth(), itemU.getGender(), itemU.getAddress(), itemU.getUrlImage(), itemU.getRoles()));
+        for (Users itemU : list
+        ) {
+            listDto.add(new UserDto(itemU.getId(), itemU.getName(), itemU.getEmail(), itemU.getPhone(), itemU.getDateOfBirth(), itemU.getGender(), itemU.getAddress(), itemU.getUrlImage(), itemU.getRoles()));
         }
 
         return listDto;
@@ -313,7 +325,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllManager() {
         List<Users> list = userRepository.getAllManager();
         List<UserDto> listDto = new ArrayList<>();
-        for(Users users : list){
+        for (Users users : list) {
             listDto.add(new UserDto(users));
         }
         return listDto;
@@ -323,14 +335,14 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserByManager(Integer idCheck, int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         UserResponse userResponse = new UserResponse();
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
-        Page<Users> page = userRepository.getAllUserByManager(idBranch,pageable);
+        Page<Users> page = userRepository.getAllUserByManager(idBranch, pageable);
         List<UserDto> dtos = page
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
-        dtos.stream().forEach(f->
+        dtos.stream().forEach(f ->
                 {
                     f.setPassword("");
                     f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
@@ -341,7 +353,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setData(pageResult);
         userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
-        userResponse.setPageIndex(pageNo+1);
+        userResponse.setPageIndex(pageNo + 1);
         return userResponse;
     }
 
@@ -349,13 +361,13 @@ public class UserServiceImpl implements UserService {
     public UserResponse getAllUser(int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         UserResponse userResponse = new UserResponse();
-        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Users> page = userRepository.getAllUserByAdmin(pageable);
         List<UserDto> dtos = page
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
-        dtos.stream().forEach(f->
+        dtos.stream().forEach(f ->
                 {
                     f.setPassword("");
                     f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
@@ -366,15 +378,15 @@ public class UserServiceImpl implements UserService {
         userResponse.setData(pageResult);
         userResponse.setTotalElement(page.getTotalElements());
         userResponse.setTotalPage(page.getTotalPages());
-        userResponse.setPageIndex(pageNo+1);
+        userResponse.setPageIndex(pageNo + 1);
         return userResponse;
     }
 
     @Override
     public List<UserDto> getUsers() {
         List<Users> list = userRepository.findAll();
-        List<UserDto> result =new ArrayList<>();
-        for(Users users : list){
+        List<UserDto> result = new ArrayList<>();
+        for (Users users : list) {
             result.add(new UserDto(users));
         }
         return result;
