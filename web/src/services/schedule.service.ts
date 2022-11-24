@@ -44,3 +44,14 @@ export async function getBedAndStaff(date: string, slotId: number) {
         throw error.response?.data;
     }
 }
+
+export async function createSchedule(payload: any) {
+    try {
+        const apiResult = await axios.post(`/schedule/create`, payload);
+        return apiResult.data;
+    } catch (e) {
+        const error = e as AxiosError<IErrorResponse>;
+        console.error(error);
+        throw error.response?.data;
+    }
+}

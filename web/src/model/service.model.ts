@@ -1,5 +1,6 @@
 import { BasePriceModel } from "./_price.model";
 import { ProductModel } from "./product.model";
+import {CourseModel} from "./course.model";
 
 export interface ServiceModel extends BasePriceModel {
   id: number;
@@ -33,4 +34,10 @@ export interface ServiceUpdateEntity
   id: number;
   image?: File | string;
   products?: ProductInServiceEntity[];
+}
+
+export interface SearchServicesModel {
+  courses: CourseModel[],
+  products: [] | null,
+  services: ServiceModel[]
 }

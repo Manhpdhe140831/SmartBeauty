@@ -13,9 +13,12 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {UserModel} from "../../../model/user.model";
 import {SlotAvailModel, SlotModal} from "../../../model/slot.model";
-import {getBedAndStaff, getServicesAndCourse} from "../../../services/schedule.service";
-import {ServiceModel} from "../../../model/service.model";
+import {createSchedule, getBedAndStaff, getServicesAndCourse} from "../../../services/schedule.service";
+import {SearchServicesModel, ServiceModel} from "../../../model/service.model";
 import {formatDate} from "../../../utilities/time.helper";
+import {StaffModel} from "../../../model/staff.model";
+import {SpaBedModel} from "../../../model/spa-bed.model";
+import DialogDetailAction from "../../../components/dialog-detail-action";
 
 type searchFn<dataType extends object> = (
     key: string
@@ -37,11 +40,16 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
     const [selectedCustomer, setSelectedCustomer] = useState<UserModel | null>(null);
     const [selectedService, setSelectedService] = useState<ServiceModel | null>(null);
     const [serviceList, setServiceList] = useState<any>([]);
+    const [servicesCustomArr, setServicesCustomArr] = useState<any>([]);
     const [slotAvail, setSlotAvail] = useState<SlotAvailModel>({
         beds: [],
         users: []
     });
 
+    // Card info
+    const [slotInfo, setSlotInfo] = useState<SlotModal | null>(null)
+    const [staffTechInfo, setStaffTechInfo] = useState<StaffModel | null>(null)
+    const [bedInfo, setBedInfo] = useState<SpaBedModel | null>(null)
 
     // Function
     const {
@@ -52,13 +60,17 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
         watch,
         getValues,
         resetField,
+        setValue,
         formState: {errors, isValid, isDirty, dirtyFields},
     } = useForm<z.infer<typeof ScheduleSchema>>({
         resolver: zodResolver(ScheduleSchema),
         mode: "onBlur",
         criteriaMode: "all",
         defaultValues: {
-            date: new Date()
+            date: new Date().toISOString(),
+            saleStaffId: useAuthUser((s) => s.user?.id),
+            serviceId: null,
+            courseId: null,
         },
     });
 
@@ -67,35 +79,23 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
             case 0:
                 setSelectedCustomer(null);
                 setSelectedService(null);
-
+                resetField("customerId")
+                resetField("serviceId")
+                resetField("courseId")
                 resetField("date")
                 resetField("slotId")
                 resetField("bedId")
                 resetField("techStaffId")
-
                 break;
             case 1:
                 resetField("slotId")
                 resetField("bedId")
                 resetField("techStaffId")
-
-                // call API lấy thông tin customer
-
-                // Todo: Gán customer vào biến customerData
-                // setSelectedCustomer(customerInfo);
-
-                showSave(false);
                 break;
             case 2:
-                // Todo: Call API with datePicked
                 break;
             case 3:
-                // Todo: call API lấy thông tin service
-
-                // Todo: Gán service vào biến serviceData
-                // setSelectedService(serviceInfo);
-
-                showSave(true);
+                break;
         }
 
         // set button show/hide
@@ -137,40 +137,69 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
         }
     }, [router, router.query.scheduleId, userRole]);
 
-    const searchService = async (keyword = '') => {
+    const searchService = async (keyword = ''): Promise<AutoCompleteItemProp<SearchServicesModel>[]> => {
         if (selectedCustomer) {
             const serviceList = await getServicesAndCourse(selectedCustomer.id, keyword)
-            const servicesCustomArr: any = []
+            setServiceList(serviceList)
+
+            let servicesArr: any = []
 
             Object.keys(serviceList).forEach(key => {
                 if (serviceList[key]) {
-                    servicesCustomArr.concat(serviceList[key].map((s: ServiceModel) => {
+                    servicesArr = [...servicesArr, ...serviceList[key].map((s: ServiceModel) => {
                         return {
                             value: s.id.toString(),
                             label: s.name,
                             group: key
                         }
-                    }))
+                    })]
                 }
             })
 
-            setServiceList(servicesCustomArr)
+            setServicesCustomArr(servicesArr)
+            return servicesArr
+        } else {
+            return []
         }
     }
 
-    const slotInfo = slotList.find((s) => s.id === getValues().slotId)
-
     const searchBedAvail = async () => {
-        const slotAvailable = await getBedAndStaff(getValues().date.toISOString(), getValues().slotId)
+        setValue("bedId", null)
+        setValue("techStaffId", null)
+        const slotAvailable = await getBedAndStaff(getValues().date.toString(), getValues().slotId)
         setSlotAvail(slotAvailable)
+    }
+
+    useEffect(() => {
+        const slotInfo = slotList.find((s) => s.id === Number(getValues().slotId))
+        setSlotInfo(slotInfo ?? null)
+    }, [watch("slotId")])
+
+    useEffect(() => {
+        const techStaff = slotAvail.users.find((u) => u.id === Number(getValues().techStaffId))
+        setStaffTechInfo(techStaff ?? null)
+    }, [watch("techStaffId")])
+
+    useEffect(() => {
+        const bedData = slotAvail.beds.find((b) => b.id === Number(getValues().bedId))
+        setBedInfo(bedData ?? null)
+    }, [watch("bedId")])
+
+    const onSubmit = (payload: any) => {
+        console.log(payload);
+        createSchedule(payload).then(rs => {
+            if (rs) {
+                void router.push("/sale_staff/schedule")
+            }
+        })
     }
 
     return (
         <div className={"h-max w-full p-12"}>
             <form
                 onReset={() => console.log("reset")}
-                onSubmit={() => console.log("create")}
-                className="flex w-full">
+                onSubmit={handleSubmit(onSubmit)}
+                className="w-full">
                 <div className={"flex w-full flex-col gap-4"}>
                     <Stepper active={active} onStepClick={setActive} breakpoint="sm">
                         <Stepper.Step
@@ -181,7 +210,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                 <div className={"flex flex-row items-center gap-3"}>
                                     <span className={"min-w-48"}>Tìm kiếm khách hàng</span>
                                     <Controller
-                                        render={({field: ControlledField}) =>
+                                        render={({field}) =>
                                             <DatabaseSearchSelect
                                                 className={"w-full"}
                                                 value={null}
@@ -189,10 +218,10 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                 onSearching={searchCustomer}
                                                 onSelected={(_id) => {
                                                     const id = _id ? Number(_id) : null;
-                                                    ControlledField.onChange(id);
+                                                    field.onChange(id);
 
                                                     // Gán customer selected to state
-                                                    const user = customerList.find(user => user.id === Number(_id))
+                                                    const user = customerList.find(user => user.id === id)
                                                     if (user) {
                                                         setSelectedCustomer(user);
                                                     }
@@ -208,30 +237,44 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                     <span className={"min-w-48"}>Dịch vụ</span>
                                     <Controller
                                         render={({field}) => (
-                                            <Select className={"w-full"}
-                                                    placeholder="Liệu trình/ Dịch vụ"
-                                                    searchable
-                                                    nothingFound="Trống"
-                                                    data={serviceList}
-                                                    onSearchChange={(s) => {
-                                                        void searchService(s)
-                                                    }}
-                                                    onChange={(e) => {
-                                                        console.log(e);
-                                                        field.onChange(e);
-                                                        field.onBlur();
-                                                    }}
-                                                    onBlur={field.onBlur}
-                                                    disabled={!selectedCustomer}>
-                                            </Select>
+                                            <DatabaseSearchSelect
+                                                className={"w-full"}
+                                                placeholder="Liệu trình/ Dịch vụ"
+                                                value={null}
+                                                displayValue={null}
+                                                onSearching={searchService}
+                                                disabled={!selectedCustomer}
+                                                onSelected={(_id) => {
+                                                    const id = _id ? Number(_id) : null;
+                                                    field.onChange(id);
+
+                                                    // Gán customer selected to state
+                                                    const service = servicesCustomArr.find((s: any) => Number(s.value) === Number(_id))
+                                                    let serviceData: any = null
+                                                    Object.keys(serviceList).forEach((key: string) => {
+                                                        if (service.group === key) {
+                                                            serviceData = serviceList[key].find((s: any) => s.id === Number(service.value))
+                                                        }
+                                                    })
+
+                                                    if (serviceData) {
+                                                        setSelectedService(serviceData);
+                                                    }
+                                                }
+                                                }
+                                            />
                                         )}
-                                        name={"services"}
+                                        name={"serviceId"}
                                         control={control}
                                     />
                                 </div>
                             </div>
                             <Group className={"mt-4"} position={"center"}>
-                                <Button type={"button"} onClick={() => stepByStep(1)}>Xác nhận khách hàng</Button>
+                                <Button type={"button"}
+                                        onClick={() => stepByStep(1)}
+                                        disabled={!selectedCustomer || !selectedService}>
+                                    Xác nhận khách hàng
+                                </Button>
                             </Group>
                         </Stepper.Step>
                         <Stepper.Step
@@ -244,14 +287,14 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                     <Controller
                                         render={({field}) => (
                                             <DatePicker placeholder="Chọn ngày"
-                                                        value={field.value}
+                                                        value={new Date(field.value)}
                                                         withAsterisk
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             field.onBlur();
                                                         }}
                                                         onBlur={field.onBlur}
-                                                        defaultValue={field.value}
+                                                        defaultValue={new Date(field.value)}
                                                         disabled={userRole !== USER_ROLE.sale_staff}
                                             />
                                         )}
@@ -289,7 +332,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                             };
                                                         })}
                                                         onChange={(e) => {
-                                                            field.onChange(e);
+                                                            field.onChange(e ? Number(e) : null);
                                                             field.onBlur();
                                                             void searchBedAvail()
                                                         }}
@@ -306,9 +349,14 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                         placeholder="Giường"
                                                         searchable
                                                         nothingFound="Trống"
-                                                        data={slotAvail.beds.map((bed) => bed.name)}
+                                                        data={slotAvail.beds.map((bed) => {
+                                                            return {
+                                                                value: bed.id.toString(),
+                                                                label: bed.name
+                                                            }
+                                                        })}
                                                         onChange={(e) => {
-                                                            field.onChange(e);
+                                                            field.onChange(e ? Number(e) : null);
                                                             field.onBlur();
                                                         }}
                                                         onBlur={field.onBlur}
@@ -324,9 +372,14 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                         placeholder="NV kỹ thuật"
                                                         searchable
                                                         nothingFound="Trống"
-                                                        data={slotAvail.users.map((bed) => bed.name)}
+                                                        data={slotAvail.users.map((user) => {
+                                                            return {
+                                                                value: user.id.toString(),
+                                                                label: user.name
+                                                            }
+                                                        })}
                                                         onChange={(e) => {
-                                                            field.onChange(e);
+                                                            field.onChange(e ? Number(e) : null);
                                                             field.onBlur();
                                                         }}
                                                         onBlur={field.onBlur}
@@ -408,13 +461,21 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                     <span>{slotInfo.name}</span>
                                                 </div>
                                             }
-                                            <div className={"flex justify-between gap-2"}>
-                                                <span className={"font-bold"}>Giường</span>
-                                                <span>{getValues().bedId}</span>
-                                            </div>
+                                            {
+                                                bedInfo && <div className={"flex justify-between gap-2"}>
+                                                    <span className={"font-bold"}>Giường</span>
+                                                    <span>{bedInfo.name}</span>
+                                                </div>
+                                            }
+                                            {
+                                                staffTechInfo && <div className={"flex justify-between gap-2"}>
+                                                    <span className={"font-bold"}>NV kỹ thuật</span>
+                                                    <span>{staffTechInfo.name}</span>
+                                                </div>
+                                            }
                                             <div className={"flex justify-between gap-2"}>
                                                 <span className={"font-bold"}>Thời gian</span>
-                                                <span>{formatDate(getValues().date.toDateString())}</span>
+                                                <span>{formatDate(getValues().date)}</span>
                                             </div>
                                         </div>
                                     )}
@@ -451,14 +512,13 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                         ></Textarea>
                     </div>
                 </div>
+
+                {userRole === USER_ROLE.sale_staff && saveBtn && (
+                    <div className={"flex justify-end mt-3"}>
+                        <DialogDetailAction mode={"create"} isDirty={isDirty} isValid={isValid}/>
+                    </div>
+                )}
             </form>
-            {userRole === USER_ROLE.sale_staff && saveBtn && (
-                <Group className={"mt-4"} position={"center"}>
-                    <Button type={"button"} color={"gray"}>Cancel</Button>
-                    <Button type={"button"}>Save</Button>
-                </Group>
-            )}
-            {/*</>}*/}
         </div>
     );
 };

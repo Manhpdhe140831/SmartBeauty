@@ -1,5 +1,5 @@
 import {AppPageInterface} from "../../../../interfaces/app-page.interface";
-import WorkAppointment from "../../../_shared/work-appointment/index";
+import WorkAppointment from "../../../_shared/work-appointment/work-appointment";
 import {useAuthUser} from "../../../../store/auth-user.state";
 
 const ManageAppointmentSchedule: AppPageInterface = () => {

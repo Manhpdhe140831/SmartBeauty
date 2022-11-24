@@ -8,6 +8,7 @@ import {useRouter} from "next/router";
 import {USER_ROLE} from "../../../const/user-role.const";
 import {getSchedule, getSlot} from "../../../services/schedule.service";
 import {SlotModal} from "../../../model/slot.model";
+import {useDebounce} from "use-debounce";
 
 type workAppointmentProps = {
     userRole: USER_ROLE;
