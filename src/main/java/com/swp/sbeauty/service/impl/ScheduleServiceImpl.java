@@ -340,16 +340,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
             CourseDto courseDto = null;
-            if (customerCourseHistory != null) {
-                Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(itemS.getCourseHistoryId()).orElse(null);
-                Integer count = customer_course_mapping.getCount() + 1;
-
-                Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
-                courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), count);
-
-
-            }
             if (courseId != null) {
+                if (customerCourseHistory != null) {
+                    Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(itemS.getCourseHistoryId()).orElse(null);
+                    Integer count = customer_course_mapping.getCount() + 1;
+
+                    Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
+                    courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), count);
+
+
+                }
 
 
                 Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(courseId);
