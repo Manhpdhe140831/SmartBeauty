@@ -66,6 +66,7 @@ public class BillServiceImpl implements BillService {
 
 
     String notYetStatus = "not yet";
+    String usingStatus = "using";
 
     @Override
     public BillResponseDto getBills(int offSet, int pageSize) {
@@ -331,7 +332,7 @@ public class BillServiceImpl implements BillService {
                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(billDto.getItem());
                Integer duration = bill_course_history.getDuration();
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, notYetStatus));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, usingStatus));
            }
        }
        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
