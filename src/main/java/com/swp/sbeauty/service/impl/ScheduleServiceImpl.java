@@ -54,34 +54,41 @@ public class ScheduleServiceImpl implements ScheduleService {
                 if (scheduleDto.getStatus().equalsIgnoreCase("completed")) {
                     schedule.setStatus("completed");
                     scheduleRepository.save(schedule);
-                    Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourseId()).orElse(null);
-                    if (customer_course_mapping != null) {
-                        Integer count = customer_course_mapping.getCount();
-                        String customerCourseStatus = customer_course_mapping.getStatus();
-                        Bill_Course_History bill_course_history = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
-                        if (count < bill_course_history.getTimeOfUse()) {
-                            if (customerCourseStatus.equalsIgnoreCase("using") || customerCourseStatus.equalsIgnoreCase("not yet")) {
-                                count++;
-                                if (count > 0 && count < bill_course_history.getTimeOfUse()) {
-                                    customer_course_mapping.setStatus("using");
-                                    customer_course_mapping_repository.save(customer_course_mapping);
-                                }
-                                if (count == bill_course_history.getTimeOfUse()) {
-                                    customer_course_mapping.setStatus("completed");
-                                    customer_course_mapping.setCount(count);
-                                    customer_course_mapping_repository.save(customer_course_mapping);
-                                    return true;
-                                } else {
-                                    customer_course_mapping.setCount(count);
-                                    Customer_Course_Mapping customer_course_mapping1 = customer_course_mapping;
-                                    customer_course_mapping_repository.save(customer_course_mapping1);
-                                    return true;
+                    if (scheduleDto.getCourseId() != null) {
+                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourseId()).orElse(null);
+                        if (customer_course_mapping != null) {
+                            Integer count = customer_course_mapping.getCount();
+                            String customerCourseStatus = customer_course_mapping.getStatus();
+                            Bill_Course_History bill_course_history = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
+                            if (count < bill_course_history.getTimeOfUse()) {
+                                if (customerCourseStatus.equalsIgnoreCase("using") || customerCourseStatus.equalsIgnoreCase("not yet")) {
+                                    count++;
+                                    if (count > 0 && count < bill_course_history.getTimeOfUse()) {
+                                        customer_course_mapping.setStatus("using");
+                                        customer_course_mapping_repository.save(customer_course_mapping);
+                                    }
+                                    if (count == bill_course_history.getTimeOfUse()) {
+                                        customer_course_mapping.setStatus("completed");
+                                        customer_course_mapping.setCount(count);
+                                        customer_course_mapping_repository.save(customer_course_mapping);
+                                        return true;
+                                    } else {
+                                        customer_course_mapping.setCount(count);
+                                        Customer_Course_Mapping customer_course_mapping1 = customer_course_mapping;
+                                        customer_course_mapping_repository.save(customer_course_mapping1);
+                                        return true;
+                                    }
                                 }
                             }
-                        }
 
+                        }
                     }
-                    return false;
+                    if (scheduleDto.getServiceId() != null){
+                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerService(scheduleDto.getCustomerId(), scheduleDto.getServiceId());
+                        customer_course_mapping.setStatus("completed");
+                        customer_course_mapping_repository.save(customer_course_mapping);
+                        return true;
+                    }
                 }
             }
         }
@@ -98,75 +105,83 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setSaleStaffId(scheduleDto.getSaleStaffId());
         schedule.setTechnicalStaffId(scheduleDto.getTechStaffId());
         schedule.setCustomerId(scheduleDto.getCustomerId());
-
         schedule.setStatus(status);
         schedule.setNote(scheduleDto.getNote());
-        com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getServiceId());
-        Bill_Service_History bill_service_history = new Bill_Service_History();
-        if (service != null) {
-            bill_service_history.setServiceId(service.getId());
-            bill_service_history.setName(service.getName());
-            bill_service_history.setDiscountStart(service.getDiscountStart());
-            bill_service_history.setDiscountEnd(service.getDiscountEnd());
-            bill_service_history.setDiscountPercent(service.getDiscountPercent());
-            bill_service_history.setPrice(service.getPrice());
-            bill_service_history.setDescription(service.getDescription());
-            bill_service_history.setDuration(service.getDuration());
-            bill_service_history.setImage(service.getImage());
-            bill_service_history = bill_service_history_repository.save(bill_service_history);
-            Long serviceId = bill_service_history.getId();
-            schedule.setServiceId(serviceId);
 
-        }
-        Customer_Course_Mapping customer_course_mapping_check = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
+        Bed_Slot_Mapping bed_slot_mapping = bed_slot_mapping_repository.getBed_Slot_MappingBySchedule(scheduleDto.getBedId(), scheduleDto.getSlotId(), scheduleDto.getDate());
+        User_Slot_Mapping user_slot_mapping = user_slot_mapping_repository.getUser_Slot_MappingBySchedule(scheduleDto.getTechStaffId(), scheduleDto.getSlotId(), scheduleDto.getDate());
 
-        if (scheduleDto.getCourseId() != null) {
-            if (customer_course_mapping_check == null) {
-                Course course = courseRepository.getCourseById(scheduleDto.getCourseId());
-                Bill_Course_History bill_course_history = new Bill_Course_History();
-                bill_course_history.setCourse_id(course.getId());
-                bill_course_history.setCode(course.getCode());
-                bill_course_history.setName(course.getName());
-                bill_course_history.setPrice(course.getPrice());
-                bill_course_history.setDuration(course.getDuration());
-                bill_course_history.setTimeOfUse(course.getTimeOfUse());
-                bill_course_history.setDiscountStart(course.getDiscountStart());
-                bill_course_history.setDiscountEnd(course.getDiscountEnd());
-                bill_course_history.setDiscountPercent(course.getDiscountPercent());
-                bill_course_history.setImage(course.getImage());
-                bill_course_history.setDescription(course.getDescription());
-                bill_course_history = bill_course_history_repository.save(bill_course_history);
-                Long courseHistory = bill_course_history.getId();
-                schedule.setCourseId(courseHistory);
+        if (bed_slot_mapping == null && user_slot_mapping == null) {
 
-            } else if (customer_course_mapping_check != null) {
-                Customer_Course_Mapping customer_course_mapping = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
-                if (customer_course_mapping != null) {
-                    schedule.setCourseHistoryId(customer_course_mapping.getId());
+            com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getServiceId());
+            Bill_Service_History bill_service_history = new Bill_Service_History();
+            if (service != null) {
+                bill_service_history.setServiceId(service.getId());
+                bill_service_history.setName(service.getName());
+                bill_service_history.setDiscountStart(service.getDiscountStart());
+                bill_service_history.setDiscountEnd(service.getDiscountEnd());
+                bill_service_history.setDiscountPercent(service.getDiscountPercent());
+                bill_service_history.setPrice(service.getPrice());
+                bill_service_history.setDescription(service.getDescription());
+                bill_service_history.setDuration(service.getDuration());
+                bill_service_history.setImage(service.getImage());
+                bill_service_history = bill_service_history_repository.save(bill_service_history);
+                Long serviceId = bill_service_history.getId();
+                schedule.setServiceId(serviceId);
+
+            }
+            Customer_Course_Mapping customer_course_mapping_check = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
+
+            if (scheduleDto.getCourseId() != null) {
+                if (customer_course_mapping_check == null) {
+                    Course course = courseRepository.getCourseById(scheduleDto.getCourseId());
+                    Bill_Course_History bill_course_history = new Bill_Course_History();
+                    bill_course_history.setCourse_id(course.getId());
+                    bill_course_history.setCode(course.getCode());
+                    bill_course_history.setName(course.getName());
+                    bill_course_history.setPrice(course.getPrice());
+                    bill_course_history.setDuration(course.getDuration());
+                    bill_course_history.setTimeOfUse(course.getTimeOfUse());
+                    bill_course_history.setDiscountStart(course.getDiscountStart());
+                    bill_course_history.setDiscountEnd(course.getDiscountEnd());
+                    bill_course_history.setDiscountPercent(course.getDiscountPercent());
+                    bill_course_history.setImage(course.getImage());
+                    bill_course_history.setDescription(course.getDescription());
+                    bill_course_history = bill_course_history_repository.save(bill_course_history);
+                    Long courseHistory = bill_course_history.getId();
+                    schedule.setCourseId(courseHistory);
+
+                } else if (customer_course_mapping_check != null) {
+                    Customer_Course_Mapping customer_course_mapping = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
+                    if (customer_course_mapping != null) {
+                        schedule.setCourseHistoryId(customer_course_mapping.getId());
+                    }
                 }
+
+            } else {
+                schedule.setCourseHistoryId(null);
+                schedule.setCourseId(null);
             }
 
-        } else {
-            schedule.setCourseHistoryId(null);
-            schedule.setCourseId(null);
-        }
 
-
-        if (null != schedule) {
-            schedule = scheduleRepository.save(schedule);
-            user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
-            bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
-            if (schedule.getServiceId() != null) {
-                Bill_Service_History bill_service_history1 = bill_service_history_repository.findById(schedule.getServiceId()).orElse(null);
-                bill_service_history1.setScheduleId(schedule.getId());
-                bill_service_history_repository.save(bill_service_history1);
+            if (null != schedule) {
+                schedule = scheduleRepository.save(schedule);
+                user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
+                bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
+                if (schedule.getServiceId() != null) {
+                    Bill_Service_History bill_service_history1 = bill_service_history_repository.findById(schedule.getServiceId()).orElse(null);
+                    bill_service_history1.setScheduleId(schedule.getId());
+                    bill_service_history_repository.save(bill_service_history1);
+                }
+                if (schedule.getCourseId() != null) {
+                    Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(schedule.getCourseId());
+                    bill_course_history.setScheduleId(schedule.getId());
+                    bill_course_history_repository.save(bill_course_history);
+                }
+                return true;
+            } else {
+                return false;
             }
-            if (schedule.getCourseId() != null) {
-                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(schedule.getCourseId());
-                bill_course_history.setScheduleId(schedule.getId());
-                bill_course_history_repository.save(bill_course_history);
-            }
-            return true;
         } else {
             return false;
         }
@@ -355,6 +370,4 @@ public class ScheduleServiceImpl implements ScheduleService {
         return result;
 
     }
-
-
 }
