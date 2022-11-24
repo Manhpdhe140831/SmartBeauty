@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -70,7 +71,7 @@ public class ServiceController {
             @RequestParam(value = "price") Double price,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "duration") Long duration,
-            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "products", required = false) String products
             ) {
         String check = service.validateService(name, discountStart, discountEnd, discountPercent);
@@ -91,7 +92,7 @@ public class ServiceController {
                                            @RequestParam(value = "price", required = false) Double price,
                                            @RequestParam(value = "description", required = false) String description,
                                            @RequestParam(value = "duration", required = false) Long duration,
-                                           @RequestParam(value = "image", required = false) String image,
+                                           @RequestParam(value = "image", required = false) MultipartFile image,
                                            @RequestParam(value = "products", required = false) String products) {
         String check = service.validateService(name, discountStart, discountEnd, discountPercent);
         if(check == ""){

@@ -17,7 +17,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,8 +51,9 @@ public class CourseServiceImpl implements CourseService {
     ModelMapper mapper;
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     @Override
-    public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
+    public Boolean saveCourse(String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services) {
         try{
             Course course = new Course();
             course.setCode("code");
@@ -69,7 +75,17 @@ public class CourseServiceImpl implements CourseService {
                 course.setDiscountPercent(discountPercent);
             }
             if(image!=null){
-                course.setImage(image);
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                course.setImage(image.getOriginalFilename());
             }
             if(description!=null){
                 course.setDescription(description);
@@ -138,7 +154,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, String image, String description, String[] services) {
+    public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services) {
         try {
             Course course = null;
             course = courseRepository.getCourseById(id);
@@ -161,7 +177,17 @@ public class CourseServiceImpl implements CourseService {
                 course.setDiscountPercent(discountPercent);
             }
             if (image != null) {
-                course.setImage(image);
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                course.setImage(image.getOriginalFilename());
             }
             if (description != null) {
                 course.setDescription(description);

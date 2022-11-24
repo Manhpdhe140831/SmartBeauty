@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -61,7 +62,7 @@ public class CourseController {
             @RequestParam(value = "discountStart", required = false) String discountStart,
             @RequestParam(value = "discountEnd", required = false) String discountEnd,
             @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
-            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam (value = "services[]", required = false) String[] services
     ){
@@ -85,7 +86,7 @@ public class CourseController {
             @RequestParam(value = "discountStart", required = false) String discountStart,
             @RequestParam(value = "discountEnd", required = false) String discountEnd,
             @RequestParam(value = "discountPercent", required = false) Double discountPercent ,
-            @RequestParam(value = "image", required = false) String image,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam (value = "services[]", required = false) String[] services
     ){

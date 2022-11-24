@@ -19,7 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,8 +56,10 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     @Autowired
     private ModelMapper mapper;
 
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
+
     @Override
-    public Boolean save(String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description,Long duration ,String image, String products) {
+    public Boolean save(String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description,Long duration ,MultipartFile image, String products) {
         try {
             Service service = new Service();
             service.setName(name);
@@ -75,16 +82,29 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             }
             service.setDuration(duration);
             if(image!=null){
-                service.setImage(image);
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                service.setImage(image.getOriginalFilename());
             }
             service = serviceRepository.save(service);
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-            List<Service_Product_MappingDto> mappingDto = mapper.readValue(products, new TypeReference<List<Service_Product_MappingDto>>() {});
-            for(Service_Product_MappingDto mapping : mappingDto){
-                service_product_mapping_repository.save(new Service_Product_mapping(service.getId(), mapping.getProductId(), mapping.getUsage()));
+            if(products != null){
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+                List<Service_Product_MappingDto> mappingDto = mapper.readValue(products, new TypeReference<List<Service_Product_MappingDto>>() {});
+                for(Service_Product_MappingDto mapping : mappingDto){
+                    service_product_mapping_repository.save(new Service_Product_mapping(service.getId(), mapping.getProductId(), mapping.getUsage()));
+                }
             }
+
         } catch (Exception e){
             e.printStackTrace();
             return false;
@@ -231,7 +251,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
 
     @Override
-    public Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image, String products) {
+    public Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, MultipartFile image, String products) {
         try {
             Service service = serviceRepository.getServiceById(id);
             if(name!=null){
@@ -260,7 +280,17 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 service.setDuration(duration);
             }
             if(image!=null){
-                service.setImage(image);
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                service.setImage(image.getOriginalFilename());
             }
             serviceRepository.save(service);
             if(products!=null){

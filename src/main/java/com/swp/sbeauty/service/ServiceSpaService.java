@@ -7,6 +7,7 @@ import com.swp.sbeauty.dto.UserDto;
 import com.swp.sbeauty.dto.mappingDto.Service_Product_MappingDto;
 import com.swp.sbeauty.entity.Service;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public interface ServiceSpaService {
 
-    Boolean save(String name,String discountStart, String discountEnd, Double discountPercent, Double price, String description,Long duration  ,String image, String products);
+    Boolean save(String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration  , MultipartFile image, String products);
 
     ServiceDto getServiceById(Long id);
 
@@ -27,5 +28,5 @@ public interface ServiceSpaService {
 //    ServiceCourseBuyedDto getAllService(Long idCheck, Long customer);
 
     ServiceCourseBuyedDto findProductCourseService(String keyword, Long idCustomer);
-    Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, String image, String products);
+    Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, MultipartFile image, String products);
 }

@@ -158,7 +158,17 @@ public class UserServiceImpl implements UserService {
             }
             if(user != null){
                 if(image != null){
-                    user.setUrlImage(user.getUrlImage());
+                    Path staticPath = Paths.get("static");
+                    Path imagePath = Paths.get("images");
+                    if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                        Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                    }
+                    Path file = CURRENT_FOLDER.resolve(staticPath)
+                            .resolve(imagePath).resolve(image.getOriginalFilename());
+                    try (OutputStream os = Files.newOutputStream(file)) {
+                        os.write(image.getBytes());
+                    }
+                    user.setUrlImage(image.getOriginalFilename());
                 }
                 if(name!=null){
                     user.setName(name);
