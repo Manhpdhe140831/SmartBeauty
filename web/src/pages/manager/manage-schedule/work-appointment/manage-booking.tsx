@@ -3,13 +3,12 @@ import {getAllCustomers} from "../../../../services/customer.service";
 import {AutoCompleteItemProp} from "../../../../components/auto-complete-item";
 import {rawToAutoItem} from "../../../../utilities/fn.helper";
 import {CustomerModel} from "../../../../model/customer.model";
-import {Customers} from "../../../../mock/customer";
-import {slotModal} from "../../../../model/slot.model";
+import {SlotModal} from "../../../../model/slot.model";
 import {useEffect, useState} from "react";
 import {getSlot} from "../../../../services/schedule.service";
 
 const ManageBooking = () => {
-    const [slotList, setSlotList] = useState<slotModal[] | []>([])
+    const [slotList, setSlotList] = useState<SlotModal[] | []>([])
     const [customerList, setCustomerList] = useState<any>([])
 
     const fnHelper = (s: CustomerModel) => ({

@@ -1,14 +1,13 @@
 import {Button, Text} from "@mantine/core";
 import CalendarController from "./_partial/calendar-controller";
-import {useQuery} from "@tanstack/react-query";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import AppointmentTimeline from "../../../components/appointment-timeline/appointment.timeline";
-import {slotWork} from "../../../mock/slot-work.const";
 import AppointmentHeaderTimeline from "../../../components/appointment-timeline/appointment-header.timeline";
-import mockSchedule from "../../../mock/schedule";
 import {AppPageInterface} from "../../../interfaces/app-page.interface";
 import {useRouter} from "next/router";
 import {USER_ROLE} from "../../../const/user-role.const";
+import {getSchedule, getSlot} from "../../../services/schedule.service";
+import {SlotModal} from "../../../model/slot.model";
 
 type workAppointmentProps = {
     userRole: USER_ROLE;
@@ -20,28 +19,36 @@ type workAppointmentProps = {
  * technical_staff: read-only lịch của bản thân
  */
 
-const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
-                                                                     userRole,
-                                                                 }) => {
+const WorkAppointment: AppPageInterface<workAppointmentProps> = ({userRole}) => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
-    const {data: allSchedule} = useQuery(
-        ["list-schedule", selectedDate],
-        async () => {
-            console.log(selectedDate);
-            // todo: Tìm kiếm API theo ngày
-            const schedule = await mockSchedule();
-            return schedule;
-        }
-    );
+    const [scheduleData, setScheduleData] = useState<[]>([]);
+    const [slotList, setSlotList] = useState<SlotModal[] | []>([])
 
     const router = useRouter();
-
     const goToBooking = () => {
         void router.push({
             pathname: "/manager/manage-schedule/work-appointment/manage-booking",
         });
     };
+
+    // Lấy list slot trong database
+    const getSlotList = async () => {
+        const slotData = await getSlot()
+        setSlotList(slotData)
+    }
+    useEffect(() => {
+        void getSlotList()
+    },[])
+
+    // Lấy data booking trong database
+    const getScheduleList = async () => {
+        const scheduleList = await getSchedule(selectedDate.toISOString())
+        console.log(scheduleList);
+        setScheduleData(scheduleList)
+    }
+    useEffect(() => {
+        void getScheduleList()
+    }, [selectedDate])
 
     return (
         <div className={"flex h-full flex-col space-y-4"}>
@@ -63,20 +70,19 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
                         </div>
                         <AppointmentTimeline/>
                     </div>
-                    {slotWork &&
-                        slotWork.map((slot, i) => {
-                            return (
-                                <AppointmentHeaderTimeline
-                                    key={slot.id}
-                                    userRole={userRole}
-                                    title={slot.name}
-                                    timeFrame={slot.timeline}
-                                    bedSchedule={allSchedule?.find(
-                                        (s) => s.slot === slot.id
-                                    )}
-                                />
-                            );
-                        })}
+                    {slotList.map((slot, i) => {
+                        return (
+                            <AppointmentHeaderTimeline
+                                key={slot.id}
+                                userRole={userRole}
+                                title={slot.name}
+                                timeFrame={slot.timeline}
+                                bedSchedule={scheduleData.find(
+                                    (s: any) => s.slot === slot.id
+                                )}
+                            />
+                        );
+                    })}
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
-import {slotModal} from "../model/slot.model";
+import {SlotModal} from "../model/slot.model";
 
-export const slotWork: slotModal[] = [
+export const slotWork: SlotModal[] = [
     {
         id: 1,
         name: "Slot 1",

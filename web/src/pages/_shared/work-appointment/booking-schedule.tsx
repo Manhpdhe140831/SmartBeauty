@@ -4,7 +4,6 @@ import {useRouter} from "next/router";
 import {USER_ROLE} from "../../../const/user-role.const";
 import {DatePicker} from "@mantine/dates";
 import {useAuthUser} from "../../../store/auth-user.state";
-import {Beds} from "../../../mock/bed";
 import DatabaseSearchSelect from "../../../components/database-search.select";
 import {AutoCompleteItemProp} from "../../../components/auto-complete-item";
 import {CustomerModel} from "../../../model/customer.model";
@@ -13,8 +12,8 @@ import {Controller, useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {UserModel} from "../../../model/user.model";
-import {slotModal} from "../../../model/slot.model";
-import {getServicesAndCourse} from "../../../services/schedule.service";
+import {SlotAvailModel, SlotModal} from "../../../model/slot.model";
+import {getBedAndStaff, getServicesAndCourse} from "../../../services/schedule.service";
 import {ServiceModel} from "../../../model/service.model";
 import {formatDate} from "../../../utilities/time.helper";
 
@@ -24,24 +23,24 @@ type searchFn<dataType extends object> = (
 
 type BookingSchedule = {
     searchCustomer: searchFn<CustomerModel>,
-    slotList: slotModal[] | [],
+    slotList: SlotModal[] | [],
     customerList: UserModel[],
 }
 
 const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedule) => {
-    // const userRole = useAuthUser((s) => s.user?.role);
-    const userRole = USER_ROLE.sale_staff;
+    const userRole = useAuthUser((s) => s.user?.role);
 
     // State
     const [active, setActive] = useState(0);
     const [saveBtn, showSave] = useState(false);
 
-    const [loadingStep1, setLoadingStep1] = useState<boolean>(false);
-    const [loadingStep2, setLoadingStep2] = useState<boolean>(false);
-
     const [selectedCustomer, setSelectedCustomer] = useState<UserModel | null>(null);
     const [selectedService, setSelectedService] = useState<ServiceModel | null>(null);
     const [serviceList, setServiceList] = useState<any>([]);
+    const [slotAvail, setSlotAvail] = useState<SlotAvailModel>({
+        beds: [],
+        users: []
+    });
 
 
     // Function
@@ -52,6 +51,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
         reset,
         watch,
         getValues,
+        resetField,
         formState: {errors, isValid, isDirty, dirtyFields},
     } = useForm<z.infer<typeof ScheduleSchema>>({
         resolver: zodResolver(ScheduleSchema),
@@ -63,57 +63,38 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
     });
 
     const stepByStep = (step: number) => {
-        console.log(step);
         switch (step) {
             case 0:
                 setSelectedCustomer(null);
                 setSelectedService(null);
-                setLoadingStep1(false);
-                setLoadingStep2(false);
-                showSave(false);
+
+                resetField("date")
+                resetField("slotId")
+                resetField("bedId")
+                resetField("techStaffId")
+
                 break;
             case 1:
-                //set loading
-                setLoadingStep1(true);
+                resetField("slotId")
+                resetField("bedId")
+                resetField("techStaffId")
 
                 // call API lấy thông tin customer
-                const customerInfo = {
-                    customer_name: "Tôn Ngộ Không",
-                    gender: "Nam",
-                    age: "1000",
-                    address: "369 Hoa Quả sơn",
-                    phone_number: "0987654321",
-                };
 
-                // Gán customer vào biến customerData
+                // Todo: Gán customer vào biến customerData
                 // setSelectedCustomer(customerInfo);
-                showSave(false);
 
-                //set loading
-                setLoadingStep1(false);
+                showSave(false);
                 break;
             case 2:
-                //set loading
-                setLoadingStep2(true);
-
                 // Todo: Call API with datePicked
-
-                //set loading
-                setLoadingStep2(false);
                 break;
             case 3:
-                // call API lấy thông tin service
-                // const serviceInfo = {
-                //     service_name: "Liệu trình trị mụn",
-                //     sale_staff: "Tôn Hành Giả",
-                //     tech_staff: "Naruto",
-                //     slot: "Slot 1",
-                //     bed: "Giường số 1",
-                //     time: "13/11/2022 12:12",
-                // };
+                // Todo: call API lấy thông tin service
 
-                // Gán service vào biến serviceData
+                // Todo: Gán service vào biến serviceData
                 // setSelectedService(serviceInfo);
+
                 showSave(true);
         }
 
@@ -179,6 +160,11 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
 
     const slotInfo = slotList.find((s) => s.id === getValues().slotId)
 
+    const searchBedAvail = async () => {
+        const slotAvailable = await getBedAndStaff(getValues().date.toISOString(), getValues().slotId)
+        setSlotAvail(slotAvailable)
+    }
+
     return (
         <div className={"h-max w-full p-12"}>
             <form
@@ -190,9 +176,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                         <Stepper.Step
                             label="Tìm kiếm khách hàng"
                             description="Tìm kiếm theo tên"
-                            allowStepSelect={false}
-                            loading={loadingStep1}
-                        >
+                            allowStepSelect={false}>
                             <div className={"flex w-full flex-col gap-4"}>
                                 <div className={"flex flex-row items-center gap-3"}>
                                     <span className={"min-w-48"}>Tìm kiếm khách hàng</span>
@@ -253,9 +237,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                         <Stepper.Step
                             label="Chọn ngày"
                             description="Chọn ngày khách đến"
-                            allowStepSelect={false}
-                            loading={loadingStep2}
-                        >
+                            allowStepSelect={false}>
                             <div className={"flex flex-row gap-3"}>
                                 <span className={"min-w-48"}>Chọn ngày</span>
                                 <div className={"flex w-full flex-col gap-4"}>
@@ -309,6 +291,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             field.onBlur();
+                                                            void searchBedAvail()
                                                         }}
                                                         onBlur={field.onBlur}
                                                         disabled={userRole !== USER_ROLE.sale_staff}>
@@ -323,13 +306,13 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                         placeholder="Giường"
                                                         searchable
                                                         nothingFound="Trống"
-                                                        data={Beds.map((bed) => bed.name)}
+                                                        data={slotAvail.beds.map((bed) => bed.name)}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             field.onBlur();
                                                         }}
                                                         onBlur={field.onBlur}
-                                                        disabled={userRole !== USER_ROLE.sale_staff || !getValues().slotId}>
+                                                        disabled={userRole !== USER_ROLE.sale_staff || !watch("slotId")}>
                                                 </Select>
                                             )}
                                             name={"bedId"}
@@ -341,13 +324,13 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                         placeholder="NV kỹ thuật"
                                                         searchable
                                                         nothingFound="Trống"
-                                                        data={["React", "Angular", "Svelte", "Vue"]}
+                                                        data={slotAvail.users.map((bed) => bed.name)}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             field.onBlur();
                                                         }}
                                                         onBlur={field.onBlur}
-                                                        disabled={userRole !== USER_ROLE.sale_staff || !getValues().slotId}>
+                                                        disabled={userRole !== USER_ROLE.sale_staff || !watch("slotId")}>
                                                 </Select>
                                             )}
                                             name={"techStaffId"}
@@ -357,10 +340,16 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                 </div>
                             </div>
                             <Group className={"mt-4"} position={"center"}>
-                                <Button type={"button"} onClick={() => stepByStep(0)} color={"gray"}>
+                                <Button type={"button"}
+                                        onClick={() => stepByStep(1)}
+                                        color={"gray"}>
                                     Trở lại
                                 </Button>
-                                <Button type={"button"} onClick={() => stepByStep(3)}>Xác nhận lịch</Button>
+                                <Button type={"button"}
+                                        onClick={() => stepByStep(3)}
+                                        disabled={!watch("bedId") && !watch("techStaffId")}>
+                                    Xác nhận lịch
+                                </Button>
                             </Group>
                         </Stepper.Step>
                         <Stepper.Completed>

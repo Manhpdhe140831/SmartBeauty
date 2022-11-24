@@ -1,45 +1,9 @@
 import axios, {AxiosError} from "axios";
-import {BranchCreateEntity, BranchModel,} from "../model/branch.model";
-import {IErrorResponse, PaginatedResponse, SearchParamUrl,} from "../interfaces/api.interface";
-import {jsonToFormData} from "../utilities/form-data.helper";
-import {ManagerModel} from "../model/manager.model";
+import {IErrorResponse,} from "../interfaces/api.interface";
 
-/**
- * Get all available branches in the system.
- * @param page
- * @param pageSize
- * @param searchParams
- */
-export async function getAllBranch(
-    page: number,
-    pageSize = 10,
-    searchParams?: SearchParamUrl
-) {
+export async function getSchedule(date: string) {
     try {
-        const apiResult = await axios.get<PaginatedResponse<BranchModel<ManagerModel>>>("/branch", {
-            params: {
-                page,
-                pageSize,
-                ...(searchParams ?? {}),
-            },
-        });
-
-        return apiResult.data;
-    } catch (e) {
-        const error = e as AxiosError<IErrorResponse>;
-        console.error(error);
-        throw error.response?.data;
-    }
-}
-
-/**
- * Create a new branch.
- * @param payload
- */
-export async function createBranch(payload: BranchCreateEntity) {
-    try {
-        const formData = jsonToFormData(payload);
-        const apiResult = await axios.post<boolean>("/branch/save", formData);
+        const apiResult = await axios.get(`/schedule?date=${date}`);
         return apiResult.data;
     } catch (e) {
         const error = e as AxiosError<IErrorResponse>;
@@ -61,7 +25,18 @@ export async function getSlot() {
 
 export async function getServicesAndCourse(idCustomer: number, keyword: string) {
     try {
-        const apiResult = await axios.get(`/service/findServiceCourse?idCustomer=${idCustomer}&&keyword=${keyword}`);
+        const apiResult = await axios.get(`/service/findServiceCourse?idCustomer=${idCustomer}&keyword=${keyword}`);
+        return apiResult.data;
+    } catch (e) {
+        const error = e as AxiosError<IErrorResponse>;
+        console.error(error);
+        throw error.response?.data;
+    }
+}
+
+export async function getBedAndStaff(date: string, slotId: number) {
+    try {
+        const apiResult = await axios.get(`/bed/getStaffAndBedFree?date=${date}&slot=${slotId}`);
         return apiResult.data;
     } catch (e) {
         const error = e as AxiosError<IErrorResponse>;
