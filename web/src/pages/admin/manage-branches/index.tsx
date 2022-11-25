@@ -9,8 +9,12 @@ import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
 import { USER_ROLE } from "../../../const/user-role.const";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { useListBranchQuery } from "../../../query/model-list";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
+
   const {
     pageSize,
     currentPage: page,
@@ -22,7 +26,14 @@ const Index: AppPageInterface = () => {
     data: fetchBranches,
     isLoading,
     refetch,
-  } = useListBranchQuery(page, updatePagination);
+  } = useListBranchQuery(page, updatePagination, {
+    pageSize,
+    searchQuery: searchKey
+      ? {
+          name: searchKey,
+        }
+      : undefined,
+  });
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
@@ -32,9 +43,12 @@ const Index: AppPageInterface = () => {
         {/*Search by name*/}
         <Input
           icon={<IconSearch />}
-          placeholder={"branch name..."}
+          placeholder={"tên chi nhánh..."}
           type={"text"}
           className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
         />
       </div>
       <Divider my={8} />

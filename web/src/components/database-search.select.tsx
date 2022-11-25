@@ -1,8 +1,7 @@
 import AutoCompleteItem, { AutoCompleteItemProp } from "./auto-complete-item";
 import { Select, SelectProps } from "@mantine/core";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useDebounce } from "use-debounce";
+import useDebounceHook from "../hooks/use-debounce.hook";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -32,11 +31,11 @@ const DatabaseSearchSelect = <dataType extends object>({
   debouncedBy,
   ...selectProps
 }: ItemSearchSelectProps<dataType>) => {
-  const [searchWord, setSearchWord] = useState<string | undefined>();
-  const [searchKey, { isPending }] = useDebounce(
-    searchWord,
-    debouncedBy ?? 300
-  );
+  const {
+    value: searchKey,
+    onChange: setSearchWord,
+    isDebouncing: isPending,
+  } = useDebounceHook(debouncedBy);
 
   const { data: collection, isLoading: collectionLoading } = useQuery<
     AutoCompleteItemProp<dataType>[]

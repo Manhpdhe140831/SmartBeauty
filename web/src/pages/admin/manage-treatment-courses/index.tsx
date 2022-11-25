@@ -6,8 +6,8 @@ import {
   CourseModel,
   CourseUpdateEntity,
 } from "../../../model/course.model";
-import { Button, Divider, Pagination, Table } from "@mantine/core";
-import { IconCheck, IconPlus, IconX } from "@tabler/icons";
+import { Button, Divider, Pagination, Table, TextInput } from "@mantine/core";
+import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
 import CourseHeaderTable from "./_partial/course-header.table";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import CourseRowTable from "./_partial/course-row.table";
@@ -21,8 +21,11 @@ import {
 } from "../../../services/spa-course.service";
 import { showNotification } from "@mantine/notifications";
 import { ServiceModel } from "../../../model/service.model";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } =
     useDialogDetailRow<CourseModel<ServiceModel>>();
   const {
@@ -36,7 +39,14 @@ const Index: AppPageInterface = () => {
     data: course,
     isLoading,
     refetch,
-  } = useListCourseQuery(currentPage, updatePagination);
+  } = useListCourseQuery(currentPage, updatePagination, {
+    pageSize,
+    searchQuery: searchKey
+      ? {
+          name: searchKey,
+        }
+      : undefined,
+  });
 
   const updateMutation = useMutation<
     boolean,
@@ -96,6 +106,16 @@ const Index: AppPageInterface = () => {
         <Button onClick={() => openModal("create")} leftIcon={<IconPlus />}>
           Course
         </Button>
+        {/*Search by name*/}
+        <TextInput
+          icon={<IconSearch />}
+          placeholder={"Tên liệu trình..."}
+          type={"text"}
+          className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
+        />
       </div>
 
       <Divider my={8} />

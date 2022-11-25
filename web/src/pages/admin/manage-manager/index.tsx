@@ -1,5 +1,5 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
-import { Button, Divider, Pagination, Table } from "@mantine/core";
+import { Button, Divider, Input, Pagination, Table } from "@mantine/core";
 import ManagerHeaderTable from "./_partial/manager-header.table";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import ManageRowTable from "./_partial/manager-row.table";
@@ -12,15 +12,18 @@ import {
   ManagerUpdateEntity,
 } from "../../../model/manager.model";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
-import { IconCheck, IconPlus, IconX } from "@tabler/icons";
+import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
 import ViewManagerDialog from "./_view-manager";
 import { useMutation } from "@tanstack/react-query";
 import { IErrorResponse } from "../../../interfaces/api.interface";
 import { createUser, updateUser } from "../../../services/user.service";
 import { showNotification } from "@mantine/notifications";
 import CreateManager from "./_create-manager";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const ManageManager: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } = useDialogDetailRow<ManagerModel>();
 
   const {
@@ -41,6 +44,7 @@ const ManageManager: AppPageInterface = () => {
     updatePagination,
     {
       pageSize,
+      searchQuery: searchKey ? { name: searchKey } : undefined,
     }
   );
 
@@ -132,6 +136,16 @@ const ManageManager: AppPageInterface = () => {
             }}
           />
         )}
+        {/*Search by name*/}
+        <Input
+          icon={<IconSearch />}
+          placeholder={"Tên quản lý..."}
+          type={"text"}
+          className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
+        />
       </div>
 
       <Divider my={8}></Divider>

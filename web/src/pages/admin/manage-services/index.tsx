@@ -1,14 +1,14 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
 import usePaginationHook from "../../../hooks/pagination.hook";
-import { Button, Divider, Pagination } from "@mantine/core";
+import { Button, Divider, Pagination, TextInput } from "@mantine/core";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import {
   ServiceCreateEntity,
   ServiceModel,
   ServiceUpdateEntity,
 } from "../../../model/service.model";
-import { IconPlus } from "@tabler/icons";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import ServiceList from "../../_shared/services/service-list";
 import { useListServiceQuery } from "../../../query/model-list";
 import { useMutation } from "@tanstack/react-query";
@@ -17,8 +17,11 @@ import {
   updateSpaService,
 } from "../../../services/spa-service.service";
 import ServiceDetailDialog from "../../_shared/services/service-detail.dialog";
+import { ChangeEvent } from "react";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
   const {
     pageSize,
@@ -31,7 +34,10 @@ const Index: AppPageInterface = () => {
     data: services,
     isLoading,
     refetch,
-  } = useListServiceQuery(currentPage, updatePagination);
+  } = useListServiceQuery(currentPage, updatePagination, {
+    pageSize,
+    searchQuery: searchKey ? { name: searchKey } : undefined,
+  });
 
   const createServiceMutation = useMutation(
     ["create-spa-service"],
@@ -59,8 +65,18 @@ const Index: AppPageInterface = () => {
     <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
         <Button onClick={() => openModal("create")} leftIcon={<IconPlus />}>
-          Service
+          Dịch Vụ
         </Button>
+        {/*Search by name*/}
+        <TextInput
+          icon={<IconSearch />}
+          placeholder={"Tên dịch vụ..."}
+          type={"text"}
+          className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
+        />
       </div>
 
       <Divider my={8} />

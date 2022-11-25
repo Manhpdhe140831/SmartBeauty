@@ -48,10 +48,12 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
         color={"green"}
         leftIcon={<IconPlus />}
       >
-        New Branch
+        Thêm Chi Nhánh
       </Button>
       <Modal
-        title={<h1 className="text-center font-thin capitalize">New Branch</h1>}
+        title={
+          <h1 className="text-center font-thin capitalize">Chi Nhánh Mới</h1>
+        }
         opened={newBranchModal}
         onClose={() => {
           console.log("closed");

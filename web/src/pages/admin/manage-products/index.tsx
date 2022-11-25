@@ -22,8 +22,11 @@ import { IErrorResponse } from "../../../interfaces/api.interface";
 import { showNotification } from "@mantine/notifications";
 import { useListProductQuery } from "../../../query/model-list";
 import { SupplierModel } from "../../../model/supplier.model";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } =
     useDialogDetailRow<ProductModel<SupplierModel>>();
   const {
@@ -37,7 +40,10 @@ const Index: AppPageInterface = () => {
     data: products,
     isLoading,
     refetch,
-  } = useListProductQuery(currentPage, updatePagination);
+  } = useListProductQuery(currentPage, updatePagination, {
+    pageSize,
+    searchQuery: searchKey ? { name: searchKey } : undefined,
+  });
 
   const createMutation = useMutation<
     boolean,
@@ -100,9 +106,12 @@ const Index: AppPageInterface = () => {
 
         <Input
           icon={<IconSearch />}
-          placeholder={"product name..."}
+          placeholder={"Tên sản phẩm..."}
           type={"text"}
           className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
         />
       </div>
       <Divider my={8} />
