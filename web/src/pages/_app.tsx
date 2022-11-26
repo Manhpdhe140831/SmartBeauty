@@ -22,6 +22,10 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      onError: (err) => {
+        console.log(err);
+        debugger;
+      },
     },
   },
 });

@@ -21,6 +21,7 @@ import { ServiceModel } from "../../model/service.model";
 import { getListSpaServices } from "../../services/spa-service.service";
 import { getListSpaCourses } from "../../services/spa-course.service";
 import { getAllCustomers } from "../../services/customer.service";
+import { getListInvoices } from "../../services/invoice.service";
 
 type fnUpdatePagination = ReturnType<typeof usePaginationHook>["update"];
 
@@ -142,12 +143,13 @@ export const useListCustomerQuery = (
     ["list-customer", currentPage, options],
     () => getAllCustomers(currentPage, options?.pageSize, options?.searchQuery),
     {
-      onSuccess: (data) => updatePagination && updatePagination({ total: data.totalElement }),
-      onError: () => updatePagination && updatePagination({ total: 0, newPage: 1 }),
+      onSuccess: (data) =>
+        updatePagination && updatePagination({ total: data.totalElement }),
+      onError: () =>
+        updatePagination && updatePagination({ total: 0, newPage: 1 }),
     }
   );
 
-// TODO integrate
 export const useListInvoiceQuery = (
   currentPage: number,
   updatePagination: fnUpdatePagination,
@@ -158,15 +160,7 @@ export const useListInvoiceQuery = (
 ) =>
   useQuery<PaginatedResponse<InvoiceModel>>(
     ["list-invoice", currentPage, options],
-    async () => {
-      const bills = await mockBill();
-      return {
-        pageIndex: 1,
-        data: bills,
-        totalElement: bills.length,
-        totalPage: 1,
-      };
-    },
+    () => getListInvoices(currentPage, options?.pageSize, options?.searchQuery),
     {
       onSuccess: (data) => updatePagination({ total: data.totalElement }),
       onError: () => updatePagination({ total: 0, newPage: 1 }),

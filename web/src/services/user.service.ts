@@ -58,6 +58,21 @@ export async function getAllAccount<modelType extends UserModel>(
   }
 }
 
+export async function getUserDetail<T extends UserModel>(id: number) {
+  try {
+    const apiResult = await axios.get<T>("/user/save", {
+      params: {
+        id,
+      },
+    });
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
+
 /**
  * TODO: pending server support Multipart content-type.
  * @param payload

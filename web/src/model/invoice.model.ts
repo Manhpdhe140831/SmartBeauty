@@ -52,5 +52,5 @@ export type InvoiceCreateEntity = Omit<
   addons: BillingProductCreateEntity[];
 };
 
-export type BillUpdateEntity = Pick<InvoiceModel, "id" | "status"> &
+export type InvoiceUpdateEntity = Pick<InvoiceModel, "id" | "status"> &
   Pick<InvoiceCreateEntity, "addons" | "priceBeforeTax" | "priceAfterTax">;

@@ -1,16 +1,13 @@
-import { Text, ActionIcon, Image } from "@mantine/core";
+import { ActionIcon, Image, Text } from "@mantine/core";
 import { AutoCompleteItemProp } from "../../../../components/auto-complete-item";
 import { IconX } from "@tabler/icons";
 import { ServiceModel } from "../../../../model/service.model";
 import { rawToAutoItem } from "../../../../utilities/fn.helper";
 import DatabaseSearchSelect from "../../../../components/database-search.select";
-import { useQuery } from "@tanstack/react-query";
 import { formatTime } from "../../../../utilities/time.helper";
-import {
-  getDetailSpaService,
-  getListSpaServices,
-} from "../../../../services/spa-service.service";
+import { getListSpaServices } from "../../../../services/spa-service.service";
 import { formatPrice } from "../../../../utilities/pricing.helper";
+import { useServiceDetailQuery } from "../../../../query/model-detail";
 
 type rowProps = {
   no: number;
@@ -36,9 +33,7 @@ const ServiceInCourseRowTable = ({
   });
 
   const { data: viewingService, isLoading: viewLoading } =
-    useQuery<ServiceModel | null>(["available-service", serviceId], () =>
-      serviceId ? getDetailSpaService(serviceId) : null
-    );
+    useServiceDetailQuery(serviceId);
 
   async function searchService(
     serviceName: string,
