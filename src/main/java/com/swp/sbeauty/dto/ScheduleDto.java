@@ -20,6 +20,7 @@ public class ScheduleDto {
     private ServiceDto service;
     private String status;
     private String note;
+    private Boolean isBill;
 
     private Long slotId;
     private Long bedId;
@@ -29,7 +30,7 @@ public class ScheduleDto {
     private Long serviceId;
     private Long courseId;
 
-    public ScheduleDto(Long id, String date, SlotDto slot, SpaBedDto bed, UserDto sale_staff, UserDto tech_staff, CustomerDto customer, CourseDto course, ServiceDto service, String status, String note) {
+    public ScheduleDto(Long id, String date, SlotDto slot, SpaBedDto bed, UserDto sale_staff, UserDto tech_staff, CustomerDto customer, CourseDto course, ServiceDto service, String status, String note, Boolean isBill) {
         this.id = id;
         this.date = date;
         this.slot = slot;
@@ -41,5 +42,6 @@ public class ScheduleDto {
         this.service = service;
         this.status = status;
         this.note = note;
+        this.isBill = isBill;
     }
 }
