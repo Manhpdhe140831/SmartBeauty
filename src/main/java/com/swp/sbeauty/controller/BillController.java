@@ -31,7 +31,7 @@ public class BillController {
         return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/bill/getbyid")
+    @GetMapping("/bill/getById")
     public ResponseEntity<BillDto> getBillById(@RequestParam("id") Long id){
         BillDto result = billService.getBillById(id);
         return new ResponseEntity<>(result, (result != null)?HttpStatus.OK : HttpStatus.BAD_REQUEST);
@@ -64,7 +64,7 @@ public class BillController {
         }
     }
 
-    @GetMapping("/bill/searchbillbycustomer")
+    @GetMapping("/bill/searchBillByCustomer")
     public ResponseEntity<?> searchByCustomer(
             @RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
