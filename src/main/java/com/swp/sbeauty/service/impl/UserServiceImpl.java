@@ -68,10 +68,7 @@ public class UserServiceImpl implements UserService {
             user.setName(name);
             user.setEmail(email);
             user.setPhone(phone);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            Date dob = df.parse(dateOfBirth);
-            Date birthDate = new DateTime(dateOfBirth).toDate();
-            user.setDateOfBirth(birthDate);
+            user.setDateOfBirth(dateOfBirth);
             user.setGender(gender);
             user.setAddress(address);
             user.setPassword(encoder.encode(password));
@@ -192,10 +189,7 @@ public class UserServiceImpl implements UserService {
                     user.setPhone(phone);
                 }
                 if (dateOfBirth != null) {
-                    Date birthDate = new DateTime(dateOfBirth).toDate();
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    Date dob = df.parse(dateOfBirth);
-                    user.setDateOfBirth(birthDate);
+                    user.setDateOfBirth(dateOfBirth);
                 }
                 if (gender != null) {
                     user.setGender(gender);

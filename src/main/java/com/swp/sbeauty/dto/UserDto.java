@@ -18,7 +18,7 @@ public class UserDto {
     private String email;
     private String phone;
     @JsonFormat(pattern="yyyy-MM-dd")
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private String gender;
     private String address;
     private String password;
@@ -44,7 +44,7 @@ public class UserDto {
             this.role = user.getRoles().stream().findFirst().get().getName();
         }
     }
-    public UserDto(Long id, String name, String email, String phone, Date dateOfBirth,String gender, String address, String urlImage,Set<Role> roles ){
+    public UserDto(Long id, String name, String email, String phone, String dateOfBirth,String gender, String address, String urlImage,Set<Role> roles ){
         this.id = id;
         this.name = name;
         this.email = email;

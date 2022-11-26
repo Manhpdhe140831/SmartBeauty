@@ -16,7 +16,7 @@ public class UserResponseDto {
     private String name;
     private String email;
     private String phone;
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private String gender;
     private String address;
     private String urlImage;

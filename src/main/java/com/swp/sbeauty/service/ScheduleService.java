@@ -7,7 +7,7 @@ import java.util.List;
 public interface ScheduleService {
     boolean updateCount(ScheduleDto scheduleDto);
 
-    boolean save(ScheduleDto scheduleDto);
+    boolean save(ScheduleDto scheduleDto, Long idSale);
 
     ScheduleDto getScheduleById(Long id);
 

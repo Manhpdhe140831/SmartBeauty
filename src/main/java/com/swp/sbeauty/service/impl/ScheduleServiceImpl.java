@@ -96,13 +96,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public boolean save(ScheduleDto scheduleDto) {
+    public boolean save(ScheduleDto scheduleDto, Long idSale) {
         Schedule schedule = new Schedule();
         String status = "not yet";
         schedule.setDate(scheduleDto.getDate());
         schedule.setSlotId(scheduleDto.getSlotId());
         schedule.setBedId(scheduleDto.getBedId());
-        schedule.setSaleStaffId(scheduleDto.getSaleStaffId());
+        schedule.setSaleStaffId(idSale);
         schedule.setTechnicalStaffId(scheduleDto.getTechStaffId());
         schedule.setCustomerId(scheduleDto.getCustomerId());
         schedule.setStatus(status);
@@ -112,7 +112,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         User_Slot_Mapping user_slot_mapping = user_slot_mapping_repository.getUser_Slot_MappingBySchedule(scheduleDto.getTechStaffId(), scheduleDto.getSlotId(), scheduleDto.getDate());
 
         if (bed_slot_mapping == null && user_slot_mapping == null) {
-
             com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(scheduleDto.getServiceId());
             Bill_Service_History bill_service_history = new Bill_Service_History();
             if (service != null) {

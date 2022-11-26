@@ -2,7 +2,9 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.dto.ScheduleDto;
+import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.ScheduleService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class ScheduleController {
     @Autowired
     ScheduleService scheduleService;
 
+    @Autowired
+    JwtUtils jwtUtils;
+
     @PostMapping("/schedule/updatecount")
     public ResponseEntity<?> updateCount(@RequestBody ScheduleDto scheduleDto){
         boolean check = scheduleService.updateCount(scheduleDto);
@@ -30,8 +35,11 @@ public class ScheduleController {
 
 
     @PostMapping("/schedule/create")
-    public ResponseEntity<?> saveSchedule(@RequestBody ScheduleDto scheduleDto){
-        boolean result = scheduleService.save(scheduleDto);
+    public ResponseEntity<?> saveSchedule(@RequestBody ScheduleDto scheduleDto,
+                                          @RequestHeader("Authorization") String authHeader){
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        Long idSale = Long.parseLong(temp.get("id").toString());
+        boolean result = scheduleService.save(scheduleDto, idSale);
         if (result == true) {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }else{

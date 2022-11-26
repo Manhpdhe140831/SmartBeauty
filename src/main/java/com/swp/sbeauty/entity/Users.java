@@ -22,7 +22,7 @@ public class Users {
     @Column(name="phone")
     private String phone;
     @Column(name="dateOfBirth")
-    private Date dateOfBirth;
+    private String dateOfBirth;
     @Column(name="gender")
     private String gender;
     @Column(name="address")
@@ -36,13 +36,6 @@ public class Users {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-
-
-
-
-
-
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     Set<Branch> branches = new HashSet<>();
 
