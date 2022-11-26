@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -58,8 +59,13 @@ public class ScheduleController {
                                             @RequestHeader("Authorization") String authHeader){
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         Long idSale = Long.parseLong(temp.get("id").toString());
-        List<ScheduleDto> result = scheduleService.getAllByDate(date, idSale);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Date expir = temp.getExpiration();
+        if(expir.before(new Date())){
+            return new ResponseEntity<>(new ResponseDto<>(400, "Token is expired"), HttpStatus.BAD_REQUEST);
+        } else {
+            List<ScheduleDto> result = scheduleService.getAllByDate(date, idSale);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
     }
 
     @PostMapping("schedule/update")
