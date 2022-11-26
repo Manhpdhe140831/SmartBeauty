@@ -18,7 +18,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
 
 
-    @Query(value = "select s from Schedule s where s.date = ?1")
+    @Query(value = "select s from Schedule s where s.date like %?1%")
     public List<Schedule> getAllByDate(String date);
 
 

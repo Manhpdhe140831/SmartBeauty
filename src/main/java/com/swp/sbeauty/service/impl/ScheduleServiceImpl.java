@@ -318,7 +318,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<ScheduleDto> result = new ArrayList<>();
         List<Schedule> list = new ArrayList<>();
         if (dateRes != null) {
-            list = scheduleRepository.getAllByDate(dateRes);
+            list = scheduleRepository.getAllByDate(dateRes.substring(0,10));
         }
         if (dateRes == null) {
             list = scheduleRepository.findAll();
