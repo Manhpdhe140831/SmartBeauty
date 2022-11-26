@@ -13,6 +13,7 @@ import {
 } from "../../../services/schedule.service";
 import { SlotModal } from "../../../model/slot.model";
 import { SpaBedModel } from "../../../model/spa-bed.model";
+import { IconPlus } from "@tabler/icons";
 
 type workAppointmentProps = {
   userRole: USER_ROLE;
@@ -71,7 +72,9 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
     <div className={"flex h-full flex-col space-y-4 px-4"}>
       <div className="flex h-24 flex-row items-center justify-between border-b">
         {userRole === USER_ROLE.sale_staff && (
-          <Button onClick={goToBooking}>Đặt lịch</Button>
+          <Button leftIcon={<IconPlus />} color={"teal"} onClick={goToBooking}>
+            Đặt lịch
+          </Button>
         )}
         <CalendarController
           dateData={selectedDate}
