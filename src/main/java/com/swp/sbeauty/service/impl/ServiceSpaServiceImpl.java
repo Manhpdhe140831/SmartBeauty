@@ -212,6 +212,11 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             for (Course course : courses) {
                 courseDtos.add(new CourseDto(false, course));
             }
+        } else {
+            List<Course> courses = courseRepository.findCourses(keyword);
+            for (Course course : courses) {
+                courseDtos.add(new CourseDto(false, course));
+            }
         }
         List<Service> services = serviceRepository.findService(keyword);
         List<ServiceDto> serviceDtos = new ArrayList<>();
