@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -81,15 +82,20 @@ public ResponseEntity<?> updateCustomer(
         if(authHeader != null) {
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
-            Long idCheck = Long.parseLong(id);
-            Pageable p = PageRequest.of(page, pageSize);
-            if ( name == null && phone == null) {
-                CustomerResponseDto customerResponseDto = customerService.getAllCustomer(idCheck,page - 1, pageSize);
-                return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
-
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
             } else {
-                CustomerResponseDto customerResponseDto = customerService.getCustomerAndSearch(idCheck,name,phone,page - 1, pageSize);
-                return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
+                Long idCheck = Long.parseLong(id);
+                Pageable p = PageRequest.of(page, pageSize);
+                if (name == null && phone == null) {
+                    CustomerResponseDto customerResponseDto = customerService.getAllCustomer(idCheck, page - 1, pageSize);
+                    return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
+
+                } else {
+                    CustomerResponseDto customerResponseDto = customerService.getCustomerAndSearch(idCheck, name, phone, page - 1, pageSize);
+                    return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
+                }
             }
         }else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
@@ -102,9 +108,14 @@ public ResponseEntity<?> updateCustomer(
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
-            Long idCheck = Long.parseLong(id);
-            List<CustomerDto> list = customerService.getCustomerByKeyword(idCheck,keyword);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Long idCheck = Long.parseLong(id);
+                List<CustomerDto> list = customerService.getCustomerByKeyword(idCheck, keyword);
+                return new ResponseEntity<>(list, HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }

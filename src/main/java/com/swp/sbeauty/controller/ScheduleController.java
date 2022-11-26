@@ -40,11 +40,16 @@ public class ScheduleController {
                                           @RequestHeader("Authorization") String authHeader){
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         Long idSale = Long.parseLong(temp.get("id").toString());
-        boolean result = scheduleService.save(scheduleDto, idSale);
-        if (result == true) {
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(new ResponseDto<>(400, "khog them duoc"), HttpStatus.BAD_REQUEST);
+        Date expir = temp.getExpiration();
+        if(expir.before(new Date())){
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+        }else {
+            boolean result = scheduleService.save(scheduleDto, idSale);
+            if (result == true) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ResponseDto<>(400, "khog them duoc"), HttpStatus.BAD_REQUEST);
+            }
         }
     }
 
@@ -61,7 +66,7 @@ public class ScheduleController {
         Long idSale = Long.parseLong(temp.get("id").toString());
         Date expir = temp.getExpiration();
         if(expir.before(new Date())){
-            return new ResponseEntity<>(new ResponseDto<>(400, "Token is expired"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
         } else {
             List<ScheduleDto> result = scheduleService.getAllByDate(date, idSale);
             return new ResponseEntity<>(result, HttpStatus.OK);

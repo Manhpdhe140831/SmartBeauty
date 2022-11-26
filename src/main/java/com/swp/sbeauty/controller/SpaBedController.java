@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -42,9 +43,14 @@ public class SpaBedController {
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
-            Long idCheck = Long.parseLong(id);
-            StaffBedDto list = spaBedService.findStaffAndBedFree(idCheck, date, slot);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Long idCheck = Long.parseLong(id);
+                StaffBedDto list = spaBedService.findStaffAndBedFree(idCheck, date, slot);
+                return new ResponseEntity<>(list, HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
@@ -80,8 +86,14 @@ public class SpaBedController {
     @PostMapping(value = "/bed/create")
     public ResponseEntity<?> saveSlot(@RequestHeader("Authorization") String authHeader,
                                       @RequestBody SpaBedDto spaBedDto){
-        Boolean result = spaBedService.saveBed(spaBedDto, authHeader);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        Date expir = temp.getExpiration();
+        if(expir.before(new Date())){
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+        }else {
+            Boolean result = spaBedService.saveBed(spaBedDto, authHeader);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
     }
     @PutMapping ("/bed/update")
     public ResponseEntity<?> updateBed(@RequestParam(value = "id") Long id,

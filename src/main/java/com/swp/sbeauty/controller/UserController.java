@@ -65,13 +65,18 @@ public class UserController {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String roleCheck = temp.get("role").toString();
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
-        String check = userService.validateUser(email, phone);
-        if (check == "") {
+        Date expir = temp.getExpiration();
+        if(expir.before(new Date())){
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+        }else {
+            String check = userService.validateUser(email, phone);
+            if (check == "") {
 
-            Boolean result = userService.saveUser(image, name, email, phone, dateOfBirth, gender, address, password, role, roleCheck, idcheck);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+                Boolean result = userService.saveUser(image, name, email, phone, dateOfBirth, gender, address, password, role, roleCheck, idcheck);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+            }
         }
     }
     @PutMapping ("/user/update")
@@ -124,7 +129,9 @@ public class UserController {
         Page<UserDto> getAllUser;
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String role = temp.get("role").toString();
+
         Integer idcheck = Integer.parseInt(temp.get("id").toString());
+
         if (role.equalsIgnoreCase("admin")){
             getAllUser = userService.getAllUsersByAdmin(page -1,pageSize);
         }else if(role.equalsIgnoreCase("manager")){
@@ -147,16 +154,21 @@ public class UserController {
         Page<UserDto> getAllUser;
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         String role = temp.get("role").toString();
-        Integer idcheck = Integer.parseInt(temp.get("id").toString());
-        if (role.equalsIgnoreCase("admin")){
-            UserResponse userResponse = userService.getAllUser(page-1,pageSize);
-            return new ResponseEntity<>(userResponse,HttpStatus.OK);
-        }else if(role.equalsIgnoreCase("manager")){
-            UserResponse userResponse = userService.getUserByManager(idcheck,page-1,pageSize);
-            return new ResponseEntity<>(userResponse,HttpStatus.OK);
-        }else{
-            getAllUser = userService.getAllUsers(page ,pageSize);
-            return new ResponseEntity<>(userRepository,HttpStatus.OK);
+        Date expir = temp.getExpiration();
+        if(expir.before(new Date())){
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+        } else {
+            Integer idcheck = Integer.parseInt(temp.get("id").toString());
+            if (role.equalsIgnoreCase("admin")) {
+                UserResponse userResponse = userService.getAllUser(page - 1, pageSize);
+                return new ResponseEntity<>(userResponse, HttpStatus.OK);
+            } else if (role.equalsIgnoreCase("manager")) {
+                UserResponse userResponse = userService.getUserByManager(idcheck, page - 1, pageSize);
+                return new ResponseEntity<>(userResponse, HttpStatus.OK);
+            } else {
+                getAllUser = userService.getAllUsers(page, pageSize);
+                return new ResponseEntity<>(userRepository, HttpStatus.OK);
+            }
         }
 
     }
@@ -168,9 +180,14 @@ public class UserController {
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
-            Long idCheck = Long.parseLong(id);
-            List<UserDto> list = userService.getStaffFree(idCheck, date, slot);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Long idCheck = Long.parseLong(id);
+                List<UserDto> list = userService.getStaffFree(idCheck, date, slot);
+                return new ResponseEntity<>(list, HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }

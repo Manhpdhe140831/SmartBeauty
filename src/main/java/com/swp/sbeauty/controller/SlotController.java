@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,9 +28,14 @@ public class SlotController {
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
-            Long idCheck = Long.parseLong(id);
-            List<SlotDto> list = service.getAllSlot(idCheck);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Long idCheck = Long.parseLong(id);
+                List<SlotDto> list = service.getAllSlot(idCheck);
+                return new ResponseEntity<>(list, HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
@@ -37,10 +43,16 @@ public class SlotController {
 
     @PostMapping(value = "/slot/create")
     public ResponseEntity<?> saveSlot(@RequestHeader("Authorization") String authHeader,
-                                          @RequestBody SlotDto slotDto){
+                                          @RequestBody SlotDto slotDto) {
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        Date expir = temp.getExpiration();
+        if (expir.before(new Date())) {
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+        } else {
             Boolean result = service.saveSlot(slotDto, authHeader);
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
+    }
 
 
 }

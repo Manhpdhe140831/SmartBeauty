@@ -110,9 +110,14 @@ public class CourseController {
         if(authHeader != null){
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             String id = temp.get("id").toString();
-            Long idCheck = Long.parseLong(id);
-            List<CourseDto> list = service.getServiceBuyed(idCheck, customer);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Long idCheck = Long.parseLong(id);
+                List<CourseDto> list = service.getServiceBuyed(idCheck, customer);
+                return new ResponseEntity<>(list, HttpStatus.OK);
+            }
         } else {
             return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
         }
