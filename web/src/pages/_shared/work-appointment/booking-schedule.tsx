@@ -13,7 +13,12 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {UserModel} from "../../../model/user.model";
 import {SlotAvailModel, SlotModal} from "../../../model/slot.model";
-import {createSchedule, getBedAndStaff, getServicesAndCourse} from "../../../services/schedule.service";
+import {
+    createSchedule,
+    getBedAndStaff,
+    getScheduleById,
+    getServicesAndCourse
+} from "../../../services/schedule.service";
 import {SearchServicesModel, ServiceModel} from "../../../model/service.model";
 import {formatDate} from "../../../utilities/time.helper";
 import {StaffModel} from "../../../model/staff.model";
@@ -74,6 +79,40 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
         },
     });
 
+    const router = useRouter();
+
+    useEffect(() => {
+        if (router.query.scheduleId) {
+            // query data with dataId
+
+            const scheduleData = getScheduleById(Number(router.query.scheduleId))
+
+            console.log(scheduleData);
+
+            // set data
+            // setSelectedCustomer({
+            //     customer_name: "Tôn Ngộ Không",
+            //     gender: "Nam",
+            //     age: "1000",
+            //     address: "369 Hoa Quả sơn",
+            //     phone_number: "0987654321",
+            // });
+            // setService({
+            //     service_code: "LT-062022",
+            //     service_name: "Liệu trình trị mụn",
+            //     date_count: "5/10",
+            //     buy_day: "06/10/2022",
+            //     expired: "06/08/2023",
+            // });
+
+            setActive(3);
+        } else {
+            if (userRole !== USER_ROLE.sale_staff) {
+                void router.push("/");
+            }
+        }
+    }, [router, router.query.scheduleId, userRole]);
+
     const stepByStep = (step: number) => {
         switch (step) {
             case 0:
@@ -106,36 +145,6 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
             showSave(false);
         }
     };
-
-    const router = useRouter();
-
-    useEffect(() => {
-        if (router.query.scheduleId) {
-            // query data with dataId
-
-            // set data
-            // setSelectedCustomer({
-            //     customer_name: "Tôn Ngộ Không",
-            //     gender: "Nam",
-            //     age: "1000",
-            //     address: "369 Hoa Quả sơn",
-            //     phone_number: "0987654321",
-            // });
-            // setService({
-            //     service_code: "LT-062022",
-            //     service_name: "Liệu trình trị mụn",
-            //     date_count: "5/10",
-            //     buy_day: "06/10/2022",
-            //     expired: "06/08/2023",
-            // });
-
-            setActive(3);
-        } else {
-            if (userRole !== USER_ROLE.sale_staff) {
-                void router.push("/");
-            }
-        }
-    }, [router, router.query.scheduleId, userRole]);
 
     const searchService = async (keyword = ''): Promise<AutoCompleteItemProp<SearchServicesModel>[]> => {
         if (selectedCustomer) {
@@ -290,11 +299,10 @@ const BookingSchedule = ({searchCustomer, slotList, customerList}: BookingSchedu
                                                         value={new Date(field.value)}
                                                         withAsterisk
                                                         onChange={(e) => {
-                                                            field.onChange(e);
+                                                            field.onChange(e ? e.toISOString() : null);
                                                             field.onBlur();
                                                         }}
                                                         onBlur={field.onBlur}
-                                                        defaultValue={new Date(field.value)}
                                                         disabled={userRole !== USER_ROLE.sale_staff}
                                             />
                                         )}

@@ -27,6 +27,21 @@ export async function getSlot() {
   }
 }
 
+export async function getBed() {
+  try {
+    const apiResult = await axios.get("/bed", {
+      params: {
+        pageSize: 10
+      }
+    });
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
+
 export async function getServicesAndCourse(
   idCustomer: number,
   keyword: string
@@ -51,7 +66,7 @@ export async function getBedAndStaff(date: string, slotId: number) {
     const apiResult = await axios.get(`/bed/getStaffAndBedFree`, {
       params: {
         date,
-        slotId,
+        slot: slotId,
       },
     });
     return apiResult.data;
@@ -65,6 +80,21 @@ export async function getBedAndStaff(date: string, slotId: number) {
 export async function createSchedule(payload: any) {
   try {
     const apiResult = await axios.post(`/schedule/create`, payload);
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
+
+export async function getScheduleById(scheduleId: number) {
+  try {
+    const apiResult = await axios.get(`/schedule/getbyid`, {
+      params: {
+        id: scheduleId
+      }
+    });
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;
