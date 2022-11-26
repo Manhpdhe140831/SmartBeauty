@@ -6,9 +6,10 @@ import AppointmentHeaderTimeline from "../../../components/appointment-timeline/
 import {AppPageInterface} from "../../../interfaces/app-page.interface";
 import {useRouter} from "next/router";
 import {USER_ROLE} from "../../../const/user-role.const";
-import {getSchedule, getSlot} from "../../../services/schedule.service";
+import {getBed, getSchedule, getSlot} from "../../../services/schedule.service";
 import {SlotModal} from "../../../model/slot.model";
 import {useDebounce} from "use-debounce";
+import {SpaBedModel} from "../../../model/spa-bed.model";
 
 type workAppointmentProps = {
     userRole: USER_ROLE;
@@ -24,6 +25,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({userRole}) => 
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [scheduleData, setScheduleData] = useState<[]>([]);
     const [slotList, setSlotList] = useState<SlotModal[] | []>([])
+    const [bedList, setBedList] = useState<SpaBedModel[] | []>([])
 
     const router = useRouter();
     const goToBooking = () => {
@@ -41,10 +43,19 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({userRole}) => 
         void getSlotList()
     },[])
 
+    // Lấy list bed trong database
+    const getBedList = async () => {
+        const betData = await getBed()
+        console.log(betData.data);
+        setBedList(betData.data)
+    }
+    useEffect(() => {
+        void getBedList()
+    },[])
+
     // Lấy data booking trong database
     const getScheduleList = async () => {
         const scheduleList = await getSchedule(selectedDate.toISOString())
-        console.log(scheduleList);
         setScheduleData(scheduleList)
     }
     useEffect(() => {
@@ -69,7 +80,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({userRole}) => 
                         <div className="h-16 min-w-32 max-w-32 select-none border-x p-4 font-semibold">
                             <Text className={"uppercase"}>Bed Number</Text>
                         </div>
-                        <AppointmentTimeline/>
+                        <AppointmentTimeline bedList={bedList}/>
                     </div>
                     {slotList.map((slot, i) => {
                         return (
@@ -78,6 +89,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({userRole}) => 
                                 userRole={userRole}
                                 title={slot.name}
                                 timeFrame={slot.timeline}
+                                bedList={bedList}
                                 bedSchedule={scheduleData.find(
                                     (s: any) => s.slot === slot.id
                                 )}
@@ -85,6 +97,9 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({userRole}) => 
                         );
                     })}
                 </div>
+                {
+                    <div>{selectedDate.toISOString()}</div>
+                }
             </div>
         </div>
     );
