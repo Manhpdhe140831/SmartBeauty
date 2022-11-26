@@ -341,20 +341,23 @@ public class ScheduleServiceImpl implements ScheduleService {
 
             CourseDto courseDto = null;
             if (courseId != null) {
-                if (customerCourseHistory != null) {
-                    Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(itemS.getCourseHistoryId()).orElse(null);
-                    Integer count = customer_course_mapping.getCount() + 1;
-
-                    Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
-                    courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), count);
-
-
-                }
 
 
                 Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(courseId);
 
                 courseDto = new CourseDto(bill_course_history.getId(), bill_course_history.getCode(), bill_course_history.getName(), bill_course_history.getPrice(), bill_course_history.getDuration(), bill_course_history.getTimeOfUse(), bill_course_history.getDiscountStart(), bill_course_history.getDiscountEnd(), bill_course_history.getDiscountPercent(), bill_course_history.getImage(), bill_course_history.getDescription());
+            }
+
+            if (customerCourseHistory != null) {
+                Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(itemS.getCourseHistoryId()).orElse(null);
+                if (customer_course_mapping != null) {
+                    // Integer count = customer_course_mapping.getCount() + 1;
+
+                    Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
+                    courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), customer_course_mapping.getCount() +1);
+
+                }
+
             }
             ServiceDto serviceDto = null;
             if (itemS.getServiceId() != null) {
