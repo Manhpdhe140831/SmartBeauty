@@ -1,27 +1,24 @@
-import { StaffModel } from "./staff.model";
-import { UserModel } from "./user.model";
-import { SpaBedModel } from "./spa-bed.model";
+import {StaffModel} from "./staff.model";
+import {UserModel} from "./user.model";
+import {SpaBedModel} from "./spa-bed.model";
+import {ServiceModel} from "./service.model";
 
 export interface BookingModel {
-  id: number;
-  slot: number;
-  schedule: ScheduleModel[];
-}
-
-export interface ScheduleModel {
-  id: number;
-  bedInfo: SpaBedModel | undefined;
-  saleStaffInfo: StaffModel | undefined;
-  techStaffInfo: StaffModel | undefined;
-  customerInfo: UserModel | undefined;
-  services: string;
-  status: ScheduleStatus;
-  note: string;
+    id: number;
+    slot: number;
+    bed: SpaBedModel | undefined;
+    sale_staff: StaffModel | undefined;
+    tech_staff: StaffModel | undefined;
+    customer: UserModel | undefined;
+    service?: ServiceModel | undefined;
+    course?: ServiceModel | undefined;
+    status: string;
+    note: string;
 }
 
 export enum ScheduleStatus {
-  Cancel,
-  Waiting,
-  // OnGoing,
-  Finish,
+    Cancel,
+    Waiting,
+    // OnGoing,
+    Finish,
 }

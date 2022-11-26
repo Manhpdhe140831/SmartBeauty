@@ -93,7 +93,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
               title={slot.name}
               timeFrame={slot.timeline}
               bedList={bedList}
-              bedSchedule={scheduleData.find((s: any) => s.slot === slot.id)}
+              bedSchedule={scheduleData.find((s: any) => s.slot.id === slot.id)}
             />
           );
         })}
