@@ -4,6 +4,7 @@ import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.entity.mapping.Bed_Slot_Mapping;
 import com.swp.sbeauty.entity.mapping.Customer_Course_Mapping;
+import com.swp.sbeauty.entity.mapping.Schedule_Branch_Mapping;
 import com.swp.sbeauty.entity.mapping.User_Slot_Mapping;
 import com.swp.sbeauty.repository.*;
 import com.swp.sbeauty.repository.mappingRepo.*;
@@ -42,9 +43,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     Bill_Service_History_Repository bill_service_history_repository;
     @Autowired
     User_Slot_Mapping_Repository user_slot_mapping_repository;
-
+    @Autowired
+    BranchRepository branchRepository;
     @Autowired
     Bed_Slot_Mapping_Repository bed_slot_mapping_repository;
+    @Autowired
+    Schedule_Branch_Mapping_Repository schedule_branch_mapping_repository;
 
     @Override
     public boolean updateCount(ScheduleDto scheduleDto) {
@@ -156,15 +160,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                         schedule.setCourseHistoryId(customer_course_mapping.getId());
                     }
                 }
-
             } else {
                 schedule.setCourseHistoryId(null);
                 schedule.setCourseId(null);
             }
-
-
             if (null != schedule) {
                 schedule = scheduleRepository.save(schedule);
+                Integer idBranch = branchRepository.getIdBranchByManager(idSale.intValue());
+                schedule_branch_mapping_repository.save(new Schedule_Branch_Mapping(schedule.getId(), idBranch.longValue()));
                 user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
                 bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
                 if (schedule.getServiceId() != null) {
@@ -313,14 +316,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleDto> getAllByDate(String dateRes) {
+    public List<ScheduleDto> getAllByDate(String dateRes, Long idSale) {
+        Integer idBranch = branchRepository.getIdBranchByManager(idSale.intValue());
         List<ScheduleDto> result = new ArrayList<>();
         List<Schedule> list = new ArrayList<>();
         if (dateRes != null) {
-            list = scheduleRepository.getAllByDate(dateRes.substring(0,10));
+            list = scheduleRepository.getAllByDate(dateRes.substring(0,10), idBranch.longValue());
         }
         if (dateRes == null) {
-            list = scheduleRepository.findAll();
+            list = scheduleRepository.getAll(idBranch.longValue());
         }
         for (Schedule itemS : list
         ) {

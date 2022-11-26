@@ -14,11 +14,6 @@ import java.util.List;
 
 @Repository
 public interface BranchRepository extends JpaRepository<Branch,Long> {
-    Long countByPhone(String phone);
-
-    @Query(value = "select a.* from `branch` a " , nativeQuery = true)
-    Page<Branch> getBranchByFilter(String search, String address, Pageable pageable);
-
     @Query(value = "SELECT b FROM Branch b where  " +
             "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
     public Page<Branch> searchListWithField(String key,String key2,String key3, Pageable pageable);

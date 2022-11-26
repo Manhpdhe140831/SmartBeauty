@@ -54,8 +54,11 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedule")
-    public ResponseEntity<?> getAllSchedule(@RequestParam(value = "date", required = false) String date){
-        List<ScheduleDto> result = scheduleService.getAllByDate(date);
+    public ResponseEntity<?> getAllSchedule(@RequestParam(value = "date", required = false) String date,
+                                            @RequestHeader("Authorization") String authHeader){
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        Long idSale = Long.parseLong(temp.get("id").toString());
+        List<ScheduleDto> result = scheduleService.getAllByDate(date, idSale);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
