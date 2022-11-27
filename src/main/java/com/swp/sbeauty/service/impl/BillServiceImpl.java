@@ -59,12 +59,16 @@ public class BillServiceImpl implements BillService {
 
     @Autowired
     CourseRepository courseRepository;
+
     @Autowired
     Bill_Service_History_Repository bill_service_history_repository;
+
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
+
     @Autowired
-        Customer_Branch_Mapping_Repo customer_branch_mapping_repo;
+    Customer_Branch_Mapping_Repo customer_branch_mapping_repo;
+
     String usingStatus = "2";
 
     @Override
@@ -154,7 +158,6 @@ public class BillServiceImpl implements BillService {
         billResponseDto.setTotalPage(page.getTotalPages());
         return billResponseDto;
     }
-
 
     @Override
     public BillResponseDto getBillsByCustomer(int offSet, int pageSize, Long id) {
@@ -323,7 +326,7 @@ public class BillServiceImpl implements BillService {
                billDetail.setQuantity(Long.parseLong("1"));
                billDetail = billDetailRepository.save(billDetail);
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), usingStatus));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItem(), usingStatus));
            } else if(billDto.getItemType().equalsIgnoreCase("course")){
                BillDetail billDetail = new BillDetail();
                billDetail.setCourse_id(billDto.getItem());
@@ -332,7 +335,7 @@ public class BillServiceImpl implements BillService {
                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(billDto.getItem());
                Integer duration = bill_course_history.getDuration();
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, usingStatus));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItem(), getEndDate(bill.getCreateDate(), duration), 0, usingStatus));
            }
        }
        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -343,7 +346,7 @@ public class BillServiceImpl implements BillService {
        }
 
        bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
-       bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
+       bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomerId()));
 
        if (bill != null){
            return true;
