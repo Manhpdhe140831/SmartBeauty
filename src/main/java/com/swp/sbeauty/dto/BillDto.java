@@ -24,8 +24,7 @@ public class BillDto {
     private Double priceBeforeTax;
     private Double priceAfterTax;
     private Long itemId;
-    private ServiceDto serviceItem;
-    private CourseDto courseItem;
+    private Object item;
     private String itemType;
     private List<BillDetailDto> addons;
     private Long customerId;
@@ -33,7 +32,7 @@ public class BillDto {
 
     private List<BillDetailDto> items;
 
-    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax,ServiceDto serviceItem, CourseDto courseItem, List<BillDetailDto> addons, String itemType) {
+    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax, Object item, List<BillDetailDto> addons, String itemType) {
         this.id = id;
         this.code = code;
         this.branch = branch;
@@ -45,7 +44,6 @@ public class BillDto {
         this.priceAfterTax = priceAfterTax;
         this.addons = addons;
         this.itemType = itemType;
-        this.serviceItem = serviceItem;
-        this.courseItem = courseItem;
+        this.item = item;
     }
 }

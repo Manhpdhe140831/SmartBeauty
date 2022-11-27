@@ -139,7 +139,7 @@ public class BillServiceImpl implements BillService {
                                         bill_service_history.getDuration(),
                                         bill_service_history.getImage());
                             }
-                            f.setServiceItem(service);
+                            f.setItem(service);
                             f.setItemType("service");
                         }
                         if (itemb.getCourse_id() != null) {
@@ -157,7 +157,7 @@ public class BillServiceImpl implements BillService {
                                         bill_course_history.getImage(),
                                         bill_course_history.getDescription());
                             }
-                            f.setCourseItem(course);
+                            f.setItem(course);
                             f.setItemType("course");
                         }
                     }
@@ -294,10 +294,11 @@ public class BillServiceImpl implements BillService {
                 String itemType = "";
                 if(course!=null){
                     itemType = "course";
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), course,addons,itemType);
                 } else if(service!=null){
                     itemType = "service";
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service,addons,itemType);
                 }
-                return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service, course,addons,itemType);
             }
         }
         return null;
