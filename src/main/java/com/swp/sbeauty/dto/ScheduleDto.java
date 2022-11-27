@@ -18,7 +18,7 @@ public class ScheduleDto {
     private CustomerDto customer;
     private CourseDto course;
     private ServiceDto service;
-    private String status;
+    private Long status;
     private String note;
     private Boolean isBill;
 
@@ -30,7 +30,7 @@ public class ScheduleDto {
     private Long serviceId;
     private Long courseId;
 
-    public ScheduleDto(Long id, String date, SlotDto slot, SpaBedDto bed, UserDto sale_staff, UserDto tech_staff, CustomerDto customer, CourseDto course, ServiceDto service, String status, String note, Boolean isBill) {
+    public ScheduleDto(Long id, String date, SlotDto slot, SpaBedDto bed, UserDto sale_staff, UserDto tech_staff, CustomerDto customer, CourseDto course, ServiceDto service, Long status, String note, Boolean isBill) {
         this.id = id;
         this.date = date;
         this.slot = slot;

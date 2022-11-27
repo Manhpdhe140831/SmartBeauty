@@ -53,9 +53,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public boolean updateCount(ScheduleDto scheduleDto) {
         if (scheduleDto.getId() != null) {
             Schedule schedule = scheduleRepository.findById(scheduleDto.getId()).orElse(null);
-            if (!schedule.getStatus().equalsIgnoreCase("completed")) {
-                if (scheduleDto.getStatus().equalsIgnoreCase("completed")) {
-                    schedule.setStatus("completed");
+            if (!schedule.getStatus().equalsIgnoreCase("3")) {
+                if (scheduleDto.getStatus() == 3) {
+                    schedule.setStatus("3");
                     scheduleRepository.save(schedule);
                     if (scheduleDto.getCourseId() != null) {
                         Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourseId()).orElse(null);
@@ -64,14 +64,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                             String customerCourseStatus = customer_course_mapping.getStatus();
                             Bill_Course_History bill_course_history = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
                             if (count < bill_course_history.getTimeOfUse()) {
-                                if (customerCourseStatus.equalsIgnoreCase("using") || customerCourseStatus.equalsIgnoreCase("not yet")) {
+                                if (customerCourseStatus.equalsIgnoreCase("2")) {
                                     count++;
                                     if (count > 0 && count < bill_course_history.getTimeOfUse()) {
-                                        customer_course_mapping.setStatus("using");
+                                        customer_course_mapping.setStatus("2");
                                         customer_course_mapping_repository.save(customer_course_mapping);
                                     }
                                     if (count == bill_course_history.getTimeOfUse()) {
-                                        customer_course_mapping.setStatus("completed");
+                                        customer_course_mapping.setStatus("3");
                                         customer_course_mapping.setCount(count);
                                         customer_course_mapping_repository.save(customer_course_mapping);
                                         return true;
@@ -88,7 +88,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     }
                     if (scheduleDto.getServiceId() != null){
                         Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerService(scheduleDto.getCustomerId(), scheduleDto.getServiceId());
-                        customer_course_mapping.setStatus("completed");
+                        customer_course_mapping.setStatus("3");
                         customer_course_mapping_repository.save(customer_course_mapping);
                         return true;
                     }
@@ -101,7 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public boolean save(ScheduleDto scheduleDto, Long idSale) {
         Schedule schedule = new Schedule();
-        String status = "not yet";
+        String status = "2";
         schedule.setDate(scheduleDto.getDate());
         schedule.setSlotId(scheduleDto.getSlotId());
         schedule.setBedId(scheduleDto.getBedId());
@@ -212,17 +212,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (customerCourseHistory != null) {
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseHistoryId()).orElse(null);
             Integer count = customer_course_mapping.getCount() + 1;
-
             Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
             courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), count);
-
-
         }
         if (courseId != null) {
-
-
             Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(courseId);
-
             courseDto = new CourseDto(bill_course_history.getId(), bill_course_history.getCode(), bill_course_history.getName(), bill_course_history.getPrice(), bill_course_history.getDuration(), bill_course_history.getTimeOfUse(), bill_course_history.getDiscountStart(), bill_course_history.getDiscountEnd(), bill_course_history.getDiscountPercent(), bill_course_history.getImage(), bill_course_history.getDescription());
         }
         ServiceDto serviceDto = null;
@@ -230,7 +224,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             Bill_Service_History bill_service_history = bill_service_history_repository.findById(schedule.getServiceId()).orElse(null);
             if (bill_service_history != null) {
                 serviceDto = new ServiceDto(bill_service_history.getId(), bill_service_history.getName(), bill_service_history.getDiscountStart(), bill_service_history.getDiscountEnd(), bill_service_history.getDiscountPercent(), bill_service_history.getPrice(), bill_service_history.getDescription(), bill_service_history.getDuration(), bill_service_history.getImage());
-
             }
         }
         Schedule_Bill_Mapping schedule_bill_mapping = schedule_bill_mapping_repository.getSchedule_Bill_MappingById_schedule(id);
@@ -238,7 +231,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if(schedule_bill_mapping!=null){
             isBill = true;
         }
-        ScheduleDto scheduleDto = new ScheduleDto(idSchedule, date, slotDto, bedDto, saleStaffDto, techStaffDto, customerDto, courseDto, serviceDto, status, note, isBill);
+        ScheduleDto scheduleDto = new ScheduleDto(idSchedule, date, slotDto, bedDto, saleStaffDto, techStaffDto, customerDto, courseDto, serviceDto, Long.parseLong(status), note, isBill);
         if (scheduleDto != null) {
             return scheduleDto;
         } else {
@@ -253,7 +246,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Bed_Slot_Mapping bed_slot_mapping = bed_slot_mapping_repository.getBed_Slot_MappingBySchedule(schedule.getBedId(), schedule.getSlotId(), schedule.getDate());
         user_slot_mapping_repository.delete(user_slot_mapping);
         bed_slot_mapping_repository.delete(bed_slot_mapping);
-        String status = "not yet";
+        String status = "2";
         schedule.setDate(scheduleDto.getDate());
 
         schedule.setSlotId(scheduleDto.getSlotId());
@@ -277,7 +270,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         bill_service_history.setDuration(service.getDuration());
         bill_service_history.setImage(service.getImage());
         bill_service_history = bill_service_history_repository.save(bill_service_history);
-
 
         if (scheduleDto.getCourse() != null) {
             Boolean statusCourse = scheduleDto.getCourse().getIsBilled();
@@ -370,7 +362,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             if(schedule_bill_mapping!=null){
                 isBill = true;
             }
-            ScheduleDto scheduleDto = new ScheduleDto(scheduleId, date, slot, bed, saleStaff, techStaff, customer, courseDto, serviceDto, status, note, isBill);
+            ScheduleDto scheduleDto = new ScheduleDto(scheduleId, date, slot, bed, saleStaff, techStaff, customer, courseDto, serviceDto, Long.parseLong(status), note, isBill);
             result.add(scheduleDto);
         }
         return result;

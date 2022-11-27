@@ -24,7 +24,7 @@ public class ScheduleController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/schedule/updatecount")
+    @PostMapping("/schedule/updateStatus")
     public ResponseEntity<?> updateCount(@RequestBody ScheduleDto scheduleDto){
         boolean check = scheduleService.updateCount(scheduleDto);
         if (check == true) {
@@ -33,7 +33,6 @@ public class ScheduleController {
             return new ResponseEntity<>(new ResponseDto<>(400, "Liệu trình đã sử dụng hết"), HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @PostMapping("/schedule/create")
     public ResponseEntity<?> saveSchedule(@RequestBody ScheduleDto scheduleDto,

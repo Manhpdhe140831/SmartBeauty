@@ -42,14 +42,11 @@ public class ServiceController {
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false) String name
             ){
-        Pageable p = PageRequest.of(page, pageSize);
-
+        ServiceResponseDto serviceResponseDto = null;
         if (name==null){
-            ServiceResponseDto serviceResponseDto = new ServiceResponseDto();
             serviceResponseDto = service.getAll(page -1, pageSize);
             return new ResponseEntity<>(serviceResponseDto,HttpStatus.OK);
         }else {
-            ServiceResponseDto serviceResponseDto = new ServiceResponseDto();
             serviceResponseDto = service.getListServicePaginationAndSearch(name, page-1, pageSize);
             return new ResponseEntity<>(serviceResponseDto, HttpStatus.OK);
         }
@@ -102,19 +99,6 @@ public class ServiceController {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
     }
-//    @GetMapping("/service/getServiceAndCourseBuyed")
-//    private ResponseEntity<?> getAllService(@RequestHeader("Authorization") String authHeader,
-//                                           @RequestParam(value = "customer") Long customer){
-//        if(authHeader != null){
-//            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-//            String id = temp.get("id").toString();
-//            Long idCheck = Long.parseLong(id);
-//            ServiceCourseBuyedDto list = service.getAllService(idCheck, customer);
-//            return new ResponseEntity<>(list, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
-//        }
-//    }
 
     @GetMapping("/service/findServiceCourse")
     private ResponseEntity<?> getAllServiceCourse(  @RequestParam(value = "idCustomer") Long idCustomer,
