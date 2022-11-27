@@ -8,17 +8,20 @@ import lombok.Setter;
 public class BillDetailDto {
     private Long id;
     private String type;
-
     private Long type_id;
     private ProductDto product;
     private ServiceDto service;
     private CourseDto course;
     private Long quantity;
-    private Long item;
-
-
+    private Long itemId;
+    private ProductDto item;
 
     public BillDetailDto(){}
+
+    public BillDetailDto(ProductDto item, Long quantity){
+        this.item = item;
+        this.quantity = quantity;
+    }
 
     public BillDetailDto(String type, Long quantity, Long type_id){
         this.type = type;

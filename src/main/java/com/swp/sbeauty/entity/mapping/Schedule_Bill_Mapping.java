@@ -17,4 +17,12 @@ public class Schedule_Bill_Mapping {
     private Long id;
     private Long id_schedule;
     private Long id_bill;
+
+    public Schedule_Bill_Mapping() {
+    }
+
+    public Schedule_Bill_Mapping(Long id_schedule, Long id_bill) {
+        this.id_schedule = id_schedule;
+        this.id_bill = id_bill;
+    }
 }

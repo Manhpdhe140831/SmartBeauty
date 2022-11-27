@@ -1,6 +1,7 @@
 package com.swp.sbeauty.dto;
 
 import com.swp.sbeauty.entity.Bill;
+import com.swp.sbeauty.entity.Course;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,34 +23,16 @@ public class BillDto {
     private String createDate;
     private Double priceBeforeTax;
     private Double priceAfterTax;
-    private Long item;
+    private Long itemId;
+    private BillItem<CourseDto, ServiceDto> item;
     private String itemType;
     private List<BillDetailDto> addons;
     private Long customerId;
+    private Long scheduleId;
 
     private List<BillDetailDto> items;
 
-    public BillDto(Long id, String code,BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double privateAfterTax) {
-        this.id = id;
-        this.code = code;
-        this.branch = branch;
-        this.staff = staff;
-        this.customer = customer;
-        this.status = status;
-        this.createDate = createDate;
-        this.priceBeforeTax = priceBeforeTax;
-        this.priceAfterTax = privateAfterTax;
-    }
-    public BillDto(Bill bill){
-        this.setId(bill.getId());
-        this.setCode(bill.getCode());
-        this.setStatus(bill.getStatus());
-        this.setCreateDate(bill.getCreateDate());
-        this.setPriceBeforeTax(bill.getPriceBeforeTax());
-        this.setPriceAfterTax(bill.getPriceAfterTax());
-    }
-
-    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax, List<BillDetailDto> items) {
+    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax,BillItem<CourseDto, ServiceDto> item, List<BillDetailDto> addons, String itemType) {
         this.id = id;
         this.code = code;
         this.branch = branch;
@@ -59,6 +42,8 @@ public class BillDto {
         this.createDate = createDate;
         this.priceBeforeTax = priceBeforeTax;
         this.priceAfterTax = priceAfterTax;
-        this.items = items;
+        this.item = item;
+        this.addons = addons;
+        this.itemType = itemType;
     }
 }
