@@ -5,7 +5,7 @@ import { IconArrowLeft } from "@tabler/icons";
 import SaleStaffInvoiceAction from "../../../_shared/invoice/_partial/detail/action.sale_staff";
 import { USER_ROLE } from "../../../../const/user-role.const";
 import { useRouter } from "next/router";
-import { BillUpdateEntity } from "../../../../model/invoice.model";
+import { InvoiceUpdateEntity } from "../../../../model/invoice.model";
 import { useInvoiceDetailQuery } from "../../../../query/model-detail";
 import useWindowPathname from "../../../../hooks/window-pathname.hook";
 
@@ -37,7 +37,7 @@ const SaleStaffInvoiceDetail: AppPageInterface = () => {
     });
   }
 
-  function onInvoiceClose(data?: BillUpdateEntity) {
+  function onInvoiceClose(data?: InvoiceUpdateEntity) {
     console.log(data);
   }
 

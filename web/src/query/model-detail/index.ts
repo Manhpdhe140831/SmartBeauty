@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import mockStaff from "../../mock/staff";
-import { StaffModel } from "../../model/staff.model";
 import { getCustomerById } from "../../services/customer.service";
-import mockCourse from "../../mock/course";
-import { CourseModel } from "../../model/course.model";
-import mockService from "../../mock/service";
-import { ServiceModel } from "../../model/service.model";
-import mockBill from "../../mock/bill";
 import { InvoiceModel } from "../../model/invoice.model";
+import { getUserDetail } from "../../services/user.service";
+import { getCourseDetail } from "../../services/spa-course.service";
+import { UserModel } from "../../model/user.model";
+import { getDetailSpaService } from "../../services/spa-service.service";
+import { getDetailInvoice } from "../../services/invoice.service";
 
 export const useCustomerDetailQuery = (customerId?: number) =>
   useQuery(["customer-detail", customerId], () => {
@@ -17,14 +15,13 @@ export const useCustomerDetailQuery = (customerId?: number) =>
     return getCustomerById(customerId);
   });
 
-export const useStaffDetailQuery = (staffId?: number) =>
+export const useStaffDetailQuery = <T extends UserModel>(staffId?: number) =>
   useQuery(["staff-detail", staffId], async () => {
     if (staffId === undefined) {
       return null;
     }
 
-    const ms = await mockStaff();
-    return ms.find((s) => s.id === staffId) as StaffModel;
+    return getUserDetail<T>(staffId);
   });
 
 export const useCourseDetailQuery = (courseId?: number) =>
@@ -33,29 +30,30 @@ export const useCourseDetailQuery = (courseId?: number) =>
       return null;
     }
 
-    const ms = await mockCourse();
-    return ms.find((s) => s.id === courseId) as CourseModel;
+    return getCourseDetail(courseId);
   });
 
-export const useServiceDetailQuery = (serviceId?: number) =>
+export const useServiceDetailQuery = (serviceId?: number | null) =>
   useQuery(["service-detail", serviceId], async () => {
-    if (serviceId === undefined) {
+    if (!serviceId) {
       return null;
     }
 
-    const ms = await mockService();
-    return ms.find((s) => s.id === serviceId) as ServiceModel;
+    return getDetailSpaService(serviceId);
   });
 
 export const useInvoiceDetailQuery = (
   invoiceId?: number,
-  options?: Parameters<typeof useQuery<InvoiceModel>>[2]
+  options?: Parameters<typeof useQuery<InvoiceModel | null>>[2]
 ) =>
-  useQuery<InvoiceModel>(
+  useQuery<InvoiceModel | null>(
     ["invoice-detail", invoiceId],
     async () => {
-      const mockInvoice = await mockBill();
-      return mockInvoice.find((s) => s.id === invoiceId)!;
+      if (!invoiceId) {
+        return null;
+      }
+
+      return getDetailInvoice(invoiceId);
     },
     options
   );

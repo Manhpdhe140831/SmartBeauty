@@ -39,6 +39,22 @@ export async function getListSpaCourses(
   }
 }
 
+export async function getCourseDetail(id: number) {
+  try {
+    const apiResult = await axios.get<CourseModel>("/course/getById", {
+      params: {
+        id,
+      },
+    });
+
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
+
 export async function createSpaCourse(data: CourseCreateEntity) {
   try {
     const apiResult = await axios.post<boolean>(
