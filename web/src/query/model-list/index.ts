@@ -14,7 +14,6 @@ import { UserModel } from "../../model/user.model";
 import { SupplierModel } from "../../model/supplier.model";
 import { getListSupplier } from "../../services/supplier.service";
 import { InvoiceModel } from "../../model/invoice.model";
-import mockBill from "../../mock/bill";
 import { ProductModel } from "../../model/product.model";
 import { getListProduct } from "../../services/product.service";
 import { ServiceModel } from "../../model/service.model";

@@ -16,7 +16,7 @@ public interface BillService {
 
     public Boolean saveBill(BillDto billDto, String authHeader);
 
-    public Boolean updateBill(Long id, BillDto billDto, String authHeader);
+    public Boolean updateBill(BillDto billDto, String authHeader);
 
     public String getEndDate(String startDate, int duration);
 
