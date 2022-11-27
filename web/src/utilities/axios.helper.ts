@@ -1,4 +1,8 @@
-import { AxiosInstance, AxiosRequestHeaders } from "axios";
+import {
+  AxiosInstance,
+  AxiosRequestHeaders,
+  RawAxiosRequestHeaders,
+} from "axios";
 
 export const HOST_INTERCEPT_SKIP_HEADER = "host-intercept-skip";
 
@@ -12,7 +16,7 @@ export const HOST_INTERCEPT_SKIP_HEADER = "host-intercept-skip";
 export function ApiHostRequestInterceptor(
   instance: AxiosInstance,
   baseUrl: string,
-  headers?: AxiosRequestHeaders
+  headers?: RawAxiosRequestHeaders
 ) {
   return instance.interceptors.request.use(
     (config) => {

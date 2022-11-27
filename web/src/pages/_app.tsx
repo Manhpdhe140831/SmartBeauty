@@ -33,7 +33,10 @@ const queryClient = new QueryClient({
 /**
  * Add hostname to every api request with axios.
  */
-ApiHostRequestInterceptor(axios, `${URL_ENDPOINT}`);
+ApiHostRequestInterceptor(axios, `${URL_ENDPOINT}`, {
+  UTC_OFFSET: -(new Date().getTimezoneOffset() / 60),
+  TIMEZONE: Intl.DateTimeFormat().resolvedOptions().timeZone,
+});
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [clientPassedGuard, setClientPassedGuard] = useState(false);
