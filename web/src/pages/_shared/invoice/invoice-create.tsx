@@ -42,7 +42,7 @@ const InvoiceCreate = ({
     mode: "onBlur",
     defaultValues: {
       scheduleId,
-      item: item.id,
+      itemId: item.id,
       itemType: itemType,
       customerId: customer.id,
     },

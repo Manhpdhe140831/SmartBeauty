@@ -1,7 +1,6 @@
 import { FC, useRef, useState } from "react";
 import { Button, Text, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
-import mockProduct from "../../../../../mock/product";
 import FoundBillingItem from "./_found-billing-item";
 import { useQuery } from "@tanstack/react-query";
 import { BillingItemData } from "../../../../../model/_price.model";

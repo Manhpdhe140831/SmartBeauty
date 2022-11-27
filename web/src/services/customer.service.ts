@@ -9,7 +9,6 @@ import {
   CustomerModel,
   CustomerUpdateEntity,
 } from "../model/customer.model";
-import mockCustomer, { Customers } from "../mock/customer";
 
 /**
  * Get all customers in the branch.
