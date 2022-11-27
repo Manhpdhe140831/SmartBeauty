@@ -6,6 +6,8 @@ import { getCourseDetail } from "../../services/spa-course.service";
 import { UserModel } from "../../model/user.model";
 import { getDetailSpaService } from "../../services/spa-service.service";
 import { getDetailInvoice } from "../../services/invoice.service";
+import { getDetailSchedule } from "../../services/schedule.service";
+import { ScheduleModel } from "../../model/schedule.model";
 
 export const useCustomerDetailQuery = (customerId?: number) =>
   useQuery(["customer-detail", customerId], () => {
@@ -54,6 +56,22 @@ export const useInvoiceDetailQuery = (
       }
 
       return getDetailInvoice(invoiceId);
+    },
+    options
+  );
+
+export const useScheduleDetailQuery = (
+  scheduleId?: number,
+  options?: Parameters<typeof useQuery<ScheduleModel | null>>[2]
+) =>
+  useQuery<ScheduleModel | null>(
+    ["schedule-detail", scheduleId],
+    async () => {
+      if (!scheduleId) {
+        return null;
+      }
+
+      return getDetailSchedule(scheduleId);
     },
     options
   );

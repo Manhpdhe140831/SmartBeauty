@@ -1,9 +1,9 @@
-import { BookingModel, ScheduleStatus } from "../model/schedule.model";
+import { ScheduleModel, ScheduleStatus } from "../model/schedule.model";
 import { Beds } from "./bed";
 import { USER_ROLE } from "../const/user-role.const";
 import { GENDER } from "../const/gender.const";
 
-export const Schedule: BookingModel[] = [
+export const Schedule: ScheduleModel[] = [
   {
     id: 1,
     slot: 1,
@@ -179,7 +179,7 @@ export const Schedule: BookingModel[] = [
 ];
 
 const mockSchedule = () =>
-  new Promise<BookingModel[]>((resolve) =>
+  new Promise<ScheduleModel[]>((resolve) =>
     setTimeout(() => resolve(Schedule), 500)
   );
 

@@ -64,9 +64,7 @@ public class BillServiceImpl implements BillService {
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
 
-
-    String notYetStatus = "not yet";
-    String usingStatus = "using";
+    String usingStatus = "2";
 
     @Override
     public BillResponseDto getBills(int offSet, int pageSize) {
@@ -323,7 +321,7 @@ public class BillServiceImpl implements BillService {
                billDetail.setQuantity(Long.parseLong("1"));
                billDetail = billDetailRepository.save(billDetail);
                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), notYetStatus));
+               customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomer().getId(), billDto.getItem(), usingStatus));
            } else if(billDto.getItemType().equalsIgnoreCase("course")){
                BillDetail billDetail = new BillDetail();
                billDetail.setCourse_id(billDto.getItem());
@@ -387,7 +385,7 @@ public class BillServiceImpl implements BillService {
         bill.setCreateDate(billDto.getCreateDate());
 
         bill.setStatus(billDto.getStatus());
-        if (bill.getStatus().equalsIgnoreCase("completed")){
+        if (bill.getStatus().equalsIgnoreCase("3")){
             return false;
         }else {
             bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
@@ -429,8 +427,6 @@ public class BillServiceImpl implements BillService {
         }else {
             return false;
         }
-
-
     }
 
     @Override
