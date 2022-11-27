@@ -91,7 +91,7 @@ export async function createSchedule(payload: any) {
 
 export async function getDetailSchedule(scheduleId: number) {
   try {
-    const apiResult = await axios.get<ScheduleModel>(`/schedule/getbyid`, {
+    const apiResult = await axios.get<ScheduleModel>(`/schedule/getById`, {
       params: {
         id: scheduleId,
       },

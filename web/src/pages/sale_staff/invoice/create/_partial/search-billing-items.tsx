@@ -5,6 +5,7 @@ import mockProduct from "../../../../../mock/product";
 import FoundBillingItem from "./_found-billing-item";
 import { useQuery } from "@tanstack/react-query";
 import { BillingItemData } from "../../../../../model/_price.model";
+import { getListProduct } from "../../../../../services/product.service";
 
 type props = {
   onChange?: (item: BillingItemData) => void;
@@ -22,10 +23,15 @@ const SearchBillingItems: FC<props> = ({ onChange }) => {
     }
   );
 
-  // TODO make search product
   async function searchItem(name?: string) {
-    const productResult: BillingItemData[] = await mockProduct(name);
-    return productResult.slice(0, 5);
+    if (!name) {
+      return [];
+    }
+    const result = await getListProduct(1, 50, {
+      name: name,
+    });
+
+    return result.data;
   }
 
   const onBillingItem = (data: BillingItemData) => {
