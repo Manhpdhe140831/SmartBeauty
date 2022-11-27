@@ -26,12 +26,11 @@ public class BillController {
     @GetMapping("/bill")
     public ResponseEntity<?> getAllBill(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize){
-        Pageable p = PageRequest.of(page, pageSize);
         BillResponseDto billResponseDto = billService.getBills(page - 1, pageSize);
         return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/bill/getbyid")
+    @GetMapping("/bill/getById")
     public ResponseEntity<BillDto> getBillById(@RequestParam("id") Long id){
         BillDto result = billService.getBillById(id);
         return new ResponseEntity<>(result, (result != null)?HttpStatus.OK : HttpStatus.BAD_REQUEST);
