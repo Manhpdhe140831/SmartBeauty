@@ -375,82 +375,57 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Boolean updateBill(Long id, BillDto billDto, String authHeader) {
+    public Boolean updateBill(BillDto billDto, String authHeader) {
         Bill bill = null;
-        Optional<Bill> optional = billRepository.findById(id);
+        Optional<Bill> optional = billRepository.findById(billDto.getId());
         if (optional.isPresent()) {
             bill = optional.get();
         }
-        Bill_BillDetail_Mapping bill_billDetail_mapping = bill_billDetail_mapping_repository.getByBillId(id);
-        if (null != bill_billDetail_mapping) {
-            bill_billDetail_mapping_repository.delete(bill_billDetail_mapping);
-        }
-
-        Bill_Customer_Mapping bill_customer_mapping = bill_cusomter_mapping_repositry.getByBillId(id);
-        if (null != bill_customer_mapping) {
-            bill_cusomter_mapping_repositry.delete(bill_customer_mapping);
-        }
-        Bill_User_Mapping bill_user_mapping = bill_user_mapping_repository.getByBillId(id);
-        if (null != bill_user_mapping) {
-            bill_user_mapping_repository.delete(bill_user_mapping);
-        }
-        // xoa bill branch mapping
-        Bill_Branch_Mapping bill_branch_mapping = bill_branch_mapping_repository.getByBillId(id);
-        if (null != bill_branch_mapping) {
-            bill_branch_mapping_repository.delete(bill_branch_mapping);
-        }
-        List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
-        for (BillDetail itemb : billDetailList
-        ) {
-            billDetailRepository.delete(itemb);
-        }
-
-
-        bill.setCreateDate(billDto.getCreateDate());
-
-        bill.setStatus(billDto.getStatus());
-        if (bill.getStatus().equalsIgnoreCase("3")) {
-            return false;
-        } else {
-            bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
-            bill.setPriceAfterTax(billDto.getPriceAfterTax());
-            bill = billRepository.save(bill);
-            List<BillDetailDto> billDetailDtos = billDto.getItems();
-            for (BillDetailDto billDetailDto : billDetailDtos) {
-                if (billDetailDto.getType().equalsIgnoreCase("product")) {
+        if(bill!=null && bill.getStatus().equalsIgnoreCase("pending")){
+            if(billDto.getCreateDate()!=null){
+                bill.setCreateDate(billDto.getCreateDate());
+            }
+            if(billDto.getPriceBeforeTax()!=null){
+                bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
+            }
+            if(billDto.getPriceAfterTax()!=null){
+                bill.setPriceAfterTax(billDto.getPriceAfterTax());
+            }
+            if(billDto.getAddons()!=null){
+                //delete from bill detail
+                List<BillDetail> list = billDetailRepository.getAddons(billDto.getId());
+                for(BillDetail billDetail :list){
+                    billDetailRepository.delete(billDetail);
+                    Bill_BillDetail_Mapping bbm = bill_billDetail_mapping_repository.getByBillDetailId(billDetail.getId());
+                    bill_billDetail_mapping_repository.delete(bbm);
+                }
+                for (BillDetailDto billDetailDto : billDto.getAddons()) {
                     BillDetail billDetail = new BillDetail();
-                    billDetail.setProduct_id(billDetailDto.getType_id());
+                    billDetail.setProduct_id(billDetailDto.getItemId());//id product
                     billDetail.setQuantity(billDetailDto.getQuantity());
                     billDetail = billDetailRepository.save(billDetail);
                     bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-                }
-                if (billDetailDto.getType().equalsIgnoreCase("service")) {
-                    BillDetail billDetail = new BillDetail();
-                    billDetail.setService_id(billDetailDto.getType_id());
-                    billDetail.setQuantity(billDetailDto.getQuantity());
-                    billDetailRepository.save(billDetail);
-                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-                }
-                if (billDetailDto.getType().equalsIgnoreCase("course")) {
-                    BillDetail billDetail = new BillDetail();
-                    billDetail.setCourse_id(billDetailDto.getType_id());
-                    billDetail.setQuantity(billDetailDto.getQuantity());
-                    billDetailRepository.save(billDetail);
-                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                    Bill_Product_history bill_product_history = new Bill_Product_history();
+                    Product product = productRepository.getProductById(billDetailDto.getItemId());
+                    bill_product_history.setDate(billDto.getCreateDate());
+                    bill_product_history.setBillDetail_id(billDetail.getId());
+                    bill_product_history.setProductId(product.getId());
+                    bill_product_history.setName(product.getName());
+                    bill_product_history.setPrice(product.getPrice());
+                    bill_product_history.setDescription(product.getDescription());
+                    bill_product_history.setImage(product.getImage());
+                    bill_product_history.setDiscountStart(product.getDiscountStart());
+                    bill_product_history.setDiscountEnd(product.getDiscountEnd());
+                    bill_product_history.setDiscountPercent(product.getDiscountPercent());
+                    bill_product_history.setUnit(product.getUnit());
+                    bill_product_history.setDose(product.getDose());
+                    bill_product_history_repository.save(bill_product_history);
                 }
             }
-            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-            Long idStaff = Long.parseLong(temp.get("id").toString());
-            Long idBranch = user_branch_mapping_repo.idBranch(idStaff);
-            bill_branch_mapping_repository.save(new Bill_Branch_Mapping(bill.getId(), idBranch));
-            bill_user_mapping_repository.save(new Bill_User_Mapping(bill.getId(), idStaff));
-            bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomer().getId()));
-        }
-        if (bill != null) {
+            bill = billRepository.save(bill);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
