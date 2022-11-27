@@ -273,10 +273,10 @@ public class BillServiceImpl implements BillService {
                 BillItem<CourseDto, ServiceDto> item = null;
                 List<BillDetailDto> addons = new ArrayList<>();
                 List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
+                CourseDto course = null;
+                ProductDto product = null;
+                ServiceDto service = null;
                 for (BillDetail itemb : billDetailList) {
-                    CourseDto course = null;
-                    ProductDto product = null;
-                    ServiceDto service = null;
                     if (itemb.getProduct_id() != null) {
                         Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
                         product = new ProductDto(bill_product_history);
@@ -285,21 +285,19 @@ public class BillServiceImpl implements BillService {
                     if (itemb.getService_id() != null) {
                         Bill_Service_History bill_service_history = bill_service_history_repository.getBill_Service_HistoryById(itemb.getService_id());
                         service = new ServiceDto(bill_service_history);
-                        item = new BillItem<>(null, service);
                     }
                     if (itemb.getCourse_id() != null) {
                         Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(itemb.getCourse_id());
                         course = new CourseDto(bill_course_history);
-                        item = new BillItem<>(course, null);
                     }
                 }
                 String itemType = "";
-                if(item.getCourse()!=null){
+                if(course!=null){
                     itemType = "course";
-                } else if(item.getService()!=null){
+                } else if(service!=null){
                     itemType = "service";
                 }
-                return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(),item,addons,itemType);
+                return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service, course,addons,itemType);
             }
         }
         return null;
@@ -310,7 +308,7 @@ public class BillServiceImpl implements BillService {
         Bill bill = new Bill();
         bill.setCode(billDto.getCode());
         bill.setCreateDate(billDto.getCreateDate());
-        bill.setStatus(billDto.getStatus());
+        bill.setStatus("pending");
         bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
         bill.setPriceAfterTax(billDto.getPriceAfterTax());
         bill = billRepository.save(bill);
