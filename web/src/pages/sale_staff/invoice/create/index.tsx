@@ -13,7 +13,7 @@ import { InvoiceCreateEntity } from "../../../../model/invoice.model";
 
 const SaleStaffInvoiceCreate: AppPageInterface = () => {
   const router = useRouter();
-  const { previousUrl } = router.query;
+  const { previousUrl, schedule_id } = router.query;
 
   const mockPurchaseItem = RawServices[4] as ServiceModel;
   const mockCustomer = Customers[0] as CustomerModel;

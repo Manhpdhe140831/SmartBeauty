@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { IErrorResponse } from "../interfaces/api.interface";
+import { ScheduleModel } from "../model/schedule.model";
 
 export async function getSchedule(date: string) {
   try {
@@ -31,8 +32,8 @@ export async function getBed() {
   try {
     const apiResult = await axios.get("/bed", {
       params: {
-        pageSize: 10
-      }
+        pageSize: 10,
+      },
     });
     return apiResult.data;
   } catch (e) {
@@ -90,10 +91,10 @@ export async function createSchedule(payload: any) {
 
 export async function getScheduleById(scheduleId: number) {
   try {
-    const apiResult = await axios.get(`/schedule/getbyid`, {
+    const apiResult = await axios.get<ScheduleModel>(`/schedule/getbyid`, {
       params: {
-        id: scheduleId
-      }
+        id: scheduleId,
+      },
     });
     return apiResult.data;
   } catch (e) {
