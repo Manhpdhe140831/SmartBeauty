@@ -24,7 +24,8 @@ public class BillDto {
     private Double priceBeforeTax;
     private Double priceAfterTax;
     private Long itemId;
-    private BillItem<CourseDto, ServiceDto> item;
+    private ServiceDto serviceItem;
+    private CourseDto courseItem;
     private String itemType;
     private List<BillDetailDto> addons;
     private Long customerId;
@@ -42,7 +43,6 @@ public class BillDto {
         this.createDate = createDate;
         this.priceBeforeTax = priceBeforeTax;
         this.priceAfterTax = priceAfterTax;
-        this.item = item;
         this.addons = addons;
         this.itemType = itemType;
     }

@@ -139,7 +139,8 @@ public class BillServiceImpl implements BillService {
                                         bill_service_history.getDuration(),
                                         bill_service_history.getImage());
                             }
-                            item = new BillItem<>(null, service);
+                            f.setServiceItem(service);
+                            f.setItemType("service");
                         }
                         if (itemb.getCourse_id() != null) {
                             Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(itemb.getCourse_id());
@@ -156,14 +157,9 @@ public class BillServiceImpl implements BillService {
                                         bill_course_history.getImage(),
                                         bill_course_history.getDescription());
                             }
-                            item = new BillItem<>(course, null);
+                            f.setCourseItem(course);
+                            f.setItemType("course");
                         }
-                    }
-                    f.setItem(item);
-                    if(item.getService()!=null){
-                        f.setItemType("service");
-                    } else if(item.getCourse()!=null){
-                        f.setItemType("course");
                     }
                     f.setAddons(addons);
                 }
