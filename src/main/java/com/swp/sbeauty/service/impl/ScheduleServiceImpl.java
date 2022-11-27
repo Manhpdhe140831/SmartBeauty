@@ -57,7 +57,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 if (scheduleDto.getStatus() == 3) {
                     schedule.setStatus("3");
                     scheduleRepository.save(schedule);
-                    if (scheduleDto.getCourseId() != null) {
+                    if (schedule.getCourseId() != null) {
                         Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourseId()).orElse(null);
                         if (customer_course_mapping != null) {
                             Integer count = customer_course_mapping.getCount();
@@ -86,8 +86,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
                         }
                     }
-                    if (scheduleDto.getServiceId() != null){
-                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerService(scheduleDto.getCustomerId(), scheduleDto.getServiceId());
+                    if (schedule.getServiceId() != null){
+                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerService(schedule.getCustomerId(), schedule.getServiceId());
                         customer_course_mapping.setStatus("3");
                         customer_course_mapping_repository.save(customer_course_mapping);
                         return true;
