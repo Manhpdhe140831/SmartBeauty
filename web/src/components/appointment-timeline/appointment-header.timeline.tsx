@@ -25,9 +25,9 @@ const AppointmentHeaderTimeline: FC<SlotProps> = ({
   const router = useRouter();
   const moreInfo = (data: ScheduleModel) => {
     void router.push({
-      pathname: `/${userRole}/manage-schedule/work-appointment/manage-booking`,
+      pathname: `/${userRole}/schedule/schedule-info`,
       query: {
-        scheduleId: data.id,
+        schedule_id: data.id,
       },
     });
   };

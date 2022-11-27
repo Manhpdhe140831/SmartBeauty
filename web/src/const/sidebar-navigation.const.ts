@@ -27,7 +27,7 @@ export const branchManagerConfig: NavLinkItemProp[] = [
     label: "Quản Lý Lịch Làm Việc",
     nested: [
       {
-        href: `/${USER_ROLE.manager}/manage-schedule/work-appointment`,
+        href: `/${USER_ROLE.manager}/schedule`,
         label: "Quản Lý Cuộc Hẹn",
       },
     ],

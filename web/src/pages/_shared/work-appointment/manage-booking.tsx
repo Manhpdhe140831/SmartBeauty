@@ -1,11 +1,11 @@
-import BookingSchedule from "../../../_shared/work-appointment/booking-schedule";
-import {getAllCustomers} from "../../../../services/customer.service";
-import {AutoCompleteItemProp} from "../../../../components/auto-complete-item";
-import {rawToAutoItem} from "../../../../utilities/fn.helper";
-import {CustomerModel} from "../../../../model/customer.model";
-import {SlotModal} from "../../../../model/slot.model";
+import BookingSchedule from "./_partial/booking-schedule";
+import {getAllCustomers} from "../../../services/customer.service";
+import {AutoCompleteItemProp} from "../../../components/auto-complete-item";
+import {rawToAutoItem} from "../../../utilities/fn.helper";
+import {CustomerModel} from "../../../model/customer.model";
+import {SlotModal} from "../../../model/slot.model";
 import {useEffect, useState} from "react";
-import {getSlot} from "../../../../services/schedule.service";
+import {getSlot} from "../../../services/schedule.service";
 
 const ManageBooking = () => {
     const [slotList, setSlotList] = useState<SlotModal[] | []>([])

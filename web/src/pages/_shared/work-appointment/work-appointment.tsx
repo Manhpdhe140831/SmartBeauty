@@ -14,6 +14,7 @@ import {
 import { SlotModal } from "../../../model/slot.model";
 import { SpaBedModel } from "../../../model/spa-bed.model";
 import { IconPlus } from "@tabler/icons";
+import {ScheduleModel} from "../../../model/schedule.model";
 
 type workAppointmentProps = {
   userRole: USER_ROLE;
@@ -29,14 +30,14 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
   userRole,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [scheduleData, setScheduleData] = useState<[]>([]);
+  const [scheduleData, setScheduleData] = useState<ScheduleModel[]>([]);
   const [slotList, setSlotList] = useState<SlotModal[] | []>([]);
   const [bedList, setBedList] = useState<SpaBedModel[] | []>([]);
 
   const router = useRouter();
   const goToBooking = () => {
     void router.push({
-      pathname: "/manager/manage-schedule/work-appointment/manage-booking",
+      pathname: `/${userRole}/schedule/schedule-info`,
     });
   };
 
@@ -96,7 +97,7 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
               title={slot.name}
               timeFrame={slot.timeline}
               bedList={bedList}
-              bedSchedule={scheduleData.find((s: any) => s.slot.id === slot.id)}
+              bedSchedule={scheduleData.find((s ) => s.slot.id === slot.id)}
             />
           );
         })}

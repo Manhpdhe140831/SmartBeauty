@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { IErrorResponse } from "../interfaces/api.interface";
-import { ScheduleModel } from "../model/schedule.model";
+import {ScheduleModel, updateScheduleStatus} from "../model/schedule.model";
 
 export async function getSchedule(date: string) {
   try {
@@ -96,6 +96,17 @@ export async function getDetailSchedule(scheduleId: number) {
         id: scheduleId,
       },
     });
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
+
+export async function updateStatusSchedule(payload: updateScheduleStatus) {
+  try {
+    const apiResult = await axios.post(`/schedule/updateStatus`, payload);
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

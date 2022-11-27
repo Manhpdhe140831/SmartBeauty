@@ -10,5 +10,6 @@ export const ScheduleSchema = z.object({
     customerId: z.number(),
     courseId: z.number().nullable(),
     serviceId: z.number().nullable(),
+    status: z.nativeEnum(ScheduleStatus),
     note: z.string().nullable(),
 })
