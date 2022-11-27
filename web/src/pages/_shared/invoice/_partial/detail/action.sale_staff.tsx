@@ -3,7 +3,6 @@ import { Button, Text } from "@mantine/core";
 import TimeInvoiceInformation from "./time-invoice-information";
 
 type props = {
-  onReject?: () => void;
   disable?: boolean;
   loading?: boolean;
   approvedDate?: string;
@@ -20,7 +19,6 @@ type props = {
 
 const SaleStaffInvoiceAction = ({
   status,
-  onReject,
   loading,
   disable,
   createdDate,

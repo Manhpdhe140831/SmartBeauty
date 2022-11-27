@@ -2,10 +2,9 @@ import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { useRouter } from "next/router";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { useListInvoiceQuery } from "../../../query/model-list";
-import { Button, Divider, Input, Pagination } from "@mantine/core";
-import { IconPlus, IconSearch } from "@tabler/icons";
+import { Divider, Input, Pagination } from "@mantine/core";
+import { IconSearch } from "@tabler/icons";
 import InvoiceList from "../../_shared/invoice/invoice-list";
-import Link from "next/link";
 
 const SaleStaffInvoice: AppPageInterface = () => {
   const router = useRouter();
@@ -40,22 +39,6 @@ const SaleStaffInvoice: AppPageInterface = () => {
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
-      <div className="flex justify-end space-x-2">
-        <Link href={`${router.pathname}/create`}>
-          <Button color={"teal"} leftIcon={<IconPlus />}>
-            Tạo Hóa Đơn
-          </Button>
-        </Link>
-
-        {/*Search by name*/}
-        <Input
-          icon={<IconSearch />}
-          placeholder={"Bill name..."}
-          type={"text"}
-          className="w-56"
-        />
-      </div>
-      <Divider my={8} />
       <div className="flex-1">
         <InvoiceList
           page={currentPage}
