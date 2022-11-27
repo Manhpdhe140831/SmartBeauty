@@ -2,11 +2,11 @@ import { Text, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { InvoiceModel } from "../../../../../model/invoice.model";
 import dayjs from "dayjs";
-import { useStaffDetailQuery } from "../../../../../query/model-detail";
+import {
+  useCustomerDetailQuery,
+  useStaffDetailQuery,
+} from "../../../../../query/model-detail";
 import { formatPrice } from "../../../../../utilities/pricing.helper";
-import { useQuery } from "@tanstack/react-query";
-import mockCustomer from "../../../../../mock/customer";
-import { CustomerModel } from "../../../../../model/customer.model";
 
 type RowProps = {
   no: number;
@@ -17,19 +17,10 @@ type RowProps = {
 export default function RowTable(props: RowProps) {
   const clipboard = useClipboard({ timeout: 500 });
 
-  // TODO: replace
-  // const { data: customerDetail } = useCustomerDetailQuery(props.data?.customer);
-  const { data: customerDetail } = useQuery(
-    ["customer-detail", props.data?.customer],
-    async () => {
-      if (props.data?.customer === undefined) {
-        return null;
-      }
-      const mc = await mockCustomer();
-      return mc.find((c) => c.id === props.data?.customer) as CustomerModel;
-    }
+  const { data: customerDetail } = useCustomerDetailQuery(
+    props.data?.customer.id
   );
-  const { data: staffDetail } = useStaffDetailQuery(props.data?.staff);
+  const { data: staffDetail } = useStaffDetailQuery(props.data?.staff.id);
 
   function timeToHours(rawIsoTime: string) {
     return dayjs(rawIsoTime).format("HH:mm:ss");

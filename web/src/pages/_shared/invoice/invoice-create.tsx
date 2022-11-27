@@ -8,19 +8,16 @@ import { invoiceCreateSchema } from "../../../validation/invoice.schema";
 import { z } from "zod";
 import { FormEventHandler, useState } from "react";
 import { Divider } from "@mantine/core";
-import {
-  useCourseDetailQuery,
-  useServiceDetailQuery,
-} from "../../../query/model-detail";
 import PricingInformation from "./_partial/detail/pricing-information";
 import { BillingItemData } from "../../../model/_price.model";
 import AddonsListInformation from "./_partial/detail/addon-list-information";
 import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
+import { CustomerModel } from "../../../model/customer.model";
 
 type InvoiceCreateProps = {
   onAction?: (data?: z.infer<typeof invoiceCreateSchema>) => void;
-  customerId: number;
-  itemId: number;
+  customer: CustomerModel;
+  item: InvoiceModel["item"];
   itemType: InvoiceModel["itemType"];
 
   footerSection: (
@@ -30,9 +27,9 @@ type InvoiceCreateProps = {
 
 const InvoiceCreate = ({
   onAction,
-  itemId,
+  item,
   itemType,
-  customerId,
+  customer,
   footerSection,
 }: InvoiceCreateProps) => {
   const [addons, setAddons] = useState<BillingProductItem[]>([]);
@@ -42,9 +39,9 @@ const InvoiceCreate = ({
     resolver: zodResolver(invoiceCreateSchema),
     mode: "onBlur",
     defaultValues: {
-      item: itemId,
+      item: item.id,
       itemType: itemType,
-      customer: customerId,
+      customerId: customer.id,
     },
   });
 
@@ -56,10 +53,6 @@ const InvoiceCreate = ({
     control,
     name: "addons",
   });
-
-  const useQueryFn =
-    itemType === "course" ? useCourseDetailQuery : useServiceDetailQuery;
-  const { data: item } = useQueryFn(itemId);
 
   const onNewItemAdded = (item: BillingItemData) => {
     const data = {
@@ -118,9 +111,9 @@ const InvoiceCreate = ({
       className="mx-auto flex w-[90vw] max-w-[800px] flex-col space-y-10 rounded-lg bg-white p-4 shadow"
     >
       {/*   Customer section        */}
-      <CustomerInformationBlock customerId={customerId} />
+      <CustomerInformationBlock customer={customer} />
 
-      {item && <PurchaseItemInformation item={item} itemType={itemType} />}
+      <PurchaseItemInformation item={item} itemType={itemType} />
 
       <AddonsListInformation
         removable

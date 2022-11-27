@@ -10,6 +10,9 @@ import { CourseModel } from "./course.model";
 import { BillingItemData } from "./_price.model";
 import { z } from "zod";
 import { invoiceStatusSchema } from "../validation/invoice.schema";
+import { CustomerModel } from "./customer.model";
+import { StaffModel } from "./staff.model";
+import { BranchModel } from "./branch.model";
 
 export type InvoiceStatus = z.infer<typeof invoiceStatusSchema>;
 
@@ -20,9 +23,9 @@ export type BillingProductItem = {
 
 export interface InvoiceModel {
   id: number;
-  branch: number;
-  customer: number;
-  staff: number;
+  branch: BranchModel;
+  customer: CustomerModel;
+  staff: StaffModel;
   status: InvoiceStatus;
   createdDate: string;
   approvedDate: string;
@@ -47,8 +50,10 @@ export type InvoiceCreateEntity = Omit<
   | "addons"
   | "status"
   | "approvedDate"
+  | "customer"
 > & {
   item: number;
+  customerId: number;
   addons: BillingProductCreateEntity[];
 };
 

@@ -85,8 +85,8 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
 
       <InvoiceCreate
         onAction={onInvoiceClose}
-        customerId={schedule.customer.id}
-        itemId={(schedule.service ?? schedule.course)!.id}
+        customer={schedule.customer}
+        item={(schedule.service ?? schedule.course)!}
         itemType={schedule.service ? "service" : "course"}
         footerSection={(a) => (
           <SaleStaffInvoiceAction status={"create"} disable={!a.isValid} />

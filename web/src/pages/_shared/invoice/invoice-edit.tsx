@@ -134,7 +134,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
       className="mx-auto flex w-[90vw] max-w-[800px] flex-col space-y-10 rounded-lg bg-white p-4 shadow"
     >
       {/*   Customer section        */}
-      <CustomerInformationBlock customerId={data.customer} />
+      <CustomerInformationBlock customer={data.customer} />
 
       <PurchaseItemInformation item={data.item} itemType={data.itemType} />
 
