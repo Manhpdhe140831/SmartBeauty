@@ -63,15 +63,17 @@ public class BillServiceImpl implements BillService {
     Bill_Service_History_Repository bill_service_history_repository;
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
-
+    @Autowired
+        Customer_Branch_Mapping_Repo customer_branch_mapping_repo;
     String usingStatus = "2";
 
     @Override
-    public BillResponseDto getBills(int offSet, int pageSize) {
+    public BillResponseDto getBills(Long idCheck,int offSet, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         BillResponseDto billResponseDto = new BillResponseDto();
         Pageable pageable = PageRequest.of(offSet, pageSize);
-        Page<Bill> page = billRepository.findAll(pageable);
+        Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
+        Page<Bill> page = billRepository.getAllBill(idBranch,pageable);
 
         List<BillDto> dtos = page
                 .stream()

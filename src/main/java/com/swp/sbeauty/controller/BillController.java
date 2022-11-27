@@ -2,6 +2,7 @@ package com.swp.sbeauty.controller;
 
 import com.swp.sbeauty.dto.BillDto;
 import com.swp.sbeauty.dto.BillResponseDto;
+import com.swp.sbeauty.dto.CustomerResponseDto;
 import com.swp.sbeauty.dto.ResponseDto;
 import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.BillService;
@@ -24,10 +25,27 @@ public class BillController {
     @Autowired
     JwtUtils jwtUtils;
     @GetMapping("/bill")
-    public ResponseEntity<?> getAllBill(@RequestParam(value = "page",required = false,defaultValue = "1") int page
+    public ResponseEntity<?> getAllBill(@RequestHeader("Authorization") String authHeader,
+                                        @RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize){
-        BillResponseDto billResponseDto = billService.getBills(page - 1, pageSize);
-        return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
+
+        if(authHeader != null) {
+            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+            String id = temp.get("id").toString();
+            Date expir = temp.getExpiration();
+            if(expir.before(new Date())){
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Long idCheck = Long.parseLong(id);
+                Pageable p = PageRequest.of(page, pageSize);
+                    BillResponseDto billResponseDto = billService.getBills(idCheck, page - 1, pageSize);
+                    return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
+
+                }
+
+        }else {
+            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/bill/getById")
