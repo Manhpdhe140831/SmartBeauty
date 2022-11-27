@@ -130,7 +130,6 @@ public class ScheduleServiceImpl implements ScheduleService {
                 bill_service_history = bill_service_history_repository.save(bill_service_history);
                 Long serviceId = bill_service_history.getId();
                 schedule.setServiceId(serviceId);
-
             }
             Customer_Course_Mapping customer_course_mapping_check = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
 
