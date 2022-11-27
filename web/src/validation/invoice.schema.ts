@@ -11,10 +11,11 @@ export const invoiceCreateItemSchema = z.object({
 });
 
 export const invoiceCreateSchema = z.object({
+  scheduleId: idDbSchema,
   customerId: idDbSchema,
   priceBeforeTax: priceSchema,
   priceAfterTax: priceSchema,
   item: idDbSchema,
   itemType: invoiceItemTypeSchema,
-  addons: z.array(invoiceCreateItemSchema).min(1),
+  addons: z.array(invoiceCreateItemSchema).min(0),
 });

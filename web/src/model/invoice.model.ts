@@ -52,6 +52,7 @@ export type InvoiceCreateEntity = Omit<
   | "approvedDate"
   | "customer"
 > & {
+  scheduleId: number;
   item: number;
   customerId: number;
   addons: BillingProductCreateEntity[];

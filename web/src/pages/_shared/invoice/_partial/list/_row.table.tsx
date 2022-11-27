@@ -2,10 +2,6 @@ import { Text, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { InvoiceModel } from "../../../../../model/invoice.model";
 import dayjs from "dayjs";
-import {
-  useCustomerDetailQuery,
-  useStaffDetailQuery,
-} from "../../../../../query/model-detail";
 import { formatPrice } from "../../../../../utilities/pricing.helper";
 
 type RowProps = {
@@ -16,11 +12,6 @@ type RowProps = {
 
 export default function RowTable(props: RowProps) {
   const clipboard = useClipboard({ timeout: 500 });
-
-  const { data: customerDetail } = useCustomerDetailQuery(
-    props.data?.customer.id
-  );
-  const { data: staffDetail } = useStaffDetailQuery(props.data?.staff.id);
 
   function timeToHours(rawIsoTime: string) {
     return dayjs(rawIsoTime).format("HH:mm:ss");
@@ -36,31 +27,31 @@ export default function RowTable(props: RowProps) {
       onClick={() => props.onSelect && props.onSelect(props.data)}
     >
       <td className="text-center">{props.no}</td>
-      <td onClick={() => clipboard.copy(customerDetail?.name)}>
+      <td onClick={() => clipboard.copy(props.data.customer.name)}>
         <div className="flex flex-col">
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-            <Tooltip label={customerDetail?.name}>
-              <span>{customerDetail?.name}</span>
+            <Tooltip label={props.data.customer.name}>
+              <span>{props.data.customer.name}</span>
             </Tooltip>
           </div>
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             <Text size={"sm"} color={"dimmed"}>
-              {customerDetail?.phone}
+              {props.data.customer.phone}
             </Text>
           </div>
         </div>
       </td>
 
-      <td onClick={() => clipboard.copy(staffDetail?.name)}>
+      <td onClick={() => clipboard.copy(props.data.staff.name)}>
         <div className="flex flex-col">
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
-            <Tooltip label={staffDetail?.name}>
-              <span>{staffDetail?.name}</span>
+            <Tooltip label={props.data.staff.name}>
+              <span>{props.data.staff.name}</span>
             </Tooltip>
           </div>
           <div className="overflow-hidden text-ellipsis whitespace-nowrap">
             <Text size={"sm"} color={"dimmed"}>
-              {staffDetail?.phone}
+              {props.data.staff.phone}
             </Text>
           </div>
         </div>

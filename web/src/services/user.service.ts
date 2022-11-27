@@ -60,7 +60,7 @@ export async function getAllAccount<modelType extends UserModel>(
 
 export async function getUserDetail<T extends UserModel>(id: number) {
   try {
-    const apiResult = await axios.get<T>("/user/save", {
+    const apiResult = await axios.get<T>("/user/getById", {
       params: {
         id,
       },

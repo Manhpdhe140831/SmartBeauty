@@ -16,6 +16,7 @@ import { CustomerModel } from "../../../model/customer.model";
 
 type InvoiceCreateProps = {
   onAction?: (data?: z.infer<typeof invoiceCreateSchema>) => void;
+  scheduleId: number;
   customer: CustomerModel;
   item: InvoiceModel["item"];
   itemType: InvoiceModel["itemType"];
@@ -27,6 +28,7 @@ type InvoiceCreateProps = {
 
 const InvoiceCreate = ({
   onAction,
+  scheduleId,
   item,
   itemType,
   customer,
@@ -39,6 +41,7 @@ const InvoiceCreate = ({
     resolver: zodResolver(invoiceCreateSchema),
     mode: "onBlur",
     defaultValues: {
+      scheduleId,
       item: item.id,
       itemType: itemType,
       customerId: customer.id,

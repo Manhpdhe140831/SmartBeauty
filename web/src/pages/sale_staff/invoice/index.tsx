@@ -24,7 +24,7 @@ const SaleStaffInvoice: AppPageInterface = () => {
   );
 
   function navigateToDetail(id: number, currentPage: number) {
-    const url = `${router.pathname}/details/${id}`;
+    const url = `${router.pathname}/detail/${id}`;
     void router.push(
       {
         pathname: url,

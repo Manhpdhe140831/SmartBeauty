@@ -85,6 +85,7 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
 
       <InvoiceCreate
         onAction={onInvoiceClose}
+        scheduleId={schedule.id}
         customer={schedule.customer}
         item={(schedule.service ?? schedule.course)!}
         itemType={schedule.service ? "service" : "course"}
