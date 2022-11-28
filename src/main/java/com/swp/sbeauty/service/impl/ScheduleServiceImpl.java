@@ -122,7 +122,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public boolean save(ScheduleDto scheduleDto, Long idSale) {
         Schedule schedule = new Schedule();
-        String status = "2";
+        String status = "1";
         schedule.setDate(scheduleDto.getDate());
         schedule.setSlotId(scheduleDto.getSlotId());
         schedule.setBedId(scheduleDto.getBedId());
