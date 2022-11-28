@@ -174,7 +174,7 @@ const BookingSchedule = ({
                         ...servicesArr,
                         ...serviceList[key].map((s: ServiceModel) => {
                             return {
-                                value: s.id.toString(),
+                                value: `${key}-${s.id.toString()}`,
                                 label: s.name,
                                 group: key,
                             };
@@ -298,40 +298,51 @@ const BookingSchedule = ({
 
                                 <div className={"flex flex-row items-center gap-3"}>
                                     <span className={"min-w-48"}>Dịch vụ</span>
-                                    <Controller
-                                        render={({field}) => (
-                                            <DatabaseSearchSelect
-                                                className={"w-full"}
-                                                placeholder="Liệu trình/ Dịch vụ"
-                                                value={null}
-                                                displayValue={null}
-                                                onSearching={searchService}
-                                                disabled={!selectedCustomer}
-                                                onSelected={(_id) => {
-                                                    const id = _id ? Number(_id) : null;
-                                                    field.onChange(id);
+                                    {/*<Controller*/}
+                                    {/*    render={({field}) => (*/}
+                                    {/*        */}
+                                    {/*    )}*/}
+                                    {/*    name={selectedService && selectedService.type === "services" ? "serviceId" : "courseId"}*/}
+                                    {/*    control={control}*/}
+                                    {/*/>*/}
 
-                                                    // Gán customer selected to state
-                                                    const service = servicesCustomArr.find(
-                                                        (s: any) => Number(s.value) === Number(_id)
+                                    <DatabaseSearchSelect
+                                        className={"w-full"}
+                                        placeholder="Liệu trình/ Dịch vụ"
+                                        value={null}
+                                        displayValue={null}
+                                        onSearching={searchService}
+                                        disabled={!selectedCustomer}
+                                        onSelected={(_id) => {
+                                            const id = _id ?? null;
+
+                                            // Gán customer selected to state
+                                            const service = servicesCustomArr.find(
+                                                (s: any) => s.value === id
+                                            );
+                                            let serviceData: any = null;
+                                            Object.keys(serviceList).forEach((key: string) => {
+                                                if (service.group === key) {
+                                                    serviceData = serviceList[key].find(
+                                                        (s: any) => s.id === Number(service.value.substring(service.value.indexOf("-") + 1))
                                                     );
-                                                    let serviceData: any = null;
-                                                    Object.keys(serviceList).forEach((key: string) => {
-                                                        if (service.group === key) {
-                                                            serviceData = serviceList[key].find(
-                                                                (s: any) => s.id === Number(service.value)
-                                                            );
-                                                        }
-                                                    });
+                                                }
+                                            });
 
-                                                    if (serviceData) {
-                                                        setSelectedService(serviceData);
-                                                    }
-                                                }}
-                                            />
-                                        )}
-                                        name={"serviceId"}
-                                        control={control}
+                                            if (serviceData) {
+                                                setSelectedService({
+                                                    ...serviceData,
+                                                    type: service.group
+                                                });
+                                                if (service.group === "courses") {
+                                                    setValue('courseId', serviceData.id)
+                                                    setValue('serviceId', null)
+                                                } else {
+                                                    setValue('serviceId', serviceData.id)
+                                                    setValue('courseId', null)
+                                                }
+                                            }
+                                        }}
                                     />
                                 </div>
                             </div>

@@ -53,7 +53,6 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
   // Lấy list bed trong database
   const getBedList = async () => {
     const betData = await getBed();
-    console.log(betData.data);
     setBedList(betData.data);
   };
   useEffect(() => {
@@ -91,14 +90,16 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
         </div>
         {slotList.map((slot, i) => {
           return (
-            <AppointmentHeaderTimeline
-              key={slot.id}
-              userRole={userRole}
-              title={slot.name}
-              timeFrame={slot.timeline}
-              bedList={bedList}
-              bedSchedule={scheduleData.find((s ) => s.slot.id === slot.id)}
-            />
+             <div key={i}>
+               <AppointmentHeaderTimeline
+                   key={slot.id}
+                   userRole={userRole}
+                   title={slot.name}
+                   timeFrame={slot.timeline}
+                   bedList={bedList}
+                   bedsSchedule={scheduleData.filter((s ) => s.slot.id === slot.id)}
+               />
+             </div>
           );
         })}
       </div>

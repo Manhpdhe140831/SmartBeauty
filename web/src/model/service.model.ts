@@ -10,6 +10,8 @@ export interface ServiceModel extends BasePriceModel {
   image?: string;
 
   products: ProductInService[];
+
+  type?: string;
 }
 
 export interface ProductInService {
