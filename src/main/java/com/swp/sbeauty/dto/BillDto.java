@@ -19,7 +19,7 @@ public class BillDto {
     private BranchDto branch;
     private UserDto staff;
     private CustomerDto customer;
-    private String status;
+    private Long status;
     private String createDate;
     private Double priceBeforeTax;
     private Double priceAfterTax;
@@ -32,7 +32,7 @@ public class BillDto {
 
     private List<BillDetailDto> items;
 
-    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, String status, String createDate, Double priceBeforeTax, Double priceAfterTax, Object item, List<BillDetailDto> addons, String itemType) {
+    public BillDto(Long id, String code, BranchDto branch, UserDto staff, CustomerDto customer, Long status, String createDate, Double priceBeforeTax, Double priceAfterTax, Object item, List<BillDetailDto> addons, String itemType) {
         this.id = id;
         this.code = code;
         this.branch = branch;

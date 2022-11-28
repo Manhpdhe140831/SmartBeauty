@@ -295,10 +295,10 @@ public class BillServiceImpl implements BillService {
                 String itemType = "";
                 if(course!=null){
                     itemType = "course";
-                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), course,addons,itemType);
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), course,addons,itemType);
                 } else if(service!=null){
                     itemType = "service";
-                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, entity.getStatus(), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service,addons,itemType);
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service,addons,itemType);
                 }
             }
         }
@@ -314,7 +314,7 @@ public class BillServiceImpl implements BillService {
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         bill.setCreateDate(nowAsISO);
-        bill.setStatus("chờ");
+        bill.setStatus("1");
         bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
         bill.setPriceAfterTax(billDto.getPriceAfterTax());
         bill = billRepository.save(bill);
@@ -386,7 +386,7 @@ public class BillServiceImpl implements BillService {
         if (optional.isPresent()) {
             bill = optional.get();
         }
-        if(bill!=null && bill.getStatus().equalsIgnoreCase("chờ")){
+        if(bill!=null && bill.getStatus().equalsIgnoreCase("1")){
             TimeZone tz = TimeZone.getTimeZone("UTC");
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
             df.setTimeZone(tz);
