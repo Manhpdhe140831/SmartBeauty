@@ -49,6 +49,9 @@ const BookingSchedule = ({
     const [active, setActive] = useState(0);
     const [saveBtn, showSave] = useState(false);
 
+    const [bedValue, setBedValue] = useState<string | null>(null);
+    const [techStaffValue, setTechStaffValue] = useState<string | null>(null);
+
     const [selectedCustomer, setSelectedCustomer] = useState<UserModel | null>(
         null
     );
@@ -190,6 +193,9 @@ const BookingSchedule = ({
     const searchBedAvail = async () => {
         setValue("bedId", null);
         setValue("techStaffId", null);
+
+        setBedValue(null)
+        setTechStaffValue(null)
         const slotAvailable = await getBedAndStaff(
             getValues().date.toString(),
             getValues().slotId
@@ -420,6 +426,7 @@ const BookingSchedule = ({
                                                     placeholder="Giường"
                                                     searchable
                                                     nothingFound="Trống"
+                                                    value={bedValue}
                                                     data={slotAvail.beds.map((bed) => {
                                                         return {
                                                             value: bed.id.toString(),
@@ -429,6 +436,7 @@ const BookingSchedule = ({
                                                     onChange={(e) => {
                                                         field.onChange(e ? Number(e) : null);
                                                         field.onBlur();
+                                                        setBedValue(e)
                                                     }}
                                                     onBlur={field.onBlur}
                                                     disabled={
@@ -447,6 +455,7 @@ const BookingSchedule = ({
                                                     placeholder="NV kỹ thuật"
                                                     searchable
                                                     nothingFound="Trống"
+                                                    value={techStaffValue}
                                                     data={slotAvail.users.map((user) => {
                                                         return {
                                                             value: user.id.toString(),
@@ -456,6 +465,7 @@ const BookingSchedule = ({
                                                     onChange={(e) => {
                                                         field.onChange(e ? Number(e) : null);
                                                         field.onBlur();
+                                                        setTechStaffValue(e)
                                                     }}
                                                     onBlur={field.onBlur}
                                                     disabled={
@@ -481,7 +491,7 @@ const BookingSchedule = ({
                                 <Button
                                     type={"button"}
                                     onClick={() => stepByStep(3)}
-                                    disabled={!watch("bedId") && !watch("techStaffId")}
+                                    disabled={!watch("bedId") || !watch("techStaffId")}
                                 >
                                     Xác nhận lịch
                                 </Button>
