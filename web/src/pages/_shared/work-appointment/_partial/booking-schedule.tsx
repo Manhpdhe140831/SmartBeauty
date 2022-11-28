@@ -237,8 +237,13 @@ const BookingSchedule = ({
     };
 
     const goToBill = () => {
-        if (scheduleQueryData && scheduleQueryData.isBill) {
-            void router.push(`/sale_staff/detail?schedule_id=${scheduleQueryData.id}`);
+        if (scheduleQueryData && !scheduleQueryData.isBill) {
+            void router.push({
+                pathname: "/sale_staff/invoice/create",
+                query: {
+                    schedule_id: scheduleQueryData.id
+                }
+            });
         }
     }
 
