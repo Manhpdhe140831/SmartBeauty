@@ -10,8 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 
 @Service
@@ -337,7 +342,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<ScheduleDto> result = new ArrayList<>();
         List<Schedule> list = new ArrayList<>();
         if (dateRes != null) {
-            list = scheduleRepository.getAllByDate(dateRes.substring(0, 10), idBranch.longValue());
+            try {
+                Date date1 =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(dateRes);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                df.setTimeZone(TimeZone.getTimeZone("GMT+7"));
+                String nowAsISO = df.format(date1);
+                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                String nowAsISO1 = df.format(date1);
+                list = scheduleRepository.getAllByDate(nowAsISO1.substring(0, 10), idBranch.longValue());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
         }
         if (dateRes == null) {
             list = scheduleRepository.getAll(idBranch.longValue());
