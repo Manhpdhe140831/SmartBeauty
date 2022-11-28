@@ -507,7 +507,7 @@ const BookingSchedule = ({
                                             </div>
                                             <div className={"flex justify-between gap-2"}>
                                                 <span className={"font-bold"}>Ngày sinh</span>
-                                                <span>{selectedCustomer.dateOfBirth}</span>
+                                                <span>{formatDate(selectedCustomer.dateOfBirth)}</span>
                                             </div>
                                             <div className={"flex justify-between gap-2"}>
                                                 <span className={"font-bold"}>Địa chỉ</span>
