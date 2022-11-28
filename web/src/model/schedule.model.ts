@@ -14,6 +14,7 @@ type BaseScheduleModel = {
     status: ScheduleStatus;
     note: string;
     isBill: boolean;
+    date: string
 };
 
 export type ScheduleModel = BaseScheduleModel &
@@ -31,11 +32,6 @@ export type ScheduleModel = BaseScheduleModel &
 export type updateScheduleStatus = {
     id: number,
     status: ScheduleStatus
-}
-
-export type isBillStatus = {
-    schedule_id: number,
-    status: boolean
 }
 
 export enum ScheduleStatus {

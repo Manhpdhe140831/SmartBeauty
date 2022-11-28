@@ -25,7 +25,8 @@ import {formatDate} from "../../../../utilities/time.helper";
 import {StaffModel} from "../../../../model/staff.model";
 import {SpaBedModel} from "../../../../model/spa-bed.model";
 import DialogDetailAction from "../../../../components/dialog-detail-action";
-import {isBillStatus, ScheduleStatus, ScheduleStatusMap, updateScheduleStatus} from "../../../../model/schedule.model";
+import {ScheduleModel, ScheduleStatus, ScheduleStatusMap, updateScheduleStatus} from "../../../../model/schedule.model";
+import dayjs from "dayjs";
 
 type searchFn<dataType extends object> = (
     key: string
@@ -51,9 +52,9 @@ const BookingSchedule = ({
     const [selectedCustomer, setSelectedCustomer] = useState<UserModel | null>(
         null
     );
-    const [isBill, setIsBill] = useState<isBillStatus | null>(
-        null
-    );
+
+    const [scheduleQueryData, setScheduleQueryData] = useState<ScheduleModel | null>(null)
+
     const [selectedService, setSelectedService] = useState<ServiceModel | null>(
         null
     );
@@ -86,7 +87,6 @@ const BookingSchedule = ({
         criteriaMode: "all",
         defaultValues: {
             status: ScheduleStatus.Waiting,
-            date: new Date().toISOString(),
             saleStaffId: useAuthUser((s) => s.user?.id),
             serviceId: null,
             courseId: null,
@@ -104,15 +104,12 @@ const BookingSchedule = ({
 
                 // set data
                 if (rs) {
+                    setScheduleQueryData(rs)
                     setSelectedCustomer(rs.customer);
                     setSelectedService(rs.service ? rs.service : rs.course!);
                     setBedInfo(rs.bed);
                     setSlotInfo(rs.slot);
                     setStaffTechInfo(rs.tech_staff);
-                    setIsBill({
-                        schedule_id: rs.id,
-                        status: rs.isBill
-                    })
                 }
                 setActive(3);
             });
@@ -240,8 +237,8 @@ const BookingSchedule = ({
     };
 
     const goToBill = () => {
-        if (isBill) {
-            void router.push(`/sale_staff/detail?schedule_id=${isBill.schedule_id}`);
+        if (scheduleQueryData && scheduleQueryData.isBill) {
+            void router.push(`/sale_staff/detail?schedule_id=${scheduleQueryData.id}`);
         }
     }
 
@@ -349,12 +346,12 @@ const BookingSchedule = ({
                                         render={({field}) => (
                                             <DatePicker
                                                 placeholder="Chọn ngày"
-                                                value={new Date(field.value)}
                                                 withAsterisk
                                                 onChange={(e) => {
                                                     field.onChange(e ? e.toISOString() : null);
                                                     field.onBlur();
                                                 }}
+                                                minDate={dayjs(new Date()).toDate()}
                                                 onBlur={field.onBlur}
                                                 disabled={userRole !== USER_ROLE.sale_staff}
                                             />
@@ -553,10 +550,17 @@ const BookingSchedule = ({
                                                     <span>{staffTechInfo.name}</span>
                                                 </div>
                                             )}
-                                            <div className={"flex justify-between gap-2"}>
-                                                <span className={"font-bold"}>Thời gian</span>
-                                                <span>{formatDate(getValues().date)}</span>
-                                            </div>
+                                            {scheduleQueryData ? (
+                                                <div className={"flex justify-between gap-2"}>
+                                                    <span className={"font-bold"}>Thời gian</span>
+                                                    <span>{formatDate(scheduleQueryData.date)}</span>
+                                                </div>
+                                            ) : (
+                                                <div className={"flex justify-between gap-2"}>
+                                                    <span className={"font-bold"}>Thời gian</span>
+                                                    <span>{formatDate(getValues().date)}</span>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -585,7 +589,8 @@ const BookingSchedule = ({
                         />
                     </div>
                     {
-                        router.query.schedule_id && <div className={"flex flex-row items-center gap-3"}>
+                        scheduleQueryData && scheduleQueryData.status &&
+                        <div className={"flex flex-row items-center gap-3"}>
                             <span className={"min-w-48"}>Trạng thái</span>
                             <Controller
                                 render={({field}) => (
@@ -594,7 +599,7 @@ const BookingSchedule = ({
                                         placeholder="Trạng thái lịch"
                                         searchable
                                         nothingFound="Trống"
-                                        defaultValue={String(ScheduleStatus.Waiting)}
+                                        defaultValue={String(scheduleQueryData.status)}
                                         data={Object.keys(ScheduleStatusMap).map((status) => {
                                             return {
                                                 value: String(ScheduleStatusMap[status as keyof typeof ScheduleStatusMap]),
@@ -640,7 +645,8 @@ const BookingSchedule = ({
                 {userRole === USER_ROLE.sale_staff && router.query.schedule_id && (
                     <div className={"mt-3 flex justify-end gap-3"}>
                         {
-                            isBill && !isBill.status && <Button color={"red"} onClick={goToBill}>Thanh toán hóa đơn</Button>
+                            scheduleQueryData && !scheduleQueryData.isBill &&
+                            <Button color={"red"} onClick={goToBill}>Thanh toán hóa đơn</Button>
                         }
                         <Button onClick={updateStatus}>Cập nhật</Button>
                     </div>
