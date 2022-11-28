@@ -78,7 +78,6 @@ const BookingSchedule = ({
         control,
         register,
         handleSubmit,
-        reset,
         watch,
         getValues,
         resetField,
@@ -672,9 +671,9 @@ const BookingSchedule = ({
                     <div className={"mt-3 flex justify-end gap-3"}>
                         {
                             scheduleQueryData && !scheduleQueryData.isBill &&
-                            <Button color={"red"} onClick={goToBill}>Thanh toán hóa đơn</Button>
+                            <Button type={'button'} color={"red"} onClick={goToBill}>Thanh toán hóa đơn</Button>
                         }
-                        <Button onClick={updateStatus}>Cập nhật</Button>
+                        <Button type={'button'} onClick={updateStatus}>Cập nhật</Button>
                     </div>
                 )}
             </form>
