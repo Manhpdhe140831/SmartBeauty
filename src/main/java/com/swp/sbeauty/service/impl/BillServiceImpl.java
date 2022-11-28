@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -308,8 +309,12 @@ public class BillServiceImpl implements BillService {
     public Boolean saveBill(BillDto billDto, String authHeader) {
         Bill bill = new Bill();
         bill.setCode(billDto.getCode());
-        bill.setCreateDate(billDto.getCreateDate());
-        bill.setStatus("pending");
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(tz);
+        String nowAsISO = df.format(new Date());
+        bill.setCreateDate(nowAsISO);
+        bill.setStatus("chờ");
         bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
         bill.setPriceAfterTax(billDto.getPriceAfterTax());
         bill = billRepository.save(bill);
@@ -381,10 +386,12 @@ public class BillServiceImpl implements BillService {
         if (optional.isPresent()) {
             bill = optional.get();
         }
-        if(bill!=null && bill.getStatus().equalsIgnoreCase("pending")){
-            if(billDto.getCreateDate()!=null){
-                bill.setCreateDate(billDto.getCreateDate());
-            }
+        if(bill!=null && bill.getStatus().equalsIgnoreCase("chờ")){
+            TimeZone tz = TimeZone.getTimeZone("UTC");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+            df.setTimeZone(tz);
+            String nowAsISO = df.format(new Date());
+            bill.setCreateDate(nowAsISO);
             if(billDto.getPriceBeforeTax()!=null){
                 bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
             }
