@@ -616,7 +616,7 @@ const BookingSchedule = ({
                                             field.onBlur();
                                         }}
                                         onBlur={field.onBlur}
-                                        disabled={userRole !== USER_ROLE.sale_staff || !router.query.schedule_id}
+                                        disabled={userRole !== USER_ROLE.sale_staff || !router.query.schedule_id || scheduleQueryData?.status === ScheduleStatus.Finish}
                                     ></Select>
                                 )}
                                 name={"status"}
@@ -631,7 +631,7 @@ const BookingSchedule = ({
                             autosize={false}
                             rows={4}
                             placeholder={"Full address"}
-                            disabled={userRole !== USER_ROLE.sale_staff}
+                            disabled={userRole !== USER_ROLE.sale_staff || !!router.query.schedule_id}
                             {...register("note")}
                         ></Textarea>
                     </div>
@@ -647,7 +647,7 @@ const BookingSchedule = ({
                     </div>
                 )}
 
-                {userRole === USER_ROLE.sale_staff && router.query.schedule_id && (
+                {userRole === USER_ROLE.sale_staff && router.query.schedule_id && scheduleQueryData?.status !== ScheduleStatus.Finish && (
                     <div className={"mt-3 flex justify-end gap-3"}>
                         {
                             scheduleQueryData && !scheduleQueryData.isBill &&
