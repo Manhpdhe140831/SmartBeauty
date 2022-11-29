@@ -37,11 +37,13 @@ export type updateScheduleStatus = {
 export enum ScheduleStatus {
     Cancel,
     Waiting,
+    Serving,
     Finish,
 }
 
 export const ScheduleStatusMap = {
     "Hủy": ScheduleStatus.Cancel,
     "Chờ": ScheduleStatus.Waiting,
+    "Đang xử lý": ScheduleStatus.Serving,
     "Hoàn tất": ScheduleStatus.Finish
 }

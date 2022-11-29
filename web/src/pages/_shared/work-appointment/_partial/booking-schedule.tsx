@@ -27,6 +27,7 @@ import {SpaBedModel} from "../../../../model/spa-bed.model";
 import DialogDetailAction from "../../../../components/dialog-detail-action";
 import {ScheduleModel, ScheduleStatus, ScheduleStatusMap, updateScheduleStatus} from "../../../../model/schedule.model";
 import dayjs from "dayjs";
+import {formatPrice} from "../../../../utilities/pricing.helper";
 
 type searchFn<dataType extends object> = (
     key: string
@@ -38,11 +39,7 @@ type BookingSchedule = {
     customerList: UserModel[];
 };
 
-const BookingSchedule = ({
-                             searchCustomer,
-                             slotList,
-                             customerList,
-                         }: BookingSchedule) => {
+const BookingSchedule = ({searchCustomer, slotList, customerList,}: BookingSchedule) => {
     const userRole = useAuthUser((s) => s.user?.role);
 
     // State
@@ -176,6 +173,10 @@ const BookingSchedule = ({
                                 value: `${key}-${s.id.toString()}`,
                                 label: s.name,
                                 group: key,
+                                data: {
+                                    image: s.image ?? null,
+                                    description: formatPrice(s.price) + " VNĐ",
+                                }
                             };
                         }),
                     ];
@@ -222,9 +223,14 @@ const BookingSchedule = ({
     }, [watch("bedId")]);
 
     const onSubmit = (payload: any) => {
-        createSchedule(payload).then((rs) => {
+        createSchedule(payload).then((rs: ScheduleModel) => {
             if (rs) {
-                void router.push(`/sale_staff/invoice`);
+                void router.push({
+                    pathname: "/sale_staff/invoice/create",
+                    query: {
+                        schedule_id: rs.id
+                    }
+                });
             }
         });
     };
@@ -297,14 +303,6 @@ const BookingSchedule = ({
 
                                 <div className={"flex flex-row items-center gap-3"}>
                                     <span className={"min-w-48"}>Dịch vụ</span>
-                                    {/*<Controller*/}
-                                    {/*    render={({field}) => (*/}
-                                    {/*        */}
-                                    {/*    )}*/}
-                                    {/*    name={selectedService && selectedService.type === "services" ? "serviceId" : "courseId"}*/}
-                                    {/*    control={control}*/}
-                                    {/*/>*/}
-
                                     <DatabaseSearchSelect
                                         className={"w-full"}
                                         placeholder="Liệu trình/ Dịch vụ"
@@ -614,8 +612,7 @@ const BookingSchedule = ({
                         />
                     </div>
                     {
-                        scheduleQueryData && scheduleQueryData.status &&
-                        <div className={"flex flex-row items-center gap-3"}>
+                        scheduleQueryData && <div className={"flex flex-row items-center gap-3"}>
                             <span className={"min-w-48"}>Trạng thái</span>
                             <Controller
                                 render={({field}) => (
@@ -626,9 +623,12 @@ const BookingSchedule = ({
                                         nothingFound="Trống"
                                         defaultValue={String(scheduleQueryData.status)}
                                         data={Object.keys(ScheduleStatusMap).map((status) => {
+                                            const _status = ScheduleStatusMap[status as keyof typeof ScheduleStatusMap]
                                             return {
-                                                value: String(ScheduleStatusMap[status as keyof typeof ScheduleStatusMap]),
+                                                value: String(_status),
                                                 label: status,
+                                                disabled: !scheduleQueryData.isBill &&
+                                                    (_status === ScheduleStatus.Serving || _status === ScheduleStatus.Finish)
                                             };
                                         })}
                                         onChange={(e) => {

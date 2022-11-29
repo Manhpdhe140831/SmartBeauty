@@ -14,7 +14,7 @@ const ManageBooking = () => {
     const fnHelper = (s: CustomerModel) => ({
         id: s.id,
         name: s.name,
-        description: s.email
+        description: s.phone
     });
 
     const searchCustomer = async (searchCustomerName: string): Promise<AutoCompleteItemProp<CustomerModel>[]> => {

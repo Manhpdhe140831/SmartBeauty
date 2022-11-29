@@ -14,8 +14,12 @@ export function mapStatusHelper(status: ScheduleStatus) {
       statusInfo.status = "Chờ";
       statusInfo.color = "text-stone-600 font-bold";
       break;
+    case ScheduleStatus.Serving:
+      statusInfo.status = "Đang xử lý";
+      statusInfo.color = "text-yellow-700 font-bold";
+      break;
     case ScheduleStatus.Finish:
-      statusInfo.status = "Đã xử lý";
+      statusInfo.status = "Đã hoàn thành";
       statusInfo.color = "text-green-700 font-bold";
   }
 
