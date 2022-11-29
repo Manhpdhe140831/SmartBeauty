@@ -226,10 +226,7 @@ const BookingSchedule = ({searchCustomer, slotList, customerList,}: BookingSched
         createSchedule(payload).then((rs: ScheduleModel) => {
             if (rs) {
                 void router.push({
-                    pathname: "/sale_staff/invoice/create",
-                    query: {
-                        schedule_id: rs.id
-                    }
+                    pathname: "/sale_staff/schedule",
                 });
             }
         });
