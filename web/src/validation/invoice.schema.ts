@@ -3,11 +3,17 @@ import { idDbSchema, priceSchema } from "./field.schema";
 
 export const invoiceItemTypeSchema = z.enum(["service", "course"]);
 
-export const invoiceStatusSchema = z.enum(["pending", "approved", "discarded"]);
+export enum invoiceStatus {
+  pending = 0,
+  approved = 1,
+  discarded = 2,
+}
+
+export const invoiceStatusSchema = z.nativeEnum(invoiceStatus);
 
 export const invoiceCreateItemSchema = z.object({
   quantity: z.number().min(1).max(100),
-  item: idDbSchema,
+  itemId: idDbSchema,
 });
 
 export const invoiceCreateSchema = z.object({

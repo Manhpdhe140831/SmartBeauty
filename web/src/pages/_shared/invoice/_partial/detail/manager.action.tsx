@@ -21,13 +21,11 @@ const ManagerInvoiceAction: FC<props> = ({
 }) => {
   const [opened, setOpened] = useState(false);
 
-  if (!status) {
+  if (status) {
     return <></>;
   }
 
-  return status !== "pending" ? (
-    <></>
-  ) : (
+  return (
     <div className={"flex flex-col space-y-2"}>
       <Text className={"select-none text-justify"} color={"dimmed"} size={"xs"}>
         Bạn có thể xác nhận hóa đơn này đã được thanh toán, hoặc chọn hủy bỏ hóa

@@ -8,6 +8,7 @@ import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   invoiceCreateItemSchema,
+  invoiceStatus,
   invoiceStatusSchema,
 } from "../../../validation/invoice.schema";
 import { z } from "zod";
@@ -69,7 +70,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
     const parsedData = data.addons.map((i) => {
       newSetData.push(i);
       return {
-        item: i.item.id,
+        itemId: i.item.id,
         quantity: i.quantity,
       };
     });
@@ -79,7 +80,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
 
   const onNewItemAdded = (item: BillingItemData) => {
     const data = {
-      item: item.id,
+      itemId: item.id,
       quantity: 1,
     };
     append(data);
@@ -139,14 +140,15 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
       <PurchaseItemInformation item={data.item} itemType={data.itemType} />
 
       <AddonsListInformation
-        removable={data.status === "pending"}
+        removable={data.status === invoiceStatus.pending}
         data={itemsArray}
         renderItem={(item, index) => (
           <Controller
             control={control}
             name={`addons.${index}.quantity`}
             render={({ field }) =>
-              data.status === "pending" && userRole === USER_ROLE.sale_staff ? (
+              data.status === invoiceStatus.pending &&
+              userRole === USER_ROLE.sale_staff ? (
                 <ItemAddonEdit
                   addon={addons[index]}
                   itemNo={index}
@@ -174,7 +176,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
       />
 
       <div className="flex flex-col space-y-4">
-        {data.status === "pending" && (
+        {data.status === invoiceStatus.pending && (
           <SearchBillingItems onChange={onNewItemAdded} />
         )}
 

@@ -15,6 +15,7 @@ import { StaffModel } from "./staff.model";
 import { BranchModel } from "./branch.model";
 
 export type InvoiceStatus = z.infer<typeof invoiceStatusSchema>;
+export const InvoiceStatusArray = ["Hủy", "Chờ xác nhận", "Đã xác nhận"];
 
 export type BillingProductItem = {
   quantity: number;
@@ -27,7 +28,7 @@ export interface InvoiceModel {
   customer: CustomerModel;
   staff: StaffModel;
   status: InvoiceStatus;
-  createdDate: string;
+  createDate: string;
   approvedDate: string;
   priceBeforeTax: number;
   priceAfterTax: number;
@@ -37,7 +38,7 @@ export interface InvoiceModel {
 }
 
 export type BillingProductCreateEntity = Omit<BillingProductItem, "item"> & {
-  item: number;
+  itemId: number;
 };
 
 export type InvoiceCreateEntity = Omit<
@@ -45,7 +46,7 @@ export type InvoiceCreateEntity = Omit<
   | "id"
   | "branch"
   | "staff"
-  | "createdDate"
+  | "createDate"
   | "item"
   | "addons"
   | "status"

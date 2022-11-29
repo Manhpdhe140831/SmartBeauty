@@ -90,7 +90,7 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
         item={(schedule.service ?? schedule.course)!}
         itemType={schedule.service ? "service" : "course"}
         footerSection={(a) => (
-          <SaleStaffInvoiceAction status={"create"} disable={!a.isValid} />
+          <SaleStaffInvoiceAction status={-1} disable={!a.isValid} />
         )}
       />
     </div>

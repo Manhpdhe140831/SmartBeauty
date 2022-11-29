@@ -6,6 +6,7 @@ import {
   NavLinkItemNestedProp,
   NavLinkItemProp,
 } from "../../interfaces/nav-item.interface";
+import Link from "next/link";
 
 const NavWithHref = (props: NavLinkItemBaseProp) => {
   const theme = useMantineTheme();
@@ -13,8 +14,8 @@ const NavWithHref = (props: NavLinkItemBaseProp) => {
 
   return (
     <NavLink
+      component={Link}
       href={props.href}
-      component={"a"}
       color={"black"}
       active={router.asPath.startsWith(props.href)}
       icon={props.leftIcon}
@@ -85,7 +86,7 @@ const NavNested = (props: NavLinkItemNestedProp) => {
     >
       {props.nested.map((c) => (
         <NavLink
-          component={"a"}
+          component={Link}
           key={c.href}
           href={c.href}
           color={"black"}

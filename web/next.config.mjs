@@ -12,10 +12,10 @@ const config = {
   // export the build to separate folder instead of the default `.next`.
   distDir: "build",
   // Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
+  // i18n: {
+  //   locales: ["en"],
+  //   defaultLocale: "en",
+  // },
   images: {
     domains: ["dummyimage.com"],
   },

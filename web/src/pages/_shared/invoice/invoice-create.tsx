@@ -59,7 +59,7 @@ const InvoiceCreate = ({
 
   const onNewItemAdded = (item: BillingItemData) => {
     const data = {
-      item: item.id,
+      itemId: item.id,
       quantity: 1,
     };
     append(data);

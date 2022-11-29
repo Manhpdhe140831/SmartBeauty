@@ -1,6 +1,7 @@
 import { InvoiceStatus } from "../../../../../model/invoice.model";
 import { Button, Text } from "@mantine/core";
 import TimeInvoiceInformation from "./time-invoice-information";
+import { invoiceStatus } from "../../../../../validation/invoice.schema";
 
 type props = {
   disable?: boolean;
@@ -12,7 +13,7 @@ type props = {
       createdDate: string;
     }
   | {
-      status?: "create";
+      status?: -1;
       createdDate?: string;
     }
 );
@@ -27,11 +28,11 @@ const SaleStaffInvoiceAction = ({
   if (!status) {
     return <></>;
   }
-  if (status === "discarded" || status === "approved") {
+  if (status === invoiceStatus.discarded || status === invoiceStatus.approved) {
     return (
       <div className={"mt-2 flex flex-col"}>
         <Text align={"center"} size={"lg"} color={"dimmed"}>
-          {status === "discarded"
+          {status === invoiceStatus.discarded
             ? "Hóa đơn đã bị hủy"
             : "Hóa đơn đã được xác nhận."}
         </Text>
@@ -39,7 +40,7 @@ const SaleStaffInvoiceAction = ({
           Trạng thái của hóa đơn không thể thay đổi.
         </Text>
 
-        {status === "approved" && (
+        {status === invoiceStatus.approved && (
           <TimeInvoiceInformation
             createdDate={createdDate}
             approvedDate={approvedDate}
@@ -49,7 +50,7 @@ const SaleStaffInvoiceAction = ({
     );
   }
 
-  if (status === "create") {
+  if (status === -1) {
     return (
       <Button
         loading={loading}

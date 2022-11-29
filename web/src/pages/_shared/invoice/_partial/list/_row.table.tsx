@@ -1,6 +1,9 @@
 import { Text, Tooltip } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { InvoiceModel } from "../../../../../model/invoice.model";
+import {
+  InvoiceModel,
+  InvoiceStatusArray,
+} from "../../../../../model/invoice.model";
 import dayjs from "dayjs";
 import { formatPrice } from "../../../../../utilities/pricing.helper";
 
@@ -58,16 +61,16 @@ export default function RowTable(props: RowProps) {
       </td>
 
       <td className={"text-center"}>
-        <Text>{props.data.status}</Text>
+        <Text>{InvoiceStatusArray[props.data.status]}</Text>
       </td>
 
       <td>
         <div className="flex flex-col space-y-1">
           <Text weight={500} size={"md"}>
-            {timeToDate(props.data.createdDate)}
+            {timeToDate(props.data.createDate)}
           </Text>
           <Text size={"sm"} color={"dimmed"}>
-            {timeToHours(props.data.createdDate)}
+            {timeToHours(props.data.createDate)}
           </Text>
         </div>
       </td>

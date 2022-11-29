@@ -7,6 +7,7 @@ import { IconArrowLeft } from "@tabler/icons";
 import SaleStaffInvoiceAction from "../../../_shared/invoice/_partial/detail/action.sale_staff";
 import InvoiceEdit from "../../../_shared/invoice/invoice-edit";
 import { useInvoiceDetailQuery } from "../../../../query/model-detail";
+import { invoiceStatus } from "../../../../validation/invoice.schema";
 
 const ManageInvoiceDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -63,9 +64,11 @@ const ManageInvoiceDetail: AppPageInterface = () => {
           data={data}
           footerSection={() => (
             <SaleStaffInvoiceAction
-              status={data.status === "pending" ? undefined : data.status}
+              status={
+                data.status === invoiceStatus.pending ? undefined : data.status
+              }
               disable={true}
-              createdDate={data.createdDate}
+              createdDate={data.createDate}
               approvedDate={data.approvedDate}
             />
           )}
