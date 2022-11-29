@@ -6,6 +6,8 @@ import com.swp.sbeauty.entity.mapping.*;
 import com.swp.sbeauty.repository.*;
 import com.swp.sbeauty.repository.mappingRepo.*;
 import com.swp.sbeauty.service.ScheduleService;
+import org.joda.time.DateTimeUtils;
+import org.joda.time.Hours;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -353,13 +355,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (dateRes != null) {
             try {
                 Date date1 =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(dateRes);
+                Date newDate = new Date(date1.getTime() + 7 * 3600*1000);
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                df.setTimeZone(TimeZone.getTimeZone("GMT+7"));
-                String nowAsISO = df.format(date1);
-                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                df.setTimeZone(TimeZone.getTimeZone("UTC"));
-                String nowAsISO1 = df.format(date1);
-                list = scheduleRepository.getAllByDate(nowAsISO1.substring(0, 10), idBranch.longValue());
+                String nowAsISO = df.format(newDate);
+
+//                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//                df1.setTimeZone(TimeZone.getTimeZone("UTC"));
+//                String nowAsISO1 = df.format(date1);
+                list = scheduleRepository.getAllByDate(nowAsISO.substring(0, 10), idBranch.longValue());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
