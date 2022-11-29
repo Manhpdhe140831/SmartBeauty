@@ -60,9 +60,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public boolean updateCount(ScheduleDto scheduleDto) {
         if (scheduleDto.getId() != null) {
             Schedule schedule = scheduleRepository.findById(scheduleDto.getId()).orElse(null);
-            if (!schedule.getStatus().equalsIgnoreCase("2")) {
-                if (scheduleDto.getStatus() == 2) {
-                    schedule.setStatus("2");
+            if (!schedule.getStatus().equalsIgnoreCase("3")) {
+                if (scheduleDto.getStatus() == 3) {
+                    schedule.setStatus("3");
                     scheduleRepository.save(schedule);
                     Bill bill = billRepository.getBillBySchedule(schedule.getId());
                     if(bill!=null){
@@ -107,17 +107,26 @@ public class ScheduleServiceImpl implements ScheduleService {
                 } else if (scheduleDto.getStatus() == 0) {
                     schedule.setStatus("0");
                     scheduleRepository.save(schedule);
+                    Bed_Slot_Mapping bedDelete = bed_slot_mapping_repository.getBed_Slot_MappingById_schedule(schedule.getId());
+                    bed_slot_mapping_repository.delete(bedDelete);
+                    User_Slot_Mapping userDelete = user_slot_mapping_repository.getUser_Slot_MappingById_schedule(schedule.getId());
+                    user_slot_mapping_repository.delete(userDelete);
                     Bill bill = billRepository.getBillBySchedule(schedule.getId());
                     if(bill!=null){
                         bill.setStatus("0");
                         billRepository.save(bill);
+                        if (schedule.getServiceId() != null) {
+                            Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerService(schedule.getCustomerId(), schedule.getServiceId());
+                            customer_course_mapping.setStatus("1");
+                            customer_course_mapping_repository.save(customer_course_mapping);
+                            return true;
+                        }
                     }
-                    if (schedule.getServiceId() != null) {
-                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerService(schedule.getCustomerId(), schedule.getServiceId());
-                        customer_course_mapping.setStatus("1");
-                        customer_course_mapping_repository.save(customer_course_mapping);
-                        return true;
-                    }
+                    return true;
+                } else if(scheduleDto.getStatus() == 2){
+                    schedule.setStatus("2");
+                    scheduleRepository.save(schedule);
+                    return true;
                 }
             }
         }
@@ -192,8 +201,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule = scheduleRepository.save(schedule);
                 Integer idBranch = branchRepository.getIdBranchByManager(idSale.intValue());
                 schedule_branch_mapping_repository.save(new Schedule_Branch_Mapping(schedule.getId(), idBranch.longValue()));
-                user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
-                bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
+                user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getId(),schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
+                bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getId(),schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
                 if (schedule.getServiceId() != null) {
                     Bill_Service_History bill_service_history1 = bill_service_history_repository.findById(schedule.getServiceId()).orElse(null);
                     bill_service_history1.setScheduleId(schedule.getId());
@@ -327,8 +336,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         if (null != schedule) {
             schedule = scheduleRepository.save(schedule);
-            user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
-            bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
+            user_slot_mapping_repository.save(new User_Slot_Mapping(schedule.getId(), schedule.getTechnicalStaffId(), schedule.getSlotId(), schedule.getDate()));
+            bed_slot_mapping_repository.save(new Bed_Slot_Mapping(schedule.getId(),schedule.getBedId(), schedule.getSlotId(), schedule.getDate()));
             return true;
         } else {
             return false;

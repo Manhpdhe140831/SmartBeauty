@@ -17,13 +17,15 @@ public class Bed_Slot_Mapping {
     private long id_spaBed;
     private long id_slot;
     private String date;
+    private Long id_schedule;
 
     public Bed_Slot_Mapping() {
     }
 
-    public Bed_Slot_Mapping(long id_spaBed, long id_slot, String date) {
+    public Bed_Slot_Mapping(Long id_schedule, long id_spaBed, long id_slot, String date) {
         this.id_spaBed = id_spaBed;
         this.id_slot = id_slot;
         this.date = date;
+        this.id_schedule = id_schedule;
     }
 }
