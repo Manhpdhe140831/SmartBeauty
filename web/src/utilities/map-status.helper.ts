@@ -19,7 +19,7 @@ export function mapStatusHelper(status: ScheduleStatus) {
       statusInfo.color = "text-yellow-700 font-bold";
       break;
     case ScheduleStatus.Finish:
-      statusInfo.status = "Đã hoàn thành";
+      statusInfo.status = "Hoàn tất";
       statusInfo.color = "text-green-700 font-bold";
   }
 
