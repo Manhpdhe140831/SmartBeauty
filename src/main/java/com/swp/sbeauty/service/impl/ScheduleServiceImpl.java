@@ -101,7 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                         }
                     }
                     if (schedule.getCourseHistoryId() != null) {
-                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseId()).orElse(null);
+                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseHistoryId()).orElse(null);
                         if (customer_course_mapping != null) {
                             Integer count = customer_course_mapping.getCount();
                             String customerCourseStatus = customer_course_mapping.getStatus();
