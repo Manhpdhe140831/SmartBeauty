@@ -72,7 +72,36 @@ public class ScheduleServiceImpl implements ScheduleService {
                         billRepository.save(bill);
                     }
                     if (schedule.getCourseId() != null) {
-                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(scheduleDto.getCourseId()).orElse(null);
+                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.getCustomerCourse(schedule.getCustomerId(), schedule.getCourseId());
+                        if (customer_course_mapping != null) {
+                            Integer count = customer_course_mapping.getCount();
+                            String customerCourseStatus = customer_course_mapping.getStatus();
+                            Bill_Course_History bill_course_history = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
+                            if (count < bill_course_history.getTimeOfUse()) {
+                                if (customerCourseStatus.equalsIgnoreCase("2")) {
+                                    count++;
+                                    if (count > 0 && count < bill_course_history.getTimeOfUse()) {
+                                        customer_course_mapping.setStatus("2");
+                                        customer_course_mapping_repository.save(customer_course_mapping);
+                                    }
+                                    if (count == bill_course_history.getTimeOfUse()) {
+                                        customer_course_mapping.setStatus("3");
+                                        customer_course_mapping.setCount(count);
+                                        customer_course_mapping_repository.save(customer_course_mapping);
+                                        return true;
+                                    } else {
+                                        customer_course_mapping.setCount(count);
+                                        Customer_Course_Mapping customer_course_mapping1 = customer_course_mapping;
+                                        customer_course_mapping_repository.save(customer_course_mapping1);
+                                        return true;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if (schedule.getCourseHistoryId() != null) {
+                        Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseId()).orElse(null);
                         if (customer_course_mapping != null) {
                             Integer count = customer_course_mapping.getCount();
                             String customerCourseStatus = customer_course_mapping.getStatus();
@@ -176,9 +205,9 @@ public class ScheduleServiceImpl implements ScheduleService {
                 Long serviceId = bill_service_history.getId();
                 schedule.setServiceId(serviceId);
             }
-            Customer_Course_Mapping customer_course_mapping_check = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
 
             if (scheduleDto.getCourseId() != null) {
+                Customer_Course_Mapping customer_course_mapping_check = scheduleRepository.getCustomerCourseBySchedule(scheduleDto.getCustomerId(), scheduleDto.getCourseId());
                 if (customer_course_mapping_check == null) {
                     Course course = courseRepository.getCourseById(scheduleDto.getCourseId());
                     Bill_Course_History bill_course_history = new Bill_Course_History();
@@ -253,11 +282,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         Long courseId = schedule.getCourseId();
         Long customerCourseHistory = schedule.getCourseHistoryId();
         CourseDto courseDto = null;
+        Boolean isBill = false;
         if (customerCourseHistory != null) {
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseHistoryId()).orElse(null);
             Integer count = customer_course_mapping.getCount() + 1;
-            Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
+            Bill_Course_History course = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
             courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), count);
+            isBill = true;
         }
         if (courseId != null) {
             Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(courseId);
@@ -271,7 +302,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
         Schedule_Bill_Mapping schedule_bill_mapping = schedule_bill_mapping_repository.getSchedule_Bill_MappingById_schedule(id);
-        Boolean isBill = false;
+
         if (schedule_bill_mapping != null) {
             isBill = true;
         }
@@ -402,7 +433,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             if (customerCourseHistory != null) {
                 Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(itemS.getCourseHistoryId()).orElse(null);
                 if (customer_course_mapping != null) {
-                    Course course = courseRepository.findById(customer_course_mapping.getCourse_id()).orElse(null);
+                    Bill_Course_History course = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
                     courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), customer_course_mapping.getCount() + 1);
                 }
             }
