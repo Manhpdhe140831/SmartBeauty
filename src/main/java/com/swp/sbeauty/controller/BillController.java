@@ -29,9 +29,8 @@ public class BillController {
     public ResponseEntity<?> getAllBill(@RequestHeader("Authorization") String authHeader,
                                         @RequestParam(value = "page", required = false, defaultValue = "1") int page
             , @RequestParam(value = "pageSize", required = false) int pageSize) {
-
-        if (authHeader != null) {
-            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        if (temp != null) {
             String id = temp.get("id").toString();
             Date expir = temp.getExpiration();
             if (expir.before(new Date())) {
@@ -41,11 +40,9 @@ public class BillController {
                 Pageable p = PageRequest.of(page, pageSize);
                 BillResponseDto billResponseDto = billService.getBills(idCheck, page - 1, pageSize);
                 return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
-
             }
-
         } else {
-            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -59,12 +56,16 @@ public class BillController {
     public ResponseEntity<?> save(@RequestBody BillDto billDto,
                                   @RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        Date expir = temp.getExpiration();
-        if (expir.before(new Date())) {
+        if(temp!=null){
+            Date expir = temp.getExpiration();
+            if (expir.before(new Date())) {
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Boolean result = billService.saveBill(billDto, authHeader);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+        }else {
             return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
-        } else {
-            Boolean result = billService.saveBill(billDto, authHeader);
-            return new ResponseEntity<>(result, HttpStatus.OK);
         }
     }
 
@@ -72,12 +73,16 @@ public class BillController {
     public ResponseEntity<?> update(@RequestBody BillDto billDto,
                                     @RequestHeader("Authorization") String authHeader) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        Date expir = temp.getExpiration();
-        if (expir.before(new Date())) {
-            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+        if(temp!=null){
+            Date expir = temp.getExpiration();
+            if (expir.before(new Date())) {
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Boolean result = billService.updateBill(billDto, authHeader);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
         } else {
-            Boolean result = billService.updateBill(billDto, authHeader);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
         }
     }
 

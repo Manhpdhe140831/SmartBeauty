@@ -105,6 +105,5 @@ public class ServiceController {
                                                     @RequestParam(value = "keyword") String keyword){
             ServiceCourseBuyedDto list = service.findProductCourseService(keyword,idCustomer);
             return new ResponseEntity<>(list, HttpStatus.OK);
-
     }
 }

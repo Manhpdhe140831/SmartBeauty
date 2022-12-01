@@ -38,7 +38,6 @@ public class ProductController {
     private ResponseEntity<?> getAllProductAndSearchByName(@RequestParam(value = "page",required = false,defaultValue = "1") int page
             , @RequestParam(value = "pageSize",required = false) int pageSize
             , @RequestParam(value = "name", required = false) String name){
-        Pageable p = PageRequest.of(page,pageSize);
         if(name == null){
             ProductResponseDto productResponseDto = productService.getAllProduct(page -1,pageSize);
             return new ResponseEntity<>(productResponseDto,HttpStatus.OK);
@@ -66,7 +65,6 @@ public class ProductController {
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
-
     }
     @PutMapping ("/product/update")
     public ResponseEntity<?> updateProduct(@RequestParam(value = "id") Long id,
@@ -87,6 +85,5 @@ public class ProductController {
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
-
     }
 }

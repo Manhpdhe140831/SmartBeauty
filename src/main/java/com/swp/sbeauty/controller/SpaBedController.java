@@ -31,20 +31,21 @@ public class SpaBedController {
     JwtUtils jwtUtils;
 
     @GetMapping("/bed/getById")
-    public ResponseEntity<SpaBedDto> getSpaBedById(@RequestParam(value = "id",required = false) Long id) {
+    public ResponseEntity<SpaBedDto> getSpaBedById(@RequestParam(value = "id", required = false) Long id) {
         SpaBedDto result = spaBedService.getById(id);
         return new ResponseEntity<>(result, (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/bed/getStaffAndBedFree")
     private ResponseEntity<?> getBedFree(@RequestHeader("Authorization") String authHeader,
-                                           @RequestParam(value = "date") String date,
-                                           @RequestParam(value = "slot") Long slot){
-        if(authHeader != null){
-            Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+                                         @RequestParam(value = "date") String date,
+                                         @RequestParam(value = "slot") Long slot) {
+
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        if (temp != null) {
             String id = temp.get("id").toString();
             Date expir = temp.getExpiration();
-            if(expir.before(new Date())){
+            if (expir.before(new Date())) {
                 return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
             } else {
                 Long idCheck = Long.parseLong(id);
@@ -52,61 +53,51 @@ public class SpaBedController {
                 return new ResponseEntity<>(list, HttpStatus.OK);
             }
         } else {
-            return new ResponseEntity<>(new ResponseDto<>(404, "Not logged in"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @GetMapping("/bed")
-    private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page",required = false,defaultValue = "1") int page
-            , @RequestParam(value = "pageSize",required = false) int pageSize
-            , @RequestParam(value = "name", required = false,defaultValue = "") String name){
-        Pageable p = PageRequest.of(page,pageSize);
-        if(name  == "" ||name == null){
-            SpaBedResponseDto spaBedResponseDto = spaBedService.getAllSpaBed(page -1,pageSize);
-            return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
-        }
-        else {
-            SpaBedResponseDto spaBedResponseDto = spaBedService.getSpaBedAndSearch(name,page -1,pageSize);
-            return new ResponseEntity<>(spaBedResponseDto,HttpStatus.OK);
+    private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page", required = false, defaultValue = "1") int page
+            , @RequestParam(value = "pageSize", required = false) int pageSize
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name) {
+        if (name == "" || name == null) {
+            SpaBedResponseDto spaBedResponseDto = spaBedService.getAllSpaBed(page - 1, pageSize);
+            return new ResponseEntity<>(spaBedResponseDto, HttpStatus.OK);
+        } else {
+            SpaBedResponseDto spaBedResponseDto = spaBedService.getSpaBedAndSearch(name, page - 1, pageSize);
+            return new ResponseEntity<>(spaBedResponseDto, HttpStatus.OK);
         }
     }
-    /*@PostMapping(value = "/bed/create", headers="Content-Type=multipart/form-data")
-    public ResponseEntity<?> saveBed(@RequestParam(value = "name") String name,
-                                        @RequestParam(value = "branch") Long branch){
-        String check = spaBedService.validateSpaBed(name);
-        if(check == ""){
-            Boolean result = spaBedService.saveSpaBed(name, branch);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
-        }
 
-    }*/
     @PostMapping(value = "/bed/create")
     public ResponseEntity<?> saveSlot(@RequestHeader("Authorization") String authHeader,
-                                      @RequestBody SpaBedDto spaBedDto){
+                                      @RequestBody SpaBedDto spaBedDto) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        Date expir = temp.getExpiration();
-        if(expir.before(new Date())){
+        if (temp != null) {
+            Date expir = temp.getExpiration();
+            if (expir.before(new Date())) {
+                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
+            } else {
+                Boolean result = spaBedService.saveBed(spaBedDto, authHeader);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+        } else {
             return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
-        }else {
-            Boolean result = spaBedService.saveBed(spaBedDto, authHeader);
-            return new ResponseEntity<>(result, HttpStatus.OK);
         }
     }
-    @PutMapping ("/bed/update")
+
+    @PutMapping("/bed/update")
     public ResponseEntity<?> updateBed(@RequestParam(value = "id") Long id,
-                                          @RequestParam(value = "name", required = false) String name,
-                                          @RequestParam(value = "branch", required = false) Long branch){
+                                       @RequestParam(value = "name", required = false) String name,
+                                       @RequestParam(value = "branch", required = false) Long branch) {
         String check = spaBedService.validateSpaBed(name);
-        if(check == ""){
+        if (check == "") {
             Boolean result = spaBedService.updateSpaBed(id, name, branch);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
         }
-
     }
 
 }
