@@ -21,7 +21,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -201,59 +205,67 @@ public class SpaBedServiceImpl implements SpaBedService {
         if(idCheck==null || date == null || idSlot == null){
             return null;
         } else {
-
-            Long idBranch = spaBed_branch_repository.idBranch(idCheck);
-            List<SpaBed> allBeds = spaBedRepository.getAllBed(idBranch);
-            List<SpaBed> listDupBed = spaBedRepository.getBedFree(idBranch, date, idSlot);
-            List<SpaBed> listResultBed = new ArrayList<>();
-            for(SpaBed spaBeds : allBeds){
-                if(listDupBed!=null){
-                    Boolean check = false;
-                    for(SpaBed spaBed: listDupBed){
-                        if(spaBeds.getId() == spaBed.getId()){
-                            check = true;
+            try {
+                Date date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+                Date newDate = new Date(date1.getTime() + 7 * 3600 * 1000);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                String nowAsISO = df.format(newDate);
+                Long idBranch = spaBed_branch_repository.idBranch(idCheck);
+                List<SpaBed> allBeds = spaBedRepository.getAllBed(idBranch);
+                List<SpaBed> listDupBed = spaBedRepository.getBedFree(idBranch, nowAsISO, idSlot);
+                List<SpaBed> listResultBed = new ArrayList<>();
+                for(SpaBed spaBeds : allBeds){
+                    if(listDupBed!=null){
+                        Boolean check = false;
+                        for(SpaBed spaBed: listDupBed){
+                            if(spaBeds.getId() == spaBed.getId()){
+                                check = true;
+                            }
                         }
-                    }
-                    if(check == false){
+                        if(check == false){
+                            listResultBed.add(spaBeds);
+                        }
+                    } else{
                         listResultBed.add(spaBeds);
                     }
-                } else{
-                    listResultBed.add(spaBeds);
                 }
-            }
-            List<SpaBedDto> listDto = new ArrayList<>();
-            if(listResultBed!=null){
-                for(SpaBed spaBed : listResultBed){
-                    listDto.add(new SpaBedDto(spaBed));
-                }
-            }
-            List<Users> allUsers = userRepository.getAllTechStaff(idBranch);
-            List<Users> listDupStaff = userRepository.getStaffFree(idBranch, date, idSlot);
-            List<Users> listResultStaff = new ArrayList<>();
-            for(Users users : allUsers){
-                if(listDupStaff!=null){
-                    Boolean check = false;
-                    for(Users user: listDupStaff){
-                        if(users.getId() == user.getId()){
-                            check = true;
-                        }
+                List<SpaBedDto> listDto = new ArrayList<>();
+                if(listResultBed!=null){
+                    for(SpaBed spaBed : listResultBed){
+                        listDto.add(new SpaBedDto(spaBed));
                     }
-                    if(check == false){
+                }
+                List<Users> allUsers = userRepository.getAllTechStaff(idBranch);
+                List<Users> listDupStaff = userRepository.getStaffFree(idBranch, nowAsISO, idSlot);
+                List<Users> listResultStaff = new ArrayList<>();
+                for(Users users : allUsers){
+                    if(listDupStaff!=null){
+                        Boolean check = false;
+                        for(Users user: listDupStaff){
+                            if(users.getId() == user.getId()){
+                                check = true;
+                            }
+                        }
+                        if(check == false){
+                            listResultStaff.add(users);
+                        }
+                    } else{
                         listResultStaff.add(users);
                     }
-                } else{
-                    listResultStaff.add(users);
                 }
-            }
-            List<UserDto> userDtos = new ArrayList<>();
-            if(listResultStaff!=null){
-                for(Users user : listResultStaff){
-                    userDtos.add(new UserDto(user));
+                List<UserDto> userDtos = new ArrayList<>();
+                if(listResultStaff!=null){
+                    for(Users user : listResultStaff){
+                        userDtos.add(new UserDto(user));
+                    }
                 }
+                StaffBedDto result = new StaffBedDto(userDtos,listDto);
+                return result;
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            StaffBedDto result = new StaffBedDto(userDtos,listDto);
-            return result;
         }
+        return null;
     }
 
     @Override
