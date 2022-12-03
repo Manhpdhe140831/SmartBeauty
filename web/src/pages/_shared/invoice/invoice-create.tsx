@@ -1,52 +1,57 @@
-import { BillingProductItem, InvoiceModel } from "../../../model/invoice.model";
-import CustomerInformationBlock from "./_partial/detail/customer-information";
-import PurchaseItemInformation from "./_partial/detail/purchase-item-information";
+import { BillingProductItem } from "../../../model/invoice.model";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import SearchBillingItems from "../../sale_staff/invoice/create/_partial/search-billing-items";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { invoiceCreateSchema } from "../../../validation/invoice.schema";
 import { z } from "zod";
-import { FormEventHandler, useState } from "react";
+import React, { FormEventHandler, useEffect, useState } from "react";
 import { Divider } from "@mantine/core";
-import PricingInformation from "./_partial/detail/pricing-information";
 import { BillingItemData } from "../../../model/_price.model";
 import AddonsListInformation from "./_partial/detail/addon-list-information";
 import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
-import { CustomerModel } from "../../../model/customer.model";
 
 type InvoiceCreateProps = {
   onAction?: (data?: z.infer<typeof invoiceCreateSchema>) => void;
-  scheduleId: number;
-  customer: CustomerModel;
-  item: InvoiceModel["item"];
-  itemType: InvoiceModel["itemType"];
-
-  footerSection: (
+  customerRender: (
+    useFormInstance: ReturnType<
+      typeof useForm<z.infer<typeof invoiceCreateSchema>>
+    >
+  ) => React.ReactNode | JSX.Element;
+  itemRender: (
+    useFormInstance: ReturnType<
+      typeof useForm<z.infer<typeof invoiceCreateSchema>>
+    >
+  ) => React.ReactNode | JSX.Element;
+  onAddonsChanged?: (addons: BillingProductItem[]) => void;
+  pricingRender: (
+    useFormInstance: ReturnType<
+      typeof useForm<z.infer<typeof invoiceCreateSchema>>
+    >,
+    addons: BillingProductItem[]
+  ) => React.ReactNode | JSX.Element;
+  defaultValues?: Partial<z.infer<typeof invoiceCreateSchema>>;
+  footerRender: (
     formState: ReturnType<typeof useForm>["formState"]
   ) => JSX.Element;
 };
 
 const InvoiceCreate = ({
   onAction,
-  scheduleId,
-  item,
-  itemType,
-  customer,
-  footerSection,
+  itemRender,
+  customerRender,
+  onAddonsChanged,
+  pricingRender,
+  footerRender,
+  defaultValues,
 }: InvoiceCreateProps) => {
   const [addons, setAddons] = useState<BillingProductItem[]>([]);
-  const { reset, control, formState, handleSubmit, setValue } = useForm<
-    z.infer<typeof invoiceCreateSchema>
-  >({
+  const useFormInvoice = useForm<z.infer<typeof invoiceCreateSchema>>({
     resolver: zodResolver(invoiceCreateSchema),
     mode: "onBlur",
-    defaultValues: {
-      scheduleId,
-      itemId: item.id,
-      itemType: itemType,
-      customerId: customer.id,
-    },
+    defaultValues,
   });
+
+  const { reset, control, formState, handleSubmit, getValues } = useFormInvoice;
 
   const {
     fields: itemsArray,
@@ -56,6 +61,8 @@ const InvoiceCreate = ({
     control,
     name: "addons",
   });
+
+  useEffect(() => onAddonsChanged && onAddonsChanged(addons), [addons]);
 
   const onNewItemAdded = (item: BillingItemData) => {
     const data = {
@@ -93,20 +100,6 @@ const InvoiceCreate = ({
     onAction && onAction(data);
   };
 
-  const onPriceCalculation = ({
-    priceAfterTax,
-    priceBeforeTax,
-  }: Pick<InvoiceModel, "priceAfterTax" | "priceBeforeTax">) => {
-    setValue("priceBeforeTax", priceBeforeTax, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    setValue("priceAfterTax", priceAfterTax, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -114,9 +107,9 @@ const InvoiceCreate = ({
       className="mx-auto flex w-[90vw] max-w-[800px] flex-col space-y-10 rounded-lg bg-white p-4 shadow"
     >
       {/*   Customer section        */}
-      <CustomerInformationBlock customer={customer} />
+      {customerRender(useFormInvoice)}
 
-      <PurchaseItemInformation item={item} itemType={itemType} />
+      {itemRender(useFormInvoice)}
 
       <AddonsListInformation
         removable
@@ -154,15 +147,11 @@ const InvoiceCreate = ({
 
         <Divider my={16} />
 
-        {item && (
-          <PricingInformation
-            item={item}
-            addons={addons}
-            onChange={onPriceCalculation}
-          />
-        )}
+        {pricingRender(useFormInvoice, addons)}
       </div>
-      {footerSection && footerSection(formState)}
+      {footerRender && footerRender(formState)}
+
+      {JSON.stringify(invoiceCreateSchema.safeParse(getValues()))}
     </form>
   );
 };

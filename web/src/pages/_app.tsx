@@ -16,6 +16,7 @@ import { ApiHostRequestInterceptor } from "../utilities/axios.helper";
 import { URL_ENDPOINT } from "../const/_const";
 import { NotificationsProvider } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
+import { IErrorResponse } from "../interfaces/api.interface";
 
 // Create a react-query client
 const queryClient = new QueryClient({
@@ -23,8 +24,10 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       onError: (err) => {
-        console.log(err);
-        debugger;
+        const error = err as IErrorResponse;
+        if (error.status === 401) {
+          alert("Phiên làm việc đã hết hạn, hãy đăng nhập lại.");
+        }
       },
     },
   },

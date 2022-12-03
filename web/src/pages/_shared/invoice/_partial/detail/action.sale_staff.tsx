@@ -41,10 +41,7 @@ const SaleStaffInvoiceAction = ({
         </Text>
 
         {status === invoiceStatus.approved && (
-          <TimeInvoiceInformation
-            createdDate={createdDate}
-            approvedDate={approvedDate}
-          />
+          <TimeInvoiceInformation createdDate={createdDate} />
         )}
       </div>
     );

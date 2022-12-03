@@ -8,14 +8,23 @@ import { getDetailSpaService } from "../../services/spa-service.service";
 import { getDetailInvoice } from "../../services/invoice.service";
 import { getDetailSchedule } from "../../services/schedule.service";
 import { ScheduleModel } from "../../model/schedule.model";
+import { CustomerModel } from "../../model/customer.model";
+import { ServiceModel } from "../../model/service.model";
 
-export const useCustomerDetailQuery = (customerId?: number) =>
-  useQuery(["customer-detail", customerId], () => {
-    if (customerId === undefined) {
-      return null;
-    }
-    return getCustomerById(customerId);
-  });
+export const useCustomerDetailQuery = (
+  customerId?: number,
+  options?: Parameters<typeof useQuery<CustomerModel | null>>[2]
+) =>
+  useQuery(
+    ["customer-detail", customerId],
+    () => {
+      if (customerId === undefined) {
+        return null;
+      }
+      return getCustomerById(customerId);
+    },
+    options
+  );
 
 export const useStaffDetailQuery = <T extends UserModel>(staffId?: number) =>
   useQuery(["staff-detail", staffId], async () => {
@@ -35,14 +44,21 @@ export const useCourseDetailQuery = (courseId?: number) =>
     return getCourseDetail(courseId);
   });
 
-export const useServiceDetailQuery = (serviceId?: number | null) =>
-  useQuery(["service-detail", serviceId], async () => {
-    if (!serviceId) {
-      return null;
-    }
+export const useServiceDetailQuery = (
+  serviceId?: number | null,
+  options?: Parameters<typeof useQuery<ServiceModel | null>>[2]
+) =>
+  useQuery(
+    ["service-detail", serviceId],
+    async () => {
+      if (!serviceId) {
+        return null;
+      }
 
-    return getDetailSpaService(serviceId);
-  });
+      return getDetailSpaService(serviceId);
+    },
+    options
+  );
 
 export const useInvoiceDetailQuery = (
   invoiceId?: number,

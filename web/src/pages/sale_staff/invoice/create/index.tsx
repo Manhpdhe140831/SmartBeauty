@@ -5,15 +5,29 @@ import { IconArrowLeft, IconCheck, IconX } from "@tabler/icons";
 import { useRouter } from "next/router";
 import { USER_ROLE } from "../../../../const/user-role.const";
 import SaleStaffInvoiceAction from "../../../_shared/invoice/_partial/detail/action.sale_staff";
-import { InvoiceCreateEntity } from "../../../../model/invoice.model";
+import {
+  BillingProductItem,
+  InvoiceCreateEntity,
+  InvoiceModel,
+} from "../../../../model/invoice.model";
 import { useScheduleDetailQuery } from "../../../../query/model-detail";
 import { useMutation } from "@tanstack/react-query";
 import { createInvoice } from "../../../../services/invoice.service";
 import { showNotification } from "@mantine/notifications";
+import PurchaseItemInformation from "../../../_shared/invoice/_partial/detail/purchase-item-information";
+import React, { useState } from "react";
+import CustomerInformationBlock from "../../../_shared/invoice/_partial/detail/customer-information";
+import PricingInformation from "../../../_shared/invoice/_partial/detail/pricing-information";
+import CustomerInformationEdit from "../../../_shared/invoice/_partial/detail/customer-information-editable";
+import PurchaseItemInformationEditable from "../../../_shared/invoice/_partial/detail/purchase-item-information-editable";
+import { BillingItemData } from "../../../../model/_price.model";
 
 const SaleStaffInvoiceCreate: AppPageInterface = () => {
   const router = useRouter();
   const { previousUrl, schedule_id } = router.query;
+
+  const [addons, setAddons] = useState<BillingProductItem[]>([]);
+  const [item, setItem] = useState<BillingItemData | null>();
 
   const { data: schedule, isLoading } = useScheduleDetailQuery(
     Number(schedule_id as string),
@@ -57,11 +71,15 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
     if (!data) {
       return;
     }
-
+    console.log(data);
     void mutateAsync(data);
   }
 
-  if (!schedule) {
+  if (!router.isReady) {
+    return <>loading...</>;
+  }
+
+  if (!schedule && schedule_id) {
     if (isLoading) {
       return <>loading...</>;
     }
@@ -85,11 +103,82 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
 
       <InvoiceCreate
         onAction={onInvoiceClose}
-        scheduleId={schedule.id}
-        customer={schedule.customer}
-        item={(schedule.service ?? schedule.course)!}
-        itemType={schedule.service ? "service" : "course"}
-        footerSection={(a) => (
+        onAddonsChanged={setAddons}
+        defaultValues={{
+          scheduleId: schedule?.id,
+          customerId: schedule?.customer.id,
+          itemId: (schedule?.service ?? schedule?.course)?.id,
+          itemType: schedule?.service ? "service" : "course",
+        }}
+        customerRender={(control) => {
+          if (schedule) {
+            return <CustomerInformationBlock customer={schedule.customer} />;
+          }
+
+          return (
+            <CustomerInformationEdit
+              onSelected={(e) =>
+                control.setValue("customerId", e?.id as number)
+              }
+              error={<>{control.formState.errors?.customerId}</>}
+            />
+          );
+        }}
+        itemRender={(control) => {
+          if (schedule) {
+            return (
+              <PurchaseItemInformation
+                item={(schedule.service ?? schedule.course)!}
+                itemType={schedule.service ? "service" : "course"}
+              />
+            );
+          }
+          control.setValue("itemType", "service");
+
+          return (
+            <PurchaseItemInformationEditable
+              onSelected={(e) => {
+                control.setValue("itemId", e?.id as number);
+                setItem(e);
+              }}
+            />
+          );
+        }}
+        pricingRender={(control, addons) => {
+          const onPriceCalculation = ({
+            priceAfterTax,
+            priceBeforeTax,
+          }: Pick<InvoiceModel, "priceAfterTax" | "priceBeforeTax">) => {
+            control.setValue("priceBeforeTax", priceBeforeTax, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+            control.setValue("priceAfterTax", priceAfterTax, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+          };
+          if (schedule) {
+            return (
+              <PricingInformation
+                item={(schedule.service ?? schedule.course)!}
+                addons={addons}
+                onChange={onPriceCalculation}
+              />
+            );
+          }
+
+          return (
+            item && (
+              <PricingInformation
+                item={item}
+                addons={addons}
+                onChange={onPriceCalculation}
+              />
+            )
+          );
+        }}
+        footerRender={(a) => (
           <SaleStaffInvoiceAction status={-1} disable={!a.isValid} />
         )}
       />
