@@ -6,7 +6,6 @@ import { invoiceStatus } from "../../../../../validation/invoice.schema";
 type props = {
   disable?: boolean;
   loading?: boolean;
-  approvedDate?: string;
 } & (
   | {
       status?: InvoiceStatus;
@@ -23,11 +22,7 @@ const SaleStaffInvoiceAction = ({
   loading,
   disable,
   createdDate,
-  approvedDate,
 }: props) => {
-  if (!status) {
-    return <></>;
-  }
   if (status === invoiceStatus.discarded || status === invoiceStatus.approved) {
     return (
       <div className={"mt-2 flex flex-col"}>
@@ -64,21 +59,9 @@ const SaleStaffInvoiceAction = ({
 
   return (
     <div className={"flex flex-col space-y-2"}>
-      <Text className={"select-none text-justify"} color={"dimmed"} size={"xs"}>
-        Bạn có thể xác nhận hóa đơn đã được thanh toán. Một khi xác nhận, hành
-        động không thể đảo ngược và hóa đơn sẽ không được chỉnh sửa nữa.
+      <Text className={"select-none text-center"} color={"dimmed"} size={"xs"}>
+        Hóa đơn này sẽ được tự động xác nhận khi lịch hẹn được hoàn thành.
       </Text>
-      <Button
-        disabled={disable}
-        loading={loading}
-        title={"Hủy hóa đơn"}
-        fullWidth
-        size={"lg"}
-        color={"teal"}
-        type={"submit"}
-      >
-        Xác nhận hóa đơn
-      </Button>
     </div>
   );
 };

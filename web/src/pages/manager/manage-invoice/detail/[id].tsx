@@ -69,7 +69,6 @@ const ManageInvoiceDetail: AppPageInterface = () => {
               }
               disable={true}
               createdDate={data.createDate}
-              approvedDate={data.approvedDate}
             />
           )}
         />

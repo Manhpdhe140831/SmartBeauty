@@ -99,7 +99,6 @@ const SaleStaffInvoiceDetail: AppPageInterface = () => {
               status={data.status}
               disable={!a.isValid}
               createdDate={data.createDate}
-              approvedDate={data.approvedDate}
             />
           )}
         />

@@ -4,9 +4,9 @@ import { idDbSchema, priceSchema } from "./field.schema";
 export const invoiceItemTypeSchema = z.enum(["service", "course"]);
 
 export enum invoiceStatus {
-  pending = 0,
-  approved = 1,
-  discarded = 2,
+  discarded = 0,
+  pending = 1,
+  approved = 2,
 }
 
 export const invoiceStatusSchema = z.nativeEnum(invoiceStatus);
