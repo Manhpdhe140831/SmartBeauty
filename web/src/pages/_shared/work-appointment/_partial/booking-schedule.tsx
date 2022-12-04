@@ -549,12 +549,12 @@ const BookingSchedule = ({searchCustomer, slotList, customerList,}: BookingSched
                                                 <span>{selectedService.name}</span>
                                             </div>
                                             <div className={"flex justify-between gap-2"}>
-                                                <span className={"font-bold"}>Liệu trình</span>
+                                                <span className={"font-bold"}>Số buổi</span>
                                                 <span>{selectedService.duration}</span>
                                             </div>
                                             {slotInfo && (
                                                 <div className={"flex justify-between gap-2"}>
-                                                    <span className={"font-bold"}>Slot</span>
+                                                    <span className={"font-bold"}>Ca làm việc</span>
                                                     <span>{slotInfo.name}</span>
                                                 </div>
                                             )}
