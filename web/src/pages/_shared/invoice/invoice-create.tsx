@@ -51,7 +51,7 @@ const InvoiceCreate = ({
     defaultValues,
   });
 
-  const { reset, control, formState, handleSubmit, getValues } = useFormInvoice;
+  const { reset, control, formState, handleSubmit } = useFormInvoice;
 
   const {
     fields: itemsArray,

@@ -3,13 +3,16 @@ import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import { ServiceModel } from "../../../model/service.model";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { useListServiceQuery } from "../../../query/model-list";
-import { Divider, Input, Pagination } from "@mantine/core";
+import { Divider, Input, Pagination, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import ServiceList from "../../_shared/services/service-list";
 import { USER_ROLE } from "../../../const/user-role.const";
 import ServiceDetailDialog from "../../_shared/services/service-detail.dialog";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
   const {
     pageSize,
@@ -20,7 +23,11 @@ const Index: AppPageInterface = () => {
 
   const { data: services, isLoading } = useListServiceQuery(
     currentPage,
-    updatePagination
+    updatePagination,
+    {
+      pageSize,
+      searchQuery: searchKey ? { name: searchKey } : undefined,
+    }
   );
 
   return (
@@ -33,7 +40,16 @@ const Index: AppPageInterface = () => {
           className="w-56"
         />
       </div>
-
+      {/*Search by name*/}
+      <TextInput
+        icon={<IconSearch />}
+        placeholder={"Tên dịch vụ..."}
+        type={"text"}
+        className="w-56"
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setSearchWord(e.currentTarget.value)
+        }
+      />
       <Divider my={8} />
 
       <div className="flex-1">

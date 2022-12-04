@@ -1,13 +1,15 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import ListCustomer from "../../_shared/customer/customer-list";
 import { useRouter } from "next/router";
-import { Button, Divider, Pagination } from "@mantine/core";
-import { IconPlus } from "@tabler/icons";
+import { Button, Divider, Input, Pagination } from "@mantine/core";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import usePaginationHook from "../../../hooks/pagination.hook";
-import { useQuery } from "@tanstack/react-query";
-import { getAllCustomers } from "../../../services/customer.service";
+import React, { ChangeEvent } from "react";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { useListCustomerQuery } from "../../../query/model-list";
 
 const SaleStaffCustomerList: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const router = useRouter();
   const {
     pageSize,
@@ -16,9 +18,13 @@ const SaleStaffCustomerList: AppPageInterface = () => {
     update: updatePagination,
   } = usePaginationHook(undefined, Number(router.query.page ?? "1"));
 
-  const { data: listUser, isLoading: listUserLoading } = useQuery(
-    ["list-customer", router.query.role, currentPage],
-    () => getAllCustomers(currentPage, pageSize)
+  const { data: listUser, isLoading: listUserLoading } = useListCustomerQuery(
+    currentPage,
+    updatePagination,
+    {
+      pageSize,
+      searchQuery: searchKey ? { name: searchKey } : undefined,
+    }
   );
 
   function navigateToDetail(id: number, currentPage: number) {
@@ -47,6 +53,16 @@ const SaleStaffCustomerList: AppPageInterface = () => {
         >
           Customer
         </Button>
+
+        <Input
+          icon={<IconSearch />}
+          placeholder={"Tên khách hàng..."}
+          type={"text"}
+          className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
+        />
       </div>
 
       <Divider my={8}></Divider>

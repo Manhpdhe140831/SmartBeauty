@@ -4,14 +4,17 @@ import { CourseModel } from "../../../model/course.model";
 import { ServiceModel } from "../../../model/service.model";
 import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
 import { useListCourseQuery } from "../../../query/model-list";
-import { Divider, Input, Pagination, Table } from "@mantine/core";
+import { Divider, Input, Pagination, Table, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import CourseHeaderTable from "../../admin/manage-treatment-courses/_partial/course-header.table";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import CourseRowTable from "../../admin/manage-treatment-courses/_partial/course-row.table";
 import CourseDetailDialog from "../../admin/manage-treatment-courses/_course-detail.dialog";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } =
     useDialogDetailRow<CourseModel<ServiceModel>>();
   const {
@@ -23,7 +26,14 @@ const Index: AppPageInterface = () => {
 
   const { data: course, isLoading } = useListCourseQuery(
     currentPage,
-    updatePagination
+    updatePagination,
+    {
+      searchQuery: searchKey
+        ? {
+            name: searchKey,
+          }
+        : undefined,
+    }
   );
 
   return (
@@ -34,6 +44,16 @@ const Index: AppPageInterface = () => {
           placeholder={"tên liệu trình..."}
           type={"text"}
           className="w-56"
+        />
+
+        <TextInput
+          icon={<IconSearch />}
+          placeholder={"Tên liệu trình..."}
+          type={"text"}
+          className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
         />
       </div>
 

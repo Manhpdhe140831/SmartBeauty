@@ -6,9 +6,11 @@ import { Button, Divider, Input, Pagination } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons";
 import InvoiceList from "../../_shared/invoice/invoice-list";
 import Link from "next/link";
-import React from "react";
+import React, { ChangeEvent } from "react";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
 
 const SaleStaffInvoice: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const router = useRouter();
   const {
     pageSize,
@@ -22,6 +24,7 @@ const SaleStaffInvoice: AppPageInterface = () => {
     updatePagination,
     {
       pageSize,
+      searchQuery: searchKey ? { name: searchKey } : undefined,
     }
   );
 
@@ -50,6 +53,16 @@ const SaleStaffInvoice: AppPageInterface = () => {
         >
           Tạo Hóa Đơn
         </Button>
+
+        <Input
+          icon={<IconSearch />}
+          placeholder={"Tên khách hàng..."}
+          type={"text"}
+          className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
+        />
       </div>
       <Divider my={8} />
       <div className="flex-1">

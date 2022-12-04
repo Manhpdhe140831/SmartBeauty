@@ -1,6 +1,6 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
-import { Button, Divider, Input, Pagination, Table } from "@mantine/core";
+import { Button, Divider, Pagination, Table, TextInput } from "@mantine/core";
 import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
 import ProductHeaderTable from "./_partial/product-header.table";
 import ProductRowTable from "./_partial/product-row.table";
@@ -104,7 +104,7 @@ const Index: AppPageInterface = () => {
           Product
         </Button>
 
-        <Input
+        <TextInput
           icon={<IconSearch />}
           placeholder={"Tên sản phẩm..."}
           type={"text"}
