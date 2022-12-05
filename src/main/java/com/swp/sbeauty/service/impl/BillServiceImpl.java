@@ -79,6 +79,9 @@ public class BillServiceImpl implements BillService {
     @Autowired
     Schedule_Bill_Mapping_Repository schedule_bill_mapping_repository;
 
+    @Autowired
+    ScheduleRepository scheduleRepository;
+
     String usingStatus = "2";
 
     @Override
@@ -293,12 +296,12 @@ public class BillServiceImpl implements BillService {
                     }
                 }
                 String itemType = "";
-                if(course!=null){
+                if (course != null) {
                     itemType = "course";
-                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), course,addons,itemType);
-                } else if(service!=null){
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), course, addons, itemType);
+                } else if (service != null) {
                     itemType = "service";
-                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service,addons,itemType);
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service, addons, itemType);
                 }
             }
         }
@@ -314,11 +317,60 @@ public class BillServiceImpl implements BillService {
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         bill.setCreateDate(nowAsISO);
-        bill.setStatus("1");
+        bill.setStatus("2");
         bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
         bill.setPriceAfterTax(billDto.getPriceAfterTax());
         bill = billRepository.save(bill);
-        schedule_bill_mapping_repository.save(new Schedule_Bill_Mapping(billDto.getScheduleId(), bill.getId()));
+        if (billDto.getScheduleId() != null) {
+            schedule_bill_mapping_repository.save(new Schedule_Bill_Mapping(billDto.getScheduleId(), bill.getId()));
+            Schedule schedule = scheduleRepository.findById(billDto.getScheduleId()).orElse(null);
+            schedule.setStatus("2");
+            scheduleRepository.save(schedule);
+            if (billDto.getItemId() != null && billDto.getItemType() != null) {
+                if (billDto.getItemType().equalsIgnoreCase("service")) {
+                    BillDetail billDetail = new BillDetail();
+                    billDetail.setService_id(billDto.getItemId());//id service history
+                    billDetail.setQuantity(Long.parseLong("1"));
+                    billDetail = billDetailRepository.save(billDetail);
+                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItemId(), usingStatus));
+                } else if (billDto.getItemType().equalsIgnoreCase("course")) {
+                    BillDetail billDetail = new BillDetail();
+                    billDetail.setCourse_id(billDto.getItemId());
+                    billDetail.setQuantity(Long.parseLong("1"));
+                    billDetail = billDetailRepository.save(billDetail);
+                    Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(billDto.getItemId());
+                    Integer duration = bill_course_history.getDuration();
+                    bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                    customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItemId(), getEndDate(bill.getCreateDate(), duration), 0, usingStatus));
+                }
+            }
+        } else {
+            if (billDto.getItemId() != null && billDto.getItemType() != null) {
+                if (billDto.getItemType().equalsIgnoreCase("service")) {
+                    com.swp.sbeauty.entity.Service service = serviceRepository.getServiceById(billDto.getItemId());
+                    Bill_Service_History bill_service_history = new Bill_Service_History();
+                    if (service != null) {
+                        bill_service_history.setServiceId(service.getId());
+                        bill_service_history.setName(service.getName());
+                        bill_service_history.setDiscountStart(service.getDiscountStart());
+                        bill_service_history.setDiscountEnd(service.getDiscountEnd());
+                        bill_service_history.setDiscountPercent(service.getDiscountPercent());
+                        bill_service_history.setPrice(service.getPrice());
+                        bill_service_history.setDescription(service.getDescription());
+                        bill_service_history.setDuration(service.getDuration());
+                        bill_service_history.setImage(service.getImage());
+                        bill_service_history = bill_service_history_repository.save(bill_service_history);
+                        BillDetail billDetail = new BillDetail();
+                        billDetail.setService_id(bill_service_history.getId());//id service history
+                        billDetail.setQuantity(Long.parseLong("1"));
+                        billDetail = billDetailRepository.save(billDetail);
+                        bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
+                        customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItemId(), usingStatus));
+                    }
+                }
+            }
+        }
         if (billDto.getAddons() != null) {
             for (BillDetailDto billDetailDto : billDto.getAddons()) {
                 BillDetail billDetail = new BillDetail();
@@ -341,25 +393,6 @@ public class BillServiceImpl implements BillService {
                 bill_product_history.setUnit(product.getUnit());
                 bill_product_history.setDose(product.getDose());
                 bill_product_history_repository.save(bill_product_history);
-            }
-        }
-        if (billDto.getItemId() != null && billDto.getItemType() != null) {
-            if (billDto.getItemType().equalsIgnoreCase("service")) {
-                BillDetail billDetail = new BillDetail();
-                billDetail.setService_id(billDto.getItemId());//id service history
-                billDetail.setQuantity(Long.parseLong("1"));
-                billDetail = billDetailRepository.save(billDetail);
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-                customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItemId(), usingStatus));
-            } else if (billDto.getItemType().equalsIgnoreCase("course")) {
-                BillDetail billDetail = new BillDetail();
-                billDetail.setCourse_id(billDto.getItemId());
-                billDetail.setQuantity(Long.parseLong("1"));
-                billDetail = billDetailRepository.save(billDetail);
-                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(billDto.getItemId());
-                Integer duration = bill_course_history.getDuration();
-                bill_billDetail_mapping_repository.save(new Bill_BillDetail_Mapping(bill.getId(), billDetail.getId()));
-                customer_course_mapping_repository.save(new Customer_Course_Mapping(billDetail.getId(), billDto.getCustomerId(), billDto.getItemId(), getEndDate(bill.getCreateDate(), duration), 0, usingStatus));
             }
         }
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -386,22 +419,22 @@ public class BillServiceImpl implements BillService {
         if (optional.isPresent()) {
             bill = optional.get();
         }
-        if(bill!=null && bill.getStatus().equalsIgnoreCase("1")){
+        if (bill != null && bill.getStatus().equalsIgnoreCase("1")) {
             TimeZone tz = TimeZone.getTimeZone("UTC");
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
             df.setTimeZone(tz);
             String nowAsISO = df.format(new Date());
             bill.setCreateDate(nowAsISO);
-            if(billDto.getPriceBeforeTax()!=null){
+            if (billDto.getPriceBeforeTax() != null) {
                 bill.setPriceBeforeTax(billDto.getPriceBeforeTax());
             }
-            if(billDto.getPriceAfterTax()!=null){
+            if (billDto.getPriceAfterTax() != null) {
                 bill.setPriceAfterTax(billDto.getPriceAfterTax());
             }
-            if(billDto.getAddons()!=null){
+            if (billDto.getAddons() != null) {
                 //delete from bill detail
                 List<BillDetail> list = billDetailRepository.getAddons(billDto.getId());
-                for(BillDetail billDetail :list){
+                for (BillDetail billDetail : list) {
                     billDetailRepository.delete(billDetail);
                     Bill_BillDetail_Mapping bbm = bill_billDetail_mapping_repository.getByBillDetailId(billDetail.getId());
                     bill_billDetail_mapping_repository.delete(bbm);
