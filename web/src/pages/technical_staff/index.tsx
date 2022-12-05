@@ -1,20 +1,14 @@
 import { AppPageInterface } from "../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../const/user-role.const";
+import { useRouter } from "next/router";
 
-const TechincalStaff: AppPageInterface = () => {
+const TechnicalStaff: AppPageInterface = () => {
+  const router = useRouter();
+
+  void router.replace(`/${USER_ROLE.technical_staff}/schedule`);
   return <>loading...</>;
 };
 
-// navigate the user to manage-branches
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: `/${USER_ROLE.technical_staff}/schedule`,
-      permanent: false,
-    },
-  };
-}
+TechnicalStaff.guarded = USER_ROLE.technical_staff;
 
-TechincalStaff.guarded = USER_ROLE.technical_staff;
-
-export default TechincalStaff;
+export default TechnicalStaff;
