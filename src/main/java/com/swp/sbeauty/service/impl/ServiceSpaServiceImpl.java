@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class ServiceSpaServiceImpl implements ServiceSpaService {
-
     @Autowired
     ServiceRepository repository;
+
     @Autowired
     BranchRepository branchRepository;
 
@@ -43,18 +43,25 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
 
     @Autowired
     ServiceRepository serviceRepository;
+
     @Autowired
     Bill_Service_History_Repository bill_service_history_repository;
+
     @Autowired
     Service_Product_Mapping_Repository service_product_mapping_repository;
+
     @Autowired
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
+
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
+
     @Autowired
     Customer_Course_Mapping_Repository customer_course_mapping_repository;
+
     @Autowired
     CourseRepository courseRepository;
+
     @Autowired
     private ModelMapper mapper;
 
@@ -149,7 +156,6 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         serviceResponseDto.setTotalElement(page.getTotalElements());
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setPageIndex(pageNo + 1);
-
         return serviceResponseDto;
     }
 
@@ -158,7 +164,6 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         ServiceResponseDto serviceResponseDto = new ServiceResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Service> page = repository.findAll(pageable);
-
         List<ServiceDto> serviceDtos = page
                 .stream()
                 .map(course -> mapper.map(course, ServiceDto.class))
@@ -197,24 +202,28 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     public ServiceCourseBuyedDto findProductCourseService(String keyword, Long idCustomer) {
         List<CourseDto> courseDtos = new ArrayList<>();
         List<Bill_Course_History> list = bill_course_history_repository.getCourseHistory(keyword);
+        List<Bill_Course_History> listUsing = new ArrayList<>();
         Customer_Course_Mapping ccm = null;
         for (Bill_Course_History i : list) {
             ccm = customer_course_mapping_repository.getCustomerCourse(idCustomer, i.getId());
             if (ccm != null) {
-                break;
+                Bill_Course_History history = bill_course_history_repository.getBill_Course_HistoriesById(ccm.getCourse_id());
+                listUsing.add(history);
             }
         }
-        if (ccm != null) {
-            Bill_Course_History history = bill_course_history_repository.getBill_Course_HistoriesById(ccm.getCourse_id());
+        for (Bill_Course_History history : listUsing) {
             CourseDto courseDto = new CourseDto(history.getId(), history.getName(), history.getPrice(), history.getDuration(), history.getTimeOfUse(), history.getDiscountStart(), history.getDiscountEnd(), history.getDiscountPercent(), history.getImage(), true, history.getDescription());
-            List<Course> courses = courseRepository.getCourseExpelId(history.getCourse_id(), keyword);
             courseDtos.add(courseDto);
-            for (Course course : courses) {
-                courseDtos.add(new CourseDto(false, course));
+        }
+        List<Course> coursess = courseRepository.findAll();
+        for (Course course : coursess) {
+            Boolean check = false;
+            for (Bill_Course_History history : listUsing) {
+                if(history.getCourse_id() == course.getId()){
+                    check = true;
+                }
             }
-        } else {
-            List<Course> courses = courseRepository.findCourses(keyword);
-            for (Course course : courses) {
+            if(check == false){
                 courseDtos.add(new CourseDto(false, course));
             }
         }
