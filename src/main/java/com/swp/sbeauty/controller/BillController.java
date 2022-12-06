@@ -1,5 +1,6 @@
 package com.swp.sbeauty.controller;
 
+import com.itextpdf.layout.Document;
 import com.swp.sbeauty.dto.BillDto;
 import com.swp.sbeauty.dto.BillResponseDto;
 import com.swp.sbeauty.dto.CustomerResponseDto;
@@ -13,8 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -96,5 +101,14 @@ public class BillController {
         BillResponseDto billResponseDto = billService.getBillsByCustomer(page - 1, pageSize, id);
         return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
 
+    }
+
+    @GetMapping("bill/pdf")
+    public void exportToPdf(HttpServletResponse response, @RequestParam("id") Long id) throws IOException {
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=data.pdf";
+        response.setHeader(headerKey, headerValue);
+        billService.generator(response, id);
     }
 }

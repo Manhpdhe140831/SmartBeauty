@@ -1,5 +1,10 @@
 package com.swp.sbeauty.service.impl;
 
+
+import com.itextpdf.layout.element.Tab;
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfWriter;
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
 import com.swp.sbeauty.entity.mapping.*;
@@ -16,6 +21,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
+import javax.print.attribute.standard.PresentationDirection;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -476,6 +487,99 @@ public class BillServiceImpl implements BillService {
         LocalDate dt = localDateTime.plusDays(duration);
         String formatter = formmat1.format(dt);
         return formatter + "T17:00:00.000Z";
+    }
+
+    @Override
+    public void generator(HttpServletResponse response, Long id) throws IOException{
+       BillDto billDto = this.getBillById(id);
+       CourseDto course = null;
+       ServiceDto service = null;
+       ProductDto product = null;
+        List<BillDetailDto> addons = new ArrayList<>();
+        List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
+        for (BillDetail itemb: billDetailList
+             ) {
+            if (itemb.getService_id()!= null){
+                Bill_Service_History bill_service_history = bill_service_history_repository.getBill_Service_HistoryById(itemb.getService_id());
+                service = new ServiceDto(bill_service_history);
+            }
+            if (itemb.getCourse_id() != null) {
+                Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(itemb.getCourse_id());
+                course = new CourseDto(bill_course_history);
+            }
+            if (itemb.getProduct_id() != null) {
+                Bill_Product_history bill_product_history = billDetailRepository.getBillProductHistory(itemb.getId());
+                product = new ProductDto(bill_product_history);
+                addons.add(new BillDetailDto(product, itemb.getQuantity()));
+            }
+
+        }
+        if (billDto != null) {
+            Document document = new Document(PageSize.A4);
+            PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+            Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            fontTitle.setSize(18);
+            Font fontPar = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+            fontPar.setSize(14);
+            Font fontSubTitle = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+            fontSubTitle.setSize(14);
+            Paragraph paragraph = new Paragraph("Invoice Order", fontTitle);
+            paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(paragraph);
+            String customerName = billDto.getCustomer().getName();
+            String customerPhone = billDto.getCustomer().getPhone();
+            String customerAddress = billDto.getCustomer().getAddress();
+            String itemType = billDto.getItemType();
+            Paragraph customerPar = new Paragraph("Customer Name: " + customerName + "\n" + "Phone Numbers: " + customerPhone + "\n" + "Address: " + customerAddress, fontPar );
+            customerPar.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(customerPar);
+            Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
+            document.add(subTitle1);
+            Table table = new Table(2, 4);
+                if ("service".equalsIgnoreCase(itemType)){
+                    Cell serviceCell = new Cell("Service");
+                    serviceCell.setWidth(100f);
+                    table.addCell("Service");
+                    table.addCell(service.getName());
+                  //  table.addCell("Price");
+                    table.addCell("Price");
+                    table.addCell(service.getPrice().toString());
+
+                }
+                if ("course".equalsIgnoreCase(itemType)){
+                    table.addCell("Course");
+                    table.addCell(course.getName());
+                    table.addCell("Price");
+                    table.addCell(course.getPrice().toString());
+                }
+                document.add(table);
+            Table productTable = null;
+                if (addons != null){
+                    Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
+                    document.add(subTitle2);
+                     productTable = new Table(3, addons.size());
+                    for (BillDetailDto item: addons
+                         ) {
+
+                        productTable.addCell("Product");
+                        productTable.addCell(item.getProduct().getName());
+                        productTable.addCell("Quantity");
+                        productTable.addCell(item.getQuantity().toString());
+                    }
+                }
+                    document.add(productTable);
+                Paragraph footerTitle = new Paragraph("Payment(VND)",fontSubTitle);
+
+                Paragraph footerContent = new Paragraph("Price: "+ billDto.getPriceBeforeTax()
+                        +"\n"+"Tax: 8%"
+                        +"\n"+ "Total Amount: "+ billDto.getPriceAfterTax());
+
+            document.add(footerTitle);
+            document.add(footerContent);
+
+            document.close();
+        }
     }
 
 }

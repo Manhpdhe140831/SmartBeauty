@@ -1,9 +1,17 @@
 package com.swp.sbeauty.service;
 
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
+import com.lowagie.text.DocumentException;
 import com.swp.sbeauty.dto.BillDto;
 import com.swp.sbeauty.dto.BillResponseDto;
 import org.springframework.data.domain.Page;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface BillService {
@@ -19,6 +27,9 @@ public interface BillService {
     public Boolean updateBill(BillDto billDto, String authHeader);
 
     public String getEndDate(String startDate, int duration);
+
+
+    public void generator(HttpServletResponse response, Long id) throws IOException;
 
 
 }
