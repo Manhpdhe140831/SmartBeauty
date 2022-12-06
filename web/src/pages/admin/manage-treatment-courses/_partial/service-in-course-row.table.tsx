@@ -8,6 +8,7 @@ import { formatTime } from "../../../../utilities/time.helper";
 import { getListSpaServices } from "../../../../services/spa-service.service";
 import { formatPrice } from "../../../../utilities/pricing.helper";
 import { useServiceDetailQuery } from "../../../../query/model-detail";
+import { linkImage } from "../../../../utilities/image.helper";
 
 type rowProps = {
   no: number;
@@ -58,7 +59,7 @@ const ServiceInCourseRowTable = ({
               width={"44px"}
               height={"44px"}
               fit={"cover"}
-              src={viewingService.image}
+              src={linkImage(viewingService.image)}
               alt={viewingService.name}
             />
           )}

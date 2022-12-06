@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { DataRowProps } from "../../../../interfaces/data-table-row.interface";
 import { SupplierModel } from "../../../../model/supplier.model";
 import { isSaleNotViable } from "../../../../utilities/pricing.helper";
+import { linkImage } from "../../../../utilities/image.helper";
 
 const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
   data,
@@ -26,7 +27,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
           <Image
             width={96}
             height={54}
-            src={data.image}
+            src={linkImage(data.image)}
             withPlaceholder
             alt={"product name"}
             fit="cover"

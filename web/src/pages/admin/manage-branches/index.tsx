@@ -7,7 +7,7 @@ import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import BranchCreateModalBtn from "./_partial/_branch-create-modal-btn";
 import BranchViewModalBtn from "./_partial/_branch-view-modal-btn";
 import { USER_ROLE } from "../../../const/user-role.const";
-import usePaginationHook from "../../../hooks/pagination.hook";
+import usePaginationHook, { getItemNo } from "../../../hooks/pagination.hook";
 import { useListBranchQuery } from "../../../query/model-list";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
@@ -85,7 +85,7 @@ const Index: AppPageInterface = () => {
               fetchBranches.data.map((d, i) => (
                 <TableRecord
                   key={d.id}
-                  no={i + 1}
+                  no={getItemNo(i, page, pageSize)}
                   data={d}
                   action={
                     <BranchViewModalBtn

@@ -38,6 +38,7 @@ import {
   ServiceUpdateEntity,
 } from "../../../model/service.model";
 import ImageUpload from "../../../components/image-upload";
+import { linkImage } from "../../../utilities/image.helper";
 
 const ServiceDetailDialog: FC<
   DialogProps<ServiceModel, ServiceUpdateEntity, ServiceCreateEntity>
@@ -289,7 +290,7 @@ const ServiceDetailDialog: FC<
                       height={160}
                       fit={"cover"}
                       className={"rounded border"}
-                      src={file}
+                      src={linkImage(file)}
                       alt="service image"
                     />
                   )}

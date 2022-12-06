@@ -15,6 +15,7 @@ import {
 import { IconArrowDown, IconArrowRight, IconX } from "@tabler/icons";
 import { stateInputProps } from "../../../../../utilities/mantine.helper";
 import { BillingProductItem } from "../../../../../model/invoice.model";
+import { linkImage } from "../../../../../utilities/image.helper";
 
 type props = {
   itemNo: number;
@@ -45,7 +46,7 @@ const ItemAddonEdit: FC<props> = ({
           {addon.item.image && (
             <Image
               alt={addon.item.name}
-              src={addon.item.image}
+              src={linkImage(addon.item.image)}
               width={32}
               height={32}
               fit={"cover"}

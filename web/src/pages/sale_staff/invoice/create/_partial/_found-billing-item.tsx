@@ -7,6 +7,7 @@ import {
   formatPrice,
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
+import { linkImage } from "../../../../../utilities/image.helper";
 
 type BillingItemProps = {
   data: BillingItemData;
@@ -17,7 +18,7 @@ const FoundBillingItem: FC<BillingItemProps> = ({ data, onSelected }) => {
   return (
     <div className="mb-2 flex space-x-4 rounded border p-4">
       <Image
-        src={data.image}
+        src={linkImage(data.image)}
         placeholder
         alt={data.name}
         radius={"lg"}

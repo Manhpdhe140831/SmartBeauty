@@ -2,6 +2,7 @@ import { Button, Image, Table, Text } from "@mantine/core";
 import { FC } from "react";
 import { useClipboard } from "@mantine/hooks";
 import { useStaffDetailQuery } from "../../../../../query/model-detail";
+import { linkImage } from "../../../../../utilities/image.helper";
 
 type InformationProps = {
   staffId?: number;
@@ -21,7 +22,7 @@ const StaffInformation: FC<InformationProps> = ({ staffId }) => {
           width={50}
           height={50}
           radius={25}
-          src={data.image}
+          src={linkImage(data.image)}
           alt={data.name}
         />
         <div className="flex-1">

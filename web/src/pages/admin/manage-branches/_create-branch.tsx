@@ -1,9 +1,8 @@
 import {
+  Avatar,
   Divider,
-  Image,
   Input,
   Select,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -14,12 +13,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormErrorMessage from "../../../components/form-error-message";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
 import { useQuery } from "@tanstack/react-query";
 import AutoCompleteItem, {
   AutoCompleteItemProp,
 } from "../../../components/auto-complete-item";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import {
   addressSchema,
   emailSchema,
@@ -32,13 +29,16 @@ import { BranchCreateEntity } from "../../../model/branch.model";
 import { getAllFreeManager } from "../../../services/manager.service";
 import { ManagerModel } from "../../../model/manager.model";
 import DialogDetailAction from "../../../components/dialog-detail-action";
+import ImageUpload from "../../../components/image-upload";
+import { FormEvent } from "react";
+import { linkImage } from "../../../utilities/image.helper";
 
 /**
  * Component props
  * `onSave()` will trigger with the data from the form.
  */
 type CreateBranchPropsType = {
-  onSave?: (branchData: BranchCreateEntity) => void;
+  onSave?: (branchData?: BranchCreateEntity) => void;
 };
 
 const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
@@ -56,6 +56,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid, isDirty },
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
@@ -79,8 +80,19 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     }));
   });
 
+  const handleReset = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    reset();
+    onSave && onSave();
+  };
+
   return (
-    <form onSubmit={onSave && handleSubmit(onSave)} className={"flex flex-col"}>
+    <form
+      onReset={handleReset}
+      onSubmit={onSave && handleSubmit(onSave)}
+      className={"flex flex-col"}
+    >
       <TextInput
         label={"Branch Name"}
         description={
@@ -167,30 +179,20 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
         name={"logo"}
         control={control}
         render={({ field }) => (
-          <BtnSingleUploader
-            accept={ACCEPTED_IMAGE_TYPES.join(",")}
+          <ImageUpload
             onChange={(f) => {
               field.onChange(f);
               field.onBlur();
             }}
-            btnTitle={"Upload..."}
-            render={(f) =>
-              (f && (
-                <>
-                  <Text size="xs" align="left">
-                    Picked file: {f.name}
-                  </Text>
-                  <Image
-                    width={160}
-                    height={160}
-                    radius="md"
-                    src={URL.createObjectURL(f)}
-                    alt="Logo image"
-                    className="mt-2 select-none rounded-lg border object-cover shadow-xl"
-                  />
-                </>
-              )) ?? <></>
-            }
+            render={(file) => (
+              <Avatar
+                radius={4}
+                size={160}
+                className={"border"}
+                src={linkImage(file)}
+                alt="User Avatar"
+              />
+            )}
           />
         )}
       />

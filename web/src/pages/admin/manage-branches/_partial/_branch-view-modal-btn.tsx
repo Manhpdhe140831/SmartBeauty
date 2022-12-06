@@ -63,6 +63,7 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
           onChanged && onChanged();
           setViewBranch(false);
         }}
+        closeOnClickOutside={false}
       >
         <BranchInfo
           onClose={async (e) => {

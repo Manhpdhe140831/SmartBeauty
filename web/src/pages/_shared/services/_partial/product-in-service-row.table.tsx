@@ -24,6 +24,7 @@ import {
   getProductById,
 } from "../../../../services/product.service";
 import { formatPrice } from "../../../../utilities/pricing.helper";
+import { linkImage } from "../../../../utilities/image.helper";
 
 type ParentSchema = ReturnType<typeof getServiceModelSchema>;
 type inferParentSchema = z.infer<ParentSchema>;
@@ -82,7 +83,7 @@ const ProductInServiceRowTable = ({
             <Image
               width={"100%"}
               fit={"cover"}
-              src={viewingProduct.image}
+              src={linkImage(viewingProduct.image)}
               alt={viewingProduct.name}
             />
           )}

@@ -27,6 +27,7 @@ import DialogDetailAction from "../../../components/dialog-detail-action";
 import { DialogSubmit } from "../../../utilities/form-data.helper";
 import ImageUpload from "../../../components/image-upload";
 import { DialogViewProps } from "../../../interfaces/dialog-detail-props.interface";
+import { linkImage } from "../../../utilities/image.helper";
 
 const ViewManagerDialog: FC<
   DialogViewProps<ManagerModel, ManagerUpdateEntity>
@@ -95,13 +96,17 @@ const ViewManagerDialog: FC<
             control={control}
             render={({ field }) => (
               <ImageUpload
+                onChange={(f) => {
+                  field.onChange(f);
+                  field.onBlur();
+                }}
                 defaultSrc={field.value as string}
                 render={(file) => (
                   <MantineImage
                     width={128}
                     height={128}
                     radius="md"
-                    src={file}
+                    src={linkImage(file)}
                     alt="Logo image"
                     className="mb-2 select-none rounded-lg border object-cover shadow-xl"
                   />
@@ -190,7 +195,6 @@ const ViewManagerDialog: FC<
               >
                 <Radio value={GENDER.male} label="Male" />
                 <Radio value={GENDER.female} label="Female" />
-                <Radio value={GENDER.other} label="Other" />
               </Radio.Group>
             )}
             name={"gender"}
@@ -227,6 +231,8 @@ const ViewManagerDialog: FC<
             {...register("password")}
           />
           <FormErrorMessage errors={errors} name={"password"} />
+          {JSON.stringify(updateManagerSchema.safeParse(getValues()))}
+          {JSON.stringify(getValues())}
 
           <Divider my={8} />
           <div className="flex justify-end space-x-2">

@@ -20,7 +20,7 @@ const ProductModelSchema = refineSaleSchema(
       image: fileUploadSchema
         .and(imageTypeSchema)
         // or the avatar field can be url src of the image.
-        .or(z.string().url())
+        .or(z.string())
         // this field is not required.
         .nullable()
         .optional(),

@@ -17,6 +17,7 @@ import { useState } from "react";
 import DatabaseSearchSelect from "../../../../../components/database-search.select";
 import { stateInputProps } from "../../../../../utilities/mantine.helper";
 import { BillingItemData } from "../../../../../model/_price.model";
+import { linkImage } from "../../../../../utilities/image.helper";
 
 type props = {
   onSelected: (item: BillingItemData | null) => void;
@@ -58,7 +59,7 @@ const PurchaseItemInformationEditable = ({ onSelected }: props) => {
           radius={"lg"}
           width={120}
           height={120}
-          src={item?.image}
+          src={linkImage(item?.image)}
           alt={item?.name}
           placeholder
         />

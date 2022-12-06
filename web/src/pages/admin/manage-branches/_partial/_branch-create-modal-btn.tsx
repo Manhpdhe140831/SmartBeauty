@@ -61,6 +61,7 @@ const BranchCreateModalBtn = ({ onChanged }: BranchModalProps) => {
           setNewBranchModal(false);
           onChanged();
         }}
+        closeOnClickOutside={false}
       >
         <CreateBranch
           onSave={(e) => {

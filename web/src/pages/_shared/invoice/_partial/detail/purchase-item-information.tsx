@@ -6,6 +6,7 @@ import {
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
 import { IconArrowDown } from "@tabler/icons";
+import { linkImage } from "../../../../../utilities/image.helper";
 
 type props = {
   item: InvoiceModel["item"];
@@ -26,7 +27,7 @@ const PurchaseItemInformation = ({ itemType, item }: props) => {
           radius={"lg"}
           width={120}
           height={120}
-          src={item.image}
+          src={linkImage(item.image)}
           alt={item.name}
         />
 

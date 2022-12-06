@@ -28,7 +28,7 @@ export function getCourseModelSchema(mode: "view" | "create") {
       ? fileUploadSchema.and(imageTypeSchema).nullable().optional()
       : fileUploadSchema
           .and(imageTypeSchema)
-          .or(z.string().url())
+          .or(z.string())
           .nullable()
           .optional();
   return refineSaleSchema(

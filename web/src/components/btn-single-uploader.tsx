@@ -1,5 +1,6 @@
 import { Button, FileButton, Group, Image, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { linkImage } from "../utilities/image.helper";
 
 type BtnUploaderProps = {
   btnTitle: string;
@@ -68,7 +69,7 @@ const BtnSingleUploader = ({
               width={160}
               height={160}
               radius="md"
-              src={URL.createObjectURL(file)}
+              src={linkImage(file)}
               alt="Random unsplash image"
               className="mt-2 select-none rounded-lg border object-cover shadow-xl"
             />

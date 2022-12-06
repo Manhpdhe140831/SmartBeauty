@@ -4,6 +4,7 @@ import { CourseModel } from "../../../../model/course.model";
 import { Image, Text, Tooltip } from "@mantine/core";
 import SalePriceTableCell from "../../../../components/cell-sale-price.table";
 import { ServiceModel } from "../../../../model/service.model";
+import { linkImage } from "../../../../utilities/image.helper";
 
 const CourseRowTable: FC<DataRowProps<CourseModel<ServiceModel>>> = ({
   onClick,
@@ -19,7 +20,7 @@ const CourseRowTable: FC<DataRowProps<CourseModel<ServiceModel>>> = ({
             width={"92px"}
             height={"92px"}
             fit={"cover"}
-            src={data.image}
+            src={linkImage(data.image)}
             alt={data.name}
           />
         </div>

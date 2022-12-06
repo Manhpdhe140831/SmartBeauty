@@ -1,9 +1,8 @@
 import {
+  Avatar,
   Divider,
-  Image as MantineImage,
   Input,
   Select,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -25,14 +24,14 @@ import {
   phoneSchema,
 } from "../../../validation/field.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BtnSingleUploader from "../../../components/btn-single-uploader";
-import { ACCEPTED_IMAGE_TYPES } from "../../../const/file.const";
 import MaskedInput from "react-text-mask";
 import { PhoneNumberMask } from "../../../const/input-masking.const";
 import { FormEvent } from "react";
 import DialogDetailAction from "../../../components/dialog-detail-action";
 import { getAllFreeManager } from "../../../services/manager.service";
 import { DialogSubmit } from "../../../utilities/form-data.helper";
+import ImageUpload from "../../../components/image-upload";
+import { linkImage } from "../../../utilities/image.helper";
 
 type ViewBranchPropsType = {
   branchData: BranchModel<ManagerModel>;
@@ -49,7 +48,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     address: addressSchema,
     logo: fileUploadSchema
       .and(imageTypeSchema)
-      .or(z.string().url())
+      .or(z.string())
       .nullable()
       .optional(),
   });
@@ -115,30 +114,19 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
           name={"logo"}
           control={control}
           render={({ field }) => (
-            <BtnSingleUploader
-              accept={ACCEPTED_IMAGE_TYPES.join(",")}
+            <ImageUpload
               onChange={(f) => {
                 field.onChange(f);
                 field.onBlur();
               }}
-              btnPosition={"after"}
-              btnTitle={"Update Logo"}
-              render={(f) => (
-                <>
-                  {f && (
-                    <Text size="xs" align="left">
-                      Picked file: {f.name}
-                    </Text>
-                  )}
-                  <MantineImage
-                    width={128}
-                    height={128}
-                    radius="md"
-                    src={f ? URL.createObjectURL(f) : (field.value as string)}
-                    alt="Logo image"
-                    className="mb-2 select-none rounded-lg border object-cover shadow-xl"
-                  />
-                </>
+              render={(file) => (
+                <Avatar
+                  radius={80}
+                  size={126}
+                  className={"border"}
+                  src={linkImage(file)}
+                  alt="User Avatar"
+                />
               )}
             />
           )}

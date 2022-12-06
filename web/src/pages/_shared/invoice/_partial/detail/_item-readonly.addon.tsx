@@ -7,6 +7,7 @@ import {
   isBetweenSale,
 } from "../../../../../utilities/pricing.helper";
 import { BillingProductItem } from "../../../../../model/invoice.model";
+import { linkImage } from "../../../../../utilities/image.helper";
 
 export type ItemTableProps = {
   no: number;
@@ -23,7 +24,7 @@ const ItemAddonReadonly: FC<ItemTableProps> = ({ data, no }) => {
         <td className={"align-top"}>
           <Image
             alt={data.item.name}
-            src={data.item.image}
+            src={linkImage(data.item.image)}
             width={32}
             height={32}
             fit={"cover"}

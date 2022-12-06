@@ -30,6 +30,7 @@ import DialogDetailAction from "../../../components/dialog-detail-action";
 import ImageUpload from "../../../components/image-upload";
 import { DialogCreateProps } from "../../../interfaces/dialog-detail-props.interface";
 import { DialogSubmit } from "../../../utilities/form-data.helper";
+import { linkImage } from "../../../utilities/image.helper";
 
 const CreateManager: FC<
   DialogCreateProps<ManagerModel, ManagerCreateEntity>
@@ -46,9 +47,6 @@ const CreateManager: FC<
     resolver: zodResolver(createManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      gender: GENDER.other,
-    },
   });
 
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
@@ -158,7 +156,6 @@ const CreateManager: FC<
             >
               <Radio value={GENDER.male} label="Nam" />
               <Radio value={GENDER.female} label="Nữ" />
-              <Radio value={GENDER.other} label="Khác" />
             </Radio.Group>
           )}
           name={"gender"}
@@ -226,7 +223,7 @@ const CreateManager: FC<
                   radius={80}
                   size={160}
                   className={"border"}
-                  src={file}
+                  src={linkImage(file)}
                   alt="User Avatar"
                 />
               )}

@@ -30,6 +30,7 @@ import { DialogSubmit } from "../../../utilities/form-data.helper";
 import { ServiceModel } from "../../../model/service.model";
 import { stateInputProps } from "../../../utilities/mantine.helper";
 import ImageUpload from "../../../components/image-upload";
+import { linkImage } from "../../../utilities/image.helper";
 
 const CourseDetailDialog: FC<
   DialogProps<CourseModel<ServiceModel>, CourseUpdateEntity, CourseUpdateEntity>
@@ -320,7 +321,7 @@ const CourseDetailDialog: FC<
                       height={160}
                       fit={"cover"}
                       className={"rounded border"}
-                      src={file}
+                      src={linkImage(file)}
                       alt="course image"
                     />
                   )}
