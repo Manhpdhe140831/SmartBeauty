@@ -22,10 +22,8 @@ import java.nio.file.Paths;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ImageController {
 
-//    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
-
-    @GetMapping(value = "getImage/{image}")
-    public ResponseEntity<ByteArrayResource> getImage(@PathVariable("image") String image){
+    @GetMapping(value = "/getImage")
+    public ResponseEntity<ByteArrayResource> getImage(@RequestParam("image") String image){
         if(!image.equals("")||image!=null){
             try{
                 Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));

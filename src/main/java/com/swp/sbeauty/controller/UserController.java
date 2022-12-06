@@ -91,10 +91,11 @@ public class UserController {
                                         @RequestParam(value = "phone", required = false) String phone,
                                         @RequestParam(value = "dateOfBirth", required = false) String dateOfBirth,
                                         @RequestParam(value = "gender", required = false) String gender,
-                                        @RequestParam(value = "address", required = false) String address) {
+                                        @RequestParam(value = "address", required = false) String address,
+                                        @RequestParam(value = "password", required = false) String password) {
         String check = userService.validateUser(email, phone);
         if (check == "") {
-            Boolean result = userService.updateUser(id, image, name, email, phone, dateOfBirth, gender, address);
+            Boolean result = userService.updateUser(id, image, name, email, phone, dateOfBirth, gender, address, password);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

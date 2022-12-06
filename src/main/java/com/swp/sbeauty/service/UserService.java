@@ -30,7 +30,7 @@ public interface UserService {
 
     Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password,String role, String roleCheck, Integer idcheck);
 
-    Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address);
+    Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password);
 
     List<UserDto> getStaffFree(Long idCheck, String date, Long slot);
 }

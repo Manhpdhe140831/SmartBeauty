@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address) {
+    public Boolean updateUser(Long id, MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password) {
         try {
             Users user = null;
             if (id != null) {
@@ -196,6 +196,9 @@ public class UserServiceImpl implements UserService {
                 }
                 if (address != null) {
                     user.setAddress(address);
+                }
+                if(password != null){
+                    user.setPassword(encoder.encode(password));
                 }
                 userRepository.save(user);
                 return true;
