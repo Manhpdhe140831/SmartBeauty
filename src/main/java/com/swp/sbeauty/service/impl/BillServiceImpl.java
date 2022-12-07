@@ -645,7 +645,7 @@ public class BillServiceImpl implements BillService {
                 table.addCell(course.getPrice().toString());
             }
             document.add(table);
-            Table productTable = new Table(3, addons.size());
+            Table productTable = new Table(4, addons.size());
             Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
             subTitle2.setAlignment(Element.ALIGN_CENTER);
             document.add(subTitle2);
@@ -656,16 +656,21 @@ public class BillServiceImpl implements BillService {
             quantityCell.setBackgroundColor(Color.BLUE);
             Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
             priceCell.setBackgroundColor(Color.BLUE);
+            Cell totalProductAmount = new Cell(new Phrase("Total amount", fontTitleTable));
+            totalProductAmount.setBackgroundColor(Color.BLUE);
             productTable.addCell(productCell);
             productTable.addCell(quantityCell);
             productTable.addCell(priceCell);
+            productTable.addCell(totalProductAmount);
             productTable.setBorderColor(Color.GRAY);
             if (addons != null || !addons.isEmpty()) {
                 for (BillDetailDto item : addons
                 ) {
-                    productTable.addCell(item.getProduct().getName());
+                    productTable.addCell(item.getItem().getName());
                     productTable.addCell(item.getQuantity().toString());
-                    productTable.addCell(item.getProduct().getPrice().toString());
+                    productTable.addCell(item.getItem().getPrice().toString());
+                    Double totalAmount = item.getQuantity().doubleValue()* item.getItem().getPrice();
+                    productTable.addCell(totalAmount.toString());
                 }
             }
             if (addons.isEmpty()) {
@@ -687,5 +692,4 @@ public class BillServiceImpl implements BillService {
             document.close();
         }
     }
-
 }
