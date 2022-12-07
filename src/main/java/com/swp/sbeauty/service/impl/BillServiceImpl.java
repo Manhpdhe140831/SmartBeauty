@@ -4,6 +4,8 @@ package com.swp.sbeauty.service.impl;
 import com.itextpdf.layout.element.Tab;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
+import com.lowagie.text.alignment.HorizontalAlignment;
+import com.lowagie.text.alignment.VerticalAlignment;
 import com.lowagie.text.pdf.PdfWriter;
 import com.swp.sbeauty.dto.*;
 import com.swp.sbeauty.entity.*;
@@ -35,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Phaser;
 import java.util.stream.Collectors;
 
 @Service
@@ -490,16 +493,16 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public void generator(HttpServletResponse response, Long id) throws IOException{
-       BillDto billDto = this.getBillById(id);
-       CourseDto course = null;
-       ServiceDto service = null;
-       ProductDto product = null;
+    public void generator(HttpServletResponse response, Long id) throws IOException {
+        BillDto billDto = this.getBillById(id);
+        CourseDto course = null;
+        ServiceDto service = null;
+        ProductDto product = null;
         List<BillDetailDto> addons = new ArrayList<>();
         List<BillDetail> billDetailList = billDetailRepository.getBillDetailByBillId(id);
-        for (BillDetail itemb: billDetailList
-             ) {
-            if (itemb.getService_id()!= null){
+        for (BillDetail itemb : billDetailList
+        ) {
+            if (itemb.getService_id() != null) {
                 Bill_Service_History bill_service_history = bill_service_history_repository.getBill_Service_HistoryById(itemb.getService_id());
                 service = new ServiceDto(bill_service_history);
             }
@@ -519,62 +522,165 @@ public class BillServiceImpl implements BillService {
             PdfWriter.getInstance(document, response.getOutputStream());
             document.open();
             Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-            fontTitle.setSize(18);
+            fontTitle.setSize(24);
+            fontTitle.setColor(Color.WHITE);
             Font fontPar = FontFactory.getFont(FontFactory.TIMES_ROMAN);
             fontPar.setSize(14);
             Font fontSubTitle = FontFactory.getFont(FontFactory.TIMES_ROMAN);
-            fontSubTitle.setSize(14);
-            Paragraph paragraph = new Paragraph("Invoice Order", fontTitle);
-            paragraph.setAlignment(Paragraph.ALIGN_CENTER);
-            document.add(paragraph);
+            fontSubTitle.setSize(18);
+            Font fontTitleCustomer = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            fontTitleCustomer.setSize(13);
+            Table tableHeader = new Table(2);
+            Cell cellHeaderTitle = new Cell(new Phrase("Invoice Order", fontTitle));
+            Cell cellHeaderBranch = new Cell(new Paragraph("Sbeauty" + "\n" + "Branch Name: "+billDto.getBranch().getName() + "\n" +"Phone Number: "+ billDto.getBranch().getPhone() + "\n" +"Address: "+ billDto.getBranch().getAddress(),fontPar));
+            cellHeaderTitle.setBackgroundColor(Color.LIGHT_GRAY);
+            cellHeaderTitle.setVerticalAlignment(VerticalAlignment.CENTER);
+            cellHeaderTitle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+            cellHeaderBranch.setBackgroundColor(Color.LIGHT_GRAY);
+            cellHeaderTitle.setBorderColor(Color.LIGHT_GRAY);
+            cellHeaderBranch.setBorderColor(Color.LIGHT_GRAY);
+            tableHeader.setPadding(5);
+            tableHeader.setBorderColor(Color.LIGHT_GRAY);
+            tableHeader.setBorderColorBottom(Color.BLACK);
+            tableHeader.addCell(cellHeaderTitle);
+            tableHeader.addCell(cellHeaderBranch);
+            tableHeader.setWidth(100f);
+            tableHeader.setSpacing(10);
+            document.add(tableHeader);
+
+            Paragraph br = new Paragraph("\n\n");
+            document.add(br);
+
             String customerName = billDto.getCustomer().getName();
             String customerPhone = billDto.getCustomer().getPhone();
             String customerAddress = billDto.getCustomer().getAddress();
             String itemType = billDto.getItemType();
-            Paragraph customerPar = new Paragraph("Customer Name: " + customerName + "\n" + "Phone Numbers: " + customerPhone + "\n" + "Address: " + customerAddress, fontPar );
-            customerPar.setAlignment(Paragraph.ALIGN_LEFT);
-            document.add(customerPar);
+
+            Table tableCustomer = new Table(2, 3);
+            tableCustomer.setWidth(50f);
+            Cell customerNameCell = new Cell(new Phrase("Customer Name:", fontTitleCustomer));
+            Cell customerNameInformation = new Cell(customerName);
+            Cell customerPhoneCell = new Cell(new Phrase("Phone Number:", fontTitleCustomer));
+            Cell customerPhoneInformation = new Cell(customerPhone);
+            Cell customerAddressCell = new Cell(new Phrase("Address:", fontTitleCustomer));
+            Cell customerAddressInformation = new Cell(customerAddress);
+
+            customerNameCell.setBorderColor(Color.WHITE);
+            customerNameInformation.setBorderColor(Color.WHITE);
+            customerPhoneCell.setBorderColor(Color.WHITE);
+            customerPhoneInformation.setBorderColor(Color.WHITE);
+            customerAddressCell.setBorderColor(Color.WHITE);
+            customerAddressInformation.setBorderColor(Color.WHITE);
+
+            customerPhoneCell.setWidth(5f);
+            customerNameInformation.setWidth(5f);
+            customerPhoneCell.setWidth(5f);
+            customerPhoneInformation.setWidth(5f);
+            customerAddressCell.setWidth(5f);
+            customerAddressInformation.setWidth(5f);
+
+            tableCustomer.addCell(customerNameCell);
+            tableCustomer.addCell(customerNameInformation);
+            tableCustomer.addCell(customerPhoneCell);
+            tableCustomer.addCell(customerPhoneInformation);
+            tableCustomer.addCell(customerAddressCell);
+            tableCustomer.addCell(customerAddressInformation);
+            tableCustomer.setBorderColor(Color.WHITE);
+            tableCustomer.setBorderColorBottom(Color.WHITE);
+            tableCustomer.setBackgroundColor(Color.WHITE);
+            tableCustomer.setPadding(2f);
+            document.add(tableCustomer);
+            Paragraph lineBr = new Paragraph("----------------------------------------------------------------------------------------------------------------------------------");
+            lineBr.setAlignment(Element.ALIGN_CENTER);
+            document.add(lineBr);
+            document.add(br);
+
             Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
+            subTitle1.setAlignment(Element.ALIGN_CENTER);
             document.add(subTitle1);
-            Table table = new Table(2, 4);
-                if ("service".equalsIgnoreCase(itemType)){
-                    Cell serviceCell = new Cell("Service");
-                    serviceCell.setWidth(100f);
-                    table.addCell("Service");
-                    table.addCell(service.getName());
-                  //  table.addCell("Price");
-                    table.addCell("Price");
-                    table.addCell(service.getPrice().toString());
-
+            Font fontTitleTable = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+            fontTitleTable.setColor(Color.WHITE);
+            fontTitleTable.setSize(15);
+            Table table = new Table(3, 4);
+            table.setPadding(5f);
+            table.setBorderColor(Color.GRAY);
+            if ("service".equalsIgnoreCase(itemType)) {
+                Cell serviceCell = new Cell(new Phrase("Service", fontTitleTable));
+                serviceCell.setWidth(200f);
+                serviceCell.setBorderColor(Color.GRAY);
+                serviceCell.setBackgroundColor(Color.PINK);
+                table.addCell(serviceCell);
+                Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
+                priceCell.setWidth(200f);
+                priceCell.setBorderColor(Color.GRAY);
+                priceCell.setBackgroundColor(Color.PINK);
+                table.addCell(priceCell);
+                Cell total = new Cell(new Phrase("Total Amount", fontTitleTable));
+                total.setBorderColor(Color.GRAY);
+                total.setBackgroundColor(Color.pink);
+                total.setWidth(200f);
+                table.addCell(total);
+                table.addCell(service.getName());
+                table.addCell(service.getPrice().toString());
+                table.addCell(service.getPrice().toString());
+            }
+            if ("course".equalsIgnoreCase(itemType)) {
+                Cell courseCell = new Cell(new Phrase("Course", fontTitleTable));
+                courseCell.setWidth(200f);
+                courseCell.setBorderColor(Color.GRAY);
+                courseCell.setBackgroundColor(Color.PINK);
+                table.addCell(courseCell);
+                Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
+                priceCell.setWidth(200f);
+                priceCell.setBorderColor(Color.GRAY);
+                priceCell.setBackgroundColor(Color.PINK);
+                table.addCell(priceCell);
+                Cell total = new Cell(new Phrase("Total Amount", fontTitleTable));
+                total.setBorderColor(Color.GRAY);
+                total.setBackgroundColor(Color.pink);
+                total.setWidth(200f);
+                table.addCell(total);
+                table.addCell(course.getName());
+                table.addCell(course.getPrice().toString());
+                table.addCell(course.getPrice().toString());
+            }
+            document.add(table);
+            Table productTable = new Table(3, addons.size());
+            Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
+            subTitle2.setAlignment(Element.ALIGN_CENTER);
+            document.add(subTitle2);
+            productTable.setPadding(5);
+            Cell productCell = new Cell(new Phrase("Product", fontTitleTable));
+            productCell.setBackgroundColor(Color.BLUE);
+            Cell quantityCell = new Cell(new Phrase("Quantity", fontTitleTable));
+            quantityCell.setBackgroundColor(Color.BLUE);
+            Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
+            priceCell.setBackgroundColor(Color.BLUE);
+            productTable.addCell(productCell);
+            productTable.addCell(quantityCell);
+            productTable.addCell(priceCell);
+            productTable.setBorderColor(Color.GRAY);
+            if (addons != null || !addons.isEmpty()) {
+                for (BillDetailDto item : addons
+                ) {
+                    productTable.addCell(item.getProduct().getName());
+                    productTable.addCell(item.getQuantity().toString());
+                    productTable.addCell(item.getProduct().getPrice().toString());
                 }
-                if ("course".equalsIgnoreCase(itemType)){
-                    table.addCell("Course");
-                    table.addCell(course.getName());
-                    table.addCell("Price");
-                    table.addCell(course.getPrice().toString());
-                }
-                document.add(table);
-            Table productTable = null;
-                if (addons != null){
-                    Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
-                    document.add(subTitle2);
-                     productTable = new Table(3, addons.size());
-                    for (BillDetailDto item: addons
-                         ) {
-
-                        productTable.addCell("Product");
-                        productTable.addCell(item.getProduct().getName());
-                        productTable.addCell("Quantity");
-                        productTable.addCell(item.getQuantity().toString());
-                    }
-                }
-                    document.add(productTable);
-                Paragraph footerTitle = new Paragraph("Payment(VND)",fontSubTitle);
-
-                Paragraph footerContent = new Paragraph("Price: "+ billDto.getPriceBeforeTax()
-                        +"\n"+"Tax: 8%"
-                        +"\n"+ "Total Amount: "+ billDto.getPriceAfterTax());
-
+            }
+            if (addons.isEmpty()) {
+                productTable.addCell("None");
+                productTable.addCell("");
+                productTable.addCell("");
+            }
+            document.add(productTable);
+            document.add(lineBr);
+            Paragraph footerTitle = new Paragraph( "Payment(VND)", fontSubTitle);
+            footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
+            Paragraph footerContent = new Paragraph("Price: " + billDto.getPriceBeforeTax()
+                    + "\n" + "Tax: 8%"
+                    + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
+            footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             document.add(footerTitle);
             document.add(footerContent);
 

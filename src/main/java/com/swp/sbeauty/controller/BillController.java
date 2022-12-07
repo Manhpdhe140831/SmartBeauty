@@ -107,7 +107,8 @@ public class BillController {
     public void exportToPdf(HttpServletResponse response, @RequestParam("id") Long id) throws IOException {
         response.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=data.pdf";
+        String idText = id.toString();
+        String headerValue = "attachment; filename=invoice_"+idText+".pdf";
         response.setHeader(headerKey, headerValue);
         billService.generator(response, id);
     }
