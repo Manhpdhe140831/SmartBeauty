@@ -96,6 +96,16 @@ public class BillServiceImpl implements BillService {
     @Autowired
     ScheduleRepository scheduleRepository;
 
+
+    @Autowired
+    SlotRepository slotRepository;
+
+    @Autowired
+    SpaBedRepository spaBedRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
     String usingStatus = "2";
 
     @Override
@@ -601,57 +611,84 @@ public class BillServiceImpl implements BillService {
             Font fontTitleTable = FontFactory.getFont(FontFactory.TIMES_ROMAN);
             fontTitleTable.setColor(Color.WHITE);
             fontTitleTable.setSize(15);
-            Table table = new Table(3, 4);
+            Table table = new Table(5, 4);
             table.setPadding(5f);
+            table.setWidth(100f);
             table.setBorderColor(Color.GRAY);
             if ("service".equalsIgnoreCase(itemType)) {
                 Cell serviceCell = new Cell(new Phrase("Service", fontTitleTable));
-                serviceCell.setWidth(200f);
                 serviceCell.setBorderColor(Color.GRAY);
                 serviceCell.setBackgroundColor(Color.PINK);
                 table.addCell(serviceCell);
+                Cell serviceDes =new Cell(new Phrase("Description", fontTitleTable));
+                serviceDes.setBorderColor(Color.GRAY);
+                serviceDes.setBackgroundColor(Color.PINK);
+                table.addCell(serviceDes);
+                Cell duration = new Cell(new Phrase("Duration", fontTitleTable));
+                duration.setBorderColor(Color.GRAY);
+                duration.setBackgroundColor(Color.PINK);
+                table.addCell(duration);
                 Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
-                priceCell.setWidth(200f);
                 priceCell.setBorderColor(Color.GRAY);
                 priceCell.setBackgroundColor(Color.PINK);
                 table.addCell(priceCell);
                 Cell total = new Cell(new Phrase("Total Amount", fontTitleTable));
                 total.setBorderColor(Color.GRAY);
                 total.setBackgroundColor(Color.pink);
-                total.setWidth(200f);
                 table.addCell(total);
                 table.addCell(service.getName());
+                if (service.getDescription().isEmpty() || service.getDescription() == null){
+                    table.addCell("None");
+                }else{
+                    table.addCell(service.getDescription());
+                }
+                table.addCell(service.getDuration().toString());
                 table.addCell(service.getPrice().toString());
                 table.addCell(service.getPrice().toString());
             }
             if ("course".equalsIgnoreCase(itemType)) {
                 Cell courseCell = new Cell(new Phrase("Course", fontTitleTable));
-                courseCell.setWidth(200f);
                 courseCell.setBorderColor(Color.GRAY);
                 courseCell.setBackgroundColor(Color.PINK);
                 table.addCell(courseCell);
+                Cell totalSession = new Cell(new Phrase("Total Session", fontTitleTable));
+                totalSession.setBorderColor(Color.GRAY);
+                totalSession.setBackgroundColor(Color.PINK);
+                table.addCell(totalSession);
+                Cell session = new Cell(new Phrase("Seesion", fontTitleTable));
+                session.setBorderColor(Color.GRAY);
+                session.setBackgroundColor(Color.PINK);
+                table.addCell(session);
                 Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
-                priceCell.setWidth(200f);
                 priceCell.setBorderColor(Color.GRAY);
                 priceCell.setBackgroundColor(Color.PINK);
                 table.addCell(priceCell);
                 Cell total = new Cell(new Phrase("Total Amount", fontTitleTable));
                 total.setBorderColor(Color.GRAY);
                 total.setBackgroundColor(Color.pink);
-                total.setWidth(200f);
                 table.addCell(total);
                 table.addCell(course.getName());
+                table.addCell(course.getTimeOfUse().toString());
+                if (course.getCount() == null){
+                    table.addCell("None");
+                }else{
+                    table.addCell(course.getCount().toString());
+                }
                 table.addCell(course.getPrice().toString());
                 table.addCell(course.getPrice().toString());
+
             }
             document.add(table);
-            Table productTable = new Table(4, addons.size());
+            Table productTable = new Table(5, addons.size());
+            productTable.setWidth(100f);
             Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
             subTitle2.setAlignment(Element.ALIGN_CENTER);
             document.add(subTitle2);
             productTable.setPadding(5);
             Cell productCell = new Cell(new Phrase("Product", fontTitleTable));
             productCell.setBackgroundColor(Color.BLUE);
+            Cell description = new Cell(new Phrase("Description", fontTitleTable));
+            description.setBackgroundColor(Color.BLUE);
             Cell quantityCell = new Cell(new Phrase("Quantity", fontTitleTable));
             quantityCell.setBackgroundColor(Color.BLUE);
             Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
@@ -659,6 +696,7 @@ public class BillServiceImpl implements BillService {
             Cell totalProductAmount = new Cell(new Phrase("Total amount", fontTitleTable));
             totalProductAmount.setBackgroundColor(Color.BLUE);
             productTable.addCell(productCell);
+            productTable.addCell(description);
             productTable.addCell(quantityCell);
             productTable.addCell(priceCell);
             productTable.addCell(totalProductAmount);
@@ -667,6 +705,11 @@ public class BillServiceImpl implements BillService {
                 for (BillDetailDto item : addons
                 ) {
                     productTable.addCell(item.getItem().getName());
+                    if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null){
+                        productTable.addCell("None");
+                    }else{
+                        productTable.addCell(item.getItem().getDescription());
+                    }
                     productTable.addCell(item.getQuantity().toString());
                     productTable.addCell(item.getItem().getPrice().toString());
                     Double totalAmount = item.getQuantity().doubleValue()* item.getItem().getPrice();
@@ -674,12 +717,85 @@ public class BillServiceImpl implements BillService {
                 }
             }
             if (addons.isEmpty()) {
-                productTable.addCell("None");
+                productTable.addCell("");
+                productTable.addCell("");
+                productTable.addCell("");
                 productTable.addCell("");
                 productTable.addCell("");
             }
             document.add(productTable);
             document.add(lineBr);
+
+            Long scheduleId = schedule_bill_mapping_repository.getScheduleByBill(billDto.getId());
+            Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
+
+            if (schedule != null){
+                Slot slot = null;
+                SpaBed bed = null;
+                Users users = null;
+               if (schedule.getSlotId() != null){
+                   slot = slotRepository.findById(schedule.getSlotId()).orElse(null);
+               }
+               if (schedule.getBedId() != null){
+                   bed = spaBedRepository.getSpaBedById(schedule.getBedId());
+               }
+               if (schedule.getTechnicalStaffId() != null){
+                   users = userRepository.getUsersById(schedule.getTechnicalStaffId()).orElse(null);
+               }
+                String scheduleTitle = "Schedule";
+                Paragraph scheduleParagraph = new Paragraph("\n" + scheduleTitle, fontSubTitle);
+                scheduleParagraph.setAlignment(Element.ALIGN_CENTER);
+                document.add(scheduleParagraph);
+                Table scheduleTable = new Table(4,2);
+                scheduleTable.setPadding(5f);
+                scheduleTable.setWidth(100f);
+                String dateCellContent = "Date";
+                String slotCellContent = "Timeline";
+                String bedCellContent = "Bed";
+                String techStaffCellContent = "Technical Staff";
+                Cell dateCell = new Cell(new Phrase(dateCellContent, fontTitleTable));
+                dateCell.setBackgroundColor(Color.ORANGE);
+                Cell slotCell = new Cell(new Phrase(slotCellContent, fontTitleTable));
+                slotCell.setBackgroundColor(Color.ORANGE);
+                Cell bedCell = new Cell(new Phrase(bedCellContent, fontTitleTable));
+                bedCell.setBackgroundColor(Color.ORANGE);
+                Cell techCell = new Cell(new Phrase(techStaffCellContent, fontTitleTable));
+                techCell.setBackgroundColor(Color.ORANGE);
+                scheduleTable.addCell(dateCell);
+                scheduleTable.addCell(slotCell);
+                scheduleTable.addCell(bedCell);
+                scheduleTable.addCell(techCell);
+
+                scheduleTable.addCell(schedule.getDate().substring(0,10));
+                if (slot != null){
+                    scheduleTable.addCell(slot.getTimeline());
+                }else{
+                    scheduleTable.addCell("");
+                }
+
+                if (bed != null){
+                    scheduleTable.addCell(bed.getName());
+                }else{
+                    scheduleTable.addCell("");
+                }
+
+                if (users != null){
+                    scheduleTable.addCell(users.getName());
+                }else{
+                    scheduleTable.addCell("");
+                }
+
+
+
+                document.add(scheduleTable);
+                document.add(lineBr);
+                document.add(br);
+
+            }
+
+
+
+
             Paragraph footerTitle = new Paragraph( "Payment(VND)", fontSubTitle);
             footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
             Paragraph footerContent = new Paragraph("Price: " + billDto.getPriceBeforeTax()

@@ -20,4 +20,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query(value = "select a.* from schedule a, schedule_branch_mapping b where a.id = b.id_schedule and b.id_branch = ?1", nativeQuery = true)
     List<Schedule> getAll(long longValue);
+
+//    @Query(value = "SELECT s from Schedule")
+//    Schedule getScheduleByCourseCustomer(Long courseId, Long customerId);
 }
