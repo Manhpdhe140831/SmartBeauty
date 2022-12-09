@@ -150,8 +150,6 @@ const InvoiceCreate = ({
         {pricingRender(useFormInvoice, addons)}
       </div>
       {footerRender && footerRender(formState)}
-
-      {JSON.stringify(invoiceCreateSchema.safeParse(getValues()))}
     </form>
   );
 };
