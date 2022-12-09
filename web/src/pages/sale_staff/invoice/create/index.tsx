@@ -169,13 +169,11 @@ const SaleStaffInvoiceCreate: AppPageInterface = () => {
           }
 
           return (
-            item && (
-              <PricingInformation
-                item={item}
-                addons={addons}
-                onChange={onPriceCalculation}
-              />
-            )
+            <PricingInformation
+              item={item}
+              addons={addons}
+              onChange={onPriceCalculation}
+            />
           );
         }}
         footerRender={(a) => (

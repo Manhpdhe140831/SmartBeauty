@@ -51,7 +51,7 @@ const InvoiceCreate = ({
     defaultValues,
   });
 
-  const { reset, control, formState, handleSubmit } = useFormInvoice;
+  const { reset, control, formState, handleSubmit, getValues } = useFormInvoice;
 
   const {
     fields: itemsArray,
@@ -150,6 +150,8 @@ const InvoiceCreate = ({
         {pricingRender(useFormInvoice, addons)}
       </div>
       {footerRender && footerRender(formState)}
+
+      {JSON.stringify(invoiceCreateSchema.safeParse(getValues()))}
     </form>
   );
 };
