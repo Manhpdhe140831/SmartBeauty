@@ -12,7 +12,7 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     Bill getBillById(Long id);
 
-    @Query(value = "SELECT b.* FROM bill b, bill_branch_mapping bbm where b.id = bbm.bill_id and bbm.branch_id = ?1 ORDER BY ?#{#pageable}",
+    @Query(value = "SELECT b.* FROM bill b, bill_branch_mapping bbm where b.id = bbm.bill_id and bbm.branch_id = ?1",
             countQuery = "SELECT count(*) FROM bill b, bill_branch_mapping bbm where b.id = bbm.bill_id and bbm.branch_id = ?1",nativeQuery = true)
     Page<Bill> getAllBill(Long idBranch, Pageable pageable);
 
