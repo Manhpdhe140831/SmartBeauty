@@ -411,13 +411,15 @@ public class BillServiceImpl implements BillService {
                         course = new CourseDto(bill_course_history);
                     }
                 }
-                String itemType = "";
+                String itemType = null;
                 if (course != null) {
                     itemType = "course";
                     return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), course, addons, itemType);
                 } else if (service != null) {
                     itemType = "service";
                     return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service, addons, itemType);
+                } else if(course == null && service ==null){
+                    return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), null, addons, itemType);
                 }
             }
         }
