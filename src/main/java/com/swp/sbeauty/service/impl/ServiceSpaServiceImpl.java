@@ -180,7 +180,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         serviceResponseDto.setData(serviceDtos);
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setTotalElement(page.getTotalElements());
-        serviceResponseDto.setPageIndex(pageNo);
+        serviceResponseDto.setPageIndex(pageNo+1);
         return serviceResponseDto;
     }
 

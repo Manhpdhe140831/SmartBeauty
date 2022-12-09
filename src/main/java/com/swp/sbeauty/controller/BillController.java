@@ -33,7 +33,8 @@ public class BillController {
     @GetMapping("/bill")
     public ResponseEntity<?> getAllBill(@RequestHeader("Authorization") String authHeader,
                                         @RequestParam(value = "page", required = false, defaultValue = "1") int page
-            , @RequestParam(value = "pageSize", required = false) int pageSize) {
+            , @RequestParam(value = "pageSize", required = false) int pageSize
+            , @RequestParam(value = "name", required = false) String name) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         if (temp != null) {
             String id = temp.get("id").toString();
@@ -42,9 +43,14 @@ public class BillController {
                 return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
             } else {
                 Long idCheck = Long.parseLong(id);
-                Pageable p = PageRequest.of(page, pageSize);
-                BillResponseDto billResponseDto = billService.getBills(idCheck, page - 1, pageSize);
-                return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
+                if(name == null) {
+                    Pageable p = PageRequest.of(page, pageSize);
+                    BillResponseDto billResponseDto = billService.getBills(idCheck, page - 1, pageSize);
+                    return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
+                }else {
+                    BillResponseDto billResponseDto = billService.getBillAndSearch(idCheck,name, page - 1, pageSize);
+                    return new ResponseEntity<>(billResponseDto, HttpStatus.OK);
+                }
             }
         } else {
             return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);

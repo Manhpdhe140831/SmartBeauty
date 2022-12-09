@@ -17,7 +17,7 @@ import java.util.List;
 public interface BillService {
 
     public BillResponseDto getBills(Long idCheck,int offSet, int pageSize);
-
+    public BillResponseDto getBillAndSearch(Long idCheck,String keyword,int offSet, int pageSize);
     public BillResponseDto getBillsByCustomer(int offSet, int pageSize, Long id);
 
     public BillDto getBillById(Long id);
