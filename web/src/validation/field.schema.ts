@@ -77,6 +77,9 @@ export const refineSaleSchema = <
 >(
   schema: T
 ): T => {
+  const startOfToday = dayjs(new Date()).startOf("date").subtract(1, "second");
+  const endOfToday = dayjs(new Date()).endOf("date").add(1, "second");
+
   return (
     schema
       .refine(
@@ -92,13 +95,19 @@ export const refineSaleSchema = <
       // Refine time end sale
       .refine(
         ({ discountEnd, discountStart }) => {
-          if (discountEnd && dayjs(discountEnd).isBefore(new Date())) {
+          debugger;
+          if (
+            discountEnd &&
+            dayjs(discountEnd).endOf("date").isBefore(startOfToday)
+          ) {
             // sale end date cannot start before today.
             return false;
           }
           if (discountEnd && discountStart) {
             // if both dates are available, discountEnd must after discountStart.
-            return dayjs(discountEnd).isAfter(discountStart);
+            return dayjs(discountEnd)
+              .endOf("date")
+              .isAfter(dayjs(discountStart).startOf("date"));
           }
 
           return true;
@@ -111,7 +120,8 @@ export const refineSaleSchema = <
       )
       .refine(
         ({ discountStart }) =>
-          !discountStart || dayjs(discountStart).isAfter(new Date()),
+          !discountStart ||
+          dayjs(discountStart).startOf("date").isAfter(startOfToday),
         {
           path: ["discountStart"],
           message: "Start date must be after today date!",
