@@ -888,8 +888,7 @@ public class BillServiceImpl implements BillService {
             }
 
 
-
-
+            
             Paragraph footerTitle = new Paragraph( "Payment(VND)", fontSubTitle);
             footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
             Paragraph footerContent = new Paragraph("Price: " + billDto.getPriceBeforeTax()
