@@ -129,12 +129,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto getAllCustomer(Long idCheck, int pageNo, int pageSize) {
+    public CustomerResponseDto getAllCustomer(int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         CustomerResponseDto customerResponseDto = new CustomerResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
-        Page<Customer> page = customerRepository.getAllCustomer(idBranch, pageable);
+        //Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
+        //Page<Customer> page = customerRepository.getAllCustomer(idBranch, pageable);
+        Page<Customer> page = customerRepository.getAllCustomer(pageable);
         List<Customer> customers = page.getContent();
         List<CustomerDto> customerDtos = new ArrayList<>();
         for (Customer customer : customers) {
@@ -151,10 +152,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto getCustomerAndSearch(Long idCheck, String name, String phone, int pageNo, int pageSize) {
+    public CustomerResponseDto getCustomerAndSearch( String name, int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
-        Page<Customer> page = customerRepository.searchListWithField(idBranch, name, phone, pageable);
+        //Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
+        Page<Customer> page = customerRepository.searchListWithField(name, pageable);
         ModelMapper mapper = new ModelMapper();
         CustomerResponseDto customerResponseDto = new CustomerResponseDto();
         List<Customer> customers = page.getContent();

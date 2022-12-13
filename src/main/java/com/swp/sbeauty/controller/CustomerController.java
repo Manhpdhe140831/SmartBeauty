@@ -64,7 +64,6 @@ public class CustomerController {
                                                     @RequestParam(value = "page", required = false, defaultValue = "1") int page
             , @RequestParam(value = "pageSize", required = false) int pageSize
             , @RequestParam(value = "name", required = false) String name
-            , @RequestParam(value = "phone", required = false) String phone
     ) {
 
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
@@ -75,11 +74,11 @@ public class CustomerController {
                 return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
             } else {
                 Long idCheck = Long.parseLong(id);
-                if (name == null && phone == null) {
-                    CustomerResponseDto customerResponseDto = customerService.getAllCustomer(idCheck, page - 1, pageSize);
+                if (name == null) {
+                    CustomerResponseDto customerResponseDto = customerService.getAllCustomer(page - 1, pageSize);
                     return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
                 } else {
-                    CustomerResponseDto customerResponseDto = customerService.getCustomerAndSearch(idCheck, name, phone, page - 1, pageSize);
+                    CustomerResponseDto customerResponseDto = customerService.getCustomerAndSearch( name, page - 1, pageSize);
                     return new ResponseEntity<>(customerResponseDto, HttpStatus.OK);
                 }
             }

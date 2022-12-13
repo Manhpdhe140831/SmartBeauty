@@ -11,8 +11,8 @@ public interface CustomerService {
     String validateCustomer(String phone);
     Boolean saveCustomer(CustomerDto customerDto, String authHeader);
     Boolean updateCustomer(CustomerDto customerDto);
-    CustomerResponseDto getAllCustomer(Long idCheck,int pageNo, int pageSize);
-    CustomerResponseDto getCustomerAndSearch(Long idCheck,String name, String phone, int pageNo, int pageSize);
+    CustomerResponseDto getAllCustomer(int pageNo, int pageSize);
+    CustomerResponseDto getCustomerAndSearch(String name, int pageNo, int pageSize);
 
     List<CustomerDto> getCustomerByKeyword (Long idCheck, String keyword);
 }
