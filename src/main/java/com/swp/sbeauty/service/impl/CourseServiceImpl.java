@@ -200,11 +200,12 @@ public class CourseServiceImpl implements CourseService {
             if (description != null) {
                 course.setDescription(description);
             }
-            List<Course_Service_Mapping> listMapping = course_service_mapping_repository.getMappingById(id);
-            for (Course_Service_Mapping mapping : listMapping) {
-                course_service_mapping_repository.deleteById(mapping.getId());
-            }
+
             if (services != null) {
+                List<Course_Service_Mapping> listMapping = course_service_mapping_repository.getMappingById(id);
+                for (Course_Service_Mapping mapping : listMapping) {
+                    course_service_mapping_repository.deleteById(mapping.getId());
+                }
                 for (int i = 0; i < services.length; i++) {
                     Course_Service_Mapping course_service_mapping = new Course_Service_Mapping(course.getId(), Long.parseLong(services[i]));
                     course_service_mapping_repository.save(course_service_mapping);

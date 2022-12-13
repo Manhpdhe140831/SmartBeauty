@@ -119,7 +119,7 @@ const ManageManager: AppPageInterface = () => {
           color={"green"}
           onClick={() => openModal("create")}
         >
-          New Account
+          Tạo tài khoản
         </Button>
 
         {modal && modal.mode === "create" && (

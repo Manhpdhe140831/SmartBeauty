@@ -63,11 +63,11 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
     criteriaMode: "all",
     defaultValues: data
       ? {
-          ...data,
-          dateOfBirth: data.dateOfBirth
-            ? dayjs(data.dateOfBirth).toDate()
-            : undefined,
-        }
+        ...data,
+        dateOfBirth: data.dateOfBirth
+          ? dayjs(data.dateOfBirth).toDate()
+          : undefined,
+      }
       : undefined,
   });
 
@@ -159,7 +159,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
             <Input.Wrapper
               label={
                 <Text color={"dimmed"} size={"sm"}>
-                  Phone Number{" "}
+                  Số điện thoại{" "}
                   {readonly ? "" : <span className="text-red-500">*</span>}
                 </Text>
               }

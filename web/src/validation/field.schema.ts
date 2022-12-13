@@ -95,7 +95,6 @@ export const refineSaleSchema = <
       // Refine time end sale
       .refine(
         ({ discountEnd, discountStart }) => {
-          debugger;
           if (
             discountEnd &&
             dayjs(discountEnd).endOf("date").isBefore(startOfToday)

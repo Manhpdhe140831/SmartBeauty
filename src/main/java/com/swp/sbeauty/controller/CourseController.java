@@ -76,7 +76,7 @@ public class CourseController {
     public ResponseEntity<?> updateCourse(
             @RequestParam("id") Long id,
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "price", required = false, defaultValue = "0") Double price,
+            @RequestParam(value = "price", required = false) Double price,
             @RequestParam(value = "duration", required = false) Integer duration,
             @RequestParam(value = "discountStart", required = false) String discountStart,
             @RequestParam(value = "discountEnd", required = false) String discountEnd,

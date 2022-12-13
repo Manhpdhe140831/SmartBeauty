@@ -55,19 +55,19 @@ const ServiceDetailDialog: FC<
     defaultValues:
       mode === "view" && data
         ? {
-            ...data,
-            discountStart: data.discountStart
-              ? dayjs(data.discountStart).toDate()
-              : null,
-            discountEnd: data.discountEnd
-              ? dayjs(data.discountEnd).toDate()
-              : null,
-            discountPercent: data.discountPercent ?? null,
-            products: data.products.map((p) => ({
-              productId: p.product.id,
-              usage: p.usage,
-            })),
-          }
+          ...data,
+          discountStart: data.discountStart
+            ? dayjs(data.discountStart).toDate()
+            : null,
+          discountEnd: data.discountEnd
+            ? dayjs(data.discountEnd).toDate()
+            : null,
+          discountPercent: data.discountPercent ?? null,
+          products: data.products.map((p) => ({
+            productId: p.product.id,
+            usage: p.usage,
+          })),
+        }
         : undefined,
   });
 
@@ -96,15 +96,14 @@ const ServiceDetailDialog: FC<
       padding={0}
     >
       <fieldset
-        className={`rounded-[4px] border-2 ${
-          mode === "view" && isDirty
-            ? "border-yellow-600"
-            : "border-transparent"
-        }`}
+        className={`rounded-[4px] border-2 ${mode === "view" && isDirty
+          ? "border-yellow-600"
+          : "border-transparent"
+          }`}
         disabled={readonly}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
-          {mode === "view" ? "Chi tiết Liệu Trình" : "Tạo Liệu Trình"}
+          {mode === "view" ? "Chi tiết Dịch vụ" : "Tạo Dịch vụ"}
         </h2>
 
         <form
@@ -267,8 +266,7 @@ const ServiceDetailDialog: FC<
               Minh họa dịch vụ <span className="text-red-500">*</span>
             </label>
             <small className="mb-1 text-[12px] leading-tight text-gray-400">
-              The image must be less than 5MB, in *.PNG, *.JPEG, or *.WEBP
-              format.
+              Hình ảnh phải nhỏ hơn 5 MB, ở định dạng *.PNG, *.JPEG hoặc *.WEBP.
             </small>
             <Controller
               name={"image"}
@@ -313,10 +311,10 @@ const ServiceDetailDialog: FC<
                   parser={parserNumberInput}
                   formatter={formatterNumberInput}
                   rightSection={<span className={"text-xs"}>VND</span>}
-                  {...stateInputProps("Product Price", readonly, {
+                  {...stateInputProps("Giá sản phẩm", readonly, {
                     required: true,
                     variant: "default",
-                    placeholder: "price of the product...",
+                    placeholder: "giá của sản phẩm...",
                   })}
                 />
               )}
@@ -331,9 +329,9 @@ const ServiceDetailDialog: FC<
                 "mb-2 select-none border-l pl-2 text-lg font-semibold uppercase text-gray-500"
               }
             >
-              Products
+              Sản phẩm
               <small className={"block w-full text-xs text-gray-400"}>
-                Product included in the service
+                Sản phẩm bao gồm trong dịch vụ
               </small>
             </h2>
             <Table className={"table-fixed"}>
@@ -365,7 +363,7 @@ const ServiceDetailDialog: FC<
                         color={"green"}
                         fullWidth
                       >
-                        Product
+                        Thêm sản phẩm
                       </Button>
                     )}
                   </td>
