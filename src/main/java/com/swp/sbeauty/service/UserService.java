@@ -26,7 +26,9 @@ public interface UserService {
 
     List<UserDto> getAllManager();
     UserResponse getUserByManager(Integer idCheck, int pageNo, int pageSize);
+    UserResponse getUserByManagerAndSearch(Integer idCheck,String name, int pageNo, int pageSize);
     UserResponse getAllUser(int pageNo, int pageSize);
+    UserResponse getAllUserByAdminAndSearch(String name,int pageNo, int pageSize);
 
     Boolean saveUser(MultipartFile image, String name, String email, String phone, String dateOfBirth, String gender, String address, String password,String role, String roleCheck, Integer idcheck);
 

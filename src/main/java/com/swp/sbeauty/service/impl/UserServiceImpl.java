@@ -355,11 +355,62 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getUserByManagerAndSearch(Integer idCheck, String name, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        UserResponse userResponse = new UserResponse();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Integer idBranch = branchRepository.getIdBranchByManager(idCheck);
+        Page<Users> page = userRepository.getAllUserByManagerAndSearch(idBranch,name, pageable);
+        List<UserDto> dtos = page
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f ->
+                {
+                    f.setPassword("");
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        List<UserDto> pageResult = new ArrayList<>(dtos);
+        userResponse.setData(pageResult);
+        userResponse.setTotalElement(page.getTotalElements());
+        userResponse.setTotalPage(page.getTotalPages());
+        userResponse.setPageIndex(pageNo + 1);
+        return userResponse;
+    }
+
+    @Override
     public UserResponse getAllUser(int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         UserResponse userResponse = new UserResponse();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Users> page = userRepository.getAllUserByAdmin(pageable);
+        List<UserDto> dtos = page
+                .stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+        dtos.stream().forEach(f ->
+                {
+                    f.setPassword("");
+                    f.setRole(f.getRoles().stream().collect(Collectors.toList()).get(0).getName());
+                    f.setRoles(null);
+                }
+        );
+        List<UserDto> pageResult = new ArrayList<>(dtos);
+        userResponse.setData(pageResult);
+        userResponse.setTotalElement(page.getTotalElements());
+        userResponse.setTotalPage(page.getTotalPages());
+        userResponse.setPageIndex(pageNo + 1);
+        return userResponse;
+    }
+
+    @Override
+    public UserResponse getAllUserByAdminAndSearch(String name, int pageNo, int pageSize) {
+        ModelMapper mapper = new ModelMapper();
+        UserResponse userResponse = new UserResponse();
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Users> page = userRepository.getAllUserByAdminAndSearch(name,pageable);
         List<UserDto> dtos = page
                 .stream()
                 .map(user -> mapper.map(user, UserDto.class))

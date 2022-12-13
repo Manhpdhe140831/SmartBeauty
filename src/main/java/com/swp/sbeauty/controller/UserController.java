@@ -156,7 +156,8 @@ public class UserController {
     @GetMapping("/user")
     private ResponseEntity<?> getAllUserByAuthor(@RequestParam(value = "page", required = false, defaultValue = "1") int page
             , @RequestParam(value = "pageSize", required = false) int pageSize
-            , @RequestHeader("Authorization") String authHeader) {
+            , @RequestHeader("Authorization") String authHeader
+            , @RequestParam(value = "name", required = false) String name) {
         Page<UserDto> getAllUser;
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         if (temp != null) {
@@ -167,11 +168,21 @@ public class UserController {
             } else {
                 Integer idcheck = Integer.parseInt(temp.get("id").toString());
                 if (role.equalsIgnoreCase("admin")) {
-                    UserResponse userResponse = userService.getAllUser(page - 1, pageSize);
-                    return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                    if(name == null) {
+                        UserResponse userResponse = userService.getAllUser(page - 1, pageSize);
+                        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                    }else {
+                        UserResponse userResponse = userService.getAllUserByAdminAndSearch(name,page - 1, pageSize);
+                        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                    }
                 } else if (role.equalsIgnoreCase("manager")) {
-                    UserResponse userResponse = userService.getUserByManager(idcheck, page - 1, pageSize);
-                    return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                    if(name == null) {
+                        UserResponse userResponse = userService.getUserByManager(idcheck, page - 1, pageSize);
+                        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                    }else {
+                        UserResponse userResponse = userService.getUserByManagerAndSearch(idcheck,name,page - 1, pageSize);
+                        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                    }
                 } else {
                     getAllUser = userService.getAllUsers(page, pageSize);
                     return new ResponseEntity<>(getAllUser, HttpStatus.OK);
