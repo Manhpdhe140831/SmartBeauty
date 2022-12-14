@@ -698,10 +698,11 @@ public class BillServiceImpl implements BillService {
             lineBr.setAlignment(Element.ALIGN_CENTER);
             document.add(lineBr);
             document.add(br);
-
-            Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
-            subTitle1.setAlignment(Element.ALIGN_CENTER);
-            document.add(subTitle1);
+            if ("service".equalsIgnoreCase(itemType)||"course".equalsIgnoreCase(itemType)) {
+                Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
+                subTitle1.setAlignment(Element.ALIGN_CENTER);
+                document.add(subTitle1);
+            }
             Font fontTitleTable = FontFactory.getFont(FontFactory.TIMES_ROMAN);
             fontTitleTable.setColor(Color.WHITE);
             fontTitleTable.setSize(15);
@@ -822,8 +823,11 @@ public class BillServiceImpl implements BillService {
         }
             document.add(lineBr);
 
+            Schedule schedule = null;
             Long scheduleId = schedule_bill_mapping_repository.getScheduleByBill(billDto.getId());
-            Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
+            if (scheduleId != null){
+                schedule = scheduleRepository.findById(scheduleId).orElse(null);
+            }
 
             if (schedule != null){
                 Slot slot = null;
