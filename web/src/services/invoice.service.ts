@@ -74,3 +74,17 @@ export async function updateInvoiceStatus(data: InvoiceUpdateEntity) {
     throw error.response?.data;
   }
 }
+
+export async function exportPdf(id: number) {
+  try {
+    const apiResult = await axios.get("/bill/pdf", {
+      params: {
+        id,
+      },
+    });
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}
