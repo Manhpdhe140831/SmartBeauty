@@ -12,11 +12,11 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     Bill getBillById(Long id);
 
-    @Query(value = "SELECT b.* FROM bill b, bill_branch_mapping bbm where b.id = bbm.bill_id and bbm.branch_id = ?1",
+    @Query(value = "SELECT b.* FROM bill b, bill_branch_mapping bbm where b.id = bbm.bill_id and bbm.branch_id = ?1 order by b.create_date desc",
             countQuery = "SELECT count(*) FROM bill b, bill_branch_mapping bbm where b.id = bbm.bill_id and bbm.branch_id = ?1",nativeQuery = true)
     Page<Bill> getAllBill(Long idBranch, Pageable pageable);
 
-    @Query(value = "select b.* from Bill b, Bill_Customer_Mapping bcm, customer_branch_mapping cbm, customer c  where bcm.bill_id = b.id and cbm.id_customer = bcm.customer_id and cbm.id_customer = c.id and cbm.id_branch =?1 and c.name like %?2%",
+    @Query(value = "select b.* from Bill b, Bill_Customer_Mapping bcm, customer_branch_mapping cbm, customer c  where bcm.bill_id = b.id and cbm.id_customer = bcm.customer_id and cbm.id_customer = c.id and cbm.id_branch =?1 and c.name like %?2% order by b.create_date desc",
             countQuery = "SELECT count(*) from Bill b, Bill_Customer_Mapping bcm, customer_branch_mapping cbm, customer c  where bcm.bill_id = b.id and cbm.id_customer = bcm.customer_id and cbm.id_customer = c.id and cbm.id_branch =?1 and c.name like %?2%",nativeQuery = true)
     Page<Bill> getBillAndSearch(Long idBranch,String keyword, Pageable pageable);
 

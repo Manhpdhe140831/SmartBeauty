@@ -33,7 +33,7 @@ public class BillController {
     @GetMapping("/bill")
     public ResponseEntity<?> getAllBill(@RequestHeader("Authorization") String authHeader,
                                         @RequestParam(value = "page", required = false, defaultValue = "1") int page
-            , @RequestParam(value = "pageSize", required = false) int pageSize
+            , @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize
             , @RequestParam(value = "name", required = false) String name) {
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         if (temp != null) {

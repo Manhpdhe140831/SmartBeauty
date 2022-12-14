@@ -636,7 +636,7 @@ public class BillServiceImpl implements BillService {
             fontTitleCustomer.setSize(13);
             Table tableHeader = new Table(2);
             Cell cellHeaderTitle = new Cell(new Phrase("Invoice Order", fontTitle));
-            Cell cellHeaderBranch = new Cell(new Paragraph("Sbeauty" + "\n" + "Branch Name: "+billDto.getBranch().getName() + "\n" +"Phone Number: "+ billDto.getBranch().getPhone() + "\n" +"Address: "+ billDto.getBranch().getAddress(),fontPar));
+            Cell cellHeaderBranch = new Cell(new Paragraph("Sbeauty" + "\n" + "Branch Name: " + billDto.getBranch().getName() + "\n" + "Phone Number: " + billDto.getBranch().getPhone() + "\n" + "Address: " + billDto.getBranch().getAddress(), fontPar));
             cellHeaderTitle.setBackgroundColor(Color.LIGHT_GRAY);
             cellHeaderTitle.setVerticalAlignment(VerticalAlignment.CENTER);
             cellHeaderTitle.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -714,7 +714,7 @@ public class BillServiceImpl implements BillService {
                 serviceCell.setBorderColor(Color.GRAY);
                 serviceCell.setBackgroundColor(Color.PINK);
                 table.addCell(serviceCell);
-                Cell serviceDes =new Cell(new Phrase("Description", fontTitleTable));
+                Cell serviceDes = new Cell(new Phrase("Description", fontTitleTable));
                 serviceDes.setBorderColor(Color.GRAY);
                 serviceDes.setBackgroundColor(Color.PINK);
                 table.addCell(serviceDes);
@@ -731,9 +731,9 @@ public class BillServiceImpl implements BillService {
                 total.setBackgroundColor(Color.pink);
                 table.addCell(total);
                 table.addCell(service.getName());
-                if (service.getDescription().isEmpty() || service.getDescription() == null){
+                if (service.getDescription().isEmpty() || service.getDescription() == null) {
                     table.addCell("None");
-                }else{
+                } else {
                     table.addCell(service.getDescription());
                 }
                 table.addCell(service.getDuration().toString());
@@ -763,9 +763,9 @@ public class BillServiceImpl implements BillService {
                 table.addCell(total);
                 table.addCell(course.getName());
                 table.addCell(course.getTimeOfUse().toString());
-                if (course.getCount() == null){
+                if (course.getCount() == null) {
                     table.addCell("None");
-                }else{
+                } else {
                     table.addCell(course.getCount().toString());
                 }
                 table.addCell(course.getPrice().toString());
@@ -773,6 +773,7 @@ public class BillServiceImpl implements BillService {
 
             }
             document.add(table);
+            if (!addons.isEmpty()){
             Table productTable = new Table(5, addons.size());
             productTable.setWidth(100f);
             Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
@@ -799,14 +800,14 @@ public class BillServiceImpl implements BillService {
                 for (BillDetailDto item : addons
                 ) {
                     productTable.addCell(item.getItem().getName());
-                    if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null){
+                    if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null) {
                         productTable.addCell("None");
-                    }else{
+                    } else {
                         productTable.addCell(item.getItem().getDescription());
                     }
                     productTable.addCell(item.getQuantity().toString());
                     productTable.addCell(item.getItem().getPrice().toString());
-                    Double totalAmount = item.getQuantity().doubleValue()* item.getItem().getPrice();
+                    Double totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
                     productTable.addCell(totalAmount.toString());
                 }
             }
@@ -818,6 +819,7 @@ public class BillServiceImpl implements BillService {
                 productTable.addCell("");
             }
             document.add(productTable);
+        }
             document.add(lineBr);
 
             Long scheduleId = schedule_bill_mapping_repository.getScheduleByBill(billDto.getId());
