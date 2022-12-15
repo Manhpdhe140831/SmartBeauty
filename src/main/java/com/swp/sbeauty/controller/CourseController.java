@@ -85,12 +85,11 @@ public class CourseController {
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "services[]", required = false) String[] services
     ) {
-        String check = service.validateCourse(name, discountStart, discountEnd, discountPercent);
-        if (check == "") {
-            Boolean result = service.update(id, name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+        String result = service.update(id, name, price, duration, discountStart, discountEnd, discountPercent, image, description, services);
+        if (result == null) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseDto<>(400, result), HttpStatus.BAD_REQUEST);
         }
     }
 

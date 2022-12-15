@@ -21,7 +21,7 @@ public interface CourseService {
 
     CourseResponseDto getAll(int pageNo, int pageSize);
 
-    Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services);
+    String update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services);
 
     CourseDto getCourseById(Long id);
 

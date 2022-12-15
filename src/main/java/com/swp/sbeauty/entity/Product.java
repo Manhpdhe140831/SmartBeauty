@@ -22,14 +22,14 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private double price;
+    private Double price;
     private String description;
     private String image;
     private String discountStart;
     private String discountEnd;
-    private double discountPercent;
+    private Double discountPercent;
     private String unit;
-    private int dose;
+    private Integer dose;
 
 }
 

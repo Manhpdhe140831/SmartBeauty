@@ -20,7 +20,7 @@ public interface ProductService {
 
     ProductResponseDto getAllProduct(int pageNo,int pageSize);
 
-    Boolean updateProduct(Long id,String name, Double price, String description, MultipartFile image  , String discountStart, String discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
+    String updateProduct(Long id,String name, Double price, String description, MultipartFile image  , String discountStart, String discountEnd, Double discountPercent , Long supplier, String unit, Integer dose);
 
     Boolean saveProduct(String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose);
 

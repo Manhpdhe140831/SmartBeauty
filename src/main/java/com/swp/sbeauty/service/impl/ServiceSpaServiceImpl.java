@@ -237,20 +237,34 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     }
 
     @Override
-    public Boolean update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, MultipartFile image, String products) {
+    public String update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, MultipartFile image, String products) {
         try {
+            String check = null;
             Service service = serviceRepository.getServiceById(id);
+            if(service.getDiscountPercent() == null){
+                if(discountStart != null && discountEnd !=null && discountPercent!=null){
+                    service.setDiscountStart(discountStart);
+                    service.setDiscountEnd(discountEnd);
+                    service.setDiscountPercent(discountPercent);
+                } else {
+                    check = "Thông tin khuyến mại không đủ";
+                }
+            } else {
+                if(discountStart != null && discountEnd == null){
+                    check = "Thông tin khuyến mại không đủ";
+                } else if (discountStart != null && discountEnd != null){
+                    service.setDiscountStart(discountStart);
+                    service.setDiscountEnd(discountEnd);
+                }
+                if(discountEnd != null){
+                    service.setDiscountEnd(discountEnd);
+                }
+                if(discountPercent != null){
+                    service.setDiscountPercent(discountPercent);
+                }
+            }
             if (name != null) {
                 service.setName(name);
-            }
-            if (discountStart != null) {
-                service.setDiscountStart(discountStart);
-            }
-            if (discountEnd != null) {
-                service.setDiscountEnd(discountEnd);
-            }
-            if (discountPercent != null) {
-                service.setDiscountPercent(discountPercent);
             }
             if (price != null) {
                 service.setPrice(price);
@@ -295,11 +309,11 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                     service_product_mapping_repository.save(new Service_Product_mapping(id, mapping.getProductId(), mapping.getUsage()));
                 }
             }
+            return check;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "false";
         }
-        return true;
     }
 }
 

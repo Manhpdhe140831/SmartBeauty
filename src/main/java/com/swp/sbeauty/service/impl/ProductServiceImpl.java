@@ -193,10 +193,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Boolean updateProduct(Long id, String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
+    public String updateProduct(Long id, String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose) {
         try {
-
             Product product = productRepository.getProductById(id);
+            String check = null;
             if (product != null) {
                 if (name != null) {
                     product.setName(name);
@@ -228,20 +228,11 @@ public class ProductServiceImpl implements ProductService {
                     }
                     product.setImage(image.getOriginalFilename());
                 }
-                if (discountStart != null) {
-                    product.setDiscountStart(discountStart);
-                }
-                if (discountEnd != null) {
-                    product.setDiscountEnd(discountEnd);
-                }
                 if (unit != null) {
                     product.setUnit(unit);
                 }
                 if (dose != null) {
                     product.setDose(dose);
-                }
-                if (discountPercent != null) {
-                    product.setDiscountPercent(discountPercent);
                 }
                 if (supplier != null) {
                     Product_Supplier_Mapping product_supplier_old = product_supplier_repository.getProductBySupplier(id);
@@ -249,15 +240,35 @@ public class ProductServiceImpl implements ProductService {
                     Product_Supplier_Mapping product_supplier_mapping = new Product_Supplier_Mapping(id, supplier);
                     product_supplier_repository.save(product_supplier_mapping);
                 }
-                return true;
+                if(product.getDiscountPercent() == null){
+                    if(discountStart != null && discountEnd !=null && discountPercent!=null){
+                        product.setDiscountStart(discountStart);
+                        product.setDiscountEnd(discountEnd);
+                        product.setDiscountPercent(discountPercent);
+                    } else {
+                        check = "Thông tin khuyến mại không đủ";
+                    }
+                } else {
+                    if(discountStart != null && discountEnd == null){
+                        check = "Thông tin khuyến mại không đủ";
+                    } else if (discountStart != null && discountEnd != null){
+                        product.setDiscountStart(discountStart);
+                        product.setDiscountEnd(discountEnd);
+                    }
+                    if(discountEnd != null){
+                        product.setDiscountEnd(discountEnd);
+                    }
+                    if(discountPercent != null){
+                        product.setDiscountPercent(discountPercent);
+                    }
+                }
+                return check;
             } else {
-                return false;
+                return check;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return "false";
         }
-        return false;
     }
-
-
 }

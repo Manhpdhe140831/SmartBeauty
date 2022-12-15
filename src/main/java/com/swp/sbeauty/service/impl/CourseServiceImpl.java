@@ -155,8 +155,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Boolean update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services) {
+    public String update(Long id, String name, Double price, Integer duration, String discountStart, String discountEnd, Double discountPercent, MultipartFile image, String description, String[] services) {
         try {
+            String check = null;
             Course course = courseRepository.getCourseById(id);
             if (name != null) {
                 course.setName(name);
@@ -167,14 +168,27 @@ public class CourseServiceImpl implements CourseService {
             if (duration != null) {
                 course.setDuration(duration);
             }
-            if (discountStart != null) {
-                course.setDiscountStart(discountStart);
-            }
-            if (discountEnd != null) {
-                course.setDiscountEnd(discountEnd);
-            }
-            if (discountPercent != null) {
-                course.setDiscountPercent(discountPercent);
+            if(course.getDiscountPercent() == null){
+                if(discountStart != null && discountEnd !=null && discountPercent!=null){
+                    course.setDiscountStart(discountStart);
+                    course.setDiscountEnd(discountEnd);
+                    course.setDiscountPercent(discountPercent);
+                } else {
+                    check = "Thông tin khuyến mại không đủ";
+                }
+            } else {
+                if(discountStart != null && discountEnd == null){
+                    check = "Thông tin khuyến mại không đủ";
+                } else if (discountStart != null && discountEnd != null){
+                    course.setDiscountStart(discountStart);
+                    course.setDiscountEnd(discountEnd);
+                }
+                if(discountEnd != null){
+                    course.setDiscountEnd(discountEnd);
+                }
+                if(discountPercent != null){
+                    course.setDiscountPercent(discountPercent);
+                }
             }
             if (image != null) {
                 Path staticPath = Paths.get("static");
@@ -211,9 +225,9 @@ public class CourseServiceImpl implements CourseService {
                     course_service_mapping_repository.save(course_service_mapping);
                 }
             }
-            return true;
+            return check;
         } catch (Exception e) {
-            return false;
+            return "false";
         }
     }
 
