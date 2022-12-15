@@ -11,8 +11,11 @@ import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import CourseRowTable from "../../admin/manage-treatment-courses/_partial/course-row.table";
 import CourseDetailDialog from "../../admin/manage-treatment-courses/_course-detail.dialog";
 import { USER_ROLE } from "../../../const/user-role.const";
+import { ChangeEvent } from "react";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } =
     useDialogDetailRow<CourseModel<ServiceModel>>();
   const {
@@ -24,7 +27,11 @@ const Index: AppPageInterface = () => {
 
   const { data: course, isLoading } = useListCourseQuery(
     currentPage,
-    updatePagination
+    updatePagination,
+    {
+      pageSize,
+      searchQuery: searchKey ? { name: searchKey } : undefined,
+    }
   );
 
   return (
@@ -35,6 +42,9 @@ const Index: AppPageInterface = () => {
           placeholder={"tên liệu trình..."}
           type={"text"}
           className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
         />
       </div>
 

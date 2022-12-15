@@ -33,23 +33,18 @@ const Index: AppPageInterface = () => {
   return (
     <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
-        <Input
+        {/*Search by name*/}
+        <TextInput
           icon={<IconSearch />}
-          placeholder={"tên dịch vụ..."}
+          placeholder={"Tên dịch vụ..."}
           type={"text"}
           className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
         />
       </div>
-      {/*Search by name*/}
-      <TextInput
-        icon={<IconSearch />}
-        placeholder={"Tên dịch vụ..."}
-        type={"text"}
-        className="w-56"
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setSearchWord(e.currentTarget.value)
-        }
-      />
+
       <Divider my={8} />
 
       <div className="flex-1">

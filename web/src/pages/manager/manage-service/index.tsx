@@ -8,8 +8,11 @@ import { IconSearch } from "@tabler/icons";
 import ServiceList from "../../_shared/services/service-list";
 import { USER_ROLE } from "../../../const/user-role.const";
 import ServiceDetailDialog from "../../_shared/services/service-detail.dialog";
+import useDebounceHook from "../../../hooks/use-debounce.hook";
+import { ChangeEvent } from "react";
 
 const Index: AppPageInterface = () => {
+  const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
   const { modal, openModal, resetModal } = useDialogDetailRow<ServiceModel>();
   const {
     pageSize,
@@ -20,7 +23,11 @@ const Index: AppPageInterface = () => {
 
   const { data: services, isLoading } = useListServiceQuery(
     currentPage,
-    updatePagination
+    updatePagination,
+    {
+      pageSize,
+      searchQuery: searchKey ? { name: searchKey } : undefined,
+    }
   );
 
   return (
@@ -31,6 +38,9 @@ const Index: AppPageInterface = () => {
           placeholder={"tên dịch vụ..."}
           type={"text"}
           className="w-56"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearchWord(e.currentTarget.value)
+          }
         />
       </div>
 

@@ -39,13 +39,6 @@ const Index: AppPageInterface = () => {
   return (
     <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
-        <Input
-          icon={<IconSearch />}
-          placeholder={"tên liệu trình..."}
-          type={"text"}
-          className="w-56"
-        />
-
         <TextInput
           icon={<IconSearch />}
           placeholder={"Tên liệu trình..."}
