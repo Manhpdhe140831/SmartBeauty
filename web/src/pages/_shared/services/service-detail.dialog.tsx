@@ -55,19 +55,19 @@ const ServiceDetailDialog: FC<
     defaultValues:
       mode === "view" && data
         ? {
-          ...data,
-          discountStart: data.discountStart
-            ? dayjs(data.discountStart).toDate()
-            : null,
-          discountEnd: data.discountEnd
-            ? dayjs(data.discountEnd).toDate()
-            : null,
-          discountPercent: data.discountPercent ?? null,
-          products: data.products.map((p) => ({
-            productId: p.product.id,
-            usage: p.usage,
-          })),
-        }
+            ...data,
+            discountStart: data.discountStart
+              ? dayjs(data.discountStart).toDate()
+              : null,
+            discountEnd: data.discountEnd
+              ? dayjs(data.discountEnd).toDate()
+              : null,
+            discountPercent: data.discountPercent ?? null,
+            products: data.products.map((p) => ({
+              productId: p.product.id,
+              usage: p.usage,
+            })),
+          }
         : undefined,
   });
 
@@ -96,10 +96,11 @@ const ServiceDetailDialog: FC<
       padding={0}
     >
       <fieldset
-        className={`rounded-[4px] border-2 ${mode === "view" && isDirty
-          ? "border-yellow-600"
-          : "border-transparent"
-          }`}
+        className={`rounded-[4px] border-2 ${
+          mode === "view" && isDirty
+            ? "border-yellow-600"
+            : "border-transparent"
+        }`}
         disabled={readonly}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
@@ -277,6 +278,7 @@ const ServiceDetailDialog: FC<
                     field.onChange(f);
                     field.onBlur();
                   }}
+                  defaultSrc={field.value as string}
                   render={(file) => (
                     <Image
                       radius={4}
@@ -376,7 +378,7 @@ const ServiceDetailDialog: FC<
             {!readonly ? (
               <DialogDetailAction
                 mode={mode}
-                isDirty={isDirty}
+                isDirty={isDirty && Object.keys(dirtyFields).length > 0}
                 isValid={isValid}
                 readonly={readonly}
               />

@@ -78,7 +78,6 @@ export const refineSaleSchema = <
   schema: T
 ): T => {
   const startOfToday = dayjs(new Date()).startOf("date").subtract(1, "second");
-  const endOfToday = dayjs(new Date()).endOf("date").add(1, "second");
 
   return (
     schema

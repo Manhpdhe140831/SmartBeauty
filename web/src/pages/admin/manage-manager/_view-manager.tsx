@@ -42,6 +42,14 @@ const ViewManagerDialog: FC<
     })
   );
 
+  const defaultValue = {
+    ...data,
+    dateOfBirth: data.dateOfBirth
+      ? dayjs(data.dateOfBirth).toDate()
+      : undefined,
+    password: undefined,
+  };
+
   const {
     control,
     register,
@@ -53,13 +61,7 @@ const ViewManagerDialog: FC<
     resolver: zodResolver(updateManagerSchema),
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      ...data,
-      dateOfBirth: data.dateOfBirth
-        ? dayjs(data.dateOfBirth).toDate()
-        : undefined,
-      password: undefined,
-    },
+    defaultValues: defaultValue,
   });
 
   const handleReset = (e: FormEvent<HTMLFormElement>) => {
@@ -233,7 +235,7 @@ const ViewManagerDialog: FC<
           <div className="flex justify-end space-x-2">
             <DialogDetailAction
               mode={"view"}
-              isDirty={isDirty}
+              isDirty={isDirty && Object.keys(dirtyFields).length > 0}
               isValid={isValid}
             />
           </div>

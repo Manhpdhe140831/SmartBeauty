@@ -6,7 +6,6 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import Link from "next/link";
 import MaskedInput from "react-text-mask";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -57,7 +56,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid, isDirty, dirtyFields },
   } = useForm<z.infer<typeof createSchema>>({
     resolver: zodResolver(createSchema),
     mode: "onBlur",
@@ -181,6 +180,7 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
               field.onChange(f);
               field.onBlur();
             }}
+            defaultSrc={field.value as string}
             render={(file) => (
               <Avatar
                 radius={4}
@@ -197,7 +197,11 @@ const CreateBranch = ({ onSave }: CreateBranchPropsType) => {
 
       <Divider my={16} />
 
-      <DialogDetailAction mode={"create"} isDirty={isDirty} isValid={isValid} />
+      <DialogDetailAction
+        mode={"create"}
+        isDirty={isDirty && Object.keys(dirtyFields).length > 0}
+        isValid={isValid}
+      />
     </form>
   );
 };

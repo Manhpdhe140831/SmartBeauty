@@ -212,6 +212,7 @@ const CreateManager: FC<
                 field.onChange(f);
                 field.onBlur();
               }}
+              defaultSrc={field.value as string}
               render={(file) => (
                 <Avatar
                   radius={80}
@@ -230,7 +231,7 @@ const CreateManager: FC<
 
         <DialogDetailAction
           mode={"create"}
-          isDirty={isDirty}
+          isDirty={isDirty && Object.keys(dirtyFields).length > 0}
           isValid={isValid}
         />
       </form>

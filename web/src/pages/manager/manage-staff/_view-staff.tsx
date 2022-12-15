@@ -214,7 +214,7 @@ const ViewStaff: FC<ViewStaffPropsType> = ({ onClosed, staffData }) => {
           <div className={"mt-3 flex justify-end"}>
             <DialogDetailAction
               mode={"view"}
-              isDirty={isDirty}
+              isDirty={isDirty && Object.keys(dirtyFields).length > 0}
               isValid={isValid}
             />
           </div>

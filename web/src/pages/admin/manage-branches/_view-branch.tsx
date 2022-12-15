@@ -119,6 +119,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
                 field.onChange(f);
                 field.onBlur();
               }}
+              defaultSrc={field.value as string}
               render={(file) => (
                 <Avatar
                   radius={80}
@@ -203,7 +204,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
         <div className="flex w-full justify-end">
           <DialogDetailAction
             mode={"view"}
-            isDirty={isDirty}
+            isDirty={isDirty && Object.keys(dirtyFields).length > 0}
             isValid={isValid}
           />
         </div>
