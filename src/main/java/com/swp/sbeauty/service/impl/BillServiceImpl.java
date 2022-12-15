@@ -598,6 +598,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public void generator(HttpServletResponse response, Long id) throws IOException {
+        Double totalBillProduct = 0.0;
         BillDto billDto = this.getBillById(id);
         CourseDto course = null;
         ServiceDto service = null;
@@ -696,8 +697,8 @@ public class BillServiceImpl implements BillService {
             document.add(tableCustomer);
             Paragraph lineBr = new Paragraph("----------------------------------------------------------------------------------------------------------------------------------");
             lineBr.setAlignment(Element.ALIGN_CENTER);
-            document.add(lineBr);
-            document.add(br);
+          document.add(lineBr);
+//            document.add(br);
             if ("service".equalsIgnoreCase(itemType)||"course".equalsIgnoreCase(itemType)) {
                 Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
                 subTitle1.setAlignment(Element.ALIGN_CENTER);
@@ -783,7 +784,7 @@ public class BillServiceImpl implements BillService {
             productTable.setPadding(5);
             Cell productCell = new Cell(new Phrase("Product", fontTitleTable));
             productCell.setBackgroundColor(Color.BLUE);
-            Cell description = new Cell(new Phrase("Description", fontTitleTable));
+            Cell description = new Cell(new Phrase("Discount Percent", fontTitleTable));
             description.setBackgroundColor(Color.BLUE);
             Cell quantityCell = new Cell(new Phrase("Quantity", fontTitleTable));
             quantityCell.setBackgroundColor(Color.BLUE);
@@ -804,11 +805,19 @@ public class BillServiceImpl implements BillService {
                     if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null) {
                         productTable.addCell("None");
                     } else {
-                        productTable.addCell(item.getItem().getDescription());
+                        productTable.addCell(item.getItem().getDiscountPercent().toString());
                     }
                     productTable.addCell(item.getQuantity().toString());
                     productTable.addCell(item.getItem().getPrice().toString());
-                    Double totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
+                    Double discountPercent = item.getItem().getDiscountPercent();
+                    Double totalAmount = 0.0;
+                    if (discountPercent.toString().equalsIgnoreCase("0.0")){
+                        totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
+                    }
+                    if (discountPercent != 0.0){
+                        totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice()* (100-discountPercent)*0.01;
+                    }
+                    totalBillProduct += totalAmount;
                     productTable.addCell(totalAmount.toString());
                 }
             }
@@ -889,18 +898,56 @@ public class BillServiceImpl implements BillService {
 
                 document.add(scheduleTable);
                 document.add(lineBr);
-                document.add(br);
+               // document.add(br);
 
+            }
+            Paragraph footerTitle = null;
+            Paragraph footerContent = null;
+
+            if (billDto.getItemType() == null) {
+
+                footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
+                footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
+                footerContent = new Paragraph("Price: " + totalBillProduct.toString()
+                        + "\n" + "Tax: 8%"
+                        + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
+                footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
+            }
+            if (billDto.getItemType().equalsIgnoreCase("service")){
+                footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
+                footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
+                Double totalServiceBill = 0.0;
+                if (service.getDiscountPercent() != null){
+                    totalServiceBill = service.getPrice()*(100.0-service.getDiscountPercent())*0.01;
+                }
+                if (service.getDiscountPercent() == null){
+                    totalServiceBill = service.getPrice();
+                }
+
+                footerContent = new Paragraph("Price: " + totalServiceBill + totalBillProduct
+                        + "\n" + "Tax: 8%"
+                        + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
+                footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
+            }
+
+            if (billDto.getItemType().equalsIgnoreCase("course")){
+                footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
+                footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
+                Double totalCourseBill = 0.0;
+                if (course.getDiscountPercent() != null){
+                    totalCourseBill = course.getPrice()*(100.0-course.getDiscountPercent())*0.01;
+                }
+                if (course.getDiscountPercent() == null){
+                    totalCourseBill = service.getPrice();
+                }
+
+                footerContent = new Paragraph("Price: " + totalCourseBill + totalBillProduct
+                        + "\n" + "Tax: 8%"
+                        + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
+                footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
 
 
-            
-            Paragraph footerTitle = new Paragraph( "Payment(VND)", fontSubTitle);
-            footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
-            Paragraph footerContent = new Paragraph("Price: " + billDto.getPriceBeforeTax()
-                    + "\n" + "Tax: 8%"
-                    + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
-            footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             document.add(footerTitle);
             document.add(footerContent);
 
