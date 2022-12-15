@@ -86,6 +86,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 service.setDescription(description);
             }
             service.setDuration(duration);
+            service = serviceRepository.save(service);
             if (image != null) {
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
@@ -93,13 +94,13 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                     Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                 }
                 Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                        .resolve(imagePath).resolve("service_" + service.getId() + image.getOriginalFilename());
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
-                service.setImage(image.getOriginalFilename());
+                service.setImage("service_" + service.getId() + image.getOriginalFilename());
             }
-            service = serviceRepository.save(service);
+            serviceRepository.save(service);
 
             if (products != null) {
                 ObjectMapper mapper = new ObjectMapper();
@@ -180,7 +181,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         serviceResponseDto.setData(serviceDtos);
         serviceResponseDto.setTotalPage(page.getTotalPages());
         serviceResponseDto.setTotalElement(page.getTotalElements());
-        serviceResponseDto.setPageIndex(pageNo+1);
+        serviceResponseDto.setPageIndex(pageNo + 1);
         return serviceResponseDto;
     }
 
@@ -219,11 +220,11 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         for (Course course : coursess) {
             Boolean check = false;
             for (Bill_Course_History history : listUsing) {
-                if(history.getCourse_id() == course.getId()){
+                if (history.getCourse_id() == course.getId()) {
                     check = true;
                 }
             }
-            if(check == false){
+            if (check == false) {
                 courseDtos.add(new CourseDto(false, course));
             }
         }
@@ -241,25 +242,27 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
         try {
             String check = null;
             Service service = serviceRepository.getServiceById(id);
-            if(service.getDiscountPercent() == null){
-                if(discountStart != null && discountEnd !=null && discountPercent!=null){
+            if (service.getDiscountPercent() == null) {
+                if (discountStart != null && discountEnd != null && discountPercent != null) {
                     service.setDiscountStart(discountStart);
                     service.setDiscountEnd(discountEnd);
                     service.setDiscountPercent(discountPercent);
+                } else if (discountStart == null && discountEnd == null && discountPercent == null) {
+                    check = null;
                 } else {
                     check = "Thông tin khuyến mại không đủ";
                 }
             } else {
-                if(discountStart != null && discountEnd == null){
+                if (discountStart != null && discountEnd == null) {
                     check = "Thông tin khuyến mại không đủ";
-                } else if (discountStart != null && discountEnd != null){
+                } else if (discountStart != null && discountEnd != null) {
                     service.setDiscountStart(discountStart);
                     service.setDiscountEnd(discountEnd);
                 }
-                if(discountEnd != null){
+                if (discountEnd != null) {
                     service.setDiscountEnd(discountEnd);
                 }
-                if(discountPercent != null){
+                if (discountPercent != null) {
                     service.setDiscountPercent(discountPercent);
                 }
             }
@@ -282,7 +285,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                     Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                 }
                 Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                        .resolve(imagePath).resolve("service_" + service.getId() + image.getOriginalFilename());
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
@@ -293,7 +296,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 if (!fileOld.delete()) {
                     throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
                 }
-                service.setImage(image.getOriginalFilename());
+                service.setImage("service_" + service.getId() + image.getOriginalFilename());
             }
             serviceRepository.save(service);
             if (products != null) {

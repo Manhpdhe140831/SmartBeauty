@@ -159,19 +159,6 @@ public class ProductServiceImpl implements ProductService {
             if (description != null) {
                 product.setDescription(description);
             }
-            if (image != null) {
-                Path staticPath = Paths.get("static");
-                Path imagePath = Paths.get("images");
-                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
-                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
-                }
-                Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
-                try (OutputStream os = Files.newOutputStream(file)) {
-                    os.write(image.getBytes());
-                }
-                product.setImage(image.getOriginalFilename());
-            }
             if (discountStart != null) {
                 product.setDiscountStart(discountStart);
             }
@@ -184,6 +171,20 @@ public class ProductServiceImpl implements ProductService {
             product.setUnit(unit);
             product.setDose(dose);
             product = productRepository.save(product);
+            if (image != null) {
+                Path staticPath = Paths.get("static");
+                Path imagePath = Paths.get("images");
+                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+                }
+                Path file = CURRENT_FOLDER.resolve(staticPath)
+                        .resolve(imagePath).resolve("product_" + product.getId() + image.getOriginalFilename());
+                try (OutputStream os = Files.newOutputStream(file)) {
+                    os.write(image.getBytes());
+                }
+                product.setImage("product_" + product.getId() +image.getOriginalFilename());
+            }
+            productRepository.save(product);
             Product_Supplier_Mapping product_supplier_mapping = new Product_Supplier_Mapping(product.getId(), supplier);
             product_supplier_repository.save(product_supplier_mapping);
             return true;
@@ -214,7 +215,7 @@ public class ProductServiceImpl implements ProductService {
                         Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                     }
                     Path file = CURRENT_FOLDER.resolve(staticPath)
-                            .resolve(imagePath).resolve(image.getOriginalFilename());
+                            .resolve(imagePath).resolve("product_" + product.getId() +image.getOriginalFilename());
                     try (OutputStream os = Files.newOutputStream(file)) {
                         os.write(image.getBytes());
                     }
@@ -226,7 +227,7 @@ public class ProductServiceImpl implements ProductService {
                     if (!fileOld.delete()) {
                         throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
                     }
-                    product.setImage(image.getOriginalFilename());
+                    product.setImage("product_" + product.getId() +image.getOriginalFilename());
                 }
                 if (unit != null) {
                     product.setUnit(unit);
@@ -245,6 +246,8 @@ public class ProductServiceImpl implements ProductService {
                         product.setDiscountStart(discountStart);
                         product.setDiscountEnd(discountEnd);
                         product.setDiscountPercent(discountPercent);
+                    } else if (discountStart == null && discountEnd == null && discountPercent == null) {
+                        check = null;
                     } else {
                         check = "Thông tin khuyến mại không đủ";
                     }

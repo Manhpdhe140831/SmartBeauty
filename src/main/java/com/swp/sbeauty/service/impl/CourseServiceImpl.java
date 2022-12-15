@@ -75,6 +75,10 @@ public class CourseServiceImpl implements CourseService {
             if (discountPercent != null) {
                 course.setDiscountPercent(discountPercent);
             }
+            if (description != null) {
+                course.setDescription(description);
+            }
+            course = courseRepository.save(course);
             if (image != null) {
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
@@ -82,16 +86,13 @@ public class CourseServiceImpl implements CourseService {
                     Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                 }
                 Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                        .resolve(imagePath).resolve("course_" + course.getId() + image.getOriginalFilename());
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
-                course.setImage(image.getOriginalFilename());
+                course.setImage("course_" + course.getId() + image.getOriginalFilename());
             }
-            if (description != null) {
-                course.setDescription(description);
-            }
-            course = courseRepository.save(course);
+            courseRepository.save(course);
             if (services != null) {
                 for (int i = 0; i < services.length; i++
                 ) {
@@ -168,25 +169,27 @@ public class CourseServiceImpl implements CourseService {
             if (duration != null) {
                 course.setDuration(duration);
             }
-            if(course.getDiscountPercent() == null){
-                if(discountStart != null && discountEnd !=null && discountPercent!=null){
+            if (course.getDiscountPercent() == null) {
+                if (discountStart != null && discountEnd != null && discountPercent != null) {
                     course.setDiscountStart(discountStart);
                     course.setDiscountEnd(discountEnd);
                     course.setDiscountPercent(discountPercent);
+                } else if (discountStart == null && discountEnd == null && discountPercent == null) {
+                    check = null;
                 } else {
                     check = "Thông tin khuyến mại không đủ";
                 }
             } else {
-                if(discountStart != null && discountEnd == null){
+                if (discountStart != null && discountEnd == null) {
                     check = "Thông tin khuyến mại không đủ";
-                } else if (discountStart != null && discountEnd != null){
+                } else if (discountStart != null && discountEnd != null) {
                     course.setDiscountStart(discountStart);
                     course.setDiscountEnd(discountEnd);
                 }
-                if(discountEnd != null){
+                if (discountEnd != null) {
                     course.setDiscountEnd(discountEnd);
                 }
-                if(discountPercent != null){
+                if (discountPercent != null) {
                     course.setDiscountPercent(discountPercent);
                 }
             }
@@ -197,7 +200,7 @@ public class CourseServiceImpl implements CourseService {
                     Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                 }
                 Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                        .resolve(imagePath).resolve("course_" + course.getId() + image.getOriginalFilename());
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
@@ -209,7 +212,7 @@ public class CourseServiceImpl implements CourseService {
                 if (!fileOld.delete()) {
                     throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
                 }
-                course.setImage(image.getOriginalFilename());
+                course.setImage("course_" + course.getId() + image.getOriginalFilename());
             }
             if (description != null) {
                 course.setDescription(description);
