@@ -35,11 +35,14 @@ const Index: AppPageInterface = () => {
     searchQuery: searchKey ? { name: searchKey } : undefined,
   });
 
-  const arrBtn = (data: any) => {
+  const arrBtn = (data: StaffModel) => {
     return (
-      <div className="flex gap-1" key={data.length}>
-        <StaffViewModalBtn staffData={data} />
-        <StaffCDeleteModalBtn staffData={data} />
+      <div className="flex gap-1" key={data.id}>
+        <StaffViewModalBtn onChanged={(d) => d && refetch()} staffData={data} />
+        <StaffCDeleteModalBtn
+          onChanged={(d) => d && refetch()}
+          staffData={data}
+        />
       </div>
     );
   };

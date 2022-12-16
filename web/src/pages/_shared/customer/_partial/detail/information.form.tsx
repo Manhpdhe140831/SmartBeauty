@@ -63,11 +63,11 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
     criteriaMode: "all",
     defaultValues: data
       ? {
-        ...data,
-        dateOfBirth: data.dateOfBirth
-          ? dayjs(data.dateOfBirth).toDate()
-          : undefined,
-      }
+          ...data,
+          dateOfBirth: data.dateOfBirth
+            ? dayjs(data.dateOfBirth).toDate()
+            : undefined,
+        }
       : undefined,
   });
 
@@ -108,7 +108,6 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               data={[
                 { value: GENDER.male, label: "Male" },
                 { value: GENDER.female, label: "Female" },
-                { value: GENDER.other, label: "other" },
               ]}
               onChange={(e) => {
                 field.onChange(e);
