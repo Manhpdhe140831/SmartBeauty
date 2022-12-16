@@ -51,10 +51,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     Service_Branch_Mapping_Repo service_branch_mapping_repo;
+
     @Autowired
     ModelMapper mapper;
+
     @Autowired
     Bill_Course_History_Repository bill_course_history_repository;
+
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     @Override
@@ -111,7 +114,6 @@ public class CourseServiceImpl implements CourseService {
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Course> page = courseRepository.getListCoursePaginationAndSearch(name, code, pageable);
-
         List<CourseDto> courseDtos = page
                 .stream()
                 .map(course -> mapper.map(course, CourseDto.class))
@@ -205,19 +207,20 @@ public class CourseServiceImpl implements CourseService {
                     os.write(image.getBytes());
                 }
                 //remove old image
-                Path pathOld = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(course.getImage());
+                if(course.getImage()!=null){
+                    Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                            .resolve(imagePath).resolve(course.getImage());
 
-                File fileOld = new File(pathOld.toString());
-                if (!fileOld.delete()) {
-                    throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                    File fileOld = new File(pathOld.toString());
+                    if (!fileOld.delete()) {
+                        throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                    }
                 }
                 course.setImage("course_" + course.getId() + image.getOriginalFilename());
             }
             if (description != null) {
                 course.setDescription(description);
             }
-
             if (services != null) {
                 List<Course_Service_Mapping> listMapping = course_service_mapping_repository.getMappingById(id);
                 for (Course_Service_Mapping mapping : listMapping) {

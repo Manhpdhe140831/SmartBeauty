@@ -26,5 +26,6 @@ public interface CourseService {
     CourseDto getCourseById(Long id);
 
     List<CourseDto> getServiceBuyed(Long idCheck, Long customer);
+
     String validateCourse(String name, String discountStart, String discountEnd, Double discountPercent);
 }

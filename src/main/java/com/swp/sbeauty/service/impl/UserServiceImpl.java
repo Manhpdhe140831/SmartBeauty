@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
             user.setGender(gender);
             user.setAddress(address);
             user.setPassword(encoder.encode(password));
-
+            user = userRepository.save(user);
             if (image != null) {
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
@@ -84,8 +84,9 @@ public class UserServiceImpl implements UserService {
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
-                user.setUrlImage(image.getOriginalFilename());
+                user.setUrlImage("user_"+ user.getId() +image.getOriginalFilename());
             }
+            userRepository.save(user);
 
             Set<Role> roles = new HashSet<>();
             if (roleAuth.equalsIgnoreCase("admin")) {

@@ -49,8 +49,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
     @Autowired
     private SupplierRepository supplierRepository;
+
     @Autowired
     private Product_Supplier_Repository product_supplier_repository;
 
@@ -220,12 +222,14 @@ public class ProductServiceImpl implements ProductService {
                         os.write(image.getBytes());
                     }
                     //remove old image
-                    Path pathOld = CURRENT_FOLDER.resolve(staticPath)
-                            .resolve(imagePath).resolve(product.getImage());
+                    if(product.getImage()!=null){
+                        Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                                .resolve(imagePath).resolve(product.getImage());
 
-                    File fileOld = new File(pathOld.toString());
-                    if (!fileOld.delete()) {
-                        throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                        File fileOld = new File(pathOld.toString());
+                        if (!fileOld.delete()) {
+                            throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                        }
                     }
                     product.setImage("product_" + product.getId() +image.getOriginalFilename());
                 }

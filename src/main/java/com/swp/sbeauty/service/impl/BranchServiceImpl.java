@@ -58,11 +58,6 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<Branch> findAllBranchs() {
-        return null;
-    }
-
-    @Override
     public BranchDto getById(Long id) {
         if (id != null) {
             Branch entity = branchRepository.findById(id).orElse(null);
@@ -75,11 +70,6 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<Branch> findBranchsWithSorting(String field) {
-        return null;
-    }
-
-    @Override
     public Boolean saveBranch(String name, String email, String phone, String address, Long manager, MultipartFile image) {
         try {
             Branch branch = new Branch();
@@ -87,6 +77,7 @@ public class BranchServiceImpl implements BranchService {
             branch.setEmail(email);
             branch.setPhone(phone);
             branch.setAddress(address);
+            branch = branchRepository.save(branch);
             if (image != null) {
                 Path staticPath = Paths.get("static");
                 Path imagePath = Paths.get("images");
@@ -94,13 +85,13 @@ public class BranchServiceImpl implements BranchService {
                     Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                 }
                 Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                        .resolve(imagePath).resolve("branch_"+ branch.getId() +image.getOriginalFilename());
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
-                branch.setLogo(image.getOriginalFilename());
+                branch.setLogo("branch_"+ branch.getId() +image.getOriginalFilename());
             }
-            branch = branchRepository.save(branch);
+            branchRepository.save(branch);
             User_Branch_Mapping user_branch_mapping = new User_Branch_Mapping(manager, branch.getId());
             user_branch_mapping_repo.save(user_branch_mapping);
             return true;
@@ -149,19 +140,21 @@ public class BranchServiceImpl implements BranchService {
                         Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                     }
                     Path file = CURRENT_FOLDER.resolve(staticPath)
-                            .resolve(imagePath).resolve(image.getOriginalFilename());
+                            .resolve(imagePath).resolve("branch_"+ branch.getId() +image.getOriginalFilename());
                     try (OutputStream os = Files.newOutputStream(file)) {
                         os.write(image.getBytes());
                     }
                     //remove old image
-                    Path pathOld = CURRENT_FOLDER.resolve(staticPath)
-                            .resolve(imagePath).resolve(branch.getLogo());
+                    if(branch.getLogo()!=null){
+                        Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                                .resolve(imagePath).resolve(branch.getLogo());
 
-                    File fileOld = new File(pathOld.toString());
-                    if (!fileOld.delete()) {
-                        throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                        File fileOld = new File(pathOld.toString());
+                        if (!fileOld.delete()) {
+                            throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                        }
                     }
-                    branch.setLogo(image.getOriginalFilename());
+                    branch.setLogo("branch_"+ branch.getId() +image.getOriginalFilename());
                 }
                 if (manager != null) {
                     Users managerOld = userRepository.getManagerFromBranch(id);
@@ -178,7 +171,6 @@ public class BranchServiceImpl implements BranchService {
             return false;
         }
     }
-
 
     @Override
     public Page<Branch> findBranchsPaginationAndSort(int offset, int pageSize) {
@@ -197,13 +189,6 @@ public class BranchServiceImpl implements BranchService {
         BranchResponseDto branchResponseDto = new BranchResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Branch> page = branchRepository.searchListWithField(name, address, phone, pageable);
-        List<Branch> branches = page.getContent();
-        //List<BranchDto> branchDtos = new ArrayList<>();
-        /*for (Branch branch : branches){
-            BranchDto branchDto = new BranchDto();
-            branchDto = mapper.map(branch,BranchDto.class);
-            branchDtos.add(branchDto);
-        }*/
         List<BranchDto> dtos = page
                 .stream()
                 .map(branch -> mapper.map(branch, BranchDto.class))

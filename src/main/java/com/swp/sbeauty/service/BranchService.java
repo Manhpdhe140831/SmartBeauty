@@ -11,21 +11,19 @@ import java.util.List;
 
 public interface BranchService {
     List<BranchDto> getBranch();
-    List<Branch> findAllBranchs();
-    BranchDto getById(Long id);
-    List<Branch> findBranchsWithSorting(String field);
 
-    /*List<RecruiterAdminDto> getRecruiterByName(String name, int pageNo, int pageSize);*/
+    BranchDto getById(Long id);
+
     Boolean saveBranch(String name, String email, String phone, String address, Long manager,MultipartFile image);
 
     String validateBranch(String name, String email, String phone);
 
-    
-
     Page<Branch> findBranchsPaginationAndSort(int offset,int pageSize);
+
     Page<Branch> findBranchsPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
 
     BranchResponseDto getBranchAndSearch(String name,String address,String phone,int pageNo,int pageSize);
+
     BranchResponseDto getAllBranch(int pageNo,int pageSize);
 
     Boolean updateBranch(Long id, String name, String email, String phone, String address, Long manager, MultipartFile image);

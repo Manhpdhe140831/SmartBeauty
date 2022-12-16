@@ -290,11 +290,13 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                     os.write(image.getBytes());
                 }
                 //remove old image
-                Path pathOld = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(service.getImage());
-                File fileOld = new File(pathOld.toString());
-                if (!fileOld.delete()) {
-                    throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                if(service.getImage()!=null){
+                    Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                            .resolve(imagePath).resolve(service.getImage());
+                    File fileOld = new File(pathOld.toString());
+                    if (!fileOld.delete()) {
+                        throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                    }
                 }
                 service.setImage("service_" + service.getId() + image.getOriginalFilename());
             }
