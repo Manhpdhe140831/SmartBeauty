@@ -7,7 +7,7 @@ import SearchBillingItems from "../../sale_staff/invoice/create/_partial/search-
 import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@mantine/core";
-import { exportPdf } from "../../../services/invoice.service";
+import { exportPdf, exportBill } from "../../../services/invoice.service";
 import {
   invoiceCreateItemSchema,
   invoiceStatus,
@@ -131,7 +131,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
   };
 
   const exportInvoice = (id: number) => {
-    exportPdf(id);
+    exportBill(id);
     // let feature = 'menubar=yes,location-yes,resizable=yes,scrollbars=yes,status=yes';
     // let url = "localhost:8080/api/bill/pdf?id=" + id;
     // window.open(url);

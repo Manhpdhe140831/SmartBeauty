@@ -9,6 +9,8 @@ import {
   InvoiceModel,
   InvoiceUpdateEntity,
 } from "../model/invoice.model";
+import { blob } from "stream/consumers";
+import { date } from "zod";
 
 export async function getListInvoices(
   page = 1,
@@ -87,4 +89,20 @@ export async function exportPdf(id: number) {
     console.error(error);
     throw error.response?.data;
   }
+}
+
+export function exportBill(id: number) {
+  fetch('http://localhost:8080/api/bill/pdf?id=' + id)
+    .then(response => {
+      response.blob().then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'bill_' + id + '.pdf';
+        a.click();
+      })
+    })
+    .catch(rejected => {
+      console.log(rejected);
+    })
 }

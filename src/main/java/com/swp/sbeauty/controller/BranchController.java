@@ -82,7 +82,7 @@ public class BranchController {
                                         @RequestParam(value = "phone") String phone,
                                         @RequestParam(value = "address") String address,
                                         @RequestParam(value = "manager") Long manager,
-                                        @RequestParam(value = "image",required = false) MultipartFile imgae){
+                                        @RequestParam(value = "logo",required = false) MultipartFile imgae){
         String check = branchService.validateBranch(name, email, phone);
         if(check == ""){
             Boolean result = branchService.saveBranch(name, email, phone, address, manager,imgae);
