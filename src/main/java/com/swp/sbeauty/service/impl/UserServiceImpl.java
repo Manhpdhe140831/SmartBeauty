@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
                     Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                 }
                 Path file = CURRENT_FOLDER.resolve(staticPath)
-                        .resolve(imagePath).resolve(image.getOriginalFilename());
+                        .resolve(imagePath).resolve("user_"+ user.getId() +image.getOriginalFilename());
                 try (OutputStream os = Files.newOutputStream(file)) {
                     os.write(image.getBytes());
                 }
@@ -165,19 +165,21 @@ public class UserServiceImpl implements UserService {
                         Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
                     }
                     Path file = CURRENT_FOLDER.resolve(staticPath)
-                            .resolve(imagePath).resolve(image.getOriginalFilename());
+                            .resolve(imagePath).resolve("user_"+ user.getId() +image.getOriginalFilename());
                     try (OutputStream os = Files.newOutputStream(file)) {
                         os.write(image.getBytes());
                     }
                     //remove old image
-                    Path pathOld = CURRENT_FOLDER.resolve(staticPath)
-                            .resolve(imagePath).resolve(user.getUrlImage());
+                    if(user.getUrlImage()!=null){
+                        Path pathOld = CURRENT_FOLDER.resolve(staticPath)
+                                .resolve(imagePath).resolve(user.getUrlImage());
 
-                    File fileOld = new File(pathOld.toString());
-                    if (!fileOld.delete()) {
-                        throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                        File fileOld = new File(pathOld.toString());
+                        if (!fileOld.delete()) {
+                            throw new IOException("Unable to delete file: " + fileOld.getAbsolutePath());
+                        }
                     }
-                    user.setUrlImage(image.getOriginalFilename());
+                    user.setUrlImage("user_"+ user.getId() +image.getOriginalFilename());
                 }
                 if (name != null) {
                     user.setName(name);
