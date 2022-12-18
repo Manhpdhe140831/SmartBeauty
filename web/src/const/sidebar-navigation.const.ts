@@ -41,6 +41,10 @@ export const branchManagerConfig: NavLinkItemProp[] = [
     label: "Quản lý nhân viên",
   },
   {
+    href: `/${USER_ROLE.manager}/manage-bed`,
+    label: "Quản lý giường",
+  },
+  {
     isDivider: true,
   },
   {
