@@ -9,14 +9,18 @@ import com.swp.sbeauty.security.jwt.JwtUtils;
 import com.swp.sbeauty.service.BillService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -118,4 +122,15 @@ public class BillController {
         response.setHeader(headerKey, headerValue);
         billService.generator(response, id);
     }
+
+    @GetMapping(value = "bill/export", produces =
+            MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("id") Long id) throws IOException{
+        ByteArrayInputStream bis = billService.generatorPDF(id);
+        HttpHeaders headers = new HttpHeaders();
+        String idText = id.toString();
+        headers.add("Content-Disposition", "inline;filename=invoice_"+idText+".pdf");
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(bis));
+    }
+
 }

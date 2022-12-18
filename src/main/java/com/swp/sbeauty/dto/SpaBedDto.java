@@ -10,6 +10,8 @@ import lombok.Setter;
 public class SpaBedDto {
     private Long id;
     private String name;
+
+    private String description;
     private BranchDto branch;
 
     public SpaBedDto(){}
@@ -18,13 +20,15 @@ public class SpaBedDto {
         if(spaBed != null){
             this.setId(spaBed.getId());
             this.setName(spaBed.getName());
+            this.setDescription(spaBed.getDescription());
         }
     }
 
-    public SpaBedDto(Long id, String name, BranchDto branch) {
+    public SpaBedDto(Long id, String name, BranchDto branch, String description) {
         this.id = id;
         this.name = name;
         this.branch = branch;
+        this.description = description;
     }
 
     public SpaBedDto(String name, BranchDto branch) {

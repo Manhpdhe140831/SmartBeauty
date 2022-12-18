@@ -11,6 +11,7 @@ import com.swp.sbeauty.dto.BillResponseDto;
 import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public interface BillService {
 
 
     public void generator(HttpServletResponse response, Long id) throws IOException;
+
+    public ByteArrayInputStream generatorPDF(Long id) throws  IOException;
 
 
 }

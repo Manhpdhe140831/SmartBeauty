@@ -90,10 +90,11 @@ public class SpaBedController {
     @PutMapping("/bed/update")
     public ResponseEntity<?> updateBed(@RequestParam(value = "id") Long id,
                                        @RequestParam(value = "name", required = false) String name,
-                                       @RequestParam(value = "branch", required = false) Long branch) {
+                                       @RequestParam(value = "branch", required = false) Long branch,
+                                       @RequestParam(value = "description", required = false) String description) {
         String check = spaBedService.validateSpaBed(name);
         if (check == "") {
-            Boolean result = spaBedService.updateSpaBed(id, name, branch);
+            Boolean result = spaBedService.updateSpaBed(id, name, branch,description);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, check), HttpStatus.BAD_REQUEST);

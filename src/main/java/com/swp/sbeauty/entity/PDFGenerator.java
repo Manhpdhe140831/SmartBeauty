@@ -16,5 +16,34 @@ import java.io.IOException;
 
 public class PDFGenerator {
 
+    public String titleInvoice = "Hóa Đơn";
+    String customerName ="khách hàng";
+    String phone ="Số Điện Thoại";
 
+    public PDFGenerator(){
+
+    }
+    public String getTitleInvoice() {
+        return titleInvoice;
+    }
+
+    public void setTitleInvoice(String titleInvoice) {
+        this.titleInvoice = titleInvoice;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

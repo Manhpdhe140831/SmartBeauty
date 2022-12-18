@@ -66,7 +66,7 @@ public class SpaBedServiceImpl implements SpaBedService {
             if (entity != null) {
                 return new SpaBedDto(id, entity.getName()
                         , new BranchDto(branch.getId(),branch.getName()
-                        , new UserDto(users),branch.getPhone(),branch.getAddress(),branch.getEmail(),branch.getLogo()));
+                        , new UserDto(users),branch.getPhone(),branch.getAddress(),branch.getEmail(),branch.getLogo()), entity.getDescription());
             }
         }
         return null;
@@ -147,11 +147,14 @@ public class SpaBedServiceImpl implements SpaBedService {
     }
 
     @Override
-    public Boolean updateSpaBed(Long id, String name, Long branch) {
+    public Boolean updateSpaBed(Long id, String name, Long branch, String description) {
         SpaBed spaBed = spaBedRepository.getSpaBedById(id);
         if(spaBed != null){
             if(name != null){
                 spaBed.setName(name);
+                if (description != null){
+                    spaBed.setDescription(description);
+                }
             }
             if(branch !=null){
                 Bed_Branch_Mapping bed_branch_old = spaBed_branch_repository.getSpaBedByBranch(id);
@@ -276,6 +279,9 @@ public class SpaBedServiceImpl implements SpaBedService {
 
             if (spaBedDto.getName() != null) {
                 spaBed.setName(spaBedDto.getName() );
+            }
+            if (spaBedDto.getDescription() != null){
+                spaBed.setDescription(spaBedDto.getDescription());
             }
             spaBed = spaBedRepository.save(spaBed);
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
