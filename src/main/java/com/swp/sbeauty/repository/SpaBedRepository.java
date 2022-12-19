@@ -14,11 +14,14 @@ import java.util.List;
 public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
     @Query(value = "SELECT b FROM SpaBed b where  " +
             "b.name like %?1%")
-    public Page<SpaBed> searchListWithField(String key, Pageable pageable);
+    Page<SpaBed> searchListWithField(String key, Pageable pageable);
+
+    @Query(value = "select a from SpaBed a, Bed_Branch_Mapping b where a.id = b.id_spaBed and b.id_branch = ?1")
+    List<SpaBed> getListByBranch(Long branchId);
 
     Boolean existsByName(String name);
-    SpaBed getSpaBedById(Long id);
 
+    SpaBed getSpaBedById(Long id);
 
     @Query(value = "select b.* from spa_bed b, bed_slot_mapping c, bed_branch_mapping d\n" +
             "            where b.id = c.id_spa_bed and b.id = d.id_spa_bed and d.id_branch = ?1 and c.id_slot = ?3 and c.date = ?2", nativeQuery = true)

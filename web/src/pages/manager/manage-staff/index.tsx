@@ -58,7 +58,7 @@ const Index: AppPageInterface = () => {
         {/*Search by name*/}
         <Input
           icon={<IconSearch />}
-          placeholder={"Staff name..."}
+          placeholder={"Tên nhân viên..."}
           type={"text"}
           className="w-56"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>

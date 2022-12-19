@@ -24,7 +24,7 @@ export async function getListSpaBed() {
 
 export async function updateSpaBed(data: SpaBedUpdateEntity) {
   try {
-    const apiResult = await axios.post<boolean>("/bed/update", data);
+    const apiResult = await axios.put<boolean>("/bed/update", data);
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

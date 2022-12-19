@@ -147,24 +147,33 @@ public class SpaBedServiceImpl implements SpaBedService {
     }
 
     @Override
-    public Boolean updateSpaBed(Long id, String name, Long branch, String description) {
-        SpaBed spaBed = spaBedRepository.getSpaBedById(id);
-        if(spaBed != null){
-            if(name != null){
-                spaBed.setName(name);
-                if (description != null){
-                    spaBed.setDescription(description);
+    public String updateSpaBed(SpaBedDto spaBedDto) {
+        String check = null;
+        if(spaBedDto.getId()!=null){
+            SpaBed spaBed = spaBedRepository.getSpaBedById(spaBedDto.getId());
+            if(spaBed != null){
+                if(spaBedDto.getName() != null){
+                    Long idBranch = spaBed_branch_repository.getBranchId(spaBed.getId());
+                    List<SpaBed> listBed = spaBedRepository.getListByBranch(idBranch);
+                    for(SpaBed bed : listBed){
+                        if(spaBedDto.getName().equalsIgnoreCase(bed.getName())){
+                            check = "Name already exists";
+                            break;
+                        }
+                    }
+                    if(check == null){
+                        spaBed.setName(spaBedDto.getName());
+                    }
                 }
+                if (spaBedDto.getDescription() != null){
+                    spaBed.setDescription(spaBedDto.getDescription());
+                }
+                return check;
+            }else {
+                return "Bed not found";
             }
-            if(branch !=null){
-                Bed_Branch_Mapping bed_branch_old = spaBed_branch_repository.getSpaBedByBranch(id);
-                spaBed_branch_repository.delete(bed_branch_old);
-                Bed_Branch_Mapping bed_branch_mapping = new Bed_Branch_Mapping(id,branch);
-                spaBed_branch_repository.save(bed_branch_mapping);
-            }
-            return true;
-        }else {
-            return false;
+        } else {
+            return "Id null";
         }
     }
 

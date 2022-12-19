@@ -3,6 +3,6 @@
  * Default should be `other`
  */
 export enum GENDER {
-  male = "male",
-  female = "female",
+  male = "Nam",
+  female = "Nữ",
 }

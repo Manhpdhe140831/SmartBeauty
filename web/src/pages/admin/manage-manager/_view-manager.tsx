@@ -76,7 +76,7 @@ const ViewManagerDialog: FC<
   return (
     <Modal
       title={
-        <h1 className="text-center font-thin capitalize">Manager Detail</h1>
+        <h1 className="text-center font-thin capitalize">Thông tin tài khoản</h1>
       }
       opened={opened}
       size={"auto"}

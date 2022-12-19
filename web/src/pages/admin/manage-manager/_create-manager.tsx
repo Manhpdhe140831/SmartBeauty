@@ -60,7 +60,7 @@ const CreateManager: FC<
 
   return (
     <Modal
-      title={<h1 className="text-center font-thin capitalize">New Account</h1>}
+      title={<h1 className="text-center font-thin capitalize">Thêm mới tài khoản</h1>}
       opened={opened}
       size={"auto"}
       onClose={() => reset()}

@@ -14,7 +14,7 @@ public interface SpaBedService {
     SpaBedResponseDto getAllSpaBed(int pageNo,int pageSize);
     String validateSpaBed(String name);
     Boolean saveSpaBed(String name, Long branch);
-    Boolean updateSpaBed(Long id, String name, Long branch, String description);
+    String updateSpaBed(SpaBedDto spaBedDto);
     List<SpaBedDto> getBedFree(Long idCheck, String date, Long slot);
 
     StaffBedDto findStaffAndBedFree(Long idCheck,String date, Long idSlot);

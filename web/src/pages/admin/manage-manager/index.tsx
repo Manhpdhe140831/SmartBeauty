@@ -139,7 +139,7 @@ const ManageManager: AppPageInterface = () => {
         {/*Search by name*/}
         <Input
           icon={<IconSearch />}
-          placeholder={"Tên quản lý..."}
+          placeholder={"Tên người dùng..."}
           type={"text"}
           className="w-56"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>

@@ -55,19 +55,19 @@ const ServiceDetailDialog: FC<
     defaultValues:
       mode === "view" && data
         ? {
-            ...data,
-            discountStart: data.discountStart
-              ? dayjs(data.discountStart).toDate()
-              : null,
-            discountEnd: data.discountEnd
-              ? dayjs(data.discountEnd).toDate()
-              : null,
-            discountPercent: data.discountPercent ?? null,
-            products: data.products.map((p) => ({
-              productId: p.product.id,
-              usage: p.usage,
-            })),
-          }
+          ...data,
+          discountStart: data.discountStart
+            ? dayjs(data.discountStart).toDate()
+            : null,
+          discountEnd: data.discountEnd
+            ? dayjs(data.discountEnd).toDate()
+            : null,
+          discountPercent: data.discountPercent ?? null,
+          products: data.products.map((p) => ({
+            productId: p.product.id,
+            usage: p.usage,
+          })),
+        }
         : undefined,
   });
 
@@ -96,11 +96,10 @@ const ServiceDetailDialog: FC<
       padding={0}
     >
       <fieldset
-        className={`rounded-[4px] border-2 ${
-          mode === "view" && isDirty
+        className={`rounded-[4px] border-2 ${mode === "view" && isDirty
             ? "border-yellow-600"
             : "border-transparent"
-        }`}
+          }`}
         disabled={readonly}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
@@ -157,14 +156,14 @@ const ServiceDetailDialog: FC<
                   rightSectionWidth={75}
                   rightSection={
                     <Text color={"dimmed"} size={"sm"}>
-                      minutes
+                      phút
                     </Text>
                   }
                   {...stateInputProps("Thời gian", readonly, {
                     required: true,
                     variant: "default",
                     size: "sm",
-                    placeholder: "perform duration (1 - 90 minutes)...",
+                    placeholder: "perform duration (1 - 90 phút)...",
                   })}
                 />
               )}
