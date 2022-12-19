@@ -640,7 +640,7 @@ public class BillServiceImpl implements BillService {
             Font fontTitleCustomer = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
             fontTitleCustomer.setSize(13);
             Table tableHeader = new Table(2);
-            Cell cellHeaderTitle = new Cell(new Phrase(pdfGenerator.getTitleInvoice(), fontTitle));
+            Cell cellHeaderTitle = new Cell(new Phrase("Invoice Order", fontTitle));
             Cell cellHeaderBranch = new Cell(new Paragraph("Sbeauty" + "\n" + "Branch Name: " + billDto.getBranch().getName() + "\n" + "Phone Number: " + billDto.getBranch().getPhone() + "\n" + "Address: " + billDto.getBranch().getAddress(), fontPar));
             cellHeaderTitle.setBackgroundColor(Color.LIGHT_GRAY);
             cellHeaderTitle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -667,9 +667,9 @@ public class BillServiceImpl implements BillService {
 
             Table tableCustomer = new Table(2, 3);
             tableCustomer.setWidth(50f);
-            Cell customerNameCell = new Cell(new Phrase(pdfGenerator.getCustomerName(), fontTitleCustomer));
+            Cell customerNameCell = new Cell(new Phrase("Customer Name:", fontTitleCustomer));
             Cell customerNameInformation = new Cell(customerName);
-            Cell customerPhoneCell = new Cell(new Phrase(new String(pdfGenerator.getPhone().getBytes(StandardCharsets.UTF_8)), fontTitleCustomer));
+            Cell customerPhoneCell = new Cell(new Phrase("Customer Phone:", fontTitleCustomer));
             Cell customerPhoneInformation = new Cell(customerPhone);
             Cell customerAddressCell = new Cell(new Phrase("Address:", fontTitleCustomer));
             Cell customerAddressInformation = new Cell(customerAddress);
@@ -701,9 +701,9 @@ public class BillServiceImpl implements BillService {
             document.add(tableCustomer);
             Paragraph lineBr = new Paragraph("----------------------------------------------------------------------------------------------------------------------------------");
             lineBr.setAlignment(Element.ALIGN_CENTER);
-          document.add(lineBr);
+            document.add(lineBr);
 //            document.add(br);
-            if ("service".equalsIgnoreCase(itemType)||"course".equalsIgnoreCase(itemType)) {
+            if ("service".equalsIgnoreCase(itemType) || "course".equalsIgnoreCase(itemType)) {
                 Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
                 subTitle1.setAlignment(Element.ALIGN_CENTER);
                 document.add(subTitle1);
@@ -779,87 +779,87 @@ public class BillServiceImpl implements BillService {
 
             }
             document.add(table);
-            if (!addons.isEmpty()){
-            Table productTable = new Table(5, addons.size());
-            productTable.setWidth(100f);
-            Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
-            subTitle2.setAlignment(Element.ALIGN_CENTER);
-            document.add(subTitle2);
-            productTable.setPadding(5);
-            Cell productCell = new Cell(new Phrase("Product", fontTitleTable));
-            productCell.setBackgroundColor(Color.BLUE);
-            Cell description = new Cell(new Phrase("Discount Percent", fontTitleTable));
-            description.setBackgroundColor(Color.BLUE);
-            Cell quantityCell = new Cell(new Phrase("Quantity", fontTitleTable));
-            quantityCell.setBackgroundColor(Color.BLUE);
-            Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
-            priceCell.setBackgroundColor(Color.BLUE);
-            Cell totalProductAmount = new Cell(new Phrase("Total amount", fontTitleTable));
-            totalProductAmount.setBackgroundColor(Color.BLUE);
-            productTable.addCell(productCell);
-            productTable.addCell(description);
-            productTable.addCell(quantityCell);
-            productTable.addCell(priceCell);
-            productTable.addCell(totalProductAmount);
-            productTable.setBorderColor(Color.GRAY);
-            if (addons != null || !addons.isEmpty()) {
-                for (BillDetailDto item : addons
-                ) {
-                    productTable.addCell(item.getItem().getName());
-                    if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null) {
-                        productTable.addCell("None");
-                    } else {
-                        productTable.addCell(item.getItem().getDiscountPercent().toString());
+            if (!addons.isEmpty()) {
+                Table productTable = new Table(5, addons.size());
+                productTable.setWidth(100f);
+                Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
+                subTitle2.setAlignment(Element.ALIGN_CENTER);
+                document.add(subTitle2);
+                productTable.setPadding(5);
+                Cell productCell = new Cell(new Phrase("Product", fontTitleTable));
+                productCell.setBackgroundColor(Color.BLUE);
+                Cell description = new Cell(new Phrase("Discount Percent", fontTitleTable));
+                description.setBackgroundColor(Color.BLUE);
+                Cell quantityCell = new Cell(new Phrase("Quantity", fontTitleTable));
+                quantityCell.setBackgroundColor(Color.BLUE);
+                Cell priceCell = new Cell(new Phrase("Price", fontTitleTable));
+                priceCell.setBackgroundColor(Color.BLUE);
+                Cell totalProductAmount = new Cell(new Phrase("Total amount", fontTitleTable));
+                totalProductAmount.setBackgroundColor(Color.BLUE);
+                productTable.addCell(productCell);
+                productTable.addCell(description);
+                productTable.addCell(quantityCell);
+                productTable.addCell(priceCell);
+                productTable.addCell(totalProductAmount);
+                productTable.setBorderColor(Color.GRAY);
+                if (addons != null || !addons.isEmpty()) {
+                    for (BillDetailDto item : addons
+                    ) {
+                        productTable.addCell(item.getItem().getName());
+                        if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null) {
+                            productTable.addCell("None");
+                        } else {
+                            productTable.addCell(item.getItem().getDiscountPercent().toString());
+                        }
+                        productTable.addCell(item.getQuantity().toString());
+                        productTable.addCell(item.getItem().getPrice().toString());
+                        Double discountPercent = item.getItem().getDiscountPercent();
+                        Double totalAmount = 0.0;
+                        if (discountPercent.toString().equalsIgnoreCase("0.0")) {
+                            totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
+                        }
+                        if (discountPercent != 0.0) {
+                            totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice() * (100 - discountPercent) * 0.01;
+                        }
+                        totalBillProduct += totalAmount;
+                        productTable.addCell(totalAmount.toString());
                     }
-                    productTable.addCell(item.getQuantity().toString());
-                    productTable.addCell(item.getItem().getPrice().toString());
-                    Double discountPercent = item.getItem().getDiscountPercent();
-                    Double totalAmount = 0.0;
-                    if (discountPercent.toString().equalsIgnoreCase("0.0")){
-                        totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
-                    }
-                    if (discountPercent != 0.0){
-                        totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice()* (100-discountPercent)*0.01;
-                    }
-                    totalBillProduct += totalAmount;
-                    productTable.addCell(totalAmount.toString());
                 }
+                if (addons.isEmpty()) {
+                    productTable.addCell("");
+                    productTable.addCell("");
+                    productTable.addCell("");
+                    productTable.addCell("");
+                    productTable.addCell("");
+                }
+                document.add(productTable);
             }
-            if (addons.isEmpty()) {
-                productTable.addCell("");
-                productTable.addCell("");
-                productTable.addCell("");
-                productTable.addCell("");
-                productTable.addCell("");
-            }
-            document.add(productTable);
-        }
             document.add(lineBr);
 
             Schedule schedule = null;
             Long scheduleId = schedule_bill_mapping_repository.getScheduleByBill(billDto.getId());
-            if (scheduleId != null){
+            if (scheduleId != null) {
                 schedule = scheduleRepository.findById(scheduleId).orElse(null);
             }
 
-            if (schedule != null){
+            if (schedule != null) {
                 Slot slot = null;
                 SpaBed bed = null;
                 Users users = null;
-               if (schedule.getSlotId() != null){
-                   slot = slotRepository.findById(schedule.getSlotId()).orElse(null);
-               }
-               if (schedule.getBedId() != null){
-                   bed = spaBedRepository.getSpaBedById(schedule.getBedId());
-               }
-               if (schedule.getTechnicalStaffId() != null){
-                   users = userRepository.getUsersById(schedule.getTechnicalStaffId()).orElse(null);
-               }
+                if (schedule.getSlotId() != null) {
+                    slot = slotRepository.findById(schedule.getSlotId()).orElse(null);
+                }
+                if (schedule.getBedId() != null) {
+                    bed = spaBedRepository.getSpaBedById(schedule.getBedId());
+                }
+                if (schedule.getTechnicalStaffId() != null) {
+                    users = userRepository.getUsersById(schedule.getTechnicalStaffId()).orElse(null);
+                }
                 String scheduleTitle = "Schedule";
                 Paragraph scheduleParagraph = new Paragraph("\n" + scheduleTitle, fontSubTitle);
                 scheduleParagraph.setAlignment(Element.ALIGN_CENTER);
                 document.add(scheduleParagraph);
-                Table scheduleTable = new Table(4,2);
+                Table scheduleTable = new Table(4, 2);
                 scheduleTable.setPadding(5f);
                 scheduleTable.setWidth(100f);
                 String dateCellContent = "Date";
@@ -879,30 +879,29 @@ public class BillServiceImpl implements BillService {
                 scheduleTable.addCell(bedCell);
                 scheduleTable.addCell(techCell);
 
-                scheduleTable.addCell(schedule.getDate().substring(0,10));
-                if (slot != null){
+                scheduleTable.addCell(schedule.getDate().substring(0, 10));
+                if (slot != null) {
                     scheduleTable.addCell(slot.getTimeline());
-                }else{
+                } else {
                     scheduleTable.addCell("");
                 }
 
-                if (bed != null){
+                if (bed != null) {
                     scheduleTable.addCell(bed.getName());
-                }else{
+                } else {
                     scheduleTable.addCell("");
                 }
 
-                if (users != null){
+                if (users != null) {
                     scheduleTable.addCell(users.getName());
-                }else{
+                } else {
                     scheduleTable.addCell("");
                 }
-
 
 
                 document.add(scheduleTable);
                 document.add(lineBr);
-               // document.add(br);
+                // document.add(br);
 
             }
             Paragraph footerTitle = null;
@@ -917,14 +916,15 @@ public class BillServiceImpl implements BillService {
                         + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
-            if (billDto.getItemType().equalsIgnoreCase("service")){
+            if (billDto.getItemType() != null){
+            if (billDto.getItemType().equalsIgnoreCase("service")) {
                 footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
                 footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
                 Double totalServiceBill = 0.0;
-                if (service.getDiscountPercent() != null){
-                    totalServiceBill = service.getPrice()*(100.0-service.getDiscountPercent())*0.01;
+                if (service.getDiscountPercent() != null) {
+                    totalServiceBill = service.getPrice() * (100.0 - service.getDiscountPercent()) * 0.01;
                 }
-                if (service.getDiscountPercent() == null){
+                if (service.getDiscountPercent() == null) {
                     totalServiceBill = service.getPrice();
                 }
 
@@ -934,14 +934,14 @@ public class BillServiceImpl implements BillService {
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
 
-            if (billDto.getItemType().equalsIgnoreCase("course")){
+            if (billDto.getItemType().equalsIgnoreCase("course")) {
                 footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
                 footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
                 Double totalCourseBill = 0.0;
-                if (course.getDiscountPercent() != null){
-                    totalCourseBill = course.getPrice()*(100.0-course.getDiscountPercent())*0.01;
+                if (course.getDiscountPercent() != null) {
+                    totalCourseBill = course.getPrice() * (100.0 - course.getDiscountPercent()) * 0.01;
                 }
-                if (course.getDiscountPercent() == null){
+                if (course.getDiscountPercent() == null) {
                     totalCourseBill = service.getPrice();
                 }
 
@@ -950,6 +950,7 @@ public class BillServiceImpl implements BillService {
                         + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
+        }
 
 
             document.add(footerTitle);
