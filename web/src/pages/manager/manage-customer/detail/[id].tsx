@@ -12,7 +12,6 @@ const ManageCustomerDetail: AppPageInterface = () => {
 
   const id = Number(paths.at(-1));
 
-  // TODO integrate API get user by id
   const { data, isLoading } = useCustomerDetailQuery(id);
 
   if (isNaN(id) || id <= 0 || (!isLoading && !data)) {

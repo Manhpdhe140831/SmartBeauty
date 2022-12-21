@@ -178,6 +178,7 @@ const ViewStaff: FC<ViewStaffPropsType> = ({ onClosed, staffData }) => {
               <Controller
                 render={({ field }) => (
                   <DatePicker
+                    locale={"vi"}
                     minDate={dayjs(new Date()).subtract(64, "years").toDate()}
                     maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
                     placeholder="In range of 18-64 years old"

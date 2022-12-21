@@ -164,6 +164,7 @@ const CreateStaff: FC<ViewStaffPropsType> = ({ onClosed }) => {
               <Controller
                 render={({ field }) => (
                   <DatePicker
+                    locale={"vi"}
                     minDate={dayjs(new Date()).subtract(64, "years").toDate()}
                     maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
                     placeholder="Trong độ tuổi 18-64"

@@ -287,6 +287,7 @@ const ProductDetailDialog = ({
             <Controller
               render={({ field }) => (
                 <DatePicker
+                  locale={"vi"}
                   minDate={dayjs(new Date()).toDate()}
                   onChange={(e) => {
                     field.onChange(e);
@@ -308,6 +309,7 @@ const ProductDetailDialog = ({
             <Controller
               render={({ field }) => (
                 <DatePicker
+                  locale={"vi"}
                   minDate={dayjs(new Date()).toDate()}
                   onChange={(e) => {
                     field.onChange(e);

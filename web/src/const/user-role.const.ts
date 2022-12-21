@@ -34,6 +34,4 @@ export enum STAFF_USER_ROLE {
   technical_staff = "technical_staff",
 }
 
-export const userRoleSchema = z.nativeEnum(USER_ROLE);
-
 export const staffRoleSchema = z.nativeEnum(STAFF_USER_ROLE);

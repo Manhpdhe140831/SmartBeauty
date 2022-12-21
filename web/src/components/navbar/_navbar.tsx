@@ -8,6 +8,7 @@ import MainLinksNavbar from "./main-links.navbar";
 import useSidebarNav from "../../store/sidebar-nav.state";
 import useAccessToken from "../../store/access-token.atom";
 import { useAuthUser } from "../../store/auth-user.state";
+import { useRouter } from "next/router";
 
 /**
  * This component renders the sidebar of the web.
@@ -26,6 +27,7 @@ const CoreNavbar: FC<{
   userRole: USER_ROLE;
   width?: Partial<Record<string, string | number>> | undefined;
 }> = (props) => {
+  const router = useRouter();
   const { resetToken } = useAccessToken();
   const logoutFn = useAuthUser((s) => s.logout);
   const userRole = useAuthUser((s) => s.user?.role);
@@ -42,6 +44,7 @@ const CoreNavbar: FC<{
     resetToken();
     // remove auth state
     logoutFn();
+    router.push("/login");
   }
 
   return (

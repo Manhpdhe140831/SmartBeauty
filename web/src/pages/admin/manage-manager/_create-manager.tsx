@@ -60,7 +60,9 @@ const CreateManager: FC<
 
   return (
     <Modal
-      title={<h1 className="text-center font-thin capitalize">Thêm mới tài khoản</h1>}
+      title={
+        <h1 className="text-center font-thin capitalize">Thêm mới tài khoản</h1>
+      }
       opened={opened}
       size={"auto"}
       onClose={() => reset()}
@@ -117,6 +119,7 @@ const CreateManager: FC<
         <Controller
           render={({ field }) => (
             <DatePicker
+              locale={"vi"}
               minDate={dayjs(new Date()).subtract(64, "years").toDate()}
               maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
               placeholder="Trong khoảng 18-64 tuổi"

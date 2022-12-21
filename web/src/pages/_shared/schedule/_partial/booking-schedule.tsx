@@ -388,6 +388,7 @@ const BookingSchedule = ({
                   <Controller
                     render={({ field }) => (
                       <DatePicker
+                        locale={"vi"}
                         placeholder="Chọn ngày"
                         withAsterisk
                         onChange={(e) => {

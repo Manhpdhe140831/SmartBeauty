@@ -63,11 +63,11 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
     criteriaMode: "all",
     defaultValues: data
       ? {
-        ...data,
-        dateOfBirth: data.dateOfBirth
-          ? dayjs(data.dateOfBirth).toDate()
-          : undefined,
-      }
+          ...data,
+          dateOfBirth: data.dateOfBirth
+            ? dayjs(data.dateOfBirth).toDate()
+            : undefined,
+        }
       : undefined,
   });
 
@@ -87,10 +87,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
       onReset={handleReset}
       onSubmit={handleSubmit(submitData)}
     >
-      <Avatar
-        size="xl"
-        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
-      />
+      <Avatar size="xl" />
 
       <fieldset
         disabled={readonly}
@@ -126,6 +123,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
         <Controller
           render={({ field }) => (
             <DatePicker
+              locale={"vi"}
               minDate={dayjs(new Date()).subtract(64, "years").toDate()}
               maxDate={dayjs(new Date()).subtract(18, "years").toDate()}
               onChange={(e) => {
@@ -137,12 +135,12 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               rightSectionWidth={150}
               rightSection={
                 <Text className={"w-full"} size={"xs"}>
-                  {field.value ? `(${ageTilToday(field.value)} old)` : "-"}
+                  {field.value ? `(${ageTilToday(field.value)})` : "-"}
                 </Text>
               }
               {...stateInputProps("Ngày sinh", readonly, {
                 required: true,
-                placeholder: "In range of 18-64 years old",
+                placeholder: "trong khoảng 18-64 tuổi",
               })}
             />
           )}

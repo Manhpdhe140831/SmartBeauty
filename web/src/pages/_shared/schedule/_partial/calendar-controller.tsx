@@ -10,6 +10,7 @@ const CalendarController = ({ dateData, onChange }: calendarProps) => {
   return (
     <div className="flex items-center gap-4">
       <DatePicker
+        locale={"vi"}
         placeholder="Pick date"
         label="Lịch hẹn tại ngày"
         value={dateData}

@@ -224,6 +224,7 @@ const CourseDetailDialog: FC<
             <Controller
               render={({ field }) => (
                 <DatePicker
+                  locale={"vi"}
                   minDate={dayjs(new Date()).toDate()}
                   onChange={(e) => {
                     field.onChange(e);
@@ -246,6 +247,7 @@ const CourseDetailDialog: FC<
             <Controller
               render={({ field }) => (
                 <DatePicker
+                  locale={"vi"}
                   minDate={dayjs(new Date()).toDate()}
                   onChange={(e) => {
                     field.onChange(e);

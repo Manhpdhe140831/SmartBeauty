@@ -11,12 +11,13 @@ import { useAuthUser } from "../store/auth-user.state";
 import { useRouter } from "next/router";
 import { needRedirectedOnRole } from "../utilities/guard.helper";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ApiHostRequestInterceptor } from "../utilities/axios.helper";
 import { URL_ENDPOINT } from "../const/_const";
 import { NotificationsProvider } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import { IErrorResponse } from "../interfaces/api.interface";
+import "dayjs/locale/vi";
 
 // Create a react-query client
 const queryClient = new QueryClient({
@@ -40,6 +41,23 @@ ApiHostRequestInterceptor(axios, `${URL_ENDPOINT}`, {
   UTC_OFFSET: -(new Date().getTimezoneOffset() / 60),
   TIMEZONE: Intl.DateTimeFormat().resolvedOptions().timeZone,
 });
+
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error: AxiosError) {
+    if (
+      401 === error?.response?.status &&
+      (error?.response?.data as any)["path"] !== "/api/auth/signin"
+    ) {
+      localStorage.clear();
+      location.reload();
+    } else {
+      return Promise.reject(error);
+    }
+  }
+);
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [clientPassedGuard, setClientPassedGuard] = useState(false);

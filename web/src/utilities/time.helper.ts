@@ -14,11 +14,11 @@ export function timeToDate(rawIsoTime: string, format = "DD/MM/YYYY") {
 }
 
 export function formatTime(time: number, unit: DurationUnitType) {
-  return dayjs.duration(time, unit).humanize();
+  return dayjs.duration(time, unit).locale("vi").humanize();
 }
 
 export function ageTilToday(date: Date, withoutSuffix = true) {
-  return dayjs(date).toNow(withoutSuffix);
+  return dayjs(date).locale("vi").toNow(withoutSuffix);
 }
 
 /**
