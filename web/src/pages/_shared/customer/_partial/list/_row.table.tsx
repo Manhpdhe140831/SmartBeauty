@@ -1,5 +1,6 @@
 import { CustomerModel } from "../../../../../model/customer.model";
 import { formatDate } from "../../../../../utilities/time.helper";
+import { GENDER, GENDER_VN } from "../../../../../const/gender.const";
 
 type RowProps<T extends CustomerModel> = {
   data: T;
@@ -16,7 +17,7 @@ const ListRowTable = <T extends CustomerModel>({
     <tr className={"cursor-pointer"} onClick={() => onSelect && onSelect(data)}>
       <td className={"text-center"}>{no}</td>
       <td>{data.name}</td>
-      <td className={"text-center uppercase"}>{data.gender}</td>
+      <td className={"text-center capitalize"}>{GENDER_VN[data.gender]}</td>
       <td className={"text-center"}>{data.phone}</td>
       <td className={"text-center"}>
         {data.dateOfBirth && formatDate(data.dateOfBirth)}

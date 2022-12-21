@@ -44,7 +44,7 @@ const ListCustomer: FC<ListCustomerProps> = ({
             className={"min-h-12"}
             message={
               <div className="text-center font-semibold text-gray-500">
-                Loading...
+                đang tải...
               </div>
             }
           />
