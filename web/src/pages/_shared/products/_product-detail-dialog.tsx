@@ -3,7 +3,7 @@ import {
   ProductModel,
   ProductUpdateEntity,
 } from "../../../model/product.model";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   Divider,
   Image,
@@ -93,6 +93,7 @@ const ProductDetailDialog = ({
     handleSubmit,
     watch,
     reset,
+    trigger,
     formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
@@ -125,6 +126,14 @@ const ProductDetailDialog = ({
     name: s.name,
     description: s.address,
   });
+
+  useEffect(() => {
+    if (isDirty) {
+      trigger("discountStart");
+      trigger("discountEnd");
+      trigger("discountPercent");
+    }
+  }, [isDirty]);
 
   const { data: viewingSupplier, isLoading: viewLoading } =
     useQuery<SupplierModel | null>(

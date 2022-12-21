@@ -1,4 +1,4 @@
-import { FC, FormEvent } from "react";
+import { FC, FormEvent, useEffect } from "react";
 import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import { CourseModel, CourseUpdateEntity } from "../../../model/course.model";
 import {
@@ -43,6 +43,7 @@ const CourseDetailDialog: FC<
     handleSubmit,
     watch,
     reset,
+    trigger,
     formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
@@ -73,6 +74,15 @@ const CourseDetailDialog: FC<
 
   const onSubmit = (submitData: z.infer<typeof validateSchema>) =>
     DialogSubmit(mode, dirtyFields, onClosed, data)(submitData);
+
+  useEffect(() => {
+    if (isDirty) {
+      trigger("discountStart");
+      trigger("discountEnd");
+      trigger("discountPercent");
+      trigger("services");
+    }
+  }, [isDirty]);
 
   return (
     <Modal

@@ -1,4 +1,4 @@
-import { FC, FormEvent } from "react";
+import { FC, FormEvent, useEffect } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import {
@@ -47,6 +47,7 @@ const ServiceDetailDialog: FC<
     handleSubmit,
     watch,
     reset,
+    trigger,
     formState: { errors, isDirty, isValid, dirtyFields },
   } = useForm<z.infer<typeof validateSchema>>({
     resolver: zodResolver(validateSchema),
@@ -85,6 +86,15 @@ const ServiceDetailDialog: FC<
     e.stopPropagation();
     onClosed && onClosed();
   };
+
+  useEffect(() => {
+    if (isDirty) {
+      trigger("discountStart");
+      trigger("discountEnd");
+      trigger("discountPercent");
+      trigger("products");
+    }
+  }, [isDirty]);
 
   return (
     <Modal
