@@ -76,7 +76,7 @@ public class BillController {
             if (expir.before(new Date())) {
                 return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
             } else {
-                Boolean result = billService.saveBill(billDto, authHeader);
+                BillDto result = billService.saveBill(billDto, authHeader);
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
         }else {

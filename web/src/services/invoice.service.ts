@@ -53,9 +53,11 @@ export async function getDetailInvoice(id: number) {
 
 export async function createInvoice(data: InvoiceCreateEntity) {
   try {
-    const apiResult = await axios.post<boolean>("/bill/create", data);
-
+    const apiResult = await axios.post<InvoiceModel>("/bill/create", data);
+    // console.log(apiResult.data.id);
+    exportPdf(apiResult.data.id);
     return apiResult.data;
+
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;
     console.error(error);

@@ -655,7 +655,7 @@ const BookingSchedule = ({
                     data={Object.keys(ScheduleStatusMap).map((status) => {
                       const _status =
                         ScheduleStatusMap[
-                          status as keyof typeof ScheduleStatusMap
+                        status as keyof typeof ScheduleStatusMap
                         ];
                       return {
                         value: String(_status),
@@ -689,7 +689,7 @@ const BookingSchedule = ({
               className={"w-full"}
               autosize={false}
               rows={4}
-              placeholder={"Full address"}
+              placeholder={"Ghi chú..."}
               disabled={
                 userRole !== USER_ROLE.sale_staff || !!router.query.schedule_id
               }

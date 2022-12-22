@@ -430,7 +430,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public Boolean saveBill(BillDto billDto, String authHeader) {
+    public BillDto saveBill(BillDto billDto, String authHeader) {
         Bill bill = new Bill();
         bill.setCode(billDto.getCode());
         TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -527,9 +527,9 @@ public class BillServiceImpl implements BillService {
         bill_cusomter_mapping_repositry.save(new Bill_Customer_Mapping(bill.getId(), billDto.getCustomerId()));
 
         if (bill != null) {
-            return true;
+            return new BillDto(bill);
         } else {
-            return false;
+            return null;
         }
     }
 

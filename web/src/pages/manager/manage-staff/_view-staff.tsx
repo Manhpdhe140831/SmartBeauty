@@ -230,7 +230,7 @@ const ViewStaff: FC<ViewStaffPropsType> = ({ onClosed, staffData }) => {
             autosize={false}
             rows={6}
             label={"Address"}
-            placeholder={"Full address"}
+            placeholder={"Ghi chú..."}
             {...register("address")}
             withAsterisk
           ></Textarea>

@@ -23,7 +23,7 @@ public interface BillService {
 
     public BillDto getBillById(Long id);
 
-    public Boolean saveBill(BillDto billDto, String authHeader);
+    public BillDto saveBill(BillDto billDto, String authHeader);
 
     public Boolean updateBill(BillDto billDto, String authHeader);
 

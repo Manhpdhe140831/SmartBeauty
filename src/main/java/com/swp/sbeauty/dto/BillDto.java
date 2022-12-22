@@ -46,4 +46,8 @@ public class BillDto {
         this.itemType = itemType;
         this.item = item;
     }
+
+    public BillDto(Bill bill){
+        this.id = bill.getId();
+    }
 }
