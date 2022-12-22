@@ -77,10 +77,24 @@ export async function updateInvoiceStatus(data: InvoiceUpdateEntity) {
 
 export async function exportPdf(id: number) {
   try {
-    const apiResult = await axios.get("/bill/pdf", {
-      params: {
-        id,
-      },
+    axios({
+      url: '/bill/pdf?id=' + id, //your url
+      method: 'GET',
+      responseType: 'blob', // important
+    }).then((response) => {
+      // create file link in browser's memory
+      const href = URL.createObjectURL(response.data);
+
+      // create "a" HTML element with href to file & click
+      const link = document.createElement('a');
+      link.href = href;
+      link.setAttribute('download', 'bill_' + id + '.pdf'); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
     });
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

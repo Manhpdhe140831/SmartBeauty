@@ -131,10 +131,8 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
   };
 
   const exportInvoice = (id: number) => {
-    exportBill(id);
-    // let feature = 'menubar=yes,location-yes,resizable=yes,scrollbars=yes,status=yes';
-    // let url = "localhost:8080/api/bill/pdf?id=" + id;
-    // window.open(url);
+    exportPdf(id);
+    // exportBill(id);
   };
 
   return (
