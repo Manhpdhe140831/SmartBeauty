@@ -82,6 +82,22 @@ public class CourseDto {
 
     }
 
+    public CourseDto(Bill_Course_History history, Boolean isBilled, Integer count){
+        this.id = history.getId();
+        this.code = history.getCode();
+        this.name = history.getName();
+        this.price = history.getPrice();
+        this.duration = history.getDuration();
+        this.timeOfUse = history.getTimeOfUse();
+        this.discountStart = history.getDiscountStart();
+        this.discountEnd = history.getDiscountEnd();
+        this.discountPercent = history.getDiscountPercent();
+        this.image = history.getImage();
+        this.description = history.getDescription();
+        this.isBilled = isBilled;
+        this.count = count;
+    }
+
     public CourseDto(Long id, String code, String name, Double price, Integer duration, Integer timeOfUse, String discountStart, String discountEnd, Double discountPercent, String image, String description) {
         this.id = id;
         this.code = code;
@@ -124,7 +140,7 @@ public class CourseDto {
         this.description = description;
     }
 
-    public CourseDto(Boolean isBilled, Course course) {
+    public CourseDto(Boolean isBilled, Integer count, Course course) {
         this.isBilled = isBilled;
         this.id = course.getId();
         this.name = course.getName();
@@ -136,6 +152,7 @@ public class CourseDto {
         this.discountPercent = course.getDiscountPercent();
         this.image = course.getImage();
         this.description = course.getDescription();
+        this.count = count;
     }
 
 

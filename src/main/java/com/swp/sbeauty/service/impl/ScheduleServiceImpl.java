@@ -292,7 +292,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         if (courseId != null) {
             Bill_Course_History bill_course_history = bill_course_history_repository.getBill_Course_HistoriesById(courseId);
-            courseDto = new CourseDto(bill_course_history.getId(), bill_course_history.getCode(), bill_course_history.getName(), bill_course_history.getPrice(), bill_course_history.getDuration(), bill_course_history.getTimeOfUse(), bill_course_history.getDiscountStart(), bill_course_history.getDiscountEnd(), bill_course_history.getDiscountPercent(), bill_course_history.getImage(), bill_course_history.getDescription());
+            courseDto = new CourseDto(bill_course_history.getId(), bill_course_history.getCode(), bill_course_history.getName(), bill_course_history.getPrice(), bill_course_history.getDuration(), bill_course_history.getTimeOfUse(), bill_course_history.getDiscountStart(), bill_course_history.getDiscountEnd(), bill_course_history.getDiscountPercent(), bill_course_history.getImage(), bill_course_history.getDescription(), 1);
         }
         ServiceDto serviceDto = null;
         if (schedule.getServiceId() != null) {

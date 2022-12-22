@@ -210,11 +210,9 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             if (ccm != null) {
                 Bill_Course_History history = bill_course_history_repository.getBill_Course_HistoriesById(ccm.getCourse_id());
                 listUsing.add(history);
+                CourseDto courseDto = new CourseDto(history, true, ccm.getCount() +1);
+                courseDtos.add(courseDto);
             }
-        }
-        for (Bill_Course_History history : listUsing) {
-            CourseDto courseDto = new CourseDto(history.getId(), history.getName(), history.getPrice(), history.getDuration(), history.getTimeOfUse(), history.getDiscountStart(), history.getDiscountEnd(), history.getDiscountPercent(), history.getImage(), true, history.getDescription());
-            courseDtos.add(courseDto);
         }
         List<Course> coursess = courseRepository.findAll();
         for (Course course : coursess) {
@@ -225,7 +223,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 }
             }
             if (check == false) {
-                courseDtos.add(new CourseDto(false, course));
+                courseDtos.add(new CourseDto(false,1, course));
             }
         }
         List<Service> services = serviceRepository.findService(keyword);
