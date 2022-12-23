@@ -806,19 +806,24 @@ public class BillServiceImpl implements BillService {
                     for (BillDetailDto item : addons
                     ) {
                         productTable.addCell(item.getItem().getName());
-                        if (item.getItem().getDescription().isEmpty() || item.getItem().getDescription() == null) {
-                            productTable.addCell("None");
+                        if (item.getItem().getDiscountPercent() == null) {
+                            productTable.addCell("0");
                         } else {
                             productTable.addCell(item.getItem().getDiscountPercent().toString());
                         }
                         productTable.addCell(item.getQuantity().toString());
                         productTable.addCell(item.getItem().getPrice().toString());
-                        Double discountPercent = item.getItem().getDiscountPercent();
+                        Double discountPercent = 0.0;
+                        if (item.getItem().getDiscountPercent() != null){
+                            discountPercent = item.getItem().getDiscountPercent();
+                        }
+
                         Double totalAmount = 0.0;
                         if (discountPercent.toString().equalsIgnoreCase("0.0")) {
-                            totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
+                            Double quan = item.getQuantity().doubleValue();
+                            totalAmount = quan * item.getItem().getPrice();
                         }
-                        if (discountPercent != 0.0) {
+                        if (discountPercent != 0) {
                             totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice() * (100 - discountPercent) * 0.01;
                         }
                         totalBillProduct += totalAmount;

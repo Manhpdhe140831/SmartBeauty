@@ -36,3 +36,5 @@ export interface CourseUpdateEntity<
   discountStart?: Date | null;
   discountEnd?: Date | null;
 }
+
+
