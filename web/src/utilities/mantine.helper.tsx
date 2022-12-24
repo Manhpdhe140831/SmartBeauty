@@ -2,7 +2,7 @@ import { CSSObject, InputVariant, MantineSize, Text } from "@mantine/core";
 import React from "react";
 
 export const stateInputProps = (
-  label?: string,
+  label?: string | JSX.Element | React.ReactNode,
   readonly?: boolean,
   otp?: {
     withStyle?: boolean;

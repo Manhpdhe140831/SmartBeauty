@@ -24,7 +24,7 @@ type props = {
 };
 
 const PurchaseItemInformationEditable = ({ onSelected }: props) => {
-  const [selectedId, setSelectedId] = useState<number>();
+  const [selectedId, setSelectedId] = useState<number | null>();
 
   const { data: item } = useServiceDetailQuery(selectedId, {
     onSuccess: (data) => onSelected(data),
@@ -66,6 +66,7 @@ const PurchaseItemInformationEditable = ({ onSelected }: props) => {
 
         <div className="flex flex-1 flex-col">
           <DatabaseSearchSelect
+            className={"flex-1"}
             value={selectedId ? String(selectedId) : null}
             displayValue={
               item

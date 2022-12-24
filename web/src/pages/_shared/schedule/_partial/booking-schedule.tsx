@@ -44,6 +44,7 @@ import {
 } from "../../../../model/schedule.model";
 import dayjs from "dayjs";
 import { formatPrice } from "../../../../utilities/pricing.helper";
+import { CourseModel } from "../../../../model/course.model";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -189,17 +190,19 @@ const BookingSchedule = ({
         if (serviceList[key]) {
           servicesArr = [
             ...servicesArr,
-            ...serviceList[key].map((s: ServiceModel) => {
-              return {
-                value: `${key}-${s.id.toString()}`,
-                label: s.name,
-                group: key,
-                data: {
-                  image: s.image ?? null,
-                  description: formatPrice(s.price) + " VNĐ",
-                },
-              };
-            }),
+            ...serviceList[key].map(
+              (s: ServiceModel & CourseModel & { isBill: boolean }) => {
+                return {
+                  value: `${key}-${s.id.toString()}`,
+                  label: `${s.isBill ? "[Đang Sử dụng] " : ""}${s.name}`,
+                  group: key === "course" ? "Liệu Trình" : "Dịch Vụ",
+                  data: {
+                    image: s.image ?? null,
+                    description: formatPrice(s.price) + " VNĐ",
+                  },
+                };
+              }
+            ),
           ];
         }
       });
@@ -278,11 +281,7 @@ const BookingSchedule = ({
 
   return (
     <div className={"h-max w-full p-12"}>
-      <form
-        onReset={() => console.log("reset")}
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className={"flex w-full flex-col gap-4"}>
           <Stepper active={active} onStepClick={setActive} breakpoint="sm">
             <Stepper.Step
@@ -655,7 +654,7 @@ const BookingSchedule = ({
                     data={Object.keys(ScheduleStatusMap).map((status) => {
                       const _status =
                         ScheduleStatusMap[
-                        status as keyof typeof ScheduleStatusMap
+                          status as keyof typeof ScheduleStatusMap
                         ];
                       return {
                         value: String(_status),

@@ -39,24 +39,22 @@ const DatabaseSearchSelect = <dataType extends object>({
 
   const { data: collection, isLoading: collectionLoading } = useQuery<
     AutoCompleteItemProp<dataType>[]
-  >(
-    ["search-mutation", searchKey, onSearching, value, displayValue?.value],
-    async () => {
-      const fnSearch: searchFn<dataType> =
-        onSearching ?? (() => Promise.resolve([]));
-      const foundCollection = searchKey ? await fnSearch(searchKey) : [];
-      const filtered = foundCollection.filter((c) => c.value !== value);
-      return [
-        ...(displayValue ? [displayValue] : []),
-        ...filtered,
-      ] as AutoCompleteItemProp<dataType>[];
-    }
-  );
+  >(["search-mutation", displayValue, searchKey, value], async () => {
+    const fnSearch: searchFn<dataType> =
+      onSearching ?? (() => Promise.resolve([]));
+    const foundCollection = searchKey ? await fnSearch(searchKey) : [];
+    const filtered = foundCollection.filter((c) => c.value !== value);
+    return [
+      ...(displayValue ? [displayValue] : []),
+      ...filtered,
+    ] as AutoCompleteItemProp<dataType>[];
+  });
 
   return (
     <Select
       data={collectionLoading || !collection ? [] : collection}
       searchable
+      clearable
       defaultValue={value}
       onSearchChange={setSearchWord}
       onChange={onSelected}
