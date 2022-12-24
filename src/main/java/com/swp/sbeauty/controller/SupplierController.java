@@ -78,4 +78,10 @@ public class SupplierController {
             return new ResponseEntity<>(supplierResponseDto, HttpStatus.OK);
         }
     }
+
+    @DeleteMapping("/supplier/detele")
+    private ResponseEntity<?> deleteSupplier(@RequestParam (value = "id") Long id){
+        Boolean result = supplierService.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

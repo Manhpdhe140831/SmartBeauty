@@ -12,12 +12,10 @@ public interface SupplierService {
     List<SupplierDto> getSupplier();
     SupplierDto getById(Long id);
     Boolean saveSupplier(String name, String taxCode,String description,String phone,String email, String address);
-
-    SupplierDto updateSupplier(SupplierDto supplierDto, Long id);
-    Page<Supplier> getAllSupplierPagination(int offset,int pageSize);
-    Page<Supplier> getSupplierPaginationAndSearch(String name,String address,String phone,int offset,int pageSize);
     String validateSupplier(String name, String email, String phone);
     SupplierResponseDto getSupplierAndSearch(String name, String address, String phone, int pageNo, int pageSize);
     SupplierResponseDto getAllSupplier(int pageNo,int pageSize);
     Boolean updateSupplier(Long id, String name, String taxCode,String description,String phone,String email, String address);
+
+    Boolean delete(Long id);
 }

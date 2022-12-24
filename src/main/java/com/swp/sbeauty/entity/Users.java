@@ -31,6 +31,8 @@ public class Users {
     private String password;
     @Column(name="urlImage")
     private String urlImage;
+    @Column(name="isDelete")
+    private Boolean isDelete;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(  name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),

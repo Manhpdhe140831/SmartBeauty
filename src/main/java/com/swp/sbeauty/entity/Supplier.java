@@ -25,4 +25,6 @@ public class Supplier {
     private String phone;
     private String email;
     private String address;
+    @Column(name="isDelete")
+    private Boolean isDelete;
 }

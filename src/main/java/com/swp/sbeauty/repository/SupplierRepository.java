@@ -16,9 +16,12 @@ public interface SupplierRepository extends JpaRepository<Supplier,Long> {
     Boolean existsByPhone(String phone);
     Supplier getSupplierById(Long id);
 
+    @Query(value = "SELECT b FROM Supplier b where b.isDelete is null")
+    Page<Supplier> getAllSupplier(Pageable pageable);
+
     @Query(value = "SELECT b FROM Supplier b where  " +
-            "b.name like %?1% and b.address like %?2% and b.phone like %?3%")
-    public Page<Supplier> searchListWithField(String key,String key2,String key3, Pageable pageable);
+            "b.name like %?1% and b.address like %?2% and b.phone like %?3% and b.isDelete is null")
+    Page<Supplier> searchListWithField(String key,String key2,String key3, Pageable pageable);
 
     @Query(value = "select a.* from supplier a, product_supplier_mapping b where a.id = b.id_supplier and b.id_product=?1", nativeQuery = true)
     Supplier getSupplierFromProduct(Long id);

@@ -116,6 +116,10 @@ public class UserController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
+        Users user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
+        if(user.getIsDelete() != null){
+            return new ResponseEntity<>(new ResponseDto<>(401, "Account has been locked"), HttpStatus.UNAUTHORIZED);
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         String role = authentication.getAuthorities().stream().findFirst().get().toString();
@@ -212,5 +216,11 @@ public class UserController {
         } else {
             return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @DeleteMapping("/user/detele")
+    private ResponseEntity<?> deleteUser(@RequestParam (value = "id") Long id){
+        Boolean result = userService.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

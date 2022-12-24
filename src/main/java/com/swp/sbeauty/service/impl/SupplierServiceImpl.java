@@ -6,6 +6,7 @@ import com.swp.sbeauty.dto.SupplierDto;
 import com.swp.sbeauty.dto.SupplierResponseDto;
 import com.swp.sbeauty.entity.Branch;
 import com.swp.sbeauty.entity.Supplier;
+import com.swp.sbeauty.entity.Users;
 import com.swp.sbeauty.repository.SupplierRepository;
 import com.swp.sbeauty.service.SupplierService;
 import lombok.extern.slf4j.Slf4j;
@@ -74,51 +75,6 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDto updateSupplier(SupplierDto supplierDto, Long id) {
-        try{
-            if(supplierDto !=null){
-                Supplier supplier = null;
-                if(id !=null){
-                    Optional<Supplier> optional =supplierRepository.findById(id);
-                    if(optional.isPresent()){
-                        supplier = optional.get();
-                    }
-                }
-                if(supplier != null){
-                    supplier.setName(supplierDto.getName());
-                    supplier.setTaxCode(supplierDto.getTaxCode());
-                    supplier.setDescription(supplierDto.getDescription());
-                    supplier.setPhone(supplierDto.getPhone());
-                    supplier.setEmail(supplierDto.getEmail());
-                    supplier.setAddress(supplierDto.getAddress());
-                    supplier = supplierRepository.save(supplier);
-                    return new SupplierDto(supplier);
-                } else {
-                    return null;
-                }
-            }
-        }catch (Exception e){
-            throw e;
-        }
-
-
-        return null;
-    }
-
-    @Override
-    public Page<Supplier> getAllSupplierPagination(int offset, int pageSize) {
-        Page<Supplier> suppliers =supplierRepository.findAll(PageRequest.of(offset,pageSize));
-        return suppliers;
-    }
-
-    @Override
-    public Page<Supplier> getSupplierPaginationAndSearch(String name, String address, String phone, int offset, int pageSize) {
-        Page<Supplier> suppliers =supplierRepository.searchListWithField(name,address,phone,PageRequest.of(offset,pageSize));
-        return suppliers;
-    }
-
-
-    @Override
     public SupplierResponseDto getSupplierAndSearch(String name, String address, String phone, int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         SupplierResponseDto supplierResponseDto = new SupplierResponseDto();
@@ -143,7 +99,7 @@ public class SupplierServiceImpl implements SupplierService {
         ModelMapper mapper = new ModelMapper();
         SupplierResponseDto supplierResponseDto = new SupplierResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
-        Page<Supplier> page = supplierRepository.findAll(pageable);
+        Page<Supplier> page = supplierRepository.getAllSupplier(pageable);
         List<Supplier> suppliers = page.getContent();
         List<SupplierDto> supplierDtos = new ArrayList<>();
         for (Supplier supplier : suppliers){
@@ -186,6 +142,20 @@ public class SupplierServiceImpl implements SupplierService {
             return false;
         }
 
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        if(id!=null){
+            Supplier supplier = supplierRepository.getSupplierById(id);
+            if(supplier!=null){
+                supplier.setIsDelete(true);
+                supplierRepository.save(supplier);
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
 
