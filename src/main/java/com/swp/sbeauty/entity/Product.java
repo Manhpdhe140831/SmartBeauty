@@ -31,6 +31,9 @@ public class Product {
     private String unit;
     private Integer dose;
 
+    @Column(name = "isDelete")
+    private Boolean isDelete;
+
 }
 
 

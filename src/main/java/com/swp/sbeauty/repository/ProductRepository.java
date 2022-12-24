@@ -12,8 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
-    @Query(value = "SELECT b FROM Product b where  " +
-            "b.name like %?1%")
+    @Query(value = "SELECT b FROM Product b where  b.name like %?1% and b.isDelete is null")
     public Page<Product> searchListWithField(String key, Pageable pageable);
 
     @Query(value = "SELECT p FROM Product p join Service_Product_mapping spm ON p.id = spm.product_id where spm.service_id =?1")
@@ -22,4 +21,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Boolean existsByName(String name);
     @Query(value = "select * from product where product.name like %?1%", nativeQuery = true)
     List<Product> findProduct(String keyword);
+
+    @Query(value = "select p from Product p where p.isDelete is null")
+    Page<Product> getAllProduct(Pageable pageable);
 }

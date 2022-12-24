@@ -24,6 +24,6 @@ public interface Service_Product_Mapping_Repository extends JpaRepository<Servic
     @Query(value = "select p from Product  p join Service_Product_mapping spm on p.id = spm.product_id where spm.service_id =?1")
     List<Product> getProductByService(Long id);
 
-    @Query(value = "select a from Service_Product_mapping a where a.service_id = ?1")
+    @Query(value = "select s.* from sbeauty.service_product_mapping as s join sbeauty.product as p where s.product_id = p.id and s.service_id = ?1 and p.is_delete is null", nativeQuery = true)
     List<Service_Product_mapping> getMappingByServiceId(Long id);
 }

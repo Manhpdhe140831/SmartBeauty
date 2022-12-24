@@ -25,4 +25,6 @@ public interface ProductService {
     Boolean saveProduct(String name, Double price, String description, MultipartFile image, String discountStart, String discountEnd, Double discountPercent, Long supplier, String unit, Integer dose);
 
     String validateProduct(String name, String discountStart, String discountEnd, Double discountPercent);
+
+    Boolean delete(Long id);
 }

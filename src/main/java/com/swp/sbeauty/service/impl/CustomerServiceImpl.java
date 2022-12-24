@@ -192,4 +192,19 @@ public class CustomerServiceImpl implements CustomerService {
             return customerDtos;
         }
     }
+
+    @Override
+    public Boolean delete(Long id) {
+        if (id != null){
+            Customer customer = customerRepository.getCustomerById(id);
+            if (customer!= null){
+                customer.setIsDelete(true);
+                customerRepository.save(customer);
+                return true;
+            }
+            return false;
+        }else{
+            return false;
+        }
+    }
 }

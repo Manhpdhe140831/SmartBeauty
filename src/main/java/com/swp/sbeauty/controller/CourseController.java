@@ -117,4 +117,10 @@ public class CourseController {
             return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/course/delete")
+    private ResponseEntity<?> deleteCourse(@RequestParam("id") Long id){
+        Boolean result = service.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

@@ -13,10 +13,10 @@ import java.util.List;
 
 public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
     @Query(value = "SELECT b FROM SpaBed b where  " +
-            "b.name like %?1%")
+            "b.name like %?1% and b.isDelete is null")
     Page<SpaBed> searchListWithField(String key, Pageable pageable);
 
-    @Query(value = "select a from SpaBed a, Bed_Branch_Mapping b where a.id = b.id_spaBed and b.id_branch = ?1")
+    @Query(value = "select a from SpaBed a, Bed_Branch_Mapping b where a.id = b.id_spaBed and b.id_branch = ?1 and a.isDelete is null")
     List<SpaBed> getListByBranch(Long branchId);
 
     Boolean existsByName(String name);
@@ -29,4 +29,7 @@ public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
 
     @Query(value = "select a.* from spa_bed a, bed_branch_mapping b where a.id = b.id_spa_bed  and b.id_branch =?1", nativeQuery = true)
     List<SpaBed>getAllBed(Long idBranch);
+
+    @Query(value = "SELECT b from SpaBed b where b.isDelete is null")
+    Page<SpaBed> getAllSpaBed(Pageable pageable);
 }

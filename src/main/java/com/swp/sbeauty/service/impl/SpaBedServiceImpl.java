@@ -112,7 +112,7 @@ public class SpaBedServiceImpl implements SpaBedService {
         ModelMapper mapper = new ModelMapper();
         SpaBedResponseDto spaBedResponseDto = new SpaBedResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
-        Page<SpaBed> page = spaBedRepository.findAll(pageable);
+        Page<SpaBed> page = spaBedRepository.getAllSpaBed(pageable);
         List<SpaBed> spaBeds = page.getContent();
         List<SpaBedDto> spaBedDtos = new ArrayList<>();
         for (SpaBed spaBed : spaBeds){
@@ -301,5 +301,22 @@ public class SpaBedServiceImpl implements SpaBedService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        if (id != null){
+            SpaBed spaBed = spaBedRepository.getSpaBedById(id);
+            if (spaBed != null){
+                spaBed.setIsDelete(true);
+                spaBedRepository.save(spaBed);
+                return true;
+            }else{
+                return false;
+            }
+        }else {
+            return false;
+        }
+
     }
 }

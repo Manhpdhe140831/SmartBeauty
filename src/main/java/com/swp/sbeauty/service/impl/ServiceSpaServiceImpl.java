@@ -164,7 +164,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
     public ServiceResponseDto getAll(int pageNo, int pageSize) {
         ServiceResponseDto serviceResponseDto = new ServiceResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Service> page = repository.findAll(pageable);
+        Page<Service> page = repository.getAllService(pageable);
         List<ServiceDto> serviceDtos = page
                 .stream()
                 .map(course -> mapper.map(course, ServiceDto.class))
@@ -318,6 +318,24 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
             return "false";
         }
     }
+
+    @Override
+    public Boolean delete(Long id) {
+        if (id != null){
+            Service service = serviceRepository.getServiceById(id);
+            if (service != null){
+                service.setIsDelete(true);
+                serviceRepository.save(service);
+                return true;
+            }
+            return false;
+        }else{
+            return false;
+        }
+
+    }
+
+
 }
 
 

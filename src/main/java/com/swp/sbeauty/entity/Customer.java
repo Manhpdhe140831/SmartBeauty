@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -28,4 +25,7 @@ public class Customer {
     private String gender;
     private String dateOfBirth;
     private String address;
+
+    @Column(name = "isDelete")
+    private Boolean isDelete;
 }

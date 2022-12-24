@@ -19,4 +19,7 @@ public class SpaBed {
     private String name;
 
     private String description;
+
+    @Column(name = "isDelete")
+    private Boolean isDelete;
 }

@@ -27,4 +27,6 @@ public interface ServiceSpaService {
 
     ServiceCourseBuyedDto findProductCourseService(String keyword, Long idCustomer);
     String update(Long id, String name, String discountStart, String discountEnd, Double discountPercent, Double price, String description, Long duration, MultipartFile image, String products);
+
+    Boolean delete(Long id);
 }

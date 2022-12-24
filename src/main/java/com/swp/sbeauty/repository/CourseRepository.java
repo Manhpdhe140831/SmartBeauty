@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course,Long> {
-    @Query(value = "SELECT c from Course c where c.name like %?1% or c.code like %?1%")
+    @Query(value = "SELECT c from Course c where c.name like %?1% or c.code like %?1% and c.isDelete is null")
     Page<Course> getListCoursePaginationAndSearch(String name, String code, Pageable pageable);
 
     Boolean existsByName(String name);
@@ -23,4 +23,8 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
 
     @Query(value = "select c.* from course c where c.name like %?1% ", nativeQuery = true)
     List<Course> findCourses(String keyword);
+
+    @Query(value = "SELECT c From Course c where c.isDelete is null")
+    Page<Course> getAllCourse(Pageable pageable);
+
 }

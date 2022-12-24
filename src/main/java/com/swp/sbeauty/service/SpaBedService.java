@@ -19,4 +19,6 @@ public interface SpaBedService {
 
     StaffBedDto findStaffAndBedFree(Long idCheck,String date, Long idSlot);
     Boolean saveBed(SpaBedDto spaBedDto, String authHeader);
+
+    Boolean delete(Long id);
 }

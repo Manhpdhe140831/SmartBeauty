@@ -97,4 +97,10 @@ public class SpaBedController {
         }
     }
 
+    @DeleteMapping("/bed/delete")
+    private ResponseEntity<?> deleteCourse(@RequestParam("id") Long id){
+        Boolean result = spaBedService.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

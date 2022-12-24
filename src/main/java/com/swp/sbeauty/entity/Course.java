@@ -33,4 +33,7 @@ public class Course {
     private Double discountPercent;
     private String image;
     private String description;
+
+    @Column(name = "isDelete")
+    private Boolean isDelete;
 }

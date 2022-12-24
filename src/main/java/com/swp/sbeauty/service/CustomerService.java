@@ -15,4 +15,7 @@ public interface CustomerService {
     CustomerResponseDto getCustomerAndSearch(String name, int pageNo, int pageSize);
 
     List<CustomerDto> getCustomerByKeyword (Long idCheck, String keyword);
+
+    Boolean delete(Long id);
+
 }

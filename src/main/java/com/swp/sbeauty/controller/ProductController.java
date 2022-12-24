@@ -87,4 +87,11 @@ public class ProductController {
             return new ResponseEntity<>(new ResponseDto<>(400, result), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/product/delete")
+    private ResponseEntity<?> deleteCourse(@RequestParam("id") Long id){
+        Boolean result = productService.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

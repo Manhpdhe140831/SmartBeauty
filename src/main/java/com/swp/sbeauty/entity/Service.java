@@ -28,6 +28,9 @@ public class Service {
     private Long duration;
     private String image;
 
+    @Column(name = "isDelete")
+    private Boolean isDelete;
+
 
 
 }

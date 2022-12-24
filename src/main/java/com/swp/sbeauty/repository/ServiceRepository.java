@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
 
-    @Query(value = "select s from Service s where s.name like %:name%")
+    @Query(value = "select s from Service s where s.name like %:name% and s.isDelete is null")
     Page<Service> getListServiceWithPaginationAndSearch(String name, Pageable pageable);
 
     @Query(value = "select s from Service s join Course_Service_Mapping csm on s.id = csm.service_id where csm.course_id = ?1 ")
@@ -40,4 +40,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
 
     @Query(value = "select * from service where service.name like %?1%", nativeQuery = true)
     List<Service> findService(String keyword);
+
+    @Query(value = "select s from Service s where s.isDelete is null")
+    Page<Service> getAllService(Pageable pageable);
 }

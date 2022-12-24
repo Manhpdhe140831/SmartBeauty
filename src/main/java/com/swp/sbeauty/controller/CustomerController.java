@@ -106,4 +106,10 @@ public class CustomerController {
             return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/customer/delete")
+    private ResponseEntity<?> deleteCustomer(@RequestParam("id") Long id){
+        Boolean result = customerService.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

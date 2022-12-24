@@ -137,7 +137,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponseDto getAll(int pageNo, int pageSize) {
         CourseResponseDto courseResponseDto = new CourseResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Course> page = courseRepository.findAll(pageable);
+        Page<Course> page = courseRepository.getAllCourse(pageable);
         List<CourseDto> courseDtos = page
                 .stream()
                 .map(course -> mapper.map(course, CourseDto.class))
@@ -281,5 +281,20 @@ public class CourseServiceImpl implements CourseService {
             result += "Name already exists in data. ";
         }
         return result;
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        if(id != null){
+            Course course = courseRepository.getCourseById(id);
+            if (course != null){
+                course.setIsDelete(true);
+                courseRepository.save(course);
+                return true;
+            }
+            return false;
+        }else {
+            return false;
+        }
     }
 }

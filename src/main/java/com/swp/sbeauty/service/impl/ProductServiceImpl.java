@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
         ModelMapper mapper = new ModelMapper();
         ProductResponseDto productResponseDto = new ProductResponseDto();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Product> page = productRepository.findAll(pageable);
+        Page<Product> page = productRepository.getAllProduct(pageable);
         List<Product> products = page.getContent();
         List<ProductDto> dtos = page
                 .stream()
@@ -150,6 +150,21 @@ public class ProductServiceImpl implements ProductService {
             result += "Name already exists in data. ";
         }
         return result;
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        if (id != null){
+            Product product = productRepository.getProductById(id);
+            if (product != null){
+                product.setIsDelete(true);
+                productRepository.save(product);
+                return true;
+            }
+            return false;
+        }else {
+            return false;
+        }
     }
 
     @Override

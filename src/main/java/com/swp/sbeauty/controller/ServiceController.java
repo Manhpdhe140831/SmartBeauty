@@ -107,4 +107,10 @@ public class ServiceController {
         ServiceCourseBuyedDto list = service.findProductCourseService(keyword, idCustomer);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    @DeleteMapping("/service/delete")
+    private ResponseEntity<?> deleteCourse(@RequestParam("id") Long id){
+        Boolean result = service.delete(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }
