@@ -17,7 +17,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     @Query(value = "select s from Service s where s.name like %:name% and s.isDelete is null")
     Page<Service> getListServiceWithPaginationAndSearch(String name, Pageable pageable);
 
-    @Query(value = "select s from Service s join Course_Service_Mapping csm on s.id = csm.service_id where csm.course_id = ?1 ")
+    @Query(value = "select s from Service s join Course_Service_Mapping csm on s.id = csm.service_id where csm.course_id = ?1 and s.isDelete is null ")
     List<Service> getServiceByCourseId(Long id);
 
     Service getServiceById(Long id);
