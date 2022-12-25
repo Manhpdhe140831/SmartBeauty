@@ -49,6 +49,7 @@ import {
   ShowFailedUpdate,
   ShowSuccessUpdate,
 } from "../../../../utilities/show-notification";
+import { linkImage } from "../../../../utilities/image.helper";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -201,7 +202,7 @@ const BookingSchedule = ({
                   label: `${s.isBill ? "[Đang Sử dụng] " : ""}${s.name}`,
                   group: key === "course" ? "Liệu Trình" : "Dịch Vụ",
                   data: {
-                    image: s.image ?? null,
+                    image: linkImage(s.image),
                     description: formatPrice(s.price) + " VNĐ",
                   },
                 };
@@ -333,34 +334,36 @@ const BookingSchedule = ({
                     displayValue={null}
                     onSearching={searchService}
                     disabled={!selectedCustomer}
-                    onSelected={(_id) => {
-                      const id = _id ?? null;
-
+                    onSelected={(id) => {
+                      debugger;
                       // Gán customer selected to state
                       const service = servicesCustomArr.find(
                         (s: any) => s.value === id
                       );
+                      if (!service) {
+                        return;
+                      }
+                      const serviceId = Number(service.value?.split("-")[1]);
                       let serviceData: any = null;
-                      Object.keys(serviceList).forEach((key: string) => {
-                        if (service.group === key) {
+                      for (const key of Object.keys(serviceList)) {
+                        const enName =
+                          service?.group === "Dịch Vụ" ? "services" : "courses";
+                        if (enName === key) {
                           serviceData = serviceList[key].find(
-                            (s: any) =>
-                              s.id ===
-                              Number(
-                                service.value.substring(
-                                  service.value.indexOf("-") + 1
-                                )
-                              )
+                            (s: any) => s.id === serviceId
                           );
+                          if (serviceData) {
+                            break;
+                          }
                         }
-                      });
+                      }
 
                       if (serviceData) {
                         setSelectedService({
                           ...serviceData,
                           type: service.group,
                         });
-                        if (service.group === "courses") {
+                        if (service?.group === "courses") {
                           setValue("courseId", serviceData.id);
                           setValue("serviceId", null);
                         } else {

@@ -51,7 +51,7 @@ const InvoiceCreate = ({
     defaultValues,
   });
 
-  const { reset, control, formState, handleSubmit } = useFormInvoice;
+  const { reset, control, formState, handleSubmit, watch } = useFormInvoice;
 
   const {
     fields: itemsArray,
@@ -143,7 +143,10 @@ const InvoiceCreate = ({
       />
 
       <div className="flex flex-col space-y-4">
-        <SearchBillingItems onChange={onNewItemAdded} />
+        <SearchBillingItems
+          bannedIds={watch("addons")?.map((i) => i.itemId)}
+          onChange={onNewItemAdded}
+        />
 
         <Divider my={16} />
 
