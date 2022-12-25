@@ -15,13 +15,10 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
     Boolean existsByname(String name);
-    Boolean existsByEmail(String email);
+
     Boolean existsByPhone(String phone);
 
     Customer getCustomerById(Long id);
-    /*@Query(value = "SELECT b.* FROM customer b join customer_branch_mapping c on b.id = c.id_customer where c.id_branch = ?1",
-            countQuery = "SELECT count(*) FROM customer b join customer_branch_mapping c on b.id = c.id_customer where c.id_branch = ?1",nativeQuery = true)
-    Page<Customer> getAllCustomer(Long idBranch, Pageable pageable);*/
     @Query(value = "SELECT b.* FROM customer b where b.is_delete is null",
             countQuery = "SELECT count(*) FROM customer b where b.is_delete is null",nativeQuery = true)
     Page<Customer> getAllCustomer(Pageable pageable);

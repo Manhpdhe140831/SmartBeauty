@@ -16,13 +16,11 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
     Page<Course> getListCoursePaginationAndSearch(String name, String code, Pageable pageable);
 
     Boolean existsByName(String name);
+
     Course getCourseById(Long id);
 
-    @Query(value = "select c.* from course c where c.id != ?1 and c.name like %?2% ", nativeQuery = true)
-    List<Course> getCourseExpelId(Long id, String keyword);
-
-    @Query(value = "select c.* from course c where c.name like %?1% ", nativeQuery = true)
-    List<Course> findCourses(String keyword);
+    @Query(value = "SELECT c From Course c where c.name like %?1% and c.isDelete is null")
+    List<Course> getAllCourseNotDelete(String keyword);
 
     @Query(value = "SELECT c From Course c where c.isDelete is null")
     Page<Course> getAllCourse(Pageable pageable);
