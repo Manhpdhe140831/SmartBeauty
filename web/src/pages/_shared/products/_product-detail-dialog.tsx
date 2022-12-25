@@ -5,6 +5,7 @@ import {
 } from "../../../model/product.model";
 import { FormEvent, useEffect, useState } from "react";
 import {
+  Button,
   Divider,
   Image,
   Modal,
@@ -50,6 +51,8 @@ import { DialogSubmit } from "../../../utilities/form-data.helper";
 import { stateInputProps } from "../../../utilities/mantine.helper";
 import ImageUpload from "../../../components/image-upload";
 import { linkImage } from "../../../utilities/image.helper";
+import { USER_ROLE } from "../../../const/user-role.const";
+import { useAuthUser } from "../../../store/auth-user.state";
 
 const ProductDetailDialog = ({
   data,
@@ -57,11 +60,13 @@ const ProductDetailDialog = ({
   onClosed,
   mode,
   readonly,
+  onDeleted,
 }: DialogProps<
   ProductModel<SupplierModel>,
   ProductUpdateEntity,
   ProductCreateEntity
 >) => {
+  const userRole = useAuthUser((s) => s.user?.role);
   const [selectedSupplier, setSelectedSupplier] = useState<number | null>(
     data?.supplier.id ?? null
   );
@@ -432,7 +437,19 @@ const ProductDetailDialog = ({
             <FormErrorMessage errors={errors} name={"price"} />
           </div>
 
-          <div className="mt-4 flex w-full justify-end">
+          <div className="!ml-0 mt-4 flex w-full flex-row justify-between">
+            <div>
+              {mode === "view" && onDeleted && userRole === USER_ROLE.admin && (
+                <Button
+                  type={"button"}
+                  onClick={() => onDeleted()}
+                  variant={"subtle"}
+                  color={"red"}
+                >
+                  Xóa sản phẩm
+                </Button>
+              )}
+            </div>
             {!readonly ? (
               <DialogDetailAction
                 mode={mode}
