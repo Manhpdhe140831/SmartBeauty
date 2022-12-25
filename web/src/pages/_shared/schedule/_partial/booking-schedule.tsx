@@ -335,7 +335,6 @@ const BookingSchedule = ({
                     onSearching={searchService}
                     disabled={!selectedCustomer}
                     onSelected={(id) => {
-                      debugger;
                       // Gán customer selected to state
                       const service = servicesCustomArr.find(
                         (s: any) => s.value === id

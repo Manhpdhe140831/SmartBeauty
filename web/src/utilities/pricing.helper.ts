@@ -49,7 +49,6 @@ export function isSaleNotViable(priceInfo?: BasePriceModel) {
   ) {
     return true;
   }
-  debugger;
 
   const currentDate = dayjs(new Date());
   let endDate;
