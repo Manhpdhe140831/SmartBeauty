@@ -7,7 +7,7 @@ import {
   CourseUpdateEntity,
 } from "../../../model/course.model";
 import { Button, Divider, Pagination, Table, TextInput } from "@mantine/core";
-import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import CourseHeaderTable from "./_partial/course-header.table";
 import RowPlaceholderTable from "../../../components/row-placeholder.table";
 import CourseRowTable from "./_partial/course-row.table";
@@ -19,10 +19,15 @@ import {
   createSpaCourse,
   updateSpaCourse,
 } from "../../../services/spa-course.service";
-import { showNotification } from "@mantine/notifications";
 import { ServiceModel } from "../../../model/service.model";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
+import {
+  ShowFailedCreate,
+  ShowFailedUpdate,
+  ShowSuccessCreate,
+  ShowSuccessUpdate,
+} from "../../../utilities/show-notification";
 
 const Index: AppPageInterface = () => {
   const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
@@ -54,23 +59,13 @@ const Index: AppPageInterface = () => {
     CourseUpdateEntity
   >((d) => updateSpaCourse(d), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have updated the Course!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessUpdate();
       resetModal();
       refetch();
     },
     onError: (e) => {
       console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot update the Course. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+      ShowFailedUpdate();
     },
   });
 
@@ -80,23 +75,13 @@ const Index: AppPageInterface = () => {
     CourseCreateEntity
   >((data: CourseCreateEntity) => createSpaCourse(data), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have created a new Course!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessCreate();
       resetModal();
       refetch();
     },
     onError: (e) => {
       console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot create new Course. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+      ShowFailedCreate();
     },
   });
 

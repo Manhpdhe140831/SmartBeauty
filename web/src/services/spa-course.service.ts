@@ -88,3 +88,19 @@ export async function updateSpaCourse(data: CourseUpdateEntity) {
     throw error.response?.data;
   }
 }
+
+export async function deleteSpaCourse(id: number) {
+  try {
+    const apiResult = await axios.delete<boolean>("/course/delete", {
+      params: {
+        id,
+      },
+    });
+
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}

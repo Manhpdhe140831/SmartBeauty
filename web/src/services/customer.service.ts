@@ -82,3 +82,14 @@ export async function getCustomerById(id: number) {
     throw error.response?.data;
   }
 }
+
+export async function deleteCustomer(id: number) {
+  try {
+    const apiResult = await axios.post<boolean>("/customer/delete", { id });
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}

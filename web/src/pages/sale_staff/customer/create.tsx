@@ -7,8 +7,12 @@ import { useMutation } from "@tanstack/react-query";
 import { createCustomer } from "../../../services/customer.service";
 import { CustomerCreateEntity } from "../../../model/customer.model";
 import { showNotification } from "@mantine/notifications";
-import { IconCheck, IconX } from "@tabler/icons";
+import { IconX } from "@tabler/icons";
 import { IErrorResponse } from "../../../interfaces/api.interface";
+import {
+  ShowFailedCreate,
+  ShowSuccessCreate,
+} from "../../../utilities/show-notification";
 
 const CreatePage: AppPageInterface = () => {
   const router = useRouter();
@@ -20,20 +24,10 @@ const CreatePage: AppPageInterface = () => {
     {
       onSuccess: (status) => {
         if (status) {
-          showNotification({
-            title: "Thành công!",
-            message: "Thông tin khách hàng đã được lưu.",
-            color: "teal",
-            icon: <IconCheck />,
-          });
+          ShowSuccessCreate();
           return navigatePreviousPage();
         }
-        showNotification({
-          title: "Thất Bại!",
-          message: "Không thể lưu thông tin, hãy thử lại",
-          color: "red",
-          icon: <IconX />,
-        });
+        ShowFailedCreate();
       },
       onError: (e: IErrorResponse) => {
         showNotification({

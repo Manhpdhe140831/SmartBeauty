@@ -17,6 +17,22 @@ export const ShowSuccessUpdate = () =>
     icon: <IconCheck />,
   });
 
+export const ShowFailedDelete = () =>
+  showNotification({
+    title: "Thất Bại!",
+    message: "Không thể xoá thông tin, xin hãy thử lại",
+    color: "red",
+    icon: <IconX />,
+  });
+
+export const ShowSuccessDelete = () =>
+  showNotification({
+    title: "Thành Công!",
+    message: "Xoá thông tin thành công",
+    color: "teal",
+    icon: <IconCheck />,
+  });
+
 export const ShowFailedCreate = () =>
   showNotification({
     title: "Thất Bại!",

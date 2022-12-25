@@ -15,8 +15,10 @@ import {
 } from "../../../services/spa-bed.service";
 import {
   ShowFailedCreate,
+  ShowFailedDelete,
   ShowFailedUpdate,
   ShowSuccessCreate,
+  ShowSuccessDelete,
   ShowSuccessUpdate,
 } from "../../../utilities/show-notification";
 import { IconArrowUp } from "@tabler/icons";
@@ -62,22 +64,21 @@ const ManageBed: AppPageInterface = () => {
     }
   );
 
-  // TODO: delete.
   const deleteMutation = useMutation(
     ["delete-bed"],
-    (data: { id: number }) => deleteSpaBed(data.id),
+    (id: number) => deleteSpaBed(id),
     {
       onSuccess: (d) => {
         if (d) {
-          ShowSuccessUpdate();
+          ShowSuccessDelete();
           refetch();
           return;
         }
-        ShowFailedUpdate();
+        ShowFailedDelete();
       },
       onError: (e) => {
         console.error(e);
-        ShowFailedUpdate();
+        ShowFailedDelete();
       },
     }
   );
@@ -106,6 +107,7 @@ const ManageBed: AppPageInterface = () => {
               data={b}
               onChanged={updateMutation.mutate}
               isResettable
+              onRemoved={deleteMutation.mutate}
             />
           ))}
         </div>

@@ -1,7 +1,7 @@
 import { AppPageInterface } from "../../../interfaces/app-page.interface";
 import { USER_ROLE } from "../../../const/user-role.const";
 import { Button, Divider, Pagination, Table, TextInput } from "@mantine/core";
-import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import ProductHeaderTable from "./_partial/product-header.table";
 import ProductRowTable from "./_partial/product-row.table";
 import { useMutation } from "@tanstack/react-query";
@@ -19,11 +19,16 @@ import {
   updateProduct,
 } from "../../../services/product.service";
 import { IErrorResponse } from "../../../interfaces/api.interface";
-import { showNotification } from "@mantine/notifications";
 import { useListProductQuery } from "../../../query/model-list";
 import { SupplierModel } from "../../../model/supplier.model";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
+import {
+  ShowFailedCreate,
+  ShowFailedUpdate,
+  ShowSuccessCreate,
+  ShowSuccessUpdate,
+} from "../../../utilities/show-notification";
 
 const Index: AppPageInterface = () => {
   const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
@@ -51,23 +56,13 @@ const Index: AppPageInterface = () => {
     ProductCreateEntity
   >((data: ProductCreateEntity) => createProduct(data), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have created a new product!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessCreate();
       resetModal();
-      refetch();
+      void refetch();
     },
-    onError: (e) => {
-      console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot create new product. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+    onError: (err) => {
+      console.error(err);
+      ShowFailedCreate();
     },
   });
 
@@ -77,23 +72,13 @@ const Index: AppPageInterface = () => {
     ProductUpdateEntity
   >(["update-product"], (data: ProductUpdateEntity) => updateProduct(data), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have updated the product!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessUpdate();
       resetModal();
-      refetch();
+      void refetch();
     },
-    onError: (e) => {
-      console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot update the product. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+    onError: (err) => {
+      console.error(err);
+      ShowFailedUpdate();
     },
   });
 

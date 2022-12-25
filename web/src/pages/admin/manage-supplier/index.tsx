@@ -19,10 +19,15 @@ import {
   createSupplier,
   updateSupplier,
 } from "../../../services/supplier.service";
-import { showNotification } from "@mantine/notifications";
-import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
+import {
+  ShowFailedCreate,
+  ShowFailedUpdate,
+  ShowSuccessCreate,
+  ShowSuccessUpdate,
+} from "../../../utilities/show-notification";
 
 const Index: AppPageInterface = () => {
   const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
@@ -54,23 +59,13 @@ const Index: AppPageInterface = () => {
     SupplierUpdateEntity
   >(["update-supplier"], (data: SupplierUpdateEntity) => updateSupplier(data), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have updated the supplier!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessUpdate();
       resetModal();
       refetch();
     },
     onError: (e) => {
       console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot update the supplier. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+      ShowFailedUpdate();
     },
   });
 
@@ -80,23 +75,13 @@ const Index: AppPageInterface = () => {
     SupplierCreateEntity
   >(["create-supplier"], (data: SupplierCreateEntity) => createSupplier(data), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have created a new supplier!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessCreate();
       resetModal();
       refetch();
     },
     onError: (e) => {
       console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot create new supplier. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+      ShowFailedCreate;
     },
   });
 

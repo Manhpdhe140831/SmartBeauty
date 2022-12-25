@@ -19,6 +19,12 @@ import {
 import ServiceDetailDialog from "../../_shared/services/service-detail.dialog";
 import { ChangeEvent } from "react";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
+import {
+  ShowFailedCreate,
+  ShowFailedUpdate,
+  ShowSuccessCreate,
+  ShowSuccessUpdate,
+} from "../../../utilities/show-notification";
 
 const Index: AppPageInterface = () => {
   const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
@@ -44,8 +50,13 @@ const Index: AppPageInterface = () => {
     async (d: ServiceCreateEntity) => createSpaService(d),
     {
       onSuccess: () => {
+        ShowSuccessCreate();
         void refetch();
         resetModal();
+      },
+      onError: (err) => {
+        console.error(err);
+        ShowFailedCreate();
       },
     }
   );
@@ -55,8 +66,13 @@ const Index: AppPageInterface = () => {
     async (d: ServiceUpdateEntity) => updateSpaService(d),
     {
       onSuccess: () => {
+        ShowSuccessUpdate();
         void refetch();
         resetModal();
+      },
+      onError: (err) => {
+        console.error(err);
+        ShowFailedUpdate();
       },
     }
   );

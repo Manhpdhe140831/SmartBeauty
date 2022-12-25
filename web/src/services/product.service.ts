@@ -85,3 +85,14 @@ export async function getProductById(id: number) {
     throw error.response?.data;
   }
 }
+
+export async function deleteProduct(id: number) {
+  try {
+    const apiResult = await axios.post<boolean>("/product/delete", { id });
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}

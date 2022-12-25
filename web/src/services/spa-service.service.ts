@@ -84,3 +84,19 @@ export async function updateSpaService(data: ServiceUpdateEntity) {
     throw error.response?.data;
   }
 }
+
+export async function deleteSpaService(id: number) {
+  try {
+    const apiResult = await axios.delete<boolean>("/service/delete", {
+      params: {
+        id,
+      },
+    });
+
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}

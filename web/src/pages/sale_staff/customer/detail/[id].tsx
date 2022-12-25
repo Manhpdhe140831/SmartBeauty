@@ -5,12 +5,19 @@ import CustomerDetail from "../../../_shared/customer/customer-detail";
 import { USER_ROLE } from "../../../../const/user-role.const";
 import { useCustomerDetailQuery } from "../../../../query/model-detail";
 import { useMutation } from "@tanstack/react-query";
-import { updateCustomer } from "../../../../services/customer.service";
+import {
+  deleteCustomer,
+  updateCustomer,
+} from "../../../../services/customer.service";
 import { CustomerUpdateEntity } from "../../../../model/customer.model";
-import { showNotification } from "@mantine/notifications";
-import { IconCheck, IconX } from "@tabler/icons";
 import { IErrorResponse } from "../../../../interfaces/api.interface";
 import { LoadingOverlay } from "@mantine/core";
+import {
+  ShowFailedDelete,
+  ShowFailedUpdate,
+  ShowSuccessDelete,
+  ShowSuccessUpdate,
+} from "../../../../utilities/show-notification";
 
 const SaleStaffCustomerDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -27,28 +34,31 @@ const SaleStaffCustomerDetail: AppPageInterface = () => {
     {
       onSuccess: (status) => {
         if (status) {
-          showNotification({
-            title: "Thành công!",
-            message: "Thông tin khách hàng đã được lưu.",
-            color: "teal",
-            icon: <IconCheck />,
-          });
+          ShowSuccessUpdate();
           return navigatePreviousPage();
         }
-        showNotification({
-          title: "Thất Bại!",
-          message: "Không thể lưu thông tin, hãy thử lại",
-          color: "red",
-          icon: <IconX />,
-        });
+        ShowFailedUpdate();
       },
       onError: (e: IErrorResponse) => {
-        showNotification({
-          title: "Thất Bại!",
-          message: e.message,
-          color: "red",
-          icon: <IconX />,
-        });
+        ShowFailedUpdate();
+      },
+    }
+  );
+
+  const deleteMutation = useMutation(
+    ["delete-customer"],
+    (id: number) => deleteCustomer(id),
+    {
+      onSuccess: (d) => {
+        if (d) {
+          ShowSuccessDelete();
+          return navigatePreviousPage();
+        }
+        ShowFailedDelete();
+      },
+      onError: (e) => {
+        console.error(e);
+        ShowFailedDelete();
       },
     }
   );
@@ -76,6 +86,7 @@ const SaleStaffCustomerDetail: AppPageInterface = () => {
       {data && (
         <CustomerDetail
           data={data}
+          onDelete={deleteMutation.mutate}
           onInfoChanged={(d) => mutate(d as CustomerUpdateEntity)}
           mode={"view"}
           onBackBtnClicked={() =>

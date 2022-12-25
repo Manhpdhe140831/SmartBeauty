@@ -12,15 +12,20 @@ import {
   ManagerUpdateEntity,
 } from "../../../model/manager.model";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
-import { IconCheck, IconPlus, IconSearch, IconX } from "@tabler/icons";
+import { IconPlus, IconSearch } from "@tabler/icons";
 import ViewManagerDialog from "./_view-manager";
 import { useMutation } from "@tanstack/react-query";
 import { IErrorResponse } from "../../../interfaces/api.interface";
 import { createUser, updateUser } from "../../../services/user.service";
-import { showNotification } from "@mantine/notifications";
 import CreateManager from "./_create-manager";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
+import {
+  ShowFailedCreate,
+  ShowFailedUpdate,
+  ShowSuccessCreate,
+  ShowSuccessUpdate,
+} from "../../../utilities/show-notification";
 
 const ManageManager: AppPageInterface = () => {
   const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
@@ -54,23 +59,13 @@ const ManageManager: AppPageInterface = () => {
     ManagerUpdateEntity
   >(["update-manager-password"], (payload) => updateUser(payload), {
     onSuccess: () => {
-      showNotification({
-        title: "Success!",
-        message: "You have updated the manager!",
-        color: "teal",
-        icon: <IconCheck />,
-      });
+      ShowSuccessUpdate();
       resetModal();
       void refetch();
     },
     onError: (e) => {
       console.error(e);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot update the manager. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+      ShowFailedUpdate();
     },
   });
 
@@ -81,31 +76,16 @@ const ManageManager: AppPageInterface = () => {
   >((v: ManagerCreateEntity) => createUser(v), {
     onSuccess: (result) => {
       if (result) {
-        showNotification({
-          title: "Success!",
-          message: "You have created a new manager!",
-          color: "teal",
-          icon: <IconCheck />,
-        });
+        ShowSuccessCreate();
         resetModal();
       } else {
-        showNotification({
-          title: "Failed!",
-          message: "Cannot create the manager. Please try again!",
-          color: "red",
-          icon: <IconX />,
-        });
+        ShowFailedCreate();
       }
       refetch();
     },
     onError: (error) => {
       console.warn(error);
-      showNotification({
-        title: "Failed!",
-        message: "Cannot create the manager. Please try again!",
-        color: "red",
-        icon: <IconX />,
-      });
+      ShowFailedCreate();
     },
   });
 
