@@ -18,7 +18,7 @@ export function formatTime(time: number, unit: DurationUnitType) {
 }
 
 export function ageTilToday(date: Date) {
-  return dayjs(date).locale("vi").diff(dayjs(), "years");
+  return Math.abs(dayjs(date).locale("vi").diff(dayjs(), "years"));
 }
 
 /**

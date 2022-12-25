@@ -108,3 +108,16 @@ export async function updateUser<payloadType extends UserUpdateEntity>(
     throw error.response?.data;
   }
 }
+
+export async function deleteUser(id: number): Promise<boolean> {
+  try {
+    const apiResult = await axios.delete<boolean>("/user/delete", {
+      params: { id },
+    });
+    return apiResult.data;
+  } catch (e) {
+    const error = e as AxiosError<IErrorResponse>;
+    console.error(error);
+    throw error.response?.data;
+  }
+}

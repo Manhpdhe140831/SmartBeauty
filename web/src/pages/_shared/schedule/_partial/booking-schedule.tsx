@@ -45,6 +45,10 @@ import {
 import dayjs from "dayjs";
 import { formatPrice } from "../../../../utilities/pricing.helper";
 import { CourseModel } from "../../../../model/course.model";
+import {
+  ShowFailedUpdate,
+  ShowSuccessUpdate,
+} from "../../../../utilities/show-notification";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -263,8 +267,10 @@ const BookingSchedule = ({
     };
     updateStatusSchedule(payload).then((rs) => {
       if (rs) {
+        ShowSuccessUpdate();
         void router.push("/sale_staff/schedule");
       }
+      ShowFailedUpdate();
     });
   };
 

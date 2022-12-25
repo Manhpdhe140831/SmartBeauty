@@ -10,6 +10,10 @@ import { ManagerModel } from "../../../../model/manager.model";
 import { useMutation } from "@tanstack/react-query";
 import { updateBranch } from "../../../../services/branch.service";
 import { showNotification } from "@mantine/notifications";
+import {
+  ShowFailedUpdate,
+  ShowSuccessUpdate,
+} from "../../../../utilities/show-notification";
 
 type ModalProps = {
   onChanged?: (updated?: boolean) => void;
@@ -23,22 +27,12 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
     (branchData: BranchUpdateEntity) => updateBranch(branchData),
     {
       onSuccess: () => {
-        showNotification({
-          title: "Success!",
-          message: "You have updated the branch!",
-          color: "teal",
-          icon: <IconCheck />,
-        });
+        ShowSuccessUpdate();
         onChanged && onChanged(true);
         setViewBranch(false);
       },
       onError: () => {
-        showNotification({
-          title: "Failed!",
-          message: "Cannot update the branch. Please try again!",
-          color: "red",
-          icon: <IconX />,
-        });
+        ShowFailedUpdate();
       },
     }
   );
@@ -53,7 +47,9 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
       </Tooltip>
       <Modal
         title={
-          <h1 className="text-center font-thin capitalize">Thông tin chi nhánh</h1>
+          <h1 className="text-center font-thin capitalize">
+            Thông tin chi nhánh
+          </h1>
         }
         opened={viewBranch}
         size={"auto"}

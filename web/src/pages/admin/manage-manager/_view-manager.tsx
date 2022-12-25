@@ -31,7 +31,7 @@ import { linkImage } from "../../../utilities/image.helper";
 
 const ViewManagerDialog: FC<
   DialogViewProps<ManagerModel, ManagerUpdateEntity>
-> = ({ data, onClosed, opened }) => {
+> = ({ data, onClosed, opened, onDeleted }) => {
   const updateManagerSchema = managerModelSchema.merge(
     z.object({
       id: z.literal(data.id),

@@ -49,14 +49,24 @@ export function isSaleNotViable(priceInfo?: BasePriceModel) {
   ) {
     return true;
   }
+  debugger;
 
-  if (priceInfo.discountEnd) {
+  const currentDate = dayjs(new Date());
+  let endDate;
+  let startDate;
+  if (priceInfo.discountStart) {
     // the current date is after the ending sale.
-    return dayjs().isAfter(new Date(priceInfo.discountEnd), "date");
+    startDate = dayjs(new Date(priceInfo.discountStart));
   }
 
-  // the current date is either before / within sale.
-  return false;
+  if (priceInfo.discountEnd) {
+    endDate = dayjs(new Date(priceInfo.discountEnd));
+  }
+
+  const isAfterStart = startDate && currentDate.isAfter(startDate);
+  const isBeforeEnd = !endDate || currentDate.isBefore(endDate);
+
+  return !isAfterStart || !isBeforeEnd;
 }
 
 /**
