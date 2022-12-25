@@ -135,7 +135,7 @@ const InformationForm = ({ data, readonly, mode, onChanged }: FormProps) => {
               rightSectionWidth={150}
               rightSection={
                 <Text className={"w-full"} size={"xs"}>
-                  {field.value ? `(${ageTilToday(field.value)})` : "-"}
+                  {field.value ? `(${ageTilToday(field.value)} tuổi)` : "-"}
                 </Text>
               }
               {...stateInputProps("Ngày sinh", readonly, {
