@@ -364,6 +364,7 @@ const ServiceDetailDialog: FC<
                     errors={errors}
                     register={register}
                     readonly={readonly}
+                    bannedIds={watch("products").map((i) => i.productId)}
                   />
                 ))}
                 <tr className={"border-b"}>

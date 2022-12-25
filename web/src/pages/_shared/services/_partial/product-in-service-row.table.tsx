@@ -37,6 +37,7 @@ type NestedArrayRowProps = {
   errors?: FieldErrors;
   remove: UseFieldArrayRemove;
   readonly?: boolean;
+  bannedIds?: number[];
 };
 
 const ProductInServiceRowTable = ({
@@ -46,6 +47,7 @@ const ProductInServiceRowTable = ({
   errors,
   remove,
   readonly,
+  bannedIds,
 }: NestedArrayRowProps) => {
   const [selectedId, setSelectedId] = useState<number | null>(field.productId);
 
@@ -63,15 +65,18 @@ const ProductInServiceRowTable = ({
     description: `${formatPrice(s.price)} VND`,
   });
 
-  async function searchProduct(
-    productName: string
-  ): Promise<AutoCompleteItemProp<ProductModel>[]> {
-    const paginateProducts = await getListProduct(1, 50, {
-      name: productName,
-    });
-    return paginateProducts.data.map((i) =>
-      rawToAutoItem({ ...i, supplier: i.supplier.id }, fnHelper)
-    );
+  function searchProduct(banList: number[] = []) {
+    return async (
+      productName: string
+    ): Promise<AutoCompleteItemProp<ProductModel>[]> => {
+      const paginateProducts = await getListProduct(1, 50, {
+        name: productName,
+      });
+      return paginateProducts.data.map((i) => ({
+        ...rawToAutoItem({ ...i, supplier: i.supplier.id }, fnHelper),
+        disabled: banList.includes(i.id),
+      }));
+    };
   }
 
   return (
@@ -108,7 +113,7 @@ const ProductInServiceRowTable = ({
                         }
                       : null
                   }
-                  onSearching={searchProduct}
+                  onSearching={searchProduct(bannedIds ?? [])}
                   onSelected={(_id) => {
                     const id = _id ? Number(_id) : null;
                     ControlledField.onChange(id);
