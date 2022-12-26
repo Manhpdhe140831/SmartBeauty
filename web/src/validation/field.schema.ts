@@ -9,7 +9,7 @@ import { MAX_PRICE } from "../const/_const";
 export const idDbSchema = z.number().min(1);
 export const unitProductSchema = z.string().min(1);
 export const amountPerUnitSchema = z.number().min(0);
-export const priceSchema = z.number().min(1).max(MAX_PRICE);
+export const priceSchema = z.number().min(1000).max(MAX_PRICE);
 export const nameSchema = z.string().min(3).max(120);
 export const taxCodeSchema = z.string().length(10);
 export const descriptionSchema = z.string().max(200);
