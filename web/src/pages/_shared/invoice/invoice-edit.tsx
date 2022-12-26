@@ -6,8 +6,8 @@ import AddonsListInformation from "./_partial/detail/addon-list-information";
 import SearchBillingItems from "../../sale_staff/invoice/create/_partial/search-billing-items";
 import ItemAddonEdit from "./_partial/detail/_item-edit.addon";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@mantine/core";
-import { exportPdf, exportBill } from "../../../services/invoice.service";
+import { Button, Divider } from "@mantine/core";
+import { exportPdf } from "../../../services/invoice.service";
 import {
   invoiceCreateItemSchema,
   invoiceStatus,
@@ -15,7 +15,6 @@ import {
 } from "../../../validation/invoice.schema";
 import { z } from "zod";
 import { FormEventHandler, useEffect, useState } from "react";
-import { Divider } from "@mantine/core";
 import { BillingItemData } from "../../../model/_price.model";
 import { idDbSchema, priceSchema } from "../../../validation/field.schema";
 import ItemAddonReadonly from "./_partial/detail/_item-readonly.addon";
@@ -44,7 +43,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
   const [addons, setAddons] = useState<BillingProductItem[]>([]);
   const userRole = useAuthUser((s) => s.user?.role);
 
-  const { reset, control, formState, handleSubmit, setValue } = useForm<
+  const { reset, control, formState, handleSubmit, setValue, watch } = useForm<
     z.infer<typeof editSchema>
   >({
     resolver: zodResolver(editSchema),
@@ -155,7 +154,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
             name={`addons.${index}.quantity`}
             render={({ field }) =>
               data.status === invoiceStatus.pending &&
-                userRole === USER_ROLE.sale_staff ? (
+              userRole === USER_ROLE.sale_staff ? (
                 <ItemAddonEdit
                   addon={addons[index]}
                   itemNo={index}
@@ -184,7 +183,10 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
 
       <div className="flex flex-col space-y-4">
         {data.status === invoiceStatus.pending && (
-          <SearchBillingItems onChange={onNewItemAdded} />
+          <SearchBillingItems
+            bannedIds={watch("addons")?.map((i) => i.itemId)}
+            onChange={onNewItemAdded}
+          />
         )}
 
         <Divider my={16} />
@@ -197,11 +199,7 @@ const InvoiceEdit = ({ onAction, data, footerSection }: props) => {
       </div>
       {footerSection && footerSection(formState)}
       {data.status === invoiceStatus.approved && (
-        <Button
-          size={"lg"}
-          fullWidth
-          onClick={() => exportInvoice(data.id)}
-        >
+        <Button size={"lg"} fullWidth onClick={() => exportInvoice(data.id)}>
           Xuất Hóa Đơn
         </Button>
       )}

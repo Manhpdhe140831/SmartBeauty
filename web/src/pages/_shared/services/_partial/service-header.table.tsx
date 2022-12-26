@@ -9,7 +9,7 @@ const ServiceHeaderTable = () => {
       </colgroup>
       <thead>
         <tr>
-          <th>No.</th>
+          <th>Thứ tự</th>
           <th>Tên</th>
           <th className={"!text-center"}>Giá</th>
           <th>Miêu tả</th>

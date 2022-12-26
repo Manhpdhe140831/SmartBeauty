@@ -3,11 +3,13 @@ export type DialogTypeMode<dataType> =
       mode: "view";
       data: dataType;
       readonly?: boolean;
+      onDeleted?: () => void;
     }
   | {
       mode: "create";
       data?: dataType;
       readonly?: boolean;
+      onDeleted?: () => void;
     };
 
 export type DialogViewProps<dataType, updatedType> = {

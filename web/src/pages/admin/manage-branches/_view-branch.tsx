@@ -69,15 +69,19 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
     AutoCompleteItemProp<ManagerModel>[]
   >(["available-manager", branchData], async () => {
     const manager = await getAllFreeManager();
-    const parser = manager.map((m) => ({
-      // add fields of SelectItemGeneric
-      value: String(m.id),
-      label: m.name,
-      data: {
-        ...m,
-        description: m.phone,
-      },
-    }));
+    const parser = manager.map(
+      (m) =>
+        ({
+          // add fields of SelectItemGeneric
+          value: String(m.id),
+          label: m.name,
+          data: {
+            ...m,
+            description: m.phone,
+            image: linkImage(m.image) as string,
+          },
+        } as AutoCompleteItemProp<ManagerModel>)
+    );
     // since the API does not return the current manager,
     // we simply add it to the beginning of the array and disable it.
     parser.unshift({
@@ -87,7 +91,7 @@ const BranchInfo = ({ branchData, onClose }: ViewBranchPropsType) => {
       data: {
         ...branchData.manager,
         description: branchData.manager.phone,
-        image: branchData.manager.image,
+        image: linkImage(branchData.manager.image) as string,
       },
     } as AutoCompleteItemProp<ManagerModel>);
     return parser;

@@ -10,12 +10,9 @@ import java.util.List;
 public interface SpaBedService {
     List<SpaBedDto> getBeds();
     SpaBedDto getById(Long id);
-    SpaBedResponseDto getSpaBedAndSearch(String name, int pageNo, int pageSize);
-    SpaBedResponseDto getAllSpaBed(int pageNo,int pageSize);
-    String validateSpaBed(String name);
-    Boolean saveSpaBed(String name, Long branch);
+    SpaBedResponseDto getSpaBedAndSearch(Long idCheck, String name, int pageNo, int pageSize);
+    SpaBedResponseDto getAllSpaBed(Long idCheck, int pageNo,int pageSize);
     String updateSpaBed(SpaBedDto spaBedDto);
-    List<SpaBedDto> getBedFree(Long idCheck, String date, Long slot);
 
     StaffBedDto findStaffAndBedFree(Long idCheck,String date, Long idSlot);
     Boolean saveBed(SpaBedDto spaBedDto, String authHeader);

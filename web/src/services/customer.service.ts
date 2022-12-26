@@ -85,7 +85,9 @@ export async function getCustomerById(id: number) {
 
 export async function deleteCustomer(id: number) {
   try {
-    const apiResult = await axios.post<boolean>("/customer/delete", { id });
+    const apiResult = await axios.delete<boolean>("/customer/delete", {
+      params: { id },
+    });
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

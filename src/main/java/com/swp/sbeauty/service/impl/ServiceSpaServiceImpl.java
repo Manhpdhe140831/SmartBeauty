@@ -214,7 +214,7 @@ public class ServiceSpaServiceImpl implements ServiceSpaService {
                 courseDtos.add(courseDto);
             }
         }
-        List<Course> coursess = courseRepository.findAll();
+        List<Course> coursess = courseRepository.getAllCourseNotDelete(keyword);
         for (Course course : coursess) {
             Boolean check = false;
             for (Bill_Course_History history : listUsing) {

@@ -11,7 +11,7 @@ const ListHeaderTable = () => {
 
       <thead>
         <tr>
-          <th className={"!text-center"}>No.</th>
+          <th className={"!text-center"}>Thứ tự</th>
           <th>Tên</th>
           <th className={"!text-center"}>Giới tính</th>
           <th className={"!text-center"}>Số điện thoại</th>

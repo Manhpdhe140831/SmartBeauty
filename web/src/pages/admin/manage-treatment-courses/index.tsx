@@ -17,6 +17,7 @@ import { useMutation } from "@tanstack/react-query";
 import { IErrorResponse } from "../../../interfaces/api.interface";
 import {
   createSpaCourse,
+  deleteSpaCourse,
   updateSpaCourse,
 } from "../../../services/spa-course.service";
 import { ServiceModel } from "../../../model/service.model";
@@ -24,8 +25,10 @@ import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
 import {
   ShowFailedCreate,
+  ShowFailedDelete,
   ShowFailedUpdate,
   ShowSuccessCreate,
+  ShowSuccessDelete,
   ShowSuccessUpdate,
 } from "../../../utilities/show-notification";
 
@@ -68,6 +71,21 @@ const Index: AppPageInterface = () => {
       ShowFailedUpdate();
     },
   });
+
+  const deleteMutation = useMutation<boolean, IErrorResponse, number>(
+    (d: number) => deleteSpaCourse(d),
+    {
+      onSuccess: () => {
+        ShowSuccessDelete();
+        resetModal();
+        refetch();
+      },
+      onError: (e) => {
+        console.error(e);
+        ShowFailedDelete();
+      },
+    }
+  );
 
   const createMutation = useMutation<
     boolean,
@@ -150,6 +168,9 @@ const Index: AppPageInterface = () => {
               }
               resetModal();
             }}
+            onDeleted={() =>
+              modal?.data && deleteMutation.mutateAsync(modal.data.id)
+            }
           />
         )}
       </div>

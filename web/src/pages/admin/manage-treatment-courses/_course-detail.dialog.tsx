@@ -2,6 +2,7 @@ import { FC, FormEvent, useEffect } from "react";
 import { DialogProps } from "../../../interfaces/dialog-detail-props.interface";
 import { CourseModel, CourseUpdateEntity } from "../../../model/course.model";
 import {
+  Button,
   Divider,
   Image,
   Modal,
@@ -31,10 +32,13 @@ import { ServiceModel } from "../../../model/service.model";
 import { stateInputProps } from "../../../utilities/mantine.helper";
 import ImageUpload from "../../../components/image-upload";
 import { linkImage } from "../../../utilities/image.helper";
+import { USER_ROLE } from "../../../const/user-role.const";
+import { useAuthUser } from "../../../store/auth-user.state";
 
 const CourseDetailDialog: FC<
   DialogProps<CourseModel<ServiceModel>, CourseUpdateEntity, CourseUpdateEntity>
-> = ({ data, opened, onClosed, mode, readonly }) => {
+> = ({ data, opened, onClosed, mode, readonly, onDeleted }) => {
+  const userRole = useAuthUser((s) => s.user?.role);
   const validateSchema = getCourseModelSchema(mode);
 
   const {
@@ -52,16 +56,16 @@ const CourseDetailDialog: FC<
     defaultValues:
       mode === "view" && data
         ? {
-          ...data,
-          discountStart: data.discountStart
-            ? dayjs(data.discountStart).toDate()
-            : undefined,
-          discountEnd: data.discountEnd
-            ? dayjs(data.discountEnd).toDate()
-            : undefined,
-          discountPercent: data.discountPercent ?? undefined,
-          services: data.services.map((s) => s.id),
-        }
+            ...data,
+            discountStart: data.discountStart
+              ? dayjs(data.discountStart).toDate()
+              : undefined,
+            discountEnd: data.discountEnd
+              ? dayjs(data.discountEnd).toDate()
+              : undefined,
+            discountPercent: data.discountPercent ?? undefined,
+            services: data.services.map((s) => s.id),
+          }
         : undefined,
   });
 
@@ -98,10 +102,11 @@ const CourseDetailDialog: FC<
     >
       <fieldset
         disabled={readonly}
-        className={`rounded-[4px] border-2 ${mode === "view" && isDirty
+        className={`rounded-[4px] border-2 ${
+          mode === "view" && isDirty
             ? "border-yellow-600"
             : "border-transparent"
-          }`}
+        }`}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
           {mode === "view" ? "Chi tiết Liệu Trình" : "Tạo Liệu Trình"}
@@ -399,7 +404,20 @@ const CourseDetailDialog: FC<
             />
           </div>
 
-          <div className="mt-4 flex w-full justify-end">
+          <div className="!ml-0 mt-4 flex w-full justify-between">
+            <div>
+              {mode === "view" && onDeleted && userRole === USER_ROLE.admin && (
+                <Button
+                  type={"button"}
+                  onClick={() => onDeleted()}
+                  variant={"subtle"}
+                  color={"red"}
+                >
+                  Xóa sản phẩm
+                </Button>
+              )}
+            </div>
+
             {!readonly ? (
               <DialogDetailAction
                 mode={mode}

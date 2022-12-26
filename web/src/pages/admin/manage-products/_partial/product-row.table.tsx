@@ -50,7 +50,7 @@ const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
         </Tooltip>
       </td>
 
-      <td rowSpan={!isSaleNotViable(data) ? 1 : 2} className="!pb-0 !pt-1">
+      <td rowSpan={isSaleNotViable(data) ? 2 : 1} className="!pb-0 !pt-1">
         <SalePriceTableCell priceModel={data} />
       </td>
 
@@ -74,7 +74,9 @@ const ProductRowTable: FC<DataRowProps<ProductModel<SupplierModel>>> = ({
       </td>
       {/*Dose col*/}
 
-      {!isSaleNotViable(data) && (
+      {isSaleNotViable(data) ? (
+        <></>
+      ) : (
         <td className="text-center">
           <Tooltip
             label={

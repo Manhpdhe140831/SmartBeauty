@@ -108,7 +108,7 @@ const SupplierDetailDialog = ({
             />
             <FormErrorMessage errors={errors} name={"taxCode"} />
 
-            <Textarea required label={"Miêu tả"} {...register("description")} />
+            <Textarea label={"Miêu tả"} {...register("description")} />
             <FormErrorMessage errors={errors} name={"description"} />
           </div>
           <div className="flex flex-1 flex-col">

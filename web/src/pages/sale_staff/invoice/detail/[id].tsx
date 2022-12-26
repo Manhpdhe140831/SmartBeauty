@@ -11,6 +11,10 @@ import useWindowPathname from "../../../../hooks/window-pathname.hook";
 import { useMutation } from "@tanstack/react-query";
 import { updateInvoiceStatus } from "../../../../services/invoice.service";
 import { showNotification } from "@mantine/notifications";
+import {
+  ShowFailedUpdate,
+  ShowSuccessUpdate,
+} from "../../../../utilities/show-notification";
 
 const SaleStaffInvoiceDetail: AppPageInterface = () => {
   const router = useRouter();
@@ -29,20 +33,10 @@ const SaleStaffInvoiceDetail: AppPageInterface = () => {
     {
       onSuccess: (status) => {
         if (status) {
-          showNotification({
-            title: "Thành công!",
-            message: "Đã cập nhật mới hóa đơn",
-            color: "teal",
-            icon: <IconCheck />,
-          });
+          ShowSuccessUpdate();
           return navigatePreviousPage();
         }
-        showNotification({
-          title: "Thất Bại!",
-          message: "Không thể lưu thông tin, hãy thử lại",
-          color: "red",
-          icon: <IconX />,
-        });
+        ShowFailedUpdate();
       },
     }
   );

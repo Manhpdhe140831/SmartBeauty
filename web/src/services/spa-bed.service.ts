@@ -46,7 +46,9 @@ export async function createSpaBed(data: SpaBedCreateEntity) {
 
 export async function deleteSpaBed(id: number) {
   try {
-    const apiResult = await axios.post<boolean>("/bed/delete", { id });
+    const apiResult = await axios.delete<boolean>("/bed/delete", {
+      params: { id },
+    });
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

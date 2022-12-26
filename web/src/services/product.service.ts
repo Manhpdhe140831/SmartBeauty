@@ -88,7 +88,9 @@ export async function getProductById(id: number) {
 
 export async function deleteProduct(id: number) {
   try {
-    const apiResult = await axios.post<boolean>("/product/delete", { id });
+    const apiResult = await axios.delete<boolean>("/product/delete", {
+      params: { id },
+    });
     return apiResult.data;
   } catch (e) {
     const error = e as AxiosError<IErrorResponse>;

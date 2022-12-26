@@ -14,6 +14,7 @@ import { useListServiceQuery } from "../../../query/model-list";
 import { useMutation } from "@tanstack/react-query";
 import {
   createSpaService,
+  deleteSpaService,
   updateSpaService,
 } from "../../../services/spa-service.service";
 import ServiceDetailDialog from "../../_shared/services/service-detail.dialog";
@@ -21,8 +22,10 @@ import { ChangeEvent } from "react";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import {
   ShowFailedCreate,
+  ShowFailedDelete,
   ShowFailedUpdate,
   ShowSuccessCreate,
+  ShowSuccessDelete,
   ShowSuccessUpdate,
 } from "../../../utilities/show-notification";
 
@@ -77,6 +80,22 @@ const Index: AppPageInterface = () => {
     }
   );
 
+  const deleteServiceMutation = useMutation(
+    ["delete-spa-service"],
+    async (d: number) => deleteSpaService(d),
+    {
+      onSuccess: () => {
+        ShowSuccessDelete();
+        void refetch();
+        resetModal();
+      },
+      onError: (err) => {
+        console.error(err);
+        ShowFailedDelete();
+      },
+    }
+  );
+
   return (
     <div className={"flex min-h-full flex-col space-y-4 p-4"}>
       <div className="flex justify-end space-x-2">
@@ -114,7 +133,6 @@ const Index: AppPageInterface = () => {
               update?: ServiceCreateEntity | ServiceUpdateEntity
             ) => {
               if (update) {
-                console.log(update);
                 if (modal?.mode === "create") {
                   await createServiceMutation.mutateAsync(
                     update as ServiceCreateEntity
@@ -128,6 +146,9 @@ const Index: AppPageInterface = () => {
               }
               resetModal();
             }}
+            onDeleted={() =>
+              modal?.data && deleteServiceMutation.mutate(modal?.data?.id)
+            }
           />
         )}
       </div>

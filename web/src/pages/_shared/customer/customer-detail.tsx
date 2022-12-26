@@ -43,6 +43,7 @@ const CustomerDetail = ({
             leftIcon={<IconTrash />}
             onClick={() => onDelete && onDelete(data.id)}
             variant={"subtle"}
+            color={"red"}
             type={"button"}
           >
             Xoá

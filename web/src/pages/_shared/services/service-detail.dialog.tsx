@@ -36,10 +36,13 @@ import {
 } from "../../../model/service.model";
 import ImageUpload from "../../../components/image-upload";
 import { linkImage } from "../../../utilities/image.helper";
+import { useAuthUser } from "../../../store/auth-user.state";
+import { USER_ROLE } from "../../../const/user-role.const";
 
 const ServiceDetailDialog: FC<
   DialogProps<ServiceModel, ServiceUpdateEntity, ServiceCreateEntity>
-> = ({ readonly, mode, data, onClosed, opened }) => {
+> = ({ readonly, mode, data, onClosed, opened, onDeleted }) => {
+  const userRole = useAuthUser((s) => s.user?.role);
   const validateSchema = getServiceModelSchema(mode);
   const {
     control,
@@ -361,6 +364,7 @@ const ServiceDetailDialog: FC<
                     errors={errors}
                     register={register}
                     readonly={readonly}
+                    bannedIds={watch("products")?.map((i) => i.productId)}
                   />
                 ))}
                 <tr className={"border-b"}>
@@ -386,7 +390,19 @@ const ServiceDetailDialog: FC<
             </Table>
           </div>
 
-          <div className="mt-4 flex w-full justify-end">
+          <div className="!ml-0 mt-4 flex w-full justify-between">
+            <div className="">
+              {mode === "view" && onDeleted && userRole === USER_ROLE.admin && (
+                <Button
+                  type={"button"}
+                  onClick={() => onDeleted()}
+                  variant={"subtle"}
+                  color={"red"}
+                >
+                  Xóa dịch vụ
+                </Button>
+              )}
+            </div>
             {!readonly ? (
               <DialogDetailAction
                 mode={mode}

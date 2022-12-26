@@ -12,7 +12,7 @@ const CourseHeaderTable = () => {
       </colgroup>
       <thead>
         <tr>
-          <th className={"!text-center"}>No.</th>
+          <th className={"!text-center"}>Thứ tự</th>
           <th className={"!text-center"}>Hình ảnh</th>
           <th>Tên</th>
           <th>Miêu tả</th>

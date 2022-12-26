@@ -12,7 +12,7 @@ const ProductHeaderTable = () => {
 
       <thead className="font-semibold">
         <tr>
-          <th className={"p-2 !text-center"}>No.</th>
+          <th className={"p-2 !text-center"}>Thứ tự</th>
           <th className={"p-2 !text-center"}>Ảnh</th>
           <th className={"py-2 pr-2"}>Tên sản phẩm</th>
           <th className={"p-2"}>Liều Lượng</th>

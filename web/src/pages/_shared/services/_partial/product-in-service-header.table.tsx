@@ -12,7 +12,7 @@ export default function ProductInServiceHeaderTable() {
       </colgroup>
       <thead>
         <tr className={'border-y'}>
-          <th className="!text-center">No.</th>
+          <th className="!text-center">Thứ tự</th>
           <th className="!text-center">Hình ảnh</th>
           <th className='!text-center'>Tên</th>
           <th className="!text-center">Liều lượng</th>

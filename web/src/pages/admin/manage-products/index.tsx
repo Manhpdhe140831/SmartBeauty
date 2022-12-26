@@ -16,6 +16,7 @@ import ProductDetailDialog from "../../_shared/products/_product-detail-dialog";
 import { useDialogDetailRow } from "../../../hooks/modal-detail-row.hook";
 import {
   createProduct,
+  deleteProduct,
   updateProduct,
 } from "../../../services/product.service";
 import { IErrorResponse } from "../../../interfaces/api.interface";
@@ -25,8 +26,10 @@ import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
 import {
   ShowFailedCreate,
+  ShowFailedDelete,
   ShowFailedUpdate,
   ShowSuccessCreate,
+  ShowSuccessDelete,
   ShowSuccessUpdate,
 } from "../../../utilities/show-notification";
 
@@ -81,6 +84,22 @@ const Index: AppPageInterface = () => {
       ShowFailedUpdate();
     },
   });
+
+  const deleteMutation = useMutation(
+    ["delete-product"],
+    (data: number) => deleteProduct(data),
+    {
+      onSuccess: () => {
+        ShowSuccessDelete();
+        resetModal();
+        void refetch();
+      },
+      onError: (err) => {
+        console.error(err);
+        ShowFailedDelete();
+      },
+    }
+  );
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
@@ -151,6 +170,9 @@ const Index: AppPageInterface = () => {
               }
               resetModal();
             }}
+            onDeleted={() =>
+              modal?.data && deleteMutation.mutate(modal.data.id)
+            }
           />
         )}
       </div>

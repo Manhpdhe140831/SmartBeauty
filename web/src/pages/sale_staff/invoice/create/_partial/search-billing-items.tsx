@@ -8,15 +8,19 @@ import { getListProduct } from "../../../../../services/product.service";
 
 type props = {
   onChange?: (item: BillingItemData) => void;
+  bannedIds?: number[];
 };
 
-const SearchBillingItems: FC<props> = ({ onChange }) => {
+const SearchBillingItems: FC<props> = ({ onChange, bannedIds }) => {
   const htmlRef = useRef<HTMLInputElement>(null);
   const [searchString, setSearchString] = useState<string>();
 
   const { data: foundItems, isLoading } = useQuery(
-    ["search-bill-item", searchString],
-    async () => searchItem(searchString),
+    ["search-bill-item", searchString, bannedIds],
+    async () =>
+      (await searchItem(searchString)).filter(
+        (i) => !(bannedIds ?? []).includes(i.id)
+      ),
     {
       enabled: !!searchString,
     }
