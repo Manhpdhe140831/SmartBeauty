@@ -66,7 +66,10 @@ const BookingSchedule = ({
   slotList,
   customerList,
 }: BookingSchedule) => {
+  const router = useRouter();
   const userRole = useAuthUser((s) => s.user?.role);
+  const minDate = dayjs(new Date()).toDate();
+  const maxDate = dayjs(new Date()).add(7, "days").toDate();
 
   // State
   const [active, setActive] = useState(0);
@@ -106,11 +109,10 @@ const BookingSchedule = ({
     getValues,
     resetField,
     setValue,
-    formState: { errors, isValid, isDirty, dirtyFields },
+    formState: { isValid, isDirty, dirtyFields },
   } = useForm<z.infer<typeof ScheduleSchema>>({
     resolver: zodResolver(ScheduleSchema),
     mode: "onBlur",
-    criteriaMode: "all",
     defaultValues: {
       status: ScheduleStatus.Waiting,
       saleStaffId: useAuthUser((s) => s.user?.id),
@@ -119,15 +121,11 @@ const BookingSchedule = ({
     },
   });
 
-  const router = useRouter();
-
   useEffect(() => {
     if (router.query.schedule_id) {
       // query data with dataId
 
       getDetailSchedule(Number(router.query.schedule_id)).then((rs) => {
-        console.log(rs);
-
         // set data
         if (rs) {
           setScheduleQueryData(rs);
@@ -144,7 +142,7 @@ const BookingSchedule = ({
         void router.push("/");
       }
     }
-  }, [router, router.query.scheduleId, userRole]);
+  }, [router.query?.scheduleId, userRole]);
 
   const stepByStep = (step: number) => {
     switch (step) {
@@ -172,11 +170,7 @@ const BookingSchedule = ({
 
     // set button show/hide
     setActive(step);
-    if (step === 3) {
-      showSave(true);
-    } else {
-      showSave(false);
-    }
+    showSave(step === 3);
   };
 
   const searchService = async (
@@ -197,7 +191,6 @@ const BookingSchedule = ({
             ...servicesArr,
             ...serviceList[key].map(
               (s: ServiceModel & CourseModel & { isBilled: boolean }) => {
-                debugger;
                 return {
                   value: `${key}-${s.id.toString()}`,
                   label: `${s.isBilled ? "[Đang Sử dụng] " : ""}${s.name}`,
@@ -393,19 +386,20 @@ const BookingSchedule = ({
             >
               <div className={"flex flex-row gap-3"}>
                 <span className={"min-w-48"}>Chọn ngày</span>
-                <div className={"flex w-full flex-col gap-4"}>
+                <div className={"flex flex-1"}>
                   <Controller
                     render={({ field }) => (
                       <DatePicker
+                        className={"w-full"}
                         locale={"vi"}
                         placeholder="Chọn ngày"
-                        withAsterisk
                         onChange={(e) => {
                           field.onChange(e ? e.toISOString() : null);
                           field.onBlur();
                         }}
-                        minDate={dayjs(new Date()).toDate()}
-                        onBlur={field.onBlur}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                        clearable={false}
                         disabled={userRole !== USER_ROLE.sale_staff}
                       />
                     )}

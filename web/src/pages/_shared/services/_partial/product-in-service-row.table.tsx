@@ -115,7 +115,6 @@ const ProductInServiceRowTable = ({
                   }
                   onSearching={searchProduct(bannedIds ?? [])}
                   onSelected={(_id) => {
-                    debugger;
                     const id = _id ? Number(_id) : null;
                     ControlledField.onChange(id);
                     ControlledField.onBlur();
