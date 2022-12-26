@@ -21,6 +21,7 @@ const CalendarController = ({ dateData, onChange }: calendarProps) => {
         // minDate={minDate}
         value={dateData}
         onChange={onChange}
+        clearable={false}
         withAsterisk
       />
       <Button
