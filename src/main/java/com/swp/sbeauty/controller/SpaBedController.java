@@ -40,7 +40,6 @@ public class SpaBedController {
     private ResponseEntity<?> getBedFree(@RequestHeader("Authorization") String authHeader,
                                          @RequestParam(value = "date") String date,
                                          @RequestParam(value = "slot") Long slot) {
-
         Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
         if (temp != null) {
             String id = temp.get("id").toString();
@@ -60,13 +59,21 @@ public class SpaBedController {
     @GetMapping("/bed")
     private ResponseEntity<?> getCategoryPagination(@RequestParam(value = "page", required = false, defaultValue = "1") int page
             , @RequestParam(value = "pageSize", required = false) int pageSize
-            , @RequestParam(value = "name", required = false, defaultValue = "") String name) {
-        if (name == "" || name == null) {
-            SpaBedResponseDto spaBedResponseDto = spaBedService.getAllSpaBed(page - 1, pageSize);
-            return new ResponseEntity<>(spaBedResponseDto, HttpStatus.OK);
+            , @RequestParam(value = "name", required = false, defaultValue = "") String name
+            ,@RequestHeader("Authorization") String authHeader) {
+        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
+        if (temp != null) {
+            String id = temp.get("id").toString();
+            Long idCheck = Long.parseLong(id);
+            if (name == "" || name == null) {
+                SpaBedResponseDto spaBedResponseDto = spaBedService.getAllSpaBed(idCheck,page - 1, pageSize);
+                return new ResponseEntity<>(spaBedResponseDto, HttpStatus.OK);
+            } else {
+                SpaBedResponseDto spaBedResponseDto = spaBedService.getSpaBedAndSearch(idCheck, name, page - 1, pageSize);
+                return new ResponseEntity<>(spaBedResponseDto, HttpStatus.OK);
+            }
         } else {
-            SpaBedResponseDto spaBedResponseDto = spaBedService.getSpaBedAndSearch(name, page - 1, pageSize);
-            return new ResponseEntity<>(spaBedResponseDto, HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -90,7 +97,7 @@ public class SpaBedController {
     @PutMapping(value = "/bed/update")
     public ResponseEntity<?> updateBed(@RequestBody SpaBedDto spaBedDto) {
         String result = spaBedService.updateSpaBed(spaBedDto);
-        if(result == null){
+        if (result == null) {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new ResponseDto<>(400, result), HttpStatus.BAD_REQUEST);
@@ -98,7 +105,7 @@ public class SpaBedController {
     }
 
     @DeleteMapping("/bed/delete")
-    private ResponseEntity<?> deleteCourse(@RequestParam("id") Long id){
+    private ResponseEntity<?> deleteCourse(@RequestParam("id") Long id) {
         Boolean result = spaBedService.delete(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

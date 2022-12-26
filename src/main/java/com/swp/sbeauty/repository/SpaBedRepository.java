@@ -12,9 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
-    @Query(value = "SELECT b FROM SpaBed b where  " +
-            "b.name like %?1% and b.isDelete is null")
-    Page<SpaBed> searchListWithField(String key, Pageable pageable);
+    @Query(value = "SELECT b FROM SpaBed b, Bed_Branch_Mapping c where b.id = c.id_spaBed and c.id_branch = ?1 and b.name like %?2% and b.isDelete is null")
+    Page<SpaBed> searchListWithField(Long idBranch, String key, Pageable pageable);
 
     @Query(value = "select a from SpaBed a, Bed_Branch_Mapping b where a.id = b.id_spaBed and b.id_branch = ?1 and a.isDelete is null")
     List<SpaBed> getListByBranch(Long branchId);
@@ -30,6 +29,6 @@ public interface SpaBedRepository extends JpaRepository<SpaBed,Long> {
     @Query(value = "select a.* from spa_bed a, bed_branch_mapping b where a.id = b.id_spa_bed  and b.id_branch =?1 and a.is_delete is null", nativeQuery = true)
     List<SpaBed>getAllBed(Long idBranch);
 
-    @Query(value = "SELECT b from SpaBed b where b.isDelete is null")
-    Page<SpaBed> getAllSpaBed(Pageable pageable);
+    @Query(value = "SELECT b from SpaBed b, Bed_Branch_Mapping c where b.id = c.id_spaBed and c.id_branch = ?1 and b.isDelete is null")
+    Page<SpaBed> getAllSpaBed(Long idCheck, Pageable pageable);
 }

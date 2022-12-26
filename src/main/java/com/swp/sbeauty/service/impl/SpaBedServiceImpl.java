@@ -54,8 +54,6 @@ public class SpaBedServiceImpl implements SpaBedService {
         return result;
     }
 
-
-
     @Override
     public SpaBedDto getById(Long id) {
         if (id != null) {
@@ -72,23 +70,13 @@ public class SpaBedServiceImpl implements SpaBedService {
         return null;
     }
 
-
-
-
-
     @Override
-    public SpaBedResponseDto getSpaBedAndSearch(String name, int pageNo, int pageSize) {
+    public SpaBedResponseDto getSpaBedAndSearch(Long idCheck, String name, int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         SpaBedResponseDto spaBedResponseDto = new SpaBedResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
-        Page<SpaBed> page = spaBedRepository.searchListWithField(name,pageable);
-        List<SpaBed> spaBeds = page.getContent();
-        /*List<SpaBedDto> spaBedDtos = new ArrayList<>();
-        for (SpaBed spaBed : spaBeds){
-            SpaBedDto spaBedDto = new SpaBedDto();
-            spaBedDto = mapper.map(spaBed,SpaBedDto.class);
-            spaBedDtos.add(spaBedDto);
-        }*/
+        Long idBranch = spaBed_branch_repository.idBranch(idCheck);
+        Page<SpaBed> page = spaBedRepository.searchListWithField(idBranch,name,pageable);
         List<SpaBedDto> dtos = page
                 .stream()
                 .map(spaBed -> mapper.map(spaBed, SpaBedDto.class))
@@ -108,11 +96,12 @@ public class SpaBedServiceImpl implements SpaBedService {
     }
 
     @Override
-    public SpaBedResponseDto getAllSpaBed(int pageNo, int pageSize) {
+    public SpaBedResponseDto getAllSpaBed(Long idCheck ,int pageNo, int pageSize) {
         ModelMapper mapper = new ModelMapper();
         SpaBedResponseDto spaBedResponseDto = new SpaBedResponseDto();
         Pageable pageable = PageRequest.of(pageNo,pageSize);
-        Page<SpaBed> page = spaBedRepository.getAllSpaBed(pageable);
+        Long idBranch = spaBed_branch_repository.idBranch(idCheck);
+        Page<SpaBed> page = spaBedRepository.getAllSpaBed(idBranch ,pageable);
         List<SpaBed> spaBeds = page.getContent();
         List<SpaBedDto> spaBedDtos = new ArrayList<>();
         for (SpaBed spaBed : spaBeds){
@@ -125,25 +114,6 @@ public class SpaBedServiceImpl implements SpaBedService {
         spaBedResponseDto.setTotalPage(page.getTotalPages());
         spaBedResponseDto.setPageIndex(pageNo+1);
         return spaBedResponseDto;
-    }
-
-    @Override
-    public String validateSpaBed(String name) {
-        String result = "";
-        if(spaBedRepository.existsByName(name)){
-            result += "Name already exists in data, ";
-        }
-        return result;
-    }
-
-    @Override
-    public Boolean saveSpaBed(String name, Long branch) {
-        SpaBed spaBed = new SpaBed();
-        spaBed.setName(name);
-        spaBed = spaBedRepository.save(spaBed);
-        Bed_Branch_Mapping bed_branch_mapping = new Bed_Branch_Mapping(spaBed.getId(), branch);
-        spaBed_branch_repository.save(bed_branch_mapping);
-        return true;
     }
 
     @Override
@@ -174,41 +144,6 @@ public class SpaBedServiceImpl implements SpaBedService {
             }
         } else {
             return "Id null";
-        }
-    }
-
-    @Override
-    public List<SpaBedDto> getBedFree(Long idCheck, String date, Long slot) {
-        if(idCheck==null || date == null || slot == null){
-            return null;
-        } else {
-
-            Long idBranch = spaBed_branch_repository.idBranch(idCheck);
-            List<SpaBed> allBeds = spaBedRepository.getAllBed(idBranch);
-            List<SpaBed> listDup = spaBedRepository.getBedFree(idBranch, date, slot);
-            List<SpaBed> listResult = new ArrayList<>();
-            for(SpaBed spaBeds : allBeds){
-                if(listDup!=null){
-                    Boolean check = false;
-                    for(SpaBed spaBed: listDup){
-                        if(spaBeds.getId() == spaBed.getId()){
-                            check = true;
-                        }
-                    }
-                    if(check == false){
-                        listResult.add(spaBeds);
-                    }
-                } else{
-                    listResult.add(spaBeds);
-                }
-            }
-            List<SpaBedDto> listDto = new ArrayList<>();
-            if(listResult!=null){
-                for(SpaBed spaBed : listResult){
-                    listDto.add(new SpaBedDto(spaBed));
-                }
-            }
-            return listDto;
         }
     }
 
