@@ -28,6 +28,7 @@ export interface AuthenticateUserStore {
   user: UserModel | null;
   loginAs: (user: UserModel) => void;
   logout: () => void;
+  updateToken: (token: string) => void;
   update: (user: Partial<UserModel>) => void;
 }
 
@@ -36,6 +37,9 @@ export const useAuthUser = create<AuthenticateUserStore>()((set) => ({
   user: initUser(),
   loginAs: (user) => set(() => ({ user })),
   logout: () => set(() => ({ user: null })),
+  updateToken: (token: string) => {
+    localStorage?.setItem("accessToken", token);
+  },
   update: (newUserInfo) =>
     set((current) => ({
       user: { ...(current.user ?? {}), ...newUserInfo } as UserModel,

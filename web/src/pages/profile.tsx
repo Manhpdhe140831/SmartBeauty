@@ -57,44 +57,7 @@ const Profile: AppPageInterface = () => {
   const router = useRouter();
 
   // get the profile user from useAuthUser
-  const authUser = useAuthUser((s) => s.user);
-
-  const {
-    data: profile,
-    isLoading,
-    refetch,
-  } = useQuery(
-    ["staff-detail", authUser],
-    async () => {
-      if (!authUser?.id) {
-        return null;
-      }
-
-      return getUserDetail<UserModel>(authUser.id);
-    },
-    {
-      onSuccess: (user) => resetFormWith(user),
-    }
-  );
-
-  const updateMutation = useMutation<boolean, IErrorResponse, UserUpdateEntity>(
-    ["update-user"],
-    (payload) => updateUser(payload),
-    {
-      onSuccess: (result) => {
-        if (result) {
-          ShowSuccessUpdate();
-          // close dialog and update to the list screen
-          return refetch();
-        }
-        ShowFailedUpdate();
-      },
-      onError: (e) => {
-        console.error(e);
-        ShowFailedUpdate();
-      },
-    }
-  );
+  const authUser = useAuthUser();
 
   const {
     control,
@@ -106,6 +69,50 @@ const Profile: AppPageInterface = () => {
     resolver: zodResolver(formSchema),
     mode: "onBlur",
   });
+
+  const {
+    data: profile,
+    isLoading,
+    refetch,
+  } = useQuery(
+    ["staff-detail", authUser.user],
+    async () => {
+      if (!authUser.user?.id) {
+        return null;
+      }
+
+      return getUserDetail<UserModel>(authUser.user?.id);
+    },
+    {
+      onSuccess: (user) => {
+        resetFormWith(user);
+        if (user) {
+          authUser.update(user);
+        }
+      },
+    }
+  );
+
+  const updateMutation = useMutation<boolean, IErrorResponse, UserUpdateEntity>(
+    ["update-user"],
+    (payload) => updateUser(payload),
+    {
+      onSuccess: (result) => {
+        if (result) {
+          ShowSuccessUpdate();
+          // close dialog and update to the list screen
+          if (typeof result === "string")
+            authUser.updateToken(result as unknown as string);
+          return refetch();
+        }
+        ShowFailedUpdate();
+      },
+      onError: (e) => {
+        console.error(e);
+        ShowFailedUpdate();
+      },
+    }
+  );
 
   if (!router.isReady || isLoading) {
     return <>loading...</>;

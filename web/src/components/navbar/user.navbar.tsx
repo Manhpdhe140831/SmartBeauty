@@ -3,6 +3,7 @@ import { IconChevronRight } from "@tabler/icons";
 import { useRouter } from "next/router";
 import { useAuthUser } from "../../store/auth-user.state";
 import Link from "next/link";
+import { linkImage } from "../../utilities/image.helper";
 
 const UserNavbar = () => {
   const user = useAuthUser((s) => s.user);
@@ -18,7 +19,7 @@ const UserNavbar = () => {
       href={"/profile"}
       component={Link}
       active={router.pathname.startsWith("/profile")}
-      icon={<Avatar src={user.image} radius="xl" />}
+      icon={<Avatar src={linkImage(user.image)} radius="xl" />}
       label={
         <Tooltip label={user.email}>
           <Text size="sm" weight={500}>

@@ -196,10 +196,11 @@ const BookingSchedule = ({
           servicesArr = [
             ...servicesArr,
             ...serviceList[key].map(
-              (s: ServiceModel & CourseModel & { isBill: boolean }) => {
+              (s: ServiceModel & CourseModel & { isBilled: boolean }) => {
+                debugger;
                 return {
                   value: `${key}-${s.id.toString()}`,
-                  label: `${s.isBill ? "[Đang Sử dụng] " : ""}${s.name}`,
+                  label: `${s.isBilled ? "[Đang Sử dụng] " : ""}${s.name}`,
                   group: key === "courses" ? "Liệu Trình" : "Dịch Vụ",
                   data: {
                     image: linkImage(s.image),
