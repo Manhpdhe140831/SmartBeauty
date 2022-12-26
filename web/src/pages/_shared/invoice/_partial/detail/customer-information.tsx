@@ -4,6 +4,7 @@ import { FC, ReactNode } from "react";
 import { formatDate } from "../../../../../utilities/time.helper";
 import { Divider, ThemeIcon } from "@mantine/core";
 import { IconFileInvoice } from "@tabler/icons";
+import { GENDER, GENDER_VN } from "../../../../../const/gender.const";
 
 type InformationProps = {
   customer: CustomerModel;
@@ -44,6 +45,13 @@ const CustomerInformationBlock: FC<InformationProps> = ({
               key: "gender",
               title: "Giới Tính",
               allowCopy: false,
+              parser: (d) => {
+                if (d === GENDER.female) {
+                  return GENDER_VN.female;
+                }
+
+                return GENDER_VN.male;
+              },
             }}
           />
 

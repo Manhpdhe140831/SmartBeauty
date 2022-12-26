@@ -115,8 +115,10 @@ const ProductInServiceRowTable = ({
                   }
                   onSearching={searchProduct(bannedIds ?? [])}
                   onSelected={(_id) => {
+                    debugger;
                     const id = _id ? Number(_id) : null;
                     ControlledField.onChange(id);
+                    ControlledField.onBlur();
                     setSelectedId(id);
                   }}
                 />
@@ -151,6 +153,7 @@ const ProductInServiceRowTable = ({
               onChange={(v) => field.onChange(v)}
               onBlur={field.onBlur}
               hideControls
+              max={viewingProduct?.dose ?? 1000}
               {...stateInputProps(undefined, readonly, {
                 required: true,
                 variant: "default",

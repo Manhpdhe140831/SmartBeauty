@@ -200,7 +200,7 @@ const BookingSchedule = ({
                 return {
                   value: `${key}-${s.id.toString()}`,
                   label: `${s.isBill ? "[Đang Sử dụng] " : ""}${s.name}`,
-                  group: key === "course" ? "Liệu Trình" : "Dịch Vụ",
+                  group: key === "courses" ? "Liệu Trình" : "Dịch Vụ",
                   data: {
                     image: linkImage(s.image),
                     description: formatPrice(s.price) + " VNĐ",
@@ -270,6 +270,7 @@ const BookingSchedule = ({
       if (rs) {
         ShowSuccessUpdate();
         void router.push("/sale_staff/schedule");
+        return;
       }
       ShowFailedUpdate();
     });

@@ -222,6 +222,7 @@ const ProductDetailDialog = ({
                       onChange={(v) => field.onChange(v)}
                       onBlur={field.onBlur}
                       hideControls
+                      max={10000}
                       {...stateInputProps("Liều Lượng", readonly, {
                         required: true,
                         size: "sm",

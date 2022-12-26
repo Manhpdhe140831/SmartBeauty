@@ -13,6 +13,7 @@ import DatabaseSearchSelect from "../../../../../components/database-search.sele
 import { getAllCustomers } from "../../../../../services/customer.service";
 import { AutoCompleteItemProp } from "../../../../../components/auto-complete-item";
 import { useCustomerDetailQuery } from "../../../../../query/model-detail";
+import { GENDER, GENDER_VN } from "../../../../../const/gender.const";
 
 type InformationProps = {
   onSelected: (customer: CustomerModel | null) => void;
@@ -87,6 +88,13 @@ const CustomerInformationEditBlock: FC<InformationProps> = ({
               key: "gender",
               title: "Giới Tính",
               allowCopy: false,
+              parser: (d) => {
+                if (d === GENDER.female) {
+                  return GENDER_VN.female;
+                }
+
+                return GENDER_VN.male;
+              },
             }}
           />
 

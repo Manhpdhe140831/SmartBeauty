@@ -31,9 +31,7 @@ const BranchViewModalBtn = ({ onChanged, branchData }: ModalProps) => {
         onChanged && onChanged(true);
         setViewBranch(false);
       },
-      onError: () => {
-        ShowFailedUpdate();
-      },
+      onError: () => ShowFailedUpdate(),
     }
   );
 
