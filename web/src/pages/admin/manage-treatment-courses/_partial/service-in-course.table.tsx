@@ -50,7 +50,7 @@ const ServiceInCourseTable: FC<TableProps> = ({
       </colgroup>
       <thead>
         <tr>
-          <th>No.</th>
+          <th>Thứ tự</th>
           <th>Hình ảnh</th>
           <th>Tên</th>
           <th>

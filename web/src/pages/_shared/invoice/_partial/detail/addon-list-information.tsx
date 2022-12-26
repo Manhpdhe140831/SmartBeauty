@@ -45,7 +45,7 @@ const AddonsListInformation = <
         </colgroup>
         <thead>
           <tr>
-            <th className={"!text-right"}>No.</th>
+            <th className={"!text-right"}>Thứ tự</th>
             <th>Ảnh</th>
             <th>Tên</th>
             <th>Số Lượng</th>
