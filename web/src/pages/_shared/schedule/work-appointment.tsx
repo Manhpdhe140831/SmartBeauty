@@ -14,7 +14,7 @@ import {
 import { SlotModal } from "../../../model/slot.model";
 import { SpaBedModel } from "../../../model/spa-bed.model";
 import { IconPlus } from "@tabler/icons";
-import {ScheduleModel} from "../../../model/schedule.model";
+import { ScheduleModel } from "../../../model/schedule.model";
 
 type workAppointmentProps = {
   userRole: USER_ROLE;
@@ -84,22 +84,22 @@ const WorkAppointment: AppPageInterface<workAppointmentProps> = ({
       <div className="flex flex-1 flex-col overflow-auto">
         <div className={"flex w-full flex-row"}>
           <div className="h-16 min-w-32 max-w-32 select-none border-x p-4 font-semibold">
-            <Text className={"uppercase"}>Bed Number</Text>
+            <Text className={"uppercase"}></Text>
           </div>
           <AppointmentTimeline bedList={bedList} />
         </div>
         {slotList.map((slot, i) => {
           return (
-             <div key={i}>
-               <AppointmentHeaderTimeline
-                   key={slot.id}
-                   userRole={userRole}
-                   title={slot.name}
-                   timeFrame={slot.timeline}
-                   bedList={bedList}
-                   bedsSchedule={scheduleData.filter((s ) => s.slot.id === slot.id)}
-               />
-             </div>
+            <div key={i}>
+              <AppointmentHeaderTimeline
+                key={slot.id}
+                userRole={userRole}
+                title={slot.name}
+                timeFrame={slot.timeline}
+                bedList={bedList}
+                bedsSchedule={scheduleData.filter((s) => s.slot.id === slot.id)}
+              />
+            </div>
           );
         })}
       </div>

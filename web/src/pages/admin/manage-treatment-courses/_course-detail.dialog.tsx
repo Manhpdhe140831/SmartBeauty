@@ -56,16 +56,16 @@ const CourseDetailDialog: FC<
     defaultValues:
       mode === "view" && data
         ? {
-            ...data,
-            discountStart: data.discountStart
-              ? dayjs(data.discountStart).toDate()
-              : undefined,
-            discountEnd: data.discountEnd
-              ? dayjs(data.discountEnd).toDate()
-              : undefined,
-            discountPercent: data.discountPercent ?? undefined,
-            services: data.services.map((s) => s.id),
-          }
+          ...data,
+          discountStart: data.discountStart
+            ? dayjs(data.discountStart).toDate()
+            : undefined,
+          discountEnd: data.discountEnd
+            ? dayjs(data.discountEnd).toDate()
+            : undefined,
+          discountPercent: data.discountPercent ?? undefined,
+          services: data.services.map((s) => s.id),
+        }
         : undefined,
   });
 
@@ -102,11 +102,10 @@ const CourseDetailDialog: FC<
     >
       <fieldset
         disabled={readonly}
-        className={`rounded-[4px] border-2 ${
-          mode === "view" && isDirty
+        className={`rounded-[4px] border-2 ${mode === "view" && isDirty
             ? "border-yellow-600"
             : "border-transparent"
-        }`}
+          }`}
       >
         <h2 className={"m-4 text-xl font-semibold uppercase"}>
           {mode === "view" ? "Chi tiết Liệu Trình" : "Tạo Liệu Trình"}
@@ -203,7 +202,7 @@ const CourseDetailDialog: FC<
                       {...stateInputProps(undefined, readonly, {
                         required: true,
                         size: "sm",
-                        placeholder: "31, 60 days...",
+                        placeholder: "31, 60 ngày...",
                       })}
                       rightSection={
                         field.value && (

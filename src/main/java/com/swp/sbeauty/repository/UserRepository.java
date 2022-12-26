@@ -21,9 +21,9 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     Boolean existsByEmail(String email);
     Boolean existsByPhone(String phone);
 
-    @Query(value = "select u.* from `users` as u , `user_role` as ur where ur.role_id != 1 and u.id = ur.user_id and u.is_delete is null ",nativeQuery = true)
+    @Query(value = "select u.* from `users` as u , `user_role` as ur where ur.role_id =2 and u.id = ur.user_id and u.is_delete is null ",nativeQuery = true)
     Page<Users> getAllUserByAdmin( Pageable pageable);
-    @Query(value = "select u.* from `users` as u , `user_role` as ur where ur.role_id != 1 and u.id = ur.user_id and u.is_delete is null and u.name like %?1%",nativeQuery = true)
+    @Query(value = "select u.* from `users` as u , `user_role` as ur where ur.role_id =2 and u.id = ur.user_id and u.is_delete is null and u.name like %?1%",nativeQuery = true)
     Page<Users> getAllUserByAdminAndSearch(String name, Pageable pageable);
 
     @Query(value = "select  a.* from users a, user_branch_mapping b, user_role c where (a.id = b.id_user and a.id = c.user_id and c.role_id=3 and b.id_branch = ?1 and a.is_delete is null) or (a.id = b.id_user and a.id = c.user_id and c.role_id=4 and b.id_branch = ?1 and a.is_delete is null)",
