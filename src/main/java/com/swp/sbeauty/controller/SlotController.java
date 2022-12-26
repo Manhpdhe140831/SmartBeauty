@@ -25,22 +25,9 @@ public class SlotController {
     SlotService service;
 
     @GetMapping("/slot")
-    private ResponseEntity<?> getAllSlot(@RequestHeader("Authorization") String authHeader) {
-
-        Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
-        if (temp != null) {
-            String id = temp.get("id").toString();
-            Date expir = temp.getExpiration();
-            if (expir.before(new Date())) {
-                return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
-            } else {
-                Long idCheck = Long.parseLong(id);
-                List<SlotDto> list = service.getAllSlot(idCheck);
-                return new ResponseEntity<>(list, HttpStatus.OK);
-            }
-        } else {
-            return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.BAD_REQUEST);
-        }
+    private ResponseEntity<?> getAllSlot() {
+        List<SlotDto> list = service.getAllSlot();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping(value = "/slot/create")

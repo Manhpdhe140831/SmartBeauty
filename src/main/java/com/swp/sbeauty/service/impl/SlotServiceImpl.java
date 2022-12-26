@@ -37,19 +37,15 @@ public class SlotServiceImpl implements SlotService {
 
     @Autowired
     Slot_Branch_Mapping_Repo slot_branch_mapping;
+
     @Override
-    public List<SlotDto> getAllSlot(Long idCheck) {
-        if(idCheck==null){
-            return null;
-        } else {
-            Long idBranch = service_branch_mapping_repo.idBranch(idCheck);
-            List<Slot> slots = repository.getAllSlotByBranch(idBranch);
-            List<SlotDto> slotDtos = new ArrayList<>();
-            for (Slot slot : slots){
-                slotDtos.add(new SlotDto(slot));
-            }
-            return slotDtos;
+    public List<SlotDto> getAllSlot() {
+        List<Slot> slots = repository.findAll();
+        List<SlotDto> slotDtos = new ArrayList<>();
+        for (Slot slot : slots) {
+            slotDtos.add(new SlotDto(slot));
         }
+        return slotDtos;
     }
 
     @Override
@@ -59,13 +55,13 @@ public class SlotServiceImpl implements SlotService {
             Slot slot = new Slot();
 
             if (slotDto.getName() != null) {
-                slot.setName(slotDto.getName() );
+                slot.setName(slotDto.getName());
             }
             slot.setTimeline(slotDto.getTimeline());
             slot = repository.save(slot);
             Claims temp = jwtUtils.getAllClaimsFromToken(authHeader.substring(7));
             Long idStaff = Long.parseLong(temp.get("id").toString());
-            Long idBranch =  user_branch_mapping_repo.idBranch(idStaff);
+            Long idBranch = user_branch_mapping_repo.idBranch(idStaff);
             slot_branch_mapping.save(new Slot_Branch_Mapping(slot.getId(), idBranch));
             return true;
         } catch (Exception e) {

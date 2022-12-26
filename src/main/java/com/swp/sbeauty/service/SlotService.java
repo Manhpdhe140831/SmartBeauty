@@ -9,7 +9,7 @@ import com.swp.sbeauty.entity.Slot;
 import java.util.List;
 
 public interface SlotService {
-    List<SlotDto> getAllSlot(Long isCheck);
+    List<SlotDto> getAllSlot();
 
     Boolean saveSlot(SlotDto slotDto, String authHeader);
 
