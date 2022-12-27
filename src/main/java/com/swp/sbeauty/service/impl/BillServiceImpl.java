@@ -641,7 +641,7 @@ public class BillServiceImpl implements BillService {
             fontTitleCustomer.setSize(13);
             Table tableHeader = new Table(2);
             Cell cellHeaderTitle = new Cell(new Phrase("Invoice Order", fontTitle));
-            Cell cellHeaderBranch = new Cell(new Paragraph("Sbeauty" + "\n" + "Branch Name: " + billDto.getBranch().getName() + "\n" + "Phone Number: " + billDto.getBranch().getPhone() + "\n" + "Address: " + billDto.getBranch().getAddress(), fontPar));
+            Cell cellHeaderBranch = new Cell(new Paragraph("SBEAUTY" + "\n" + "Branch Name: " + billDto.getBranch().getName() + "\n" + "Phone Number: " + billDto.getBranch().getPhone() + "\n" + "Address: " + billDto.getBranch().getAddress(), fontPar));
             cellHeaderTitle.setBackgroundColor(Color.LIGHT_GRAY);
             cellHeaderTitle.setVerticalAlignment(VerticalAlignment.CENTER);
             cellHeaderTitle.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -932,14 +932,13 @@ public class BillServiceImpl implements BillService {
                 if (service.getDiscountPercent() == null) {
                     totalServiceBill = service.getPrice();
                 }
-
-                footerContent = new Paragraph("Price: " + totalServiceBill + totalBillProduct
+                footerContent = new Paragraph("Price: " + (totalServiceBill + totalBillProduct)
                         + "\n" + "Tax: 8%"
                         + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
 
-            if (billDto.getItemType().equalsIgnoreCase("course")) {
+            if (billDto.getItemType().equalsIgnoreCase("course")){
                 footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
                 footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
                 Double totalCourseBill = 0.0;
@@ -947,10 +946,10 @@ public class BillServiceImpl implements BillService {
                     totalCourseBill = course.getPrice() * (100.0 - course.getDiscountPercent()) * 0.01;
                 }
                 if (course.getDiscountPercent() == null) {
-                    totalCourseBill = service.getPrice();
+                    totalCourseBill = course.getPrice();
                 }
 
-                footerContent = new Paragraph("Price: " + totalCourseBill + totalBillProduct
+                footerContent = new Paragraph("Price: " + (totalCourseBill + totalBillProduct)
                         + "\n" + "Tax: 8%"
                         + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
