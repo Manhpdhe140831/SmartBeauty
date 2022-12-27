@@ -341,9 +341,9 @@ const BookingSchedule = ({
                       }
                       const serviceId = Number(service.value?.split("-")[1]);
                       let serviceData: any = null;
+                      const enName =
+                        service?.group === "Dịch Vụ" ? "services" : "courses";
                       for (const key of Object.keys(serviceList)) {
-                        const enName =
-                          service?.group === "Dịch Vụ" ? "services" : "courses";
                         if (enName === key) {
                           serviceData = serviceList[key].find(
                             (s: any) => s.id === serviceId
@@ -359,7 +359,7 @@ const BookingSchedule = ({
                           ...serviceData,
                           type: service.group,
                         });
-                        if (service?.group === "courses") {
+                        if (enName === "courses") {
                           setValue("courseId", serviceData.id);
                           setValue("serviceId", null);
                         } else {
