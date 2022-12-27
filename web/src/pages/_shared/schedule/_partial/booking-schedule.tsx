@@ -664,7 +664,7 @@ const BookingSchedule = ({
                         ];
                       debugger;
 
-                      let disabled: boolean;
+                      let disabled = false;
                       if (scheduleQueryData?.isBill) {
                         // is billed
                         if (
@@ -678,12 +678,6 @@ const BookingSchedule = ({
                           scheduleQueryData.status === ScheduleStatus.Finish
                         ) {
                           disabled = _status !== ScheduleStatus.Finish;
-                        } else if (
-                          scheduleQueryData.status === ScheduleStatus.Waiting
-                        ) {
-                          disabled = _status === ScheduleStatus.Finish;
-                        } else {
-                          disabled = _status !== ScheduleStatus.Waiting;
                         }
                       } else {
                         // when not billed -> disable serving / finished
