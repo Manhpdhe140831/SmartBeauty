@@ -99,12 +99,11 @@ public class ServiceDto {
     }
 
     public ServiceDto(Bill_Service_History service) {
-
-
         if (null != service) {
             this.setId(service.getServiceId());
             this.setName(service.getName());
             this.setDiscountStart(service.getDiscountStart());
+            this.setDiscountPercent(service.getDiscountPercent());
             this.setDiscountEnd(service.getDiscountEnd());
             this.setPrice(service.getPrice());
             this.setDescription(service.getDescription());
