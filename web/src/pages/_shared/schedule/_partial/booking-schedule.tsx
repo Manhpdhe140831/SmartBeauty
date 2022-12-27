@@ -50,6 +50,7 @@ import {
   ShowSuccessUpdate,
 } from "../../../../utilities/show-notification";
 import { linkImage } from "../../../../utilities/image.helper";
+import { GENDER_VN } from "../../../../const/gender.const";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -551,7 +552,7 @@ const BookingSchedule = ({
                       </div>
                       <div className={"flex justify-between gap-2"}>
                         <span className={"font-bold"}>Giới tính</span>
-                        <span>{selectedCustomer.gender}</span>
+                        <span>{GENDER_VN[selectedCustomer.gender]}</span>
                       </div>
                       <div className={"flex justify-between gap-2"}>
                         <span className={"font-bold"}>Ngày sinh</span>
