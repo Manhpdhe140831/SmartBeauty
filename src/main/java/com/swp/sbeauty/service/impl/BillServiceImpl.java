@@ -720,7 +720,7 @@ public class BillServiceImpl implements BillService {
                 serviceCell.setBorderColor(Color.GRAY);
                 serviceCell.setBackgroundColor(Color.PINK);
                 table.addCell(serviceCell);
-                Cell serviceDes = new Cell(new Phrase("Description", fontTitleTable));
+                Cell serviceDes = new Cell(new Phrase("Discount(%)", fontTitleTable));
                 serviceDes.setBorderColor(Color.GRAY);
                 serviceDes.setBackgroundColor(Color.PINK);
                 table.addCell(serviceDes);
@@ -737,10 +737,10 @@ public class BillServiceImpl implements BillService {
                 total.setBackgroundColor(Color.pink);
                 table.addCell(total);
                 table.addCell(service.getName());
-                if (service.getDescription().isEmpty() || service.getDescription() == null) {
-                    table.addCell("None");
+                if (service.getDiscountPercent() == null) {
+                    table.addCell("0");
                 } else {
-                    table.addCell(service.getDescription());
+                    table.addCell(service.getDiscountPercent().toString());
                 }
                 table.addCell(service.getDuration().toString());
                 table.addCell(service.getPrice().toString());
