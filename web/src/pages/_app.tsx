@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       onError: (err) => {
         const error = err as IErrorResponse;
-        if (error.status === 401) {
+        if (error?.status === 401) {
           alert("Phiên làm việc đã hết hạn, hãy đăng nhập lại.");
         }
       },

@@ -193,11 +193,13 @@ const BookingSchedule = ({
               (s: ServiceModel & CourseModel & { isBilled: boolean }) => {
                 return {
                   value: `${key}-${s.id.toString()}`,
-                  label: `${s.isBilled ? "[Đang Sử dụng] " : ""}${s.name}`,
+                  label: s.name,
                   group: key === "courses" ? "Liệu Trình" : "Dịch Vụ",
                   data: {
                     image: linkImage(s.image),
-                    description: formatPrice(s.price) + " VNĐ",
+                    description: `${s.isBilled ? "[Đang Sử Dụng] " : ""}${
+                      formatPrice(s.price) + " VNĐ"
+                    }`,
                   },
                 };
               }

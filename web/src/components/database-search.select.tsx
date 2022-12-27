@@ -2,6 +2,7 @@ import AutoCompleteItem, { AutoCompleteItemProp } from "./auto-complete-item";
 import { Select, SelectProps } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import useDebounceHook from "../hooks/use-debounce.hook";
+import { FC } from "react";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -13,6 +14,7 @@ type ItemSearchSelectProps<dataType extends object> = {
   onSearching: searchFn<dataType>;
   onSelected: (value: string | null) => void;
   debouncedBy?: number;
+  renderComponent?: FC<any>;
 } & Omit<
   SelectProps,
   "searchable" | "data" | "defaultValue" | "onSearchChange" | "onChange"
@@ -29,6 +31,7 @@ const DatabaseSearchSelect = <dataType extends object>({
   onSearching,
   onSelected,
   debouncedBy,
+  renderComponent,
   ...selectProps
 }: ItemSearchSelectProps<dataType>) => {
   const {
@@ -59,7 +62,7 @@ const DatabaseSearchSelect = <dataType extends object>({
       onSearchChange={setSearchWord}
       onChange={onSelected}
       // replaceable props
-      itemComponent={AutoCompleteItem}
+      itemComponent={renderComponent ?? AutoCompleteItem}
       nothingFound={
         collectionLoading || isPending() ? "loading..." : "No result found"
       }
