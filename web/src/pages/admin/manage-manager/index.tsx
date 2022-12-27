@@ -16,14 +16,20 @@ import { IconPlus, IconSearch } from "@tabler/icons";
 import ViewManagerDialog from "./_view-manager";
 import { useMutation } from "@tanstack/react-query";
 import { IErrorResponse } from "../../../interfaces/api.interface";
-import { createUser, updateUser } from "../../../services/user.service";
+import {
+  createUser,
+  deleteUser,
+  updateUser,
+} from "../../../services/user.service";
 import CreateManager from "./_create-manager";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
 import {
   ShowFailedCreate,
+  ShowFailedDelete,
   ShowFailedUpdate,
   ShowSuccessCreate,
+  ShowSuccessDelete,
   ShowSuccessUpdate,
 } from "../../../utilities/show-notification";
 
@@ -88,6 +94,25 @@ const ManageManager: AppPageInterface = () => {
       ShowFailedCreate();
     },
   });
+
+  const deleteMutation = useMutation(
+    ["delete-user"],
+    (id: number) => deleteUser(id),
+    {
+      onSuccess: (d) => {
+        if (d) {
+          ShowSuccessDelete();
+          resetModal();
+          return refetch();
+        }
+        ShowFailedDelete();
+      },
+      onError: (e) => {
+        console.error(e);
+        ShowFailedDelete();
+      },
+    }
+  );
 
   return (
     <div className="flex min-h-full flex-col space-y-4 p-4">
@@ -169,6 +194,9 @@ const ManageManager: AppPageInterface = () => {
             mode={"view"}
             opened={!!modal}
             data={modal.data}
+            onDeleted={() =>
+              modal?.data && deleteMutation.mutate(modal.data.id)
+            }
             onClosed={async (newData) => {
               if (newData) {
                 // update the user.

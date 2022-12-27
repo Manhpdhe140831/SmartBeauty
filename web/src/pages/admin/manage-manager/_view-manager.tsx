@@ -1,6 +1,7 @@
 import { FC, FormEvent } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Button,
   Divider,
   Image as MantineImage,
   Input,
@@ -235,7 +236,19 @@ const ViewManagerDialog: FC<
           <FormErrorMessage errors={errors} name={"password"} />
 
           <Divider my={8} />
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-between space-x-2">
+            <div>
+              {onDeleted && (
+                <Button
+                  type={"button"}
+                  onClick={() => onDeleted()}
+                  variant={"subtle"}
+                  color={"red"}
+                >
+                  Xóa tài khoản
+                </Button>
+              )}
+            </div>
             <DialogDetailAction
               mode={"view"}
               isDirty={isDirty && Object.keys(dirtyFields).length > 0}

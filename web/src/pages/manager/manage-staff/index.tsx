@@ -6,7 +6,7 @@ import TableHeader from "./_partial/_table-header";
 import TableRecord from "./_partial/_table-record";
 import StaffViewModalBtn from "./_partial/_staff-view-modal-btn";
 import StaffCreateModalBtn from "./_partial/_staff-create-modal-btn";
-import StaffCDeleteModalBtn from "./_partial/_staff-delete-modal-btn";
+import StaffDeleteModalBtn from "./_partial/_staff-delete-modal-btn";
 import { useListUserQuery } from "../../../query/model-list";
 import usePaginationHook from "../../../hooks/pagination.hook";
 import { StaffModel } from "../../../model/staff.model";
@@ -14,6 +14,12 @@ import { useAuthUser } from "../../../store/auth-user.state";
 import { USER_ROLE } from "../../../const/user-role.const";
 import useDebounceHook from "../../../hooks/use-debounce.hook";
 import { ChangeEvent } from "react";
+import {
+  ShowFailedDelete,
+  ShowSuccessDelete,
+} from "../../../utilities/show-notification";
+import { useMutation } from "@tanstack/react-query";
+import { deleteUser } from "../../../services/user.service";
 
 const Index: AppPageInterface = () => {
   const { value: searchKey, onChange: setSearchWord } = useDebounceHook();
@@ -35,12 +41,30 @@ const Index: AppPageInterface = () => {
     searchQuery: searchKey ? { name: searchKey } : undefined,
   });
 
+  const deleteMutation = useMutation(
+    ["delete-staff"],
+    (id: number) => deleteUser(id),
+    {
+      onSuccess: (d) => {
+        if (d) {
+          ShowSuccessDelete();
+          return refetch();
+        }
+        ShowFailedDelete();
+      },
+      onError: (e) => {
+        console.error(e);
+        ShowFailedDelete();
+      },
+    }
+  );
+
   const arrBtn = (data: StaffModel) => {
     return (
       <div className="flex gap-1" key={data.id}>
         <StaffViewModalBtn onChanged={(d) => d && refetch()} staffData={data} />
-        <StaffCDeleteModalBtn
-          onChanged={(d) => d && refetch()}
+        <StaffDeleteModalBtn
+          onChanged={(d) => d && deleteMutation.mutate(data.id)}
           staffData={data}
         />
       </div>
