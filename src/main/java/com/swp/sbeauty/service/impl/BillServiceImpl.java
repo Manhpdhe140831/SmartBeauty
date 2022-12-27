@@ -209,7 +209,7 @@ public class BillServiceImpl implements BillService {
         BillResponseDto billResponseDto = new BillResponseDto();
         Pageable pageable = PageRequest.of(offSet, pageSize);
         Long idBranch = customer_branch_mapping_repo.idBranch(idCheck);
-        Page<Bill> page = billRepository.getBillAndSearch(idBranch,keyword, pageable);
+        Page<Bill> page = billRepository.getBillAndSearch(idBranch, keyword, pageable);
 
         List<BillDto> dtos = page
                 .stream()
@@ -421,7 +421,7 @@ public class BillServiceImpl implements BillService {
                 } else if (service != null) {
                     itemType = "service";
                     return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), service, addons, itemType);
-                } else if(course == null && service ==null){
+                } else if (course == null && service == null) {
                     return new BillDto(entity.getId(), entity.getCode(), branchDto, userDto, customerDto, Long.parseLong(entity.getStatus()), entity.getCreateDate(), entity.getPriceBeforeTax(), entity.getPriceAfterTax(), null, addons, itemType);
                 }
             }
@@ -434,7 +434,7 @@ public class BillServiceImpl implements BillService {
         Bill bill = new Bill();
         bill.setCode(billDto.getCode());
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         bill.setCreateDate(nowAsISO);
@@ -591,12 +591,16 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public String getEndDate(String startDate, int duration) {
-        String subStartDate = startDate.substring(0, 10);
-        DateTimeFormatter formmat1 = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd").toFormatter();
-        LocalDate localDateTime = LocalDate.parse(subStartDate, formmat1);
-        LocalDate dt = localDateTime.plusDays(duration);
-        String formatter = formmat1.format(dt);
-        return formatter + "T17:00:00.000Z";
+        try {
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(startDate);
+            Date newDate = new Date(date1.getTime() + 7 * 3600 * 1000 + 24 * 3600 * 1000 * duration);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            String nowAsISO = df.format(newDate);
+            return nowAsISO;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -814,7 +818,7 @@ public class BillServiceImpl implements BillService {
                         productTable.addCell(item.getQuantity().toString());
                         productTable.addCell(item.getItem().getPrice().toString());
                         Double discountPercent = 0.0;
-                        if (item.getItem().getDiscountPercent() != null){
+                        if (item.getItem().getDiscountPercent() != null) {
                             discountPercent = item.getItem().getDiscountPercent();
                         }
 
@@ -921,40 +925,40 @@ public class BillServiceImpl implements BillService {
                         + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
-            if (billDto.getItemType() != null){
-            if (billDto.getItemType().equalsIgnoreCase("service")) {
-                footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
-                footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
-                Double totalServiceBill = 0.0;
-                if (service.getDiscountPercent() != null) {
-                    totalServiceBill = service.getPrice() * (100.0 - service.getDiscountPercent()) * 0.01;
-                }
-                if (service.getDiscountPercent() == null) {
-                    totalServiceBill = service.getPrice();
-                }
-                footerContent = new Paragraph("Price: " + (totalServiceBill + totalBillProduct)
-                        + "\n" + "Tax: 8%"
-                        + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
-                footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
-            }
-
-            if (billDto.getItemType().equalsIgnoreCase("course")){
-                footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
-                footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
-                Double totalCourseBill = 0.0;
-                if (course.getDiscountPercent() != null) {
-                    totalCourseBill = course.getPrice() * (100.0 - course.getDiscountPercent()) * 0.01;
-                }
-                if (course.getDiscountPercent() == null) {
-                    totalCourseBill = course.getPrice();
+            if (billDto.getItemType() != null) {
+                if (billDto.getItemType().equalsIgnoreCase("service")) {
+                    footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
+                    footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
+                    Double totalServiceBill = 0.0;
+                    if (service.getDiscountPercent() != null) {
+                        totalServiceBill = service.getPrice() * (100.0 - service.getDiscountPercent()) * 0.01;
+                    }
+                    if (service.getDiscountPercent() == null) {
+                        totalServiceBill = service.getPrice();
+                    }
+                    footerContent = new Paragraph("Price: " + (totalServiceBill + totalBillProduct)
+                            + "\n" + "Tax: 8%"
+                            + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
+                    footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
                 }
 
-                footerContent = new Paragraph("Price: " + (totalCourseBill + totalBillProduct)
-                        + "\n" + "Tax: 8%"
-                        + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
-                footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
+                if (billDto.getItemType().equalsIgnoreCase("course")) {
+                    footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
+                    footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
+                    Double totalCourseBill = 0.0;
+                    if (course.getDiscountPercent() != null) {
+                        totalCourseBill = course.getPrice() * (100.0 - course.getDiscountPercent()) * 0.01;
+                    }
+                    if (course.getDiscountPercent() == null) {
+                        totalCourseBill = course.getPrice();
+                    }
+
+                    footerContent = new Paragraph("Price: " + (totalCourseBill + totalBillProduct)
+                            + "\n" + "Tax: 8%"
+                            + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
+                    footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
+                }
             }
-        }
 
 
             document.add(footerTitle);
@@ -1071,7 +1075,7 @@ public class BillServiceImpl implements BillService {
             lineBr.setAlignment(Element.ALIGN_CENTER);
             document.add(lineBr);
 //            document.add(br);
-            if ("service".equalsIgnoreCase(itemType)||"course".equalsIgnoreCase(itemType)) {
+            if ("service".equalsIgnoreCase(itemType) || "course".equalsIgnoreCase(itemType)) {
                 Paragraph subTitle1 = new Paragraph("Service/Course", fontSubTitle);
                 subTitle1.setAlignment(Element.ALIGN_CENTER);
                 document.add(subTitle1);
@@ -1147,7 +1151,7 @@ public class BillServiceImpl implements BillService {
 
             }
             document.add(table);
-            if (!addons.isEmpty()){
+            if (!addons.isEmpty()) {
                 Table productTable = new Table(5, addons.size());
                 productTable.setWidth(100f);
                 Paragraph subTitle2 = new Paragraph("Product", fontSubTitle);
@@ -1183,11 +1187,11 @@ public class BillServiceImpl implements BillService {
                         productTable.addCell(item.getItem().getPrice().toString());
                         Double discountPercent = item.getItem().getDiscountPercent();
                         Double totalAmount = 0.0;
-                        if (discountPercent.toString().equalsIgnoreCase("0.0")){
+                        if (discountPercent.toString().equalsIgnoreCase("0.0")) {
                             totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice();
                         }
-                        if (discountPercent != 0.0){
-                            totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice()* (100-discountPercent)*0.01;
+                        if (discountPercent != 0.0) {
+                            totalAmount = item.getQuantity().doubleValue() * item.getItem().getPrice() * (100 - discountPercent) * 0.01;
                         }
                         totalBillProduct += totalAmount;
                         productTable.addCell(totalAmount.toString());
@@ -1206,28 +1210,28 @@ public class BillServiceImpl implements BillService {
 
             Schedule schedule = null;
             Long scheduleId = schedule_bill_mapping_repository.getScheduleByBill(billDto.getId());
-            if (scheduleId != null){
+            if (scheduleId != null) {
                 schedule = scheduleRepository.findById(scheduleId).orElse(null);
             }
 
-            if (schedule != null){
+            if (schedule != null) {
                 Slot slot = null;
                 SpaBed bed = null;
                 Users users = null;
-                if (schedule.getSlotId() != null){
+                if (schedule.getSlotId() != null) {
                     slot = slotRepository.findById(schedule.getSlotId()).orElse(null);
                 }
-                if (schedule.getBedId() != null){
+                if (schedule.getBedId() != null) {
                     bed = spaBedRepository.getSpaBedById(schedule.getBedId());
                 }
-                if (schedule.getTechnicalStaffId() != null){
+                if (schedule.getTechnicalStaffId() != null) {
                     users = userRepository.getUsersById(schedule.getTechnicalStaffId()).orElse(null);
                 }
                 String scheduleTitle = "Schedule";
                 Paragraph scheduleParagraph = new Paragraph("\n" + scheduleTitle, fontSubTitle);
                 scheduleParagraph.setAlignment(Element.ALIGN_CENTER);
                 document.add(scheduleParagraph);
-                Table scheduleTable = new Table(4,2);
+                Table scheduleTable = new Table(4, 2);
                 scheduleTable.setPadding(5f);
                 scheduleTable.setWidth(100f);
                 String dateCellContent = "Date";
@@ -1247,25 +1251,24 @@ public class BillServiceImpl implements BillService {
                 scheduleTable.addCell(bedCell);
                 scheduleTable.addCell(techCell);
 
-                scheduleTable.addCell(schedule.getDate().substring(0,10));
-                if (slot != null){
+                scheduleTable.addCell(schedule.getDate().substring(0, 10));
+                if (slot != null) {
                     scheduleTable.addCell(slot.getTimeline());
-                }else{
+                } else {
                     scheduleTable.addCell("");
                 }
 
-                if (bed != null){
+                if (bed != null) {
                     scheduleTable.addCell(bed.getName());
-                }else{
+                } else {
                     scheduleTable.addCell("");
                 }
 
-                if (users != null){
+                if (users != null) {
                     scheduleTable.addCell(users.getName());
-                }else{
+                } else {
                     scheduleTable.addCell("");
                 }
-
 
 
                 document.add(scheduleTable);
@@ -1285,14 +1288,14 @@ public class BillServiceImpl implements BillService {
                         + "\n" + "Total Amount: " + billDto.getPriceAfterTax());
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
-            if (billDto.getItemType().equalsIgnoreCase("service")){
+            if (billDto.getItemType().equalsIgnoreCase("service")) {
                 footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
                 footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
                 Double totalServiceBill = 0.0;
-                if (service.getDiscountPercent() != null){
-                    totalServiceBill = service.getPrice()*(100.0-service.getDiscountPercent())*0.01;
+                if (service.getDiscountPercent() != null) {
+                    totalServiceBill = service.getPrice() * (100.0 - service.getDiscountPercent()) * 0.01;
                 }
-                if (service.getDiscountPercent() == null){
+                if (service.getDiscountPercent() == null) {
                     totalServiceBill = service.getPrice();
                 }
 
@@ -1302,14 +1305,14 @@ public class BillServiceImpl implements BillService {
                 footerContent.setAlignment(Paragraph.ALIGN_RIGHT);
             }
 
-            if (billDto.getItemType().equalsIgnoreCase("course")){
+            if (billDto.getItemType().equalsIgnoreCase("course")) {
                 footerTitle = new Paragraph("Payment(VND)", fontSubTitle);
                 footerTitle.setAlignment(Paragraph.ALIGN_RIGHT);
                 Double totalCourseBill = 0.0;
-                if (course.getDiscountPercent() != null){
-                    totalCourseBill = course.getPrice()*(100.0-course.getDiscountPercent())*0.01;
+                if (course.getDiscountPercent() != null) {
+                    totalCourseBill = course.getPrice() * (100.0 - course.getDiscountPercent()) * 0.01;
                 }
-                if (course.getDiscountPercent() == null){
+                if (course.getDiscountPercent() == null) {
                     totalCourseBill = service.getPrice();
                 }
 

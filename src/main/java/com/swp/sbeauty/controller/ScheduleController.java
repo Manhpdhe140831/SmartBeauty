@@ -44,11 +44,11 @@ public class ScheduleController {
             if(expir.before(new Date())){
                 return new ResponseEntity<>(new ResponseDto<>(401, "Token is expired"), HttpStatus.UNAUTHORIZED);
             }else {
-                boolean result = scheduleService.save(scheduleDto, idSale);
-                if (result == true) {
-                    return new ResponseEntity<>(result, HttpStatus.OK);
+                String result = scheduleService.save(scheduleDto, idSale);
+                if (result == null) {
+                    return new ResponseEntity<>(true, HttpStatus.OK);
                 } else {
-                    return new ResponseEntity<>(new ResponseDto<>(400, "khog them duoc"), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ResponseDto<>(400, result), HttpStatus.BAD_REQUEST);
                 }
             }
         } else {
