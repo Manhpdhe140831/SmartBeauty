@@ -662,13 +662,40 @@ const BookingSchedule = ({
                         ScheduleStatusMap[
                           status as keyof typeof ScheduleStatusMap
                         ];
+                      debugger;
+
+                      let disabled: boolean;
+                      if (scheduleQueryData?.isBill) {
+                        // is billed
+                        if (
+                          scheduleQueryData.status === ScheduleStatus.Serving
+                        ) {
+                          // if waiting -> disabled
+                          disabled =
+                            _status === ScheduleStatus.Cancel ||
+                            _status === ScheduleStatus.Waiting;
+                        } else if (
+                          scheduleQueryData.status === ScheduleStatus.Finish
+                        ) {
+                          disabled = _status !== ScheduleStatus.Finish;
+                        } else if (
+                          scheduleQueryData.status === ScheduleStatus.Waiting
+                        ) {
+                          disabled = _status === ScheduleStatus.Finish;
+                        } else {
+                          disabled = _status !== ScheduleStatus.Waiting;
+                        }
+                      } else {
+                        // when not billed -> disable serving / finished
+                        disabled =
+                          _status === ScheduleStatus.Serving ||
+                          _status === ScheduleStatus.Finish;
+                      }
+
                       return {
                         value: String(_status),
                         label: status,
-                        disabled:
-                          !scheduleQueryData.isBill &&
-                          (_status === ScheduleStatus.Serving ||
-                            _status === ScheduleStatus.Finish),
+                        disabled,
                       };
                     })}
                     onChange={(e) => {

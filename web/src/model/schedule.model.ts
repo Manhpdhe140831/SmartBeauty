@@ -47,5 +47,3 @@ export const ScheduleStatusMap = {
   "Đang xử lý": ScheduleStatus.Serving,
   "Hoàn tất": ScheduleStatus.Finish,
 };
-
-export const ScheduleStatusArray = ["Hủy", "Chờ", "Đang xử lý", "Hoàn tất"];
