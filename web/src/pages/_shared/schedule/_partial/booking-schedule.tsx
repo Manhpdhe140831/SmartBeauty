@@ -46,11 +46,15 @@ import dayjs from "dayjs";
 import { formatPrice } from "../../../../utilities/pricing.helper";
 import { CourseModel } from "../../../../model/course.model";
 import {
+  ShowFailedCreate,
   ShowFailedUpdate,
+  ShowSuccessCreate,
   ShowSuccessUpdate,
 } from "../../../../utilities/show-notification";
 import { linkImage } from "../../../../utilities/image.helper";
 import { GENDER_VN } from "../../../../const/gender.const";
+import { useMutation } from "@tanstack/react-query";
+import { IErrorResponse } from "../../../../interfaces/api.interface";
 
 type searchFn<dataType extends object> = (
   key: string
@@ -248,15 +252,26 @@ const BookingSchedule = ({
     setBedInfo(bedData ?? null);
   }, [watch("bedId")]);
 
-  const onSubmit = (payload: any) => {
-    createSchedule(payload).then((rs: ScheduleModel) => {
-      if (rs) {
-        void router.push({
-          pathname: "/sale_staff/schedule",
-        });
-      }
-    });
-  };
+  const createScheduleMutation = useMutation(
+    (payload) => createSchedule(payload),
+    {
+      onSuccess: (rs) => {
+        if (rs) {
+          ShowSuccessCreate();
+          return router.push({
+            pathname: "/sale_staff/schedule",
+          });
+        }
+        ShowFailedCreate();
+      },
+      onError: (e: IErrorResponse) => {
+        console.error(e);
+        ShowFailedCreate(e.error);
+      },
+    }
+  );
+
+  const onSubmit = (payload: any) => createScheduleMutation.mutate(payload);
 
   const updateStatus = () => {
     const payload: updateScheduleStatus = {

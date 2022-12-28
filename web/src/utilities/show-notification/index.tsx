@@ -33,10 +33,10 @@ export const ShowSuccessDelete = () =>
     icon: <IconCheck />,
   });
 
-export const ShowFailedCreate = () =>
+export const ShowFailedCreate = (message?: string) =>
   showNotification({
     title: "Thất Bại!",
-    message: "Không thể tạo mới thông tin, xin hãy thử lại",
+    message: message ?? "Không thể tạo mới thông tin, xin hãy thử lại",
     color: "red",
     icon: <IconX />,
   });
