@@ -241,7 +241,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     List<Schedule> listCCM = scheduleRepository.getScheduleCCM(customer_course_mapping.getId());
                     Boolean check = false;
                     for(Schedule schedule1 : listCCM){
-                        if(Integer.parseInt(schedule1.getStatus()) == 1){
+                        if(Integer.parseInt(schedule1.getStatus()) == 1 || Integer.parseInt(schedule1.getStatus()) == 2){
                             check = true;
                         }
                     }
