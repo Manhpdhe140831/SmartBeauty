@@ -237,7 +237,7 @@ const ViewManagerDialog: FC<
 
           <Divider my={8} />
           <div className="flex justify-between space-x-2">
-            <div>
+            {/* <div>
               {onDeleted && (
                 <Button
                   type={"button"}
@@ -248,7 +248,7 @@ const ViewManagerDialog: FC<
                   Xóa tài khoản
                 </Button>
               )}
-            </div>
+            </div> */}
             <DialogDetailAction
               mode={"view"}
               isDirty={isDirty && Object.keys(dirtyFields).length > 0}

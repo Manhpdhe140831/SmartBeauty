@@ -233,10 +233,20 @@ public class ScheduleServiceImpl implements ScheduleService {
                         Date date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(schedule.getDate());
                         Date date2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(customer_course_mapping.getEndDate());
                         if(date1.after(date2)){
-                            return "Quá hạn";
+                            return "Liệu trình đã hết hạn sử dụng";
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
+                    }
+                    List<Schedule> listCCM = scheduleRepository.getScheduleCCM(customer_course_mapping.getId());
+                    Boolean check = false;
+                    for(Schedule schedule1 : listCCM){
+                        if(Integer.parseInt(schedule1.getStatus()) == 1){
+                            check = true;
+                        }
+                    }
+                    if(check == true){
+                        return "Lịch đặt trước chưa hoàn tất";
                     }
 
                     if (customer_course_mapping != null) {
@@ -297,12 +307,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (customerCourseHistory != null) {
             Customer_Course_Mapping customer_course_mapping = customer_course_mapping_repository.findById(schedule.getCourseHistoryId()).orElse(null);
             Bill_Course_History course = bill_course_history_repository.findById(customer_course_mapping.getCourse_id()).orElse(null);
-            Integer count = null;
-            if (customer_course_mapping.getCount() < course.getTimeOfUse()) {
-                count = customer_course_mapping.getCount() + 1;
-            } else if (customer_course_mapping.getCount() == course.getTimeOfUse()) {
-                count = customer_course_mapping.getCount();
-            }
+            Integer count = customer_course_mapping.getCount();
             courseDto = new CourseDto(customer_course_mapping.getId(), course.getCode(), course.getName(), course.getPrice(), course.getDuration(), course.getTimeOfUse(), course.getDiscountStart(), course.getDiscountEnd(), course.getDiscountPercent(), course.getImage(), course.getDescription(), count);
             isBill = true;
         }

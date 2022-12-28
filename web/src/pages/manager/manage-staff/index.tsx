@@ -63,10 +63,10 @@ const Index: AppPageInterface = () => {
     return (
       <div className="flex gap-1" key={data.id}>
         <StaffViewModalBtn onChanged={(d) => d && refetch()} staffData={data} />
-        <StaffDeleteModalBtn
+        {/* <StaffDeleteModalBtn
           onChanged={(d) => d && deleteMutation.mutate(data.id)}
           staffData={data}
-        />
+        /> */}
       </div>
     );
   };
